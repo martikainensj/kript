@@ -1,22 +1,16 @@
 import React from 'react';
+import { useQuery } from '@realm/react';
+import { Text } from 'react-native';
 
-import {Task} from './models/Task';
-import {TaskManager} from './components/TaskManager';
-
-import {useQuery} from '@realm/react';
+import { Account } from './models/Account';
 
 export const AppNonSync = () => {
-  const [showDone, setShowDone] = React.useState(false);
-  const tasks = useQuery(
-    Task,
-    collection =>
-      showDone
-        ? collection.sorted('createdAt')
-        : collection.filtered('isComplete == false').sorted('createdAt'),
-    [showDone],
-  );
+	const accounts = useQuery(
+		Account,
+		collection => collection.sorted('name')
+	);
 
-  return (
-    <TaskManager tasks={tasks} setShowDone={setShowDone} showDone={showDone} />
-  );
+	return (
+		<Text>{ JSON.stringify( accounts ) }</Text>
+	);
 };

@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
-import colors from '../styles/colors';
-import {shadows} from '../styles/shadows';
-import {buttonStyles} from '../styles/button';
+import colors from '../../styles/colors';
+import {buttonStyles} from '../../styles/button';
 import {AuthOperationName, useAuth, useEmailPasswordAuth} from '@realm/react';
 
 export const LoginScreen = () => {
@@ -108,8 +107,7 @@ const styles = StyleSheet.create({
     height: 50,
     marginVertical: 8,
     backgroundColor: colors.white,
-    borderRadius: 5,
-    ...shadows,
+    borderRadius: 5
   },
 
   buttons: {
@@ -118,8 +116,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    ...buttonStyles.button,
-    ...shadows,
+    ...buttonStyles.button
   },
 
   buttonDisabled: {
