@@ -1,14 +1,15 @@
 import 'expo-dev-client';
-import 'react-native-get-random-values';
 import React from 'react';
-import {registerRootComponent} from 'expo'
-import {AppWrapperNonSync} from './app/AppWrapperNonSync';
-import {AppWrapperSync} from './app/AppWrapperSync';
-import {SYNC_CONFIG} from './sync.config';
+import { registerRootComponent } from 'expo'
+import { AppWrapperNonSync } from './app/AppWrapperNonSync';
+import { AppWrapperSync } from './app/AppWrapperSync';
+import { CONFIG } from './app.config';
+
+const { sync } = CONFIG;
 
 const App = () =>
-  SYNC_CONFIG.enabled ? (
-    <AppWrapperSync appId={SYNC_CONFIG.appId} />
+	sync.enabled ? (
+    <AppWrapperSync appId={ sync.appId } />
   ) : (
     <AppWrapperNonSync />
   );
