@@ -6,7 +6,7 @@ import { Account } from './models/Account';
 import { buttonStyles } from './styles/button';
 import colors from './styles/colors';
 
-export const AppSync: React.FC = () => {
+export const App: React.FC = () => {
 	const realm = useRealm();
 	const user = useUser();
 	const app = useApp();

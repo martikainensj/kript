@@ -1,17 +1,11 @@
 import 'expo-dev-client';
 import React from 'react';
 import { registerRootComponent } from 'expo'
-import { AppWrapperNonSync } from './app/AppWrapperNonSync';
-import { AppWrapperSync } from './app/AppWrapperSync';
-import { CONFIG } from './app.config';
+import { AppWrapper } from './app/AppWrapper';
+import { CONFIG } from './kript.config';
 
-const { sync } = CONFIG;
+const { appId } = CONFIG;
 
-const App = () =>
-	sync.enabled ? (
-    <AppWrapperSync appId={ sync.appId } />
-  ) : (
-    <AppWrapperNonSync />
-  );
+const App = () => <AppWrapper appId={ appId } />
 
 registerRootComponent(App);

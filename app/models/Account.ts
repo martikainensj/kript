@@ -1,18 +1,10 @@
-import Realm, { ObjectSchema } from 'realm';
+import { Object, BSON } from 'realm';
 
-export class Account extends Realm.Object<Account> {
-	_id!: Realm.BSON.ObjectId;
+export class Account extends Object<Account> {
+  _id: BSON.ObjectId = new BSON.ObjectId();
   name!: string;
-  notes?: string;
+  notes?: string = '';
 
-  static schema: ObjectSchema = {
-    primaryKey: '_id',
-    name: 'Account',
-    properties: {
-      _id: 'objectId',
-      name: 'string',
-      notes: 'string?',
-    },
-  };
+	static primaryKey = '_id';
 }
 

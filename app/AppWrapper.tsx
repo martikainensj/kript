@@ -5,12 +5,12 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 import { schemas } from './models';
 import { LoginScreen } from './components/authentication/LoginScreen';
 import colors from './styles/colors';
-import { AppSync } from './AppSync';
+import { App } from './App';
 
 import { RealmProvider } from '@realm/react';
 import { OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from 'realm';
 
-export const AppWrapperSync: React.FC<{
+export const AppWrapper: React.FC<{
 	appId: string;
 }> = ( { appId } ) => {
 	// If we are logged in, add the sync configuration the the RealmProvider and render the app
@@ -28,7 +28,7 @@ export const AppWrapperSync: React.FC<{
 								timeOutBehavior: OpenRealmTimeOutBehavior?.OpenLocalRealm,
 							},
 						} }>
-						<AppSync />
+						<App />
 					</RealmProvider>
 				</UserProvider>
 			</AppProvider>
@@ -42,5 +42,3 @@ const styles = StyleSheet.create( {
 		backgroundColor: colors.darkBlue,
 	},
 } );
-
-export default AppWrapperSync;
