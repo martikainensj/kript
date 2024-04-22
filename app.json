@@ -2,12 +2,16 @@
   "expo": {
     "name": "Kript",
     "slug": "kript",
+		"scheme": "kript",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "bundleIdentifier": "com.martikainensj.kript"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
