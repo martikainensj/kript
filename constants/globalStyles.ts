@@ -5,11 +5,13 @@ import { Color } from "./colors";
 
 export const GlobalStyles = StyleSheet.create({
 	androidSafeArea: {
-    flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
   },
 	container: {
 		flex: 1
+	},
+	gutter: {
+		paddingHorizontal: Spacing.md
 	},
 	title: {
 		fontSize: FontSize.md,
@@ -33,9 +35,6 @@ export const GlobalStyles = StyleSheet.create({
 	},
 	isBold: {
 		fontWeight: FontWeight.bold
-	},
-	gutter: {
-		paddingHorizontal: Spacing.lg
 	},
 	form: {
 		paddingVertical: Spacing.md,

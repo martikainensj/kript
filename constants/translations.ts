@@ -36,9 +36,9 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Kirjaudu',
 		en_US: 'Login'
 	},
-	'register': {
+	'sign up': {
 		fi: 'Rekisteröidy',
-		en_US: 'Register'
+		en_US: 'Sign up'
 	},
 	'login failed. please check your username and password and try again.': {
 		fi: 'Kirjautuminen epäonnistui. Tarkista käyttäjätunnus ja salasana ja yritä uudelleen.',

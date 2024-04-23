@@ -27,49 +27,52 @@ export const LoginScreen = () => {
 
 	return (
 		<SafeAreaView style={ styles.container }>
-			<Header
-				title={ __( 'Welcome to Kript' ) } />
-			<View style={ styles.inputsContainer }>
-				<TextInput
-					label={ __( 'Email' ) }
-					value={ email }
-					onChangeText={ setEmail }
-					autoComplete={ 'email' }
-					textContentType={ 'emailAddress' }
-					autoCapitalize={ 'none' }
-					autoCorrect={ false }
-					placeholder={ `${ __( 'Example' ) }: johndoe@example.com` } />
+			<View style={ styles.contentContainer }>
+				<Header
+					title={ __( 'Welcome to Kript' ) } />
+				<View style={ styles.inputsContainer }>
+					<TextInput
+						label={ __( 'Email' ) }
+						value={ email }
+						onChangeText={ setEmail }
+						autoComplete={ 'email' }
+						textContentType={ 'emailAddress' }
+						autoCapitalize={ 'none' }
+						autoCorrect={ false }
+						placeholder={ `${ __( 'Example' ) }: johndoe@example.com` } />
 
-				<TextInput
-					label={ __( 'Password' ) }
-					value={ password }
-					onChangeText={ setPassword }
-					secureTextEntry
-					autoComplete={ 'password' }
-					textContentType={ 'password' }
-					placeholder={ __( 'Password' ) } />
-			</View>
+					<TextInput
+						label={ __( 'Password' ) }
+						value={ password }
+						onChangeText={ setPassword }
+						secureTextEntry
+						autoComplete={ 'password' }
+						textContentType={ 'password' }
+						placeholder={ __( 'Password' ) } />
+				</View>
 
-			{ hasError && 
-				<AuthenticationErrorMessage operationError={ result?.error?.operation } />
-			}
+				{ hasError && 
+					<AuthenticationErrorMessage operationError={ result?.error?.operation } />
+				}
 
-			<View style={styles.buttonsContainer}>
-				<DefaultButton
-					icon={ ( { color } ) => <Icon name={ 'log-in-outline' } size={ IconSize.lg } color={ color } /> }
-					onPress={ () => logInWithEmailPassword( { email, password } ) }
-					disabled={ result.pending }
-					style={ styles.button }>
-					{ __( 'Login' ) }
-				</DefaultButton>
+				<View style={styles.buttonsContainer}>
+					<DefaultButton
+						icon={ ( { color } ) => <Icon name={ 'log-in-outline' } size={ IconSize.lg } color={ color } /> }
+						onPress={ () => logInWithEmailPassword( { email, password } ) }
+						disabled={ result.pending }
+						style={ styles.button }>
+						{ __( 'Login' ) }
+					</DefaultButton>
 
-				<DefaultButton
-					icon={ ( { size, color } ) => <Icon name={ 'person-add' } color={ color } /> }
-					onPress={ () => register( { email, password } ) }
-					disabled={ result.pending }
-					style={ [ styles.button, styles.registerButton ] }>
-					{ __( 'Register' ) }
-				</DefaultButton>
+					<DefaultButton
+						icon={ ( { size, color } ) => <Icon name={ 'person-add' } color={ color } /> }
+						onPress={ () => register( { email, password } ) }
+						disabled={ result.pending }
+						style={ styles.button	}
+						mode={ 'contained-tonal' }>
+						{ __( 'Sign up' ) }
+					</DefaultButton>
+				</View>
 			</View>
 		</SafeAreaView>
 	);
@@ -78,11 +81,14 @@ export const LoginScreen = () => {
 const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.container,
+	},
+	contentContainer: {
+		...GlobalStyles.container,
+		...GlobalStyles.gutter,
 		alignItems: 'center',
 		justifyContent: 'center',
 		gap: Spacing.md
 	},
-
 	inputsContainer: {
 		alignSelf: 'stretch',
 		gap: Spacing.sm
@@ -98,9 +104,5 @@ const styles = StyleSheet.create({
 
 	button: {
 		flex: 1
-	},
-
-	registerButton: {
-		backgroundColor: Color.accent,
-	},
+	}
 });

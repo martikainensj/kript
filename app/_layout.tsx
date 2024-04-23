@@ -47,7 +47,6 @@ registerRootComponent( App );
 const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.container,
-		...GlobalStyles.androidSafeArea,
-		paddingHorizontal: Spacing.md
+		...GlobalStyles.androidSafeArea
 	},
 } );
