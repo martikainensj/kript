@@ -2,7 +2,7 @@
   "expo": {
     "name": "Kript",
     "slug": "kript",
-		"scheme": "kript",
+    "scheme": "kript",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useApp, useAuth, useQuery, useRealm, useUser } from '@realm/react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { Account } from '../../models/Account';
@@ -26,14 +26,14 @@ const App: React.FC = () => {
 	}, [ realm, accounts ] );
 
 	return (
-		<View>
+		<SafeAreaView>
 			<Text style={ styles.idText }>Syncing with app id: { app.id }</Text>
 			<Pressable style={ styles.authButton } onPress={ logOut }>
 				<Text style={ styles.authButtonText }>
 					{ `Logout ${user?.profile.email}` }
 				</Text>
 			</Pressable>
-		</View>
+		</SafeAreaView>
 	);
 };
 

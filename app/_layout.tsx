@@ -1,17 +1,18 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { PaperProvider } from 'react-native-paper';
 import 'expo-dev-client';
 import { registerRootComponent } from 'expo'
+import { StatusBar } from 'expo-status-bar';
 import { Stack } from 'expo-router';
 import { OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from 'realm';
 import { AppProvider, UserProvider, RealmProvider } from '@realm/react';
 
+import { LoginScreen } from '../components/authentication';
+import { GlobalStyles, Theme } from '../constants';
 import { schemas } from '../models';
-import { LoginScreen } from '../components/authentication/LoginScreen';
 
 import { CONFIG } from '../kript.config';
-import { StatusBar } from 'expo-status-bar';
-import { GlobalStyles, Spacing } from '../constants';
 
 const { appId } = CONFIG;
 
@@ -31,9 +32,11 @@ const App: React.FC = () => {
 								timeOutBehavior: OpenRealmTimeOutBehavior?.OpenLocalRealm,
 							},
 						} }>
-						<Stack>
-        			<Stack.Screen name="(tabs)" options={ { headerShown: false } } />
-						</Stack>
+						<PaperProvider theme={ Theme }>
+							<Stack>
+								<Stack.Screen name="(tabs)" options={ { headerShown: false } } />
+							</Stack>
+						</PaperProvider>
 					</RealmProvider>
 				</UserProvider>
 			</AppProvider>
@@ -46,7 +49,6 @@ registerRootComponent( App );
 
 const styles = StyleSheet.create( {
 	container: {
-		...GlobalStyles.container,
-		...GlobalStyles.androidSafeArea
+		...GlobalStyles.container
 	},
 } );
