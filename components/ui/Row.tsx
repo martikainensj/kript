@@ -22,7 +22,7 @@ export const Row: React.FC<RowProps> = ( { children, gap = Spacing.sm, style } )
 const styles = StyleSheet.create( {
 	container: {
 		flexDirection: 'row',
-		alignItems: 'center',
+		alignItems: 'flex-end',
 		justifyContent: 'space-between',
 		flexWrap: 'wrap'
 	}

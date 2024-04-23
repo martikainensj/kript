@@ -2,6 +2,7 @@ import { StyleSheet, Platform, StatusBar } from "react-native";
 import { Spacing } from "./variables";
 import { FontSize, FontWeight } from "./font";
 import { Color } from "./colors";
+import { Theme } from "./theme";
 
 export const GlobalStyles = StyleSheet.create({
 	androidSafeArea: {
@@ -13,6 +14,11 @@ export const GlobalStyles = StyleSheet.create({
 	gutter: {
 		paddingHorizontal: Spacing.md
 	},
+	shadow: Platform.OS === 'ios' ? {
+		shadowRadius: Spacing.sm,
+		shadowOffset: { width: 0, height: 0 },
+		shadowOpacity: 0.1,
+	} : { elevation: 1 },
 	title: {
 		fontSize: FontSize.md,
 		fontWeight: FontWeight.regular

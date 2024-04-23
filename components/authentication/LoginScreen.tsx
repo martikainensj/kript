@@ -26,10 +26,9 @@ export const LoginScreen = () => {
 	}, [result, logInWithEmailPassword, email, password] );
 
 	return (
-		<SafeAreaView style={ styles.container }>
+		<View style={ styles.container }>
+			<Header	title={ __( 'Welcome to Kript' ) } />
 			<View style={ styles.contentContainer }>
-				<Header
-					title={ __( 'Welcome to Kript' ) } />
 				<View style={ styles.inputsContainer }>
 					<TextInput
 						label={ __( 'Email' ) }
@@ -74,7 +73,7 @@ export const LoginScreen = () => {
 					</DefaultButton>
 				</View>
 			</View>
-		</SafeAreaView>
+		</View>
 	);
 };
 
@@ -82,13 +81,16 @@ const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.container,
 	},
+
 	contentContainer: {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
+		paddingTop: Spacing.md,
 		alignItems: 'center',
 		justifyContent: 'center',
 		gap: Spacing.md
 	},
+
 	inputsContainer: {
 		alignSelf: 'stretch',
 		gap: Spacing.sm

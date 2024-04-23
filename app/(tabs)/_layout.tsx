@@ -4,20 +4,29 @@ import { StyleSheet } from 'react-native';
 import { __ } from '../../helpers';
 import { Icon } from '../../components/ui';
 import { BottomTabs } from '../../components/navigation';
-import { Spacing, Theme } from '../../constants';
+import { GlobalStyles, Spacing, Theme } from '../../constants';
 
 export default function TabsLayout() {
   return (
     <BottomTabs
 			sceneAnimationEnabled={ true }
 			sceneAnimationType={ 'shifting' }
-			barStyle={ styles.bar }>
+			barStyle={ styles.bar }
+			shifting={ true }>
       <BottomTabs.Screen
         name={ "index" }
         options={ {
           title: __( 'Home' ),
           tabBarIcon: ( { color, focused } ) =>
-						<Icon name={ focused ? "home" : "home-outline" } color={ color } />
+						<Icon name={ focused ? 'home' : 'home-outline' } color={ color } />
+        } }
+      />
+      <BottomTabs.Screen
+        name={ "accounts" }
+        options={ {
+          title: __( 'Accounts' ),
+          tabBarIcon: ( { color, focused } ) =>
+						<Icon name={ focused ? 'wallet' : 'wallet-outline' } color={ color } />
         } }
       />
     </BottomTabs>
@@ -26,8 +35,7 @@ export default function TabsLayout() {
 
 const styles = StyleSheet.create( {
 	bar: {
-		shadowRadius: Spacing.sm,
-		shadowOpacity: 0.05,
+		...GlobalStyles.shadow,
 		backgroundColor: Theme.colors.background
 	}
 } );

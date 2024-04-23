@@ -1,4 +1,5 @@
 import { StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GlobalStyles, Spacing, Theme } from "../../constants";
 import { Divider, Text } from "react-native-paper";
 import { Row } from "./Row";
@@ -6,16 +7,20 @@ import { Row } from "./Row";
 interface HeaderProps {
 	title: string,
 	right?: React.ReactNode
-	showDivider?: boolean
 }
 
 export const Header: React.FC<HeaderProps> = ( {
 	title,
-	right,
-	showDivider = true
+	right
 } ) => {
+	const insets = useSafeAreaInsets();
+	const statusBarHeight = insets.top;
+
 	return ( <>
-		<View style={ styles.container }>
+		<View style={ [
+			styles.container,
+			{ paddingTop: statusBarHeight }
+		] }>
 				<Row style={ styles.row }>
 					<Text numberOfLines={ 1 } style={ styles.title }>
 						{ title }
@@ -24,28 +29,27 @@ export const Header: React.FC<HeaderProps> = ( {
 						{ right }
 					</View>
 				</Row>
-				{ showDivider && <Divider style={ styles.divider } theme={ Theme }/> }
 		</View>
 	</> );
 }
 
 const styles = StyleSheet.create( {
 	container: {
-		width: '100%'
+		...GlobalStyles.shadow,
+		width: '100%',
+		backgroundColor: Theme.colors.background
 	},
 	title: {
 		...GlobalStyles.title,
 		flexShrink: 1
 	},
 	row: {
+		...GlobalStyles.gutter,
 		paddingVertical: Spacing.md,
 		flexWrap: 'nowrap',
 		flexGrow: 0
 	},
 	right: {
 		gap: Spacing.md
-	},
-	divider: {
-		marginHorizontal: -Spacing.md
 	}
 } );

@@ -1,54 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { useApp, useAuth, useQuery, useRealm, useUser } from '@realm/react';
-import { Pressable, SafeAreaView, StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import React from 'react';
+import { useAuth } from '@realm/react';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 
-import { Account } from '../../models/Account';
-import { buttonStyles } from '../../styles/button';
-import { Color } from '../../constants';
+import { GlobalStyles, Spacing } from '../../constants';
+import { IconButton } from '../../components/buttons';
+import { __ } from '../../helpers';
+import { Header, Icon } from '../../components/ui';
 
 
-const App: React.FC = () => {
-	const realm = useRealm();
-	const user = useUser();
-	const app = useApp();
+const Home: React.FC = () => {
 	const { logOut } = useAuth();
 	
-	const accounts = useQuery(
-		Account,
-		collection => collection.sorted( 'name' )
-	);
-
-	useEffect( () => {
-		realm.subscriptions.update( mutableSubs => {
-			mutableSubs.add( accounts );
-		} );
-	}, [ realm, accounts ] );
-
 	return (
-		<SafeAreaView>
-			<Text style={ styles.idText }>Syncing with app id: { app.id }</Text>
-			<Pressable style={ styles.authButton } onPress={ logOut }>
-				<Text style={ styles.authButtonText }>
-					{ `Logout ${user?.profile.email}` }
-				</Text>
-			</Pressable>
-		</SafeAreaView>
+		<View style={ styles.container }>
+			<Header
+				title={ __( 'Home' ) }
+				right={ (
+					<IconButton
+						onPress={ logOut }
+						icon={ ( { color } ) => 
+							<Icon name={ 'log-out-outline' } color={ color } />
+						} />
+	 			) } />
+			<View style={ styles.contentContainer }>
+			</View>
+		</View>
 	);
 };
 
-export default App;
+export default Home;
 
-const styles = StyleSheet.create({
-	idText: {
-		color: '#999',
-		paddingHorizontal: 20,
+const styles = StyleSheet.create( {
+	container: {
+		...GlobalStyles.container
 	},
-	authButton: {
-		...buttonStyles.button,
-		backgroundColor: Color.accent,
-	},
-	authButtonText: {
-		...buttonStyles.text,
-	},
-});
+
+	contentContainer: {
+		...GlobalStyles.container,
+		...GlobalStyles.gutter,
+		paddingTop: Spacing.md
+	}
+} );

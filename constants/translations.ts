@@ -16,6 +16,10 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Koti',
 		en_US: "Home"
 	},
+	'accounts': {
+		fi: 'Tilit',
+		en_US: "Accounts"
+	},
 	'authentication': {
 		fi: 'Tunnistus',
 		en_US: 'Authentication'
@@ -39,6 +43,10 @@ export const Translations: { [ key: string ]: Translation } = {
 	'sign up': {
 		fi: 'Rekisteröidy',
 		en_US: 'Sign up'
+	},
+	'logout': {
+		fi: 'Kirjaudu ulos',
+		en_US: 'Logout'
 	},
 	'login failed. please check your username and password and try again.': {
 		fi: 'Kirjautuminen epäonnistui. Tarkista käyttäjätunnus ja salasana ja yritä uudelleen.',
