@@ -14,12 +14,11 @@ export const Header: React.FC<HeaderProps> = ( {
 	right
 } ) => {
 	const insets = useSafeAreaInsets();
-	const statusBarHeight = insets.top;
 
 	return ( <>
 		<View style={ [
 			styles.container,
-			{ paddingTop: statusBarHeight }
+			{ paddingTop: insets.top }
 		] }>
 				<Row style={ styles.row }>
 					<Text numberOfLines={ 1 } style={ styles.title }>
