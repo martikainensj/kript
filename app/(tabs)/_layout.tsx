@@ -1,17 +1,8 @@
 import React from 'react';
-import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { StyleSheet } from 'react-native';
 
-import { IconSize } from '../../constants';
-import { getTranslation } from '../../helpers';
-
-const TabBarIcon = ( props: {
-  name: React.ComponentProps<typeof Ionicons>['name'];
-  color: string;
-} ) => {
-  return <Ionicons size={ IconSize.md } style={ styles.tabBarIcon } { ...props } />;
-}
+import { __ } from '../../helpers';
+import { Icon } from '../../components/ui';
 
 export default function TabsLayout() {
   return (
@@ -19,17 +10,11 @@ export default function TabsLayout() {
       <Tabs.Screen
         name={ "index" }
         options={ {
-          title: getTranslation( 'Home' ),
+          title: __( 'Home' ),
           tabBarIcon: ( { color, focused } ) =>
-						<TabBarIcon name={ focused ? "home" : "home-outline" } color={color} />
+						<Icon name={ focused ? "home" : "home-outline" } color={ color } />
         } }
       />
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create( {
-	tabBarIcon: {
-
-	}
-} );

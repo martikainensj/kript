@@ -1,129 +1,106 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
-import colors from '../../styles/colors';
-import {buttonStyles} from '../../styles/button';
-import {AuthOperationName, useAuth, useEmailPasswordAuth} from '@realm/react';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { Text } from 'react-native-paper';
+import { AuthOperationName, useAuth, useEmailPasswordAuth } from '@realm/react';
+
+import AuthenticationErrorMessage from './AuthenticationErrorMessage';
+import { DefaultButton } from '../buttons';
+import { TextInput } from '../inputs';
+import { GlobalStyles, Color, Spacing, IconSize } from '../../constants';
+import { __ } from '../../helpers';
+import { Header, Icon } from '../ui';
 
 export const LoginScreen = () => {
-  const {result, logInWithEmailPassword} = useAuth();
-  const {register} = useEmailPasswordAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+	const { result, logInWithEmailPassword } = useAuth();
+	const { register } = useEmailPasswordAuth();
+	const [ email, setEmail ] = useState('');
+	const [ password, setPassword ] = useState('');
 
-  // Automatically log in after registration
-  useEffect(() => {
-    if (result.success && result.operation === AuthOperationName.Register) {
-      logInWithEmailPassword({email, password});
-    }
-  }, [result, logInWithEmailPassword, email, password]);
+	const hasError = !! result?.error?.operation;
 
-  return (
-    <View style={styles.content}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          value={email}
-          onChangeText={setEmail}
-          autoComplete="email"
-          textContentType="emailAddress"
-          autoCapitalize="none"
-          autoCorrect={false}
-          placeholder="Email"
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          autoComplete="password"
-          textContentType="password"
-          placeholder="Password"
-        />
-      </View>
+	// Automatically log in after registration
+	useEffect( () => {
+		if ( result.success && result.operation === AuthOperationName.Register ) {
+			logInWithEmailPassword( { email, password } );
+		}
+	}, [result, logInWithEmailPassword, email, password] );
 
-      {result?.error?.operation === AuthOperationName.LogInWithEmailPassword && (
-        <Text style={[styles.error]}>
-          There was an error logging in, please try again{' '}
-        </Text>
-      )}
+	return (
+		<SafeAreaView style={ styles.container }>
+			<Header
+				title={ __( 'Welcome to Kript' ) } />
+			<View style={ styles.inputsContainer }>
+				<TextInput
+					label={ __( 'Email' ) }
+					value={ email }
+					onChangeText={ setEmail }
+					autoComplete={ 'email' }
+					textContentType={ 'emailAddress' }
+					autoCapitalize={ 'none' }
+					autoCorrect={ false }
+					placeholder={ `${ __( 'Example' ) }: johndoe@example.com` } />
 
-      {result?.error?.operation === AuthOperationName.Register && (
-        <Text style={[styles.error]}>
-          There was an error registering, please try again
-        </Text>
-      )}
+				<TextInput
+					label={ __( 'Password' ) }
+					value={ password }
+					onChangeText={ setPassword }
+					secureTextEntry
+					autoComplete={ 'password' }
+					textContentType={ 'password' }
+					placeholder={ __( 'Password' ) } />
+			</View>
 
-      <View style={styles.buttons}>
-        <Pressable
-          onPress={() => logInWithEmailPassword({email, password})}
-          style={[styles.button, result.pending && styles.buttonDisabled]}
-          disabled={result.pending}>
-          <Text style={buttonStyles.text}>Login</Text>
-        </Pressable>
+			{ hasError && 
+				<AuthenticationErrorMessage operationError={ result?.error?.operation } />
+			}
 
-        <Pressable
-          onPress={() => register({email, password})}
-          style={[
-            styles.button,
-            result.pending && styles.buttonDisabled,
-            styles.registerButton,
-          ]}
-          disabled={result.pending}>
-          <Text style={buttonStyles.text}>Register</Text>
-        </Pressable>
-      </View>
-    </View>
-  );
+			<View style={styles.buttonsContainer}>
+				<DefaultButton
+					icon={ ( { color } ) => <Icon name={ 'log-in-outline' } size={ IconSize.lg } color={ color } /> }
+					onPress={ () => logInWithEmailPassword( { email, password } ) }
+					disabled={ result.pending }
+					style={ styles.button }>
+					{ __( 'Login' ) }
+				</DefaultButton>
+
+				<DefaultButton
+					icon={ ( { size, color } ) => <Icon name={ 'person-add' } color={ color } /> }
+					onPress={ () => register( { email, password } ) }
+					disabled={ result.pending }
+					style={ [ styles.button, styles.registerButton ] }>
+					{ __( 'Register' ) }
+				</DefaultButton>
+			</View>
+		</SafeAreaView>
+	);
 };
 
 const styles = StyleSheet.create({
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.darkBlue,
-  },
+	container: {
+		...GlobalStyles.container,
+		alignItems: 'center',
+		justifyContent: 'center',
+		gap: Spacing.md
+	},
 
-  inputContainer: {
-    padding: 10,
-    alignSelf: 'stretch',
-    marginHorizontal: 10,
-  },
+	inputsContainer: {
+		alignSelf: 'stretch',
+		gap: Spacing.sm
+	},
+	
+	buttonsContainer: {
+		flexDirection: 'row',
+		gap: Spacing.sm,
+		flexGrow: 1,
+		alignSelf: 'stretch',
+		alignItems: 'flex-end'
+	},
 
-  error: {
-    textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-    fontSize: 14,
-    color: colors.white,
-  },
+	button: {
+		flex: 1
+	},
 
-  input: {
-    borderWidth: 1,
-    borderColor: colors.gray,
-    padding: 10,
-    height: 50,
-    marginVertical: 8,
-    backgroundColor: colors.white,
-    borderRadius: 5
-  },
-
-  buttons: {
-    marginTop: 16,
-    flexDirection: 'row',
-  },
-
-  button: {
-    ...buttonStyles.button
-  },
-
-  buttonDisabled: {
-    opacity: 0.5,
-  },
-
-  registerButton: {
-    backgroundColor: colors.purpleDark,
-  },
+	registerButton: {
+		backgroundColor: Color.accent,
+	},
 });

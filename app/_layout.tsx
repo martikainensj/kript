@@ -8,11 +8,10 @@ import { AppProvider, UserProvider, RealmProvider } from '@realm/react';
 
 import { schemas } from '../models';
 import { LoginScreen } from '../components/authentication/LoginScreen';
-import colors from '../styles/colors';
 
 import { CONFIG } from '../kript.config';
 import { StatusBar } from 'expo-status-bar';
-import { GlobalStyles } from '../constants/globalStyles';
+import { GlobalStyles, Spacing } from '../constants';
 
 const { appId } = CONFIG;
 
@@ -48,6 +47,7 @@ registerRootComponent( App );
 const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.container,
-		...GlobalStyles.androidSafeArea
+		...GlobalStyles.androidSafeArea,
+		paddingHorizontal: Spacing.md
 	},
 } );
