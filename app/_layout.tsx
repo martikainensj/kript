@@ -1,4 +1,5 @@
 import React from 'react';
+import 'react-native-get-random-values';
 import { StyleSheet, View } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import 'expo-dev-client';

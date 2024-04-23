@@ -1,24 +1,23 @@
 import React, { useEffect } from 'react';
-import { useApp, useAuth, useQuery, useRealm, useUser } from '@realm/react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { useApp, useRealm, useUser } from '@realm/react';
+import { StyleSheet, View } from 'react-native';
 
 import { GlobalStyles, Spacing } from '../../constants';
-import { Account } from '../../models/Account';
 import { __ } from '../../helpers';
-import { Header } from '../../components/ui';
+import { AccountItem } from '../../components/accounts';
 import { IconButton } from '../../components/buttons';
-
+import { Header, ItemList } from '../../components/ui';
+import { useAccounts } from '../../hooks';
 
 const Accounts: React.FC = () => {
 	const realm = useRealm();
 	const user = useUser();
 	const app = useApp();
-	const { logOut } = useAuth();
-	
-	const accounts = useQuery(
-		Account,
-		collection => collection.sorted( 'name' )
-	);
+	const { accounts, addAccount } = useAccounts();
+
+	const addAccountHandler = () => {
+		addAccount( 'Test', 'Lorem ipsum' );
+	}
 
 	useEffect( () => {
 		realm.subscriptions.update( mutableSubs => {
@@ -32,9 +31,15 @@ const Accounts: React.FC = () => {
 				title={ __( 'Accounts' ) }
 				right={ ( 
 					<IconButton
+						onPress={ addAccountHandler }
 						icon={ 'plus' } />
 	 			) } />
 			<View style={ styles.contentContainer }>
+				<ItemList 
+					title={ __( 'Accounts' ) }
+					items={ accounts.map( account =>
+						<AccountItem account={ account }/>
+					 ) } />
 			</View>
 		</View>
 	);

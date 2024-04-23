@@ -4,7 +4,7 @@ import { Spacing } from '../../constants';
 interface RowProps {
 	children: React.ReactNode,
 	gap?: number,
-	style: ViewStyle
+	style?: ViewStyle
 }
 
 export const Row: React.FC<RowProps> = ( { children, gap = Spacing.sm, style } ) => {

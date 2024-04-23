@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Text } from 'react-native-paper';
 import { AuthOperationName, useAuth, useEmailPasswordAuth } from '@realm/react';
 
 import AuthenticationErrorMessage from './AuthenticationErrorMessage';
 import { DefaultButton } from '../buttons';
 import { TextInput } from '../inputs';
-import { GlobalStyles, Color, Spacing, IconSize } from '../../constants';
+import { GlobalStyles, Spacing, IconSize } from '../../constants';
 import { __ } from '../../helpers';
 import { Header, Icon } from '../ui';
 
@@ -30,10 +29,11 @@ export const LoginScreen = () => {
 	return (
 		<View style={ styles.container }>
 			<Header	title={ __( 'Welcome to Kript' ) } />
-			<View style={ [
-				styles.contentContainer,
-				{ paddingBottom: insets.bottom }
-			] }>
+			<View
+				style={ [
+					styles.contentContainer,
+					{ paddingBottom: insets.bottom }
+				] }>
 				<View style={ styles.inputsContainer }>
 					<TextInput
 						label={ __( 'Email' ) }
