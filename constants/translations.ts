@@ -48,6 +48,10 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Kirjaudu ulos',
 		en_US: 'Logout'
 	},
+	'are you sure you want to log out?': {
+		fi: 'Haluatko varmasti kirjautua ulos?',
+		en_US: 'Are you sure you want to log out?'
+	},
 	'login failed. please check your username and password and try again.': {
 		fi: 'Kirjautuminen epäonnistui. Tarkista käyttäjätunnus ja salasana ja yritä uudelleen.',
 		en_US: 'Login failed. Please check your username and password and try again.'
