@@ -1,20 +1,29 @@
-import { useQuery, useRealm } from "@realm/react";
+import { useQuery, useRealm, useUser } from "@realm/react";
 
-import { Account } from "../models/Account";
+import { Account, AccountType } from "../models/Account";
+import { BSON, User } from "realm";
 
 export const useAccounts = () => {
 	const realm = useRealm();
+	const user: User = useUser();
 
 	const accounts = useQuery(
 		Account,
 		collection => collection.sorted( 'name' )
 	);
 
-	const addAccount = ( name: string , notes: string ) => {
+
+	const addAccount = ( account: AccountType ) => {
 		realm.write( () => {
-      realm.create('Account', { name, notes } );
+      realm.create('Account', account );
     } );
 	};
 
-	return { accounts, addAccount }
+	const removeAccount = ( account: AccountType ) => {
+		realm.write( () => {
+      realm.delete( account );
+    } );
+	}
+
+	return { accounts, addAccount, removeAccount }
 }
