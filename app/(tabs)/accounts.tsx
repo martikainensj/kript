@@ -41,7 +41,7 @@ const Accounts: React.FC = () => {
 				right={ ( 
 					<IconButton
 						onPress={ addAccountHandler }
-						icon={ 'plus' } />
+						icon={ 'add' } />
 	 			) } />
 			<View style={ styles.contentContainer }>
 				<ItemList 

@@ -74,13 +74,14 @@ const PlaceholderItem: React.FC<PlaceholderItemProps> = ( {
 
 const styles = StyleSheet.create( {
 	container: {
+		...GlobalStyles.container,
 		marginHorizontal: -Spacing.md,
 		marginTop: -Spacing.md
 	},
 
 	titleContainer: {
 		gap: Spacing.sm,
-		paddingVertical: Spacing.sm
+		paddingTop: Spacing.sm
 	},
 	
 	title: {
@@ -94,6 +95,7 @@ const styles = StyleSheet.create( {
 	
 	placeholderContainer: {
 		...GlobalStyles.gutter,
+		paddingVertical: Spacing.sm
 	},
 	
 	placeholderTitle: {

@@ -25,9 +25,7 @@ const Home: React.FC = () => {
 				right={ (
 					<IconButton
 						onPress={ logOutHandler }
-						icon={ ( { color } ) => 
-							<Icon name={ 'log-out-outline' } color={ color } />
-						} />
+						icon={ 'log-out-outline' } />
 	 			) } />
 			<View style={ styles.contentContainer }>
 			</View>
