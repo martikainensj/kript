@@ -1,7 +1,8 @@
 import React from 'react';
 import 'react-native-get-random-values';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'expo-dev-client';
 import { registerRootComponent } from 'expo'
 import { StatusBar } from 'expo-status-bar';
@@ -19,7 +20,7 @@ const { appId } = CONFIG;
 
 const App: React.FC = () => {
 	return (
-		<View style={ styles.container }>
+		<GestureHandlerRootView style={ styles.container }>
 			<StatusBar style="auto" />
 			<AppProvider id={ appId }>
 				<UserProvider fallback={ <LoginScreen /> }>
@@ -41,7 +42,7 @@ const App: React.FC = () => {
 					</RealmProvider>
 				</UserProvider>
 			</AppProvider>
-		</View>
+		</GestureHandlerRootView>
 	);
 };
 

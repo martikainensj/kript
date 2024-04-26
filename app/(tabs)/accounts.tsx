@@ -8,8 +8,11 @@ import { AccountItem } from '../../components/accounts';
 import { IconButton } from '../../components/buttons';
 import { Header, ItemList } from '../../components/ui';
 import { useAccounts } from '../../hooks';
-import { Account, AccountType } from '../../models/Account';
+import { AccountType } from '../../models/Account';
 import { User } from 'realm';
+import { BottomSheet } from '../../components/ui/BottomSheet';
+import { Text } from 'react-native-paper';
+import { BottomSheetView } from '@gorhom/bottom-sheet';
 
 const Accounts: React.FC = () => {
 	const realm = useRealm();
@@ -50,6 +53,11 @@ const Accounts: React.FC = () => {
 						<AccountItem onPress={ onPressAccountItem.bind( this, account ) } account={ account }/>
 					 ) } />
 			</View>
+			<BottomSheet>
+				<BottomSheetView>
+					<Text>Test</Text>
+				</BottomSheetView>
+			</BottomSheet>
 		</View>
 	);
 };
