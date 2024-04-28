@@ -86,6 +86,7 @@ const BottomSheet = () => {
 	return (
 		<GorhomBottomSheet
 			ref={ bottomSheetRef }
+			index={ -1 }
 			backdropComponent={ renderBackdrop }
 			onClose={ closeBottomSheet }
 			enablePanDownToClose={ true }
