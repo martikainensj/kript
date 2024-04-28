@@ -1,34 +1,40 @@
 import React, { useEffect } from 'react';
-import { useApp, useRealm, useUser } from '@realm/react';
 import { StyleSheet, View } from 'react-native';
+import { User } from 'realm';
+import { useApp, useRealm, useUser } from '@realm/react';
 
 import { GlobalStyles, Spacing } from '../../constants';
-import { __ } from '../../helpers';
-import { AccountItem } from '../../components/accounts';
-import { IconButton } from '../../components/buttons';
+import { __, confirmation } from '../../helpers';
+import { AccountItem, AccountForm  } from '../../components/accounts';
+import { IconButton} from '../../components/buttons';
 import { Header, ItemList } from '../../components/ui';
-import { useAccounts } from '../../hooks';
-import { AccountType } from '../../models/Account';
-import { User } from 'realm';
-import { BottomSheet } from '../../components/ui/BottomSheet';
-import { Text } from 'react-native-paper';
-import { BottomSheetView } from '@gorhom/bottom-sheet';
+import { useAccount, useAccounts } from '../../hooks';
+import { AccountType } from '../../models';
+import { useBottomSheet } from '../../components/contexts';
 
 const Accounts: React.FC = () => {
 	const realm = useRealm();
 	const user: User = useUser();
 	const app = useApp();
-	const { accounts, addAccount, removeAccount } = useAccounts();
+	
+	const { account, setAccount } = useAccount( {} );
+	const { accounts, saveAccount, removeAccount } = useAccounts();
+	const { openBottomSheet, closeBottomSheet, setContent } = useBottomSheet();
 
-	const addAccountHandler = () => {
-		addAccount( {
-			name: 'Test',
-			owner_id: user.id
-		} );
+	const onPressAdd = () => {
+		setAccount( { name: '', owner_id: user.id } );
+		openBottomSheet();
+	}
+
+	const onSubmit = ( account: AccountType ) => {
+		saveAccount( account ).then(
+			closeBottomSheet
+		);
 	}
 
 	const onPressAccountItem = ( account: AccountType ) => {
-		removeAccount( account );
+		setAccount( account );
+		openBottomSheet();
 	}
 
 	useEffect( () => {
@@ -37,13 +43,21 @@ const Accounts: React.FC = () => {
 		} );
 	}, [ realm, accounts ] );
 
+	useEffect( () => {
+		setContent(
+			<AccountForm
+				account={ account }
+				onSubmit={ onSubmit } />
+		);
+	}, [ account ] );
+
 	return (
 		<View style={ styles.container }>
 			<Header
 				title={ __( 'Accounts' ) }
 				right={ ( 
 					<IconButton
-						onPress={ addAccountHandler }
+						onPress={ onPressAdd }
 						icon={ 'add' } />
 	 			) } />
 			<View style={ styles.contentContainer }>
@@ -53,11 +67,6 @@ const Accounts: React.FC = () => {
 						<AccountItem onPress={ onPressAccountItem.bind( this, account ) } account={ account }/>
 					 ) } />
 			</View>
-			<BottomSheet>
-				<BottomSheetView>
-					<Text>Test</Text>
-				</BottomSheetView>
-			</BottomSheet>
 		</View>
 	);
 };

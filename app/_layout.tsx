@@ -15,6 +15,7 @@ import { GlobalStyles, Theme } from '../constants';
 import { schemas } from '../models';
 
 import { CONFIG } from '../kript.config';
+import { BottomSheetProvider } from '../components/contexts/BottomSheetContext';
 
 const { appId } = CONFIG;
 
@@ -35,9 +36,11 @@ const App: React.FC = () => {
 							},
 						} }>
 						<PaperProvider theme={ Theme }>
-							<Stack>
-								<Stack.Screen name="(tabs)" options={ { headerShown: false } } />
-							</Stack>
+							<BottomSheetProvider>
+								<Stack>
+									<Stack.Screen name="(tabs)" options={ { headerShown: false } } />
+								</Stack>
+							</BottomSheetProvider>
 						</PaperProvider>
 					</RealmProvider>
 				</UserProvider>

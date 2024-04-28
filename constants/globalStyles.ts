@@ -2,11 +2,12 @@ import { StyleSheet, Platform, StatusBar } from "react-native";
 import { Spacing } from "./variables";
 import { FontSize, FontWeight } from "./font";
 import { Color } from "./colors";
-import { Theme } from "./theme";
 
 export const GlobalStyles = StyleSheet.create({
 	androidSafeArea: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0
+    paddingTop: Platform.OS === "android"
+			? StatusBar.currentHeight
+			: 0
   },
 	container: {
 		flex: 1
@@ -14,14 +15,16 @@ export const GlobalStyles = StyleSheet.create({
 	gutter: {
 		paddingHorizontal: Spacing.md
 	},
-	shadow: Platform.OS === 'ios' ? {
-		shadowRadius: Spacing.sm,
-		shadowOffset: { width: 0, height: 0 },
-		shadowOpacity: 0.1,
-	} : { elevation: 1 },
+	shadow: Platform.OS === 'ios'
+		? {
+			shadowRadius: Spacing.sm,
+			shadowOffset: { width: 0, height: 0 },
+			shadowOpacity: 0.1,
+		}
+		: { elevation: 1 },
 	title: {
 		fontSize: FontSize.md,
-		fontWeight: FontWeight.regular
+		fontWeight: FontWeight.bold
 	},
 	label: {
 		fontSize: FontSize.xs,
@@ -43,7 +46,7 @@ export const GlobalStyles = StyleSheet.create({
 		fontWeight: FontWeight.bold
 	},
 	form: {
-		paddingVertical: Spacing.md,
-		gap: Spacing.sm
+		gap: Spacing.sm,
+		paddingBottom: Spacing.lg
 	}
 })

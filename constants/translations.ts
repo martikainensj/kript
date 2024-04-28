@@ -59,5 +59,41 @@ export const Translations: { [ key: string ]: Translation } = {
 	'registration failed. please check the information you provided and try again.': {
 		fi: 'Rekisteröityminen epäonnistui. Tarkista antamasi tiedot ja yritä uudelleen.',
 		en_US: 'Registration failed. Please check the information you provided and try again.'
+	},
+	'new': {
+		fi: 'Uusi',
+		en_US: 'New'
+	},
+	'edit': {
+		fi: 'Muokkaa',
+		en_US: 'Edit'
+	},
+	'new account': {
+		fi: 'Uusi tili',
+		en_US: 'New Account'
+	},
+	'edit account': {
+		fi: 'Muokkaa tiliä',
+		en_US: 'Edit Account'
+	},
+	'add account': {
+		fi: 'Lisää tili',
+		en_US: 'Add Account'
+	},
+	'update account': {
+		fi: 'Päivitä tili',
+		en_US: 'Update Account'
+	},
+	'updating existing account with name: ': {
+		fi: 'Päivitetään olemassa oleva tili nimeltä: ',
+		en_US: 'Updating existing account with name: '
+	},
+	'adding a new account with name: ': {
+		fi: 'Lisätää uutta tiliä nimeltä: ',
+		en_US: 'Adding a new account with name: '
+	},
+	'are you sure?': {
+		fi: 'Oletko varma?',
+		en_US: 'Are you sure?'
 	}
 }

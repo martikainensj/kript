@@ -2,8 +2,11 @@ import { View, StyleSheet } from "react-native";
 import { GlobalStyles } from "../../constants";
 import { AccountType } from "../../models/Account";
 import { TextInput } from "../inputs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IconButton } from "../buttons";
+import { Text } from "react-native-paper";
+import { __ } from "../../helpers";
+import { Title } from "../ui/Title";
 
 interface AccountFormProps {
 	account: AccountType,
@@ -15,8 +18,19 @@ export const AccountForm = ( {
 }: AccountFormProps ) => {
 	const [ editedAccount, setEditedAccount ] = useState( account );
 
+	useEffect( () => {
+		setEditedAccount( account );
+	}, [ account ] );
+
 	return (
-		<View style={ styles.container } keyboardShouldPersistTaps='handled'>
+		<View style={ styles.container }>
+			<Title>
+				{ 
+					editedAccount._id
+						? __( 'Edit Account' )
+						: __( 'New Account' )
+				}
+			</Title>
 			<TextInput
 				label="Name"
 				value={ editedAccount?.name }
