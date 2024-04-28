@@ -95,5 +95,13 @@ export const Translations: { [ key: string ]: Translation } = {
 	'are you sure?': {
 		fi: 'Oletko varma?',
 		en_US: 'Are you sure?'
+	},
+	'name': {
+		fi: 'Nimi',
+		en_US: 'Name'
+	},
+	'notes': {
+		fi: 'Muistiinpanot',
+		en_US: 'Notes'
 	}
 }

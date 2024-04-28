@@ -1,12 +1,12 @@
-import { View, StyleSheet } from "react-native";
-import { GlobalStyles } from "../../constants";
-import { AccountType } from "../../models/Account";
-import { TextInput } from "../inputs";
 import { useEffect, useState } from "react";
+import { View, StyleSheet } from "react-native";
+
 import { IconButton } from "../buttons";
-import { Text } from "react-native-paper";
+import { TextInput } from "../inputs";
+import { Title } from "../ui";
+import { GlobalStyles } from "../../constants";
 import { __ } from "../../helpers";
-import { Title } from "../ui/Title";
+import { AccountType } from "../../models";
 
 interface AccountFormProps {
 	account: AccountType,
@@ -32,14 +32,14 @@ export const AccountForm = ( {
 				}
 			</Title>
 			<TextInput
-				label="Name"
+				label={ __( 'Name' ) }
 				value={ editedAccount?.name }
 				onChangeText={ name => setEditedAccount( {
 					...editedAccount,
 					name
 				} ) } />
 			<TextInput
-				label="Notes"
+				label={ __( 'Notes' ) }
 				value={ editedAccount?.notes }
 				onChangeText={ notes => setEditedAccount( {
 					...editedAccount,
