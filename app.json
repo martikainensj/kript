@@ -12,6 +12,17 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ef787ea0-6654-4af2-9fe7-6530d2d8a368"
+      }
+    },
+    "android": {
+      "package": "com.martikainensj.kript"
+    }
   }
 }

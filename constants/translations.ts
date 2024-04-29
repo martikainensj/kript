@@ -103,5 +103,13 @@ export const Translations: { [ key: string ]: Translation } = {
 	'notes': {
 		fi: 'Muistiinpanot',
 		en_US: 'Notes'
+	},
+	'enter notes here': {
+		fi: 'Kirjoita muistiinpanot tähän',
+		en_US: 'Enter notes here'
+	},
+	'investment account': {
+		fi: 'Arvo-osuustili',
+		en_US: 'Investment Account'
 	}
 }

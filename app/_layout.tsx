@@ -16,6 +16,7 @@ import { schemas } from '../models';
 
 import { CONFIG } from '../kript.config';
 import { BottomSheetProvider } from '../components/contexts/BottomSheetContext';
+import { MenuProvider } from '../components/contexts/MenuContext';
 
 const { appId } = CONFIG;
 
@@ -36,11 +37,13 @@ const App: React.FC = () => {
 							},
 						} }>
 						<PaperProvider theme={ Theme }>
-							<BottomSheetProvider>
-								<Stack>
-									<Stack.Screen name="(tabs)" options={ { headerShown: false } } />
-								</Stack>
-							</BottomSheetProvider>
+							<MenuProvider>
+								<BottomSheetProvider>
+									<Stack>
+										<Stack.Screen name="(tabs)" options={ { headerShown: false } } />
+									</Stack>
+								</BottomSheetProvider>
+							</MenuProvider>
 						</PaperProvider>
 					</RealmProvider>
 				</UserProvider>

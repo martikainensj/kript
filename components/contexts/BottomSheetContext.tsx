@@ -22,10 +22,16 @@ import {
 } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
 
 import {
-	GlobalStyles
+	BorderRadius,
+	GlobalStyles,
+	Spacing
 } from "../../constants";
+import { IconButton } from "../buttons";
+import { Header } from "../ui";
 
 interface BottomSheetContext {
+	title?: string,
+	setTitle?: React.Dispatch<string>
 	content: React.ReactNode,
 	setContent: React.Dispatch<React.ReactNode>
 	visible: boolean,
@@ -39,6 +45,7 @@ export const useBottomSheet = () => useContext( BottomSheetContext );
 
 export const BottomSheetProvider = ( { children } ) => {
 	const [ visible, setVisible ] = useState( false );
+	const [ title, setTitle ] = useState( '' );
 	const [ content, setContent ] = useState( null );
 
 	const openBottomSheet = useCallback( () => {
@@ -51,8 +58,10 @@ export const BottomSheetProvider = ( { children } ) => {
 
   return (
     <BottomSheetContext.Provider value={ {
+			title,
 			content,
 			visible,
+			setTitle,
 			setContent,
 			openBottomSheet,
 			closeBottomSheet
@@ -64,7 +73,7 @@ export const BottomSheetProvider = ( { children } ) => {
 }
 
 const BottomSheet = () => {
-	const { content, visible, closeBottomSheet } = useBottomSheet();
+	const { title, content, visible, closeBottomSheet } = useBottomSheet();
 	const bottomSheetRef = useRef<BottomSheetMethods>( null );
 	const [ contentHeight, setContentHeight ] = useState( 50 );
 
@@ -90,11 +99,22 @@ const BottomSheet = () => {
 			backdropComponent={ renderBackdrop }
 			onClose={ closeBottomSheet }
 			enablePanDownToClose={ true }
-			style={ styles.bottomSheet }
+			style={ styles.container }
 			containerStyle={ styles.container }
 			enableDynamicSizing={ true }
-			backgroundStyle={ styles.background }>
+			backgroundStyle={ styles.background }
+			handleComponent={ () => 
+				<Header
+					title={ title }
+					isScreenHeader={ false }
+					right={
+						<IconButton
+							icon={ 'close' }
+							onPress={ closeBottomSheet } /> 
+					} />
+			}>
 			<BottomSheetScrollView
+				contentContainerStyle={ styles.contentContainer }
 				keyboardShouldPersistTaps='handled'>
 				{ content }
 			</BottomSheetScrollView>
@@ -103,13 +123,13 @@ const BottomSheet = () => {
 }
 
 const styles = StyleSheet.create( {
-	bottomSheet: {
-		...GlobalStyles.container,
+  container: {
+		...GlobalStyles.container
+  },
+	contentContainer: {
 		...GlobalStyles.gutter,
 	},
-  container: {
-  },
 	background: {
-		...GlobalStyles.shadow
+		borderRadius: BorderRadius.xl
 	}
 } );

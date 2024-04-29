@@ -4,13 +4,14 @@ import { User } from 'realm';
 import { useApp, useRealm, useUser } from '@realm/react';
 
 import { GlobalStyles, Spacing } from '../../constants';
-import { __, confirmation } from '../../helpers';
+import { __ } from '../../helpers';
 import { AccountItem, AccountForm  } from '../../components/accounts';
 import { IconButton} from '../../components/buttons';
 import { Header, ItemList } from '../../components/ui';
 import { useAccount, useAccounts } from '../../hooks';
 import { AccountType } from '../../models';
 import { useBottomSheet } from '../../components/contexts';
+import { useMenu } from '../../components/contexts/MenuContext';
 
 const Accounts: React.FC = () => {
 	const realm = useRealm();
@@ -19,7 +20,7 @@ const Accounts: React.FC = () => {
 	
 	const { account, setAccount } = useAccount( {} );
 	const { accounts, saveAccount, removeAccount } = useAccounts();
-	const { openBottomSheet, closeBottomSheet, setContent } = useBottomSheet();
+	const { openBottomSheet, closeBottomSheet, setTitle, setContent } = useBottomSheet();
 
 	const onPressAdd = () => {
 		setAccount( { name: '', owner_id: user.id } );
@@ -44,6 +45,12 @@ const Accounts: React.FC = () => {
 	}, [ realm, accounts ] );
 
 	useEffect( () => {
+		setTitle(
+			account?._id
+				? __( 'Edit Account' )
+				: __( 'New Account' )
+		);
+
 		setContent(
 			<AccountForm
 				account={ account }
@@ -64,7 +71,7 @@ const Accounts: React.FC = () => {
 				<ItemList 
 					title={ __( 'Accounts' ) }
 					items={ accounts.map( account =>
-						<AccountItem onPress={ onPressAccountItem.bind( this, account ) } account={ account }/>
+						<AccountItem onPress={ onPressAccountItem.bind( this, account ) } id={ account._id }/>
 					 ) } />
 			</View>
 		</View>

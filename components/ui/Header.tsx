@@ -1,53 +1,51 @@
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { GlobalStyles, Spacing, Theme } from "../../constants";
-import { Divider, Text } from "react-native-paper";
+import { GlobalStyles, Spacing } from "../../constants";
 import { Row } from "./Row";
+import { Title } from "./Title";
 
 interface HeaderProps {
 	title: string,
-	right?: React.ReactNode
+	right?: React.ReactNode,
+	isScreenHeader?: boolean
 }
 
 export const Header: React.FC<HeaderProps> = ( {
 	title,
-	right
+	right,
+	isScreenHeader = true
 } ) => {
 	const insets = useSafeAreaInsets();
 
 	return ( <>
 		<View style={ [
 			styles.container,
-			{ paddingTop: insets.top }
+			isScreenHeader && { paddingTop: insets.top }
 		] }>
-				<Row style={ styles.row }>
-					<Text numberOfLines={ 1 } style={ styles.title }>
-						{ title }
-					</Text>
-					<View style={ styles.right }>
-						{ right }
-					</View>
-				</Row>
+			<Row style={ styles.row }>
+				<Title>
+					{ title }
+				</Title>
+				<View style={ styles.right }>
+					{ right }
+				</View>
+			</Row>
 		</View>
 	</> );
 }
 
 const styles = StyleSheet.create( {
 	container: {
-		...GlobalStyles.shadow,
-		width: '100%',
-		backgroundColor: Theme.colors.background
+		width: '100%'
 	},
-	title: {
-		...GlobalStyles.title,
-		flexShrink: 1
-	},
+
 	row: {
 		...GlobalStyles.gutter,
 		paddingVertical: Spacing.md,
 		flexWrap: 'nowrap',
 		flexGrow: 0
 	},
+
 	right: {
 		gap: Spacing.md
 	}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { TextInput as PaperTextInput, TextInputProps } from 'react-native-paper';
-import { FontSize, Theme } from "../../constants";
+import { BorderRadius, FontSize, Theme } from "../../constants";
+import { StyleSheet } from "react-native";
 
 export const TextInput: React.FC<TextInputProps> = ( {
 	value = '',
@@ -11,8 +12,8 @@ export const TextInput: React.FC<TextInputProps> = ( {
 	multiline = false,
 	autoComplete = "off",
 	autoCorrect = false,
-	mode = 'outlined',
-	...rest 
+	mode = 'flat',
+	...rest
 } ) => {
 	const [ editedValue, setEditedValue ] = useState( value );
 
@@ -40,12 +41,27 @@ export const TextInput: React.FC<TextInputProps> = ( {
 			autoComplete={ autoComplete }
 			autoCorrect={ autoCorrect }
 			theme={ Theme }
-			style={ {
-				fontSize: FontSize.sm
-			} }
+			style={ styles.container }
+			underlineStyle={ styles.underline }
+			outlineStyle={ styles.outline }
 			contentStyle={ {
 				minHeight: multiline ? 128 : 0
 			} }
 			{ ...rest } />
 	)
 }
+
+const styles = StyleSheet.create( {
+	container: {
+		fontSize: FontSize.sm,
+		borderRadius: BorderRadius.md,
+		borderTopLeftRadius: BorderRadius.md,
+		borderTopRightRadius: BorderRadius.md
+	},
+	outline: {
+		borderBottomWidth: 0,
+	},
+	underline: {
+		display: 'none'
+	}
+} )

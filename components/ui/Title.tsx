@@ -20,7 +20,6 @@ export const Title: React.FC<TitleProps> = ( {
 const styles = StyleSheet.create( {
 	title: {
 		...GlobalStyles.title,
-		flexShrink: 1,
-		marginBottom: Spacing.sm
+		flexShrink: 1
 	}
 } );

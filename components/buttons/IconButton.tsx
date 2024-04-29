@@ -11,7 +11,7 @@ interface IconButtonProps extends PaperIconButtonProps {
 export const IconButton: React.FC<IconButtonProps> = ( {
 	icon,
 	mode = 'contained',
-	size = IconSize.md,
+	size = IconSize.lg,
 	style,
 	...rest
 } ) => {

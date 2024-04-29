@@ -4,7 +4,7 @@ import { View, StyleSheet } from "react-native";
 import { IconButton } from "../buttons";
 import { TextInput } from "../inputs";
 import { Title } from "../ui";
-import { GlobalStyles } from "../../constants";
+import { GlobalStyles, IconSize } from "../../constants";
 import { __ } from "../../helpers";
 import { AccountType } from "../../models";
 
@@ -24,16 +24,10 @@ export const AccountForm = ( {
 
 	return (
 		<View style={ styles.container }>
-			<Title>
-				{ 
-					editedAccount._id
-						? __( 'Edit Account' )
-						: __( 'New Account' )
-				}
-			</Title>
 			<TextInput
 				label={ __( 'Name' ) }
 				value={ editedAccount?.name }
+				placeholder={ `${ __( 'Example' ) }: ${ __( 'Investment Account' ) }` }
 				onChangeText={ name => setEditedAccount( {
 					...editedAccount,
 					name
@@ -41,6 +35,7 @@ export const AccountForm = ( {
 			<TextInput
 				label={ __( 'Notes' ) }
 				value={ editedAccount?.notes }
+				placeholder={ `${ __( 'Enter notes here' ) }...` }
 				onChangeText={ notes => setEditedAccount( {
 					...editedAccount,
 					notes
@@ -48,6 +43,9 @@ export const AccountForm = ( {
 				multiline={ true } />
 			<IconButton
 				icon={ 'save' }
+				size={ IconSize.xl }
+				style={ styles.submitButton }
+				disabled={ ! editedAccount?.name }
 				onPress={ onSubmit.bind( this, editedAccount ) } />
 		</View>
 	)
@@ -56,5 +54,8 @@ export const AccountForm = ( {
 const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.form
+	},
+	submitButton: {
+		alignSelf: 'flex-end'
 	}
 } );
