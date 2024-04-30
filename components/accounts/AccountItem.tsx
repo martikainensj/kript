@@ -21,23 +21,33 @@ export const AccountItem: React.FC<AccountItemProps> = ( {
 	onPress
 } ) => {
 	const { openMenu } = useMenu();
-	const { setTitle, setContent, openBottomSheet } = useBottomSheet();
-	const { account, saveAccount } = useAccount( { id } )
+	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { account, saveAccount, removeAccount } = useAccount( { id } )
 
 	function onPressHandler() {
 	}
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
-		const menuItems = [
+		const menuItems: MenuItem[] = [
 			{
-				leadingIcon: () => <Icon name={ 'pencil'} />,
 				title: __( 'Edit' ),
+				leadingIcon: ( { color, size } ) => 
+					<Icon name={ 'pencil-outline' } color={ color } size={ size } />,
 				onPress: () => {
 					setTitle( __( 'Edit Account' ) );
-					setContent( <AccountForm account={ account } onSubmit={ saveAccount } /> )
+					setContent(
+						<AccountForm account={ account } onSubmit={ ( account ) =>
+							saveAccount( account ).then( closeBottomSheet ) } />
+					)
 					openBottomSheet();
 				}
+			},
+			{
+				title: __( 'Remove' ),
+				leadingIcon: ( { color, size } ) => 
+					<Icon name={ 'trash-bin' } color={ color } size={ size } />,
+				onPress: removeAccount
 			}
 		];
 

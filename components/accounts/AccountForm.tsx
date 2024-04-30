@@ -12,6 +12,7 @@ interface AccountFormProps {
 	account: AccountType,
 	onSubmit: ( account: AccountType ) => void;
 }
+
 export const AccountForm = ( {
 	account,
 	onSubmit

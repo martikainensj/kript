@@ -13,17 +13,16 @@ export const useAccounts = () => {
 		collection => collection.sorted( 'name' )
 	);
 
-	const saveAccount = ( account: AccountType ) => {
-		const title = account._id
+	const addAccount = ( account: AccountType ) => {
+		const title = `${ account._id
 			? __( 'Update Account' )
-			: __( 'Add Account' );
-		
-		const message = ( account._id
-			? __( 'Updating existing account with name: ' ) + account.name
-			: __( 'Adding a new account with name: ' ) + account.name )
+			: __( 'Add Account' ) }`;
+		const message = ( `${ account._id
+			? __( 'Updating existing account' )
+			: __( 'Adding a new account' )}: ${ account.name }` )
 			+ "\n" + __( 'Are you sure?' );
 
-		return new Promise( ( resolve, reject ) => {
+		return new Promise( ( resolve, _ ) => {
 			confirmation( {
 				title: title,
 				message: message,
@@ -34,14 +33,8 @@ export const useAccounts = () => {
 					resolve( account );
 				}
 			} );
-		} )
+		} );
 	};
 
-	const removeAccount = ( account: AccountType ) => {
-		realm.write( () => {
-      realm.delete( account );
-    } );
-	}
-
-	return { accounts, saveAccount, removeAccount }
+	return { accounts, addAccount }
 }

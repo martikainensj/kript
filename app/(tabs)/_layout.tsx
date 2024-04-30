@@ -1,17 +1,16 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 
 import { __ } from '../../helpers';
 import { Icon } from '../../components/ui';
 import { BottomTabs } from '../../components/navigation';
-import { GlobalStyles, Spacing, Theme } from '../../constants';
+import { GlobalStyles } from '../../constants';
 
 export default function TabsLayout() {
   return (
     <BottomTabs
 			sceneAnimationEnabled={ true }
 			sceneAnimationType={ 'shifting' }
-			barStyle={ styles.bar }
+			barStyle={ GlobalStyles.footer }
 			shifting={ true }>
       <BottomTabs.Screen
         name={ "index" }
@@ -32,10 +31,3 @@ export default function TabsLayout() {
     </BottomTabs>
   );
 }
-
-const styles = StyleSheet.create( {
-	bar: {
-		...GlobalStyles.shadow,
-		backgroundColor: Theme.colors.background
-	}
-} );

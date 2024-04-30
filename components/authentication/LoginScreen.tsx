@@ -30,10 +30,7 @@ export const LoginScreen = () => {
 		<View style={ styles.container }>
 			<Header	title={ __( 'Welcome to Kript' ) } />
 			<View
-				style={ [
-					styles.contentContainer,
-					{ paddingBottom: insets.bottom }
-				] }>
+				style={ styles.contentContainer }>
 				<View style={ styles.inputsContainer }>
 					<TextInput
 						label={ __( 'Email' ) }
@@ -53,13 +50,16 @@ export const LoginScreen = () => {
 						autoComplete={ 'password' }
 						textContentType={ 'password' }
 						placeholder={ __( 'Password' ) } />
+
+					{ hasError && 
+						<AuthenticationErrorMessage operationError={ result?.error?.operation } />
+					}
 				</View>
 
-				{ hasError && 
-					<AuthenticationErrorMessage operationError={ result?.error?.operation } />
-				}
-
-				<View style={styles.buttonsContainer}>
+				<View style={ [
+					styles.buttonsContainer,
+					{ paddingBottom: insets.bottom }
+				] }>
 					<DefaultButton
 						icon={ ( { color } ) => <Icon name={ 'log-in-outline' } size={ IconSize.lg } color={ color } /> }
 						onPress={ () => logInWithEmailPassword( { email, password } ) }
@@ -89,22 +89,24 @@ const styles = StyleSheet.create({
 
 	contentContainer: {
 		...GlobalStyles.container,
-		...GlobalStyles.gutter,
 		paddingTop: Spacing.md,
 		alignItems: 'center',
-		justifyContent: 'center',
+		justifyContent: 'space-between',
 		gap: Spacing.md
 	},
 
 	inputsContainer: {
-		alignSelf: 'stretch',
-		gap: Spacing.sm
+		...GlobalStyles.gutter,
+		gap: Spacing.sm,
+		alignSelf: 'stretch'
 	},
 	
 	buttonsContainer: {
+		...GlobalStyles.footer,
+		...GlobalStyles.gutter,
 		flexDirection: 'row',
-		gap: Spacing.sm,
-		flexGrow: 1,
+		gap: Spacing.xs,
+		paddingVertical: Spacing.md,
 		alignSelf: 'stretch',
 		alignItems: 'flex-end'
 	},

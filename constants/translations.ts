@@ -68,6 +68,10 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Muokkaa',
 		en_US: 'Edit'
 	},
+	'remove': {
+		fi: 'Poista',
+		en_US: 'Remove'
+	},
 	'new account': {
 		fi: 'Uusi tili',
 		en_US: 'New Account'
@@ -84,13 +88,21 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Päivitä tili',
 		en_US: 'Update Account'
 	},
-	'updating existing account with name: ': {
-		fi: 'Päivitetään olemassa oleva tili nimeltä: ',
-		en_US: 'Updating existing account with name: '
+	'remove account': {
+		fi: 'Poista tili',
+		en_US: 'Remove Account'
 	},
-	'adding a new account with name: ': {
-		fi: 'Lisätää uutta tiliä nimeltä: ',
-		en_US: 'Adding a new account with name: '
+	'removing existing account': {
+		fi: 'Poistetaan olemassa oleva tili',
+		en_US: 'Removing existing account'
+	},
+	'updating existing account': {
+		fi: 'Päivitetään olemassa oleva tili',
+		en_US: 'Updating existing account'
+	},
+	'adding a new account': {
+		fi: 'Lisätää uutta tiliä',
+		en_US: 'Adding a new account'
 	},
 	'are you sure?': {
 		fi: 'Oletko varma?',

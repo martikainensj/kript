@@ -20,7 +20,10 @@ export const Header: React.FC<HeaderProps> = ( {
 	return ( <>
 		<View style={ [
 			styles.container,
-			isScreenHeader && { paddingTop: insets.top }
+			isScreenHeader && {
+				...GlobalStyles.header,
+				paddingTop: insets.top
+			}
 		] }>
 			<Row style={ styles.row }>
 				<Title>

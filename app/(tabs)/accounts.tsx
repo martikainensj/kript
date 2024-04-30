@@ -18,8 +18,8 @@ const Accounts: React.FC = () => {
 	const user: User = useUser();
 	const app = useApp();
 	
-	const { account, setAccount } = useAccount( {} );
-	const { accounts, saveAccount, removeAccount } = useAccounts();
+	const { account, setAccount } = useAccount();
+	const { accounts, addAccount } = useAccounts();
 	const { openBottomSheet, closeBottomSheet, setTitle, setContent } = useBottomSheet();
 
 	const onPressAdd = () => {
@@ -28,7 +28,7 @@ const Accounts: React.FC = () => {
 	}
 
 	const onSubmit = ( account: AccountType ) => {
-		saveAccount( account ).then(
+		addAccount( account ).then(
 			closeBottomSheet
 		);
 	}

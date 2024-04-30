@@ -1,7 +1,6 @@
 import React, { useState, createContext, useContext, useCallback } from "react";
 import { Divider, MenuItemProps, Menu as PaperMenu } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
-import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
 import { Theme } from "../../constants";
 
 export interface MenuItem extends MenuItemProps {
@@ -66,15 +65,17 @@ const Menu = () => {
 			onDismiss={ onDismiss }
 			contentStyle={ styles.contentContainer }
 			theme={ Theme }>
-			{ menuItems?.map( ( menuItem, key ) =>
-				<View key={ key }>
-					{ menuItem.startsSection && <Divider /> }
+			{ menuItems?.map( ( menuItem, key ) => {
+				const { startsSection, title, leadingIcon, onPress } = menuItem;
+
+				return <View key={ key }>
+					{ startsSection && <Divider /> }
 					<PaperMenu.Item
-						title={ menuItem.title }
-						leadingIcon={ menuItem.leadingIcon }
-						onPress={ onPressMenuItem.bind( this, menuItem.onPress ) } />
+						title={ title }
+						leadingIcon={ leadingIcon }
+						onPress={ onPressMenuItem.bind( this, onPress ) } />
 				</View>
- 			) }
+		} ) }
 		</PaperMenu>
 	)
 }

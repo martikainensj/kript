@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useObject, useRealm, useUser } from "@realm/react"
 
 import { Account, AccountType } from "../models/Account"
@@ -9,7 +9,7 @@ interface useAccountProps {
 	id?: BSON.ObjectID
 }
 
-export const useAccount = ( { id }: useAccountProps ) => {
+export const useAccount = ( { id }: useAccountProps = {} ) => {
 	const user: User = useUser();
 	const realm = useRealm();
 	const existingAccount = id && useObject( Account, id );
@@ -18,17 +18,16 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		owner_id: user.id
 	} );
 
-	const saveAccount = () => {
-		const title = account._id
-		? __( 'Update Account' )
-		: __( 'Add Account' );
-	
-		const message = ( account._id
-			? __( 'Updating existing account with name: ' ) + account.name
-			: __( 'Adding a new account with name: ' ) + account.name )
+	const saveAccount = useCallback( ( account: AccountType ) => {
+		const title = `${ account._id
+			? __( 'Update Account' )
+			: __( 'Add Account' ) }`;
+		const message = ( `${ account._id
+			? __( 'Updating existing account' )
+			: __( 'Adding a new account' )}: ${ account.name }` )
 			+ "\n" + __( 'Are you sure?' );
 
-		return new Promise( ( resolve, reject ) => {
+		return new Promise( ( resolve, _ ) => {
 			confirmation( {
 				title: title,
 				message: message,
@@ -40,7 +39,26 @@ export const useAccount = ( { id }: useAccountProps ) => {
 				}
 			} );
 		} )
-	}
+	}, [ account ] );
+
+	const removeAccount = useCallback( () => {
+		const title = __( 'Remove Account' );
+		const message = `${ __( 'Removing existing account' ) }: ${ account.name }`
+			+ "\n" + __( 'Are you sure?' );
+
+		return new Promise( ( resolve, _ ) => {
+			confirmation( {
+				title,
+				message,
+				onAccept() {
+					realm.write( () => {
+						realm.delete( account );
+					} );
+					resolve( true );
+				}
+			} );
+		} );
+	}, [ account ] );
 
 	useEffect( () => {
 		if ( ! existingAccount ) return;
@@ -48,5 +66,5 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		setAccount( existingAccount );
 	}, [ existingAccount ] );
 	
-	return { account, setAccount, saveAccount }
+	return { account, setAccount, saveAccount, removeAccount }
 }

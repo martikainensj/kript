@@ -2,6 +2,7 @@ import { StyleSheet, Platform, StatusBar } from "react-native";
 import { Spacing } from "./variables";
 import { FontSize, FontWeight } from "./font";
 import { Color } from "./colors";
+import { Theme } from "./theme";
 
 export const GlobalStyles = StyleSheet.create({
 	androidSafeArea: {
@@ -12,16 +13,26 @@ export const GlobalStyles = StyleSheet.create({
 	container: {
 		flex: 1
 	},
+	header: {
+		backgroundColor: Theme.colors.background,
+		borderBottomWidth: StyleSheet.hairlineWidth,
+		borderColor: Theme.colors.outlineVariant
+	},
+	footer: {
+		backgroundColor: Theme.colors.background,
+		borderTopWidth: StyleSheet.hairlineWidth,
+		borderColor: Theme.colors.outlineVariant
+	},
 	gutter: {
 		paddingHorizontal: Spacing.md
 	},
-	shadow: Platform.OS === 'ios'
-		? {
-			shadowRadius: Spacing.sm,
-			shadowOffset: { width: 0, height: 0 },
-			shadowOpacity: 0.1,
-		}
-		: { elevation: 1 },
+	shadow: {
+		elevation: 1,
+		shadowColor: Theme.colors.shadow,
+		shadowRadius: Spacing.sm,
+		shadowOffset: { width: 0, height: 0 },
+		shadowOpacity: 0.1,
+	},
 	title: {
 		fontSize: FontSize.md,
 		fontWeight: FontWeight.bold
@@ -35,11 +46,11 @@ export const GlobalStyles = StyleSheet.create({
 		justifyContent: 'flex-end'
 	},
 	isColorPositive: {
-		color: Color.success,
+		color: Theme.colors.tertiary,
 		fontWeight: FontWeight.bold
 	},
 	isColorNegative: {
-		color: Color.failure,
+		color: Theme.colors.error,
 		fontWeight: FontWeight.bold
 	},
 	isBold: {
