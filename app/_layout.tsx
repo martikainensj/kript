@@ -10,13 +10,13 @@ import { Stack } from 'expo-router';
 import { OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from 'realm';
 import { AppProvider, UserProvider, RealmProvider } from '@realm/react';
 
-import { LoginScreen } from '../components/authentication';
 import { GlobalStyles, Theme } from '../constants';
+import { LoginScreen } from '../components/authentication';
+import { BottomSheetProvider } from '../components/contexts/BottomSheetContext';
+import { MenuProvider } from '../components/contexts/MenuContext';
 import { schemas } from '../models';
 
 import { CONFIG } from '../kript.config';
-import { BottomSheetProvider } from '../components/contexts/BottomSheetContext';
-import { MenuProvider } from '../components/contexts/MenuContext';
 
 const { appId } = CONFIG;
 

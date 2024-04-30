@@ -8,33 +8,26 @@ import { __ } from '../../helpers';
 import { AccountItem, AccountForm  } from '../../components/accounts';
 import { IconButton} from '../../components/buttons';
 import { Header, ItemList } from '../../components/ui';
-import { useAccount, useAccounts } from '../../hooks';
-import { AccountType } from '../../models';
+import { useAccounts } from '../../hooks';
 import { useBottomSheet } from '../../components/contexts';
-import { useMenu } from '../../components/contexts/MenuContext';
 
 const Accounts: React.FC = () => {
 	const realm = useRealm();
 	const user: User = useUser();
 	const app = useApp();
 	
-	const { account, setAccount } = useAccount();
 	const { accounts, addAccount } = useAccounts();
 	const { openBottomSheet, closeBottomSheet, setTitle, setContent } = useBottomSheet();
 
 	const onPressAdd = () => {
-		setAccount( { name: '', owner_id: user.id } );
-		openBottomSheet();
-	}
-
-	const onSubmit = ( account: AccountType ) => {
-		addAccount( account ).then(
-			closeBottomSheet
+		setTitle( __( 'New Account' ) );
+		setContent(
+			<AccountForm
+				account={ { name: '', owner_id: user.id } }
+				onSubmit={ ( account ) => {
+					addAccount( account ).then( closeBottomSheet );
+				}	} />
 		);
-	}
-
-	const onPressAccountItem = ( account: AccountType ) => {
-		setAccount( account );
 		openBottomSheet();
 	}
 
@@ -43,20 +36,6 @@ const Accounts: React.FC = () => {
 			mutableSubs.add( accounts );
 		} );
 	}, [ realm, accounts ] );
-
-	useEffect( () => {
-		setTitle(
-			account?._id
-				? __( 'Edit Account' )
-				: __( 'New Account' )
-		);
-
-		setContent(
-			<AccountForm
-				account={ account }
-				onSubmit={ onSubmit } />
-		);
-	}, [ account ] );
 
 	return (
 		<View style={ styles.container }>
@@ -70,8 +49,10 @@ const Accounts: React.FC = () => {
 			<View style={ styles.contentContainer }>
 				<ItemList 
 					title={ __( 'Accounts' ) }
+					noItemsTitleText={ __( 'No accounts' ) }
+					noItemsDescriptionText={ __( 'Create a new account by clicking the "+" button in the top right corner.' ) }
 					items={ accounts.map( account =>
-						<AccountItem onPress={ onPressAccountItem.bind( this, account ) } id={ account._id }/>
+						<AccountItem id={ account._id }/>
 					 ) } />
 			</View>
 		</View>

@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { MenuItemProps, Text, TouchableRipple } from "react-native-paper";
+import { router } from 'expo-router';
 
 import { Icon, Row } from "../ui";
 import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
@@ -12,19 +13,16 @@ import { useBottomSheet } from "../contexts";
 import { AccountForm } from "./AccountForm";
 
 interface AccountItemProps {
-	id: AccountType['_id'],
-	onPress?: ( account: Account ) => void
+	id: AccountType['_id']
 }
 
-export const AccountItem: React.FC<AccountItemProps> = ( {
-	id,
-	onPress
-} ) => {
+export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 	const { openMenu } = useMenu();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { account, saveAccount, removeAccount } = useAccount( { id } )
 
 	function onPressHandler() {
+		router.navigate(`accounts/${ account._id }`);
 	}
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
@@ -37,9 +35,13 @@ export const AccountItem: React.FC<AccountItemProps> = ( {
 				onPress: () => {
 					setTitle( __( 'Edit Account' ) );
 					setContent(
-						<AccountForm account={ account } onSubmit={ ( account ) =>
-							saveAccount( account ).then( closeBottomSheet ) } />
+						<AccountForm
+							account={ account }
+							onSubmit={ ( editedAccount ) => {
+								saveAccount( editedAccount ).then( closeBottomSheet );
+							}	} />
 					)
+
 					openBottomSheet();
 				}
 			},
@@ -54,9 +56,11 @@ export const AccountItem: React.FC<AccountItemProps> = ( {
 		openMenu( anchor, menuItems );
 	}, [ account ] );
 
+	if ( ! account ) return;
+
 	return (
 		<TouchableRipple
-			//onPress={ onPressHandler }
+			onPress={ onPressHandler }
 			onLongPress={ onLongPress }
 			theme={ Theme }>
 			<View style={ styles.container}>

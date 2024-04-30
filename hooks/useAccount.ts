@@ -18,13 +18,14 @@ export const useAccount = ( { id }: useAccountProps = {} ) => {
 		owner_id: user.id
 	} );
 
-	const saveAccount = useCallback( ( account: AccountType ) => {
-		const title = `${ account._id
+	const saveAccount = useCallback( ( editedAccount: AccountType ) => {
+		const title = `${ editedAccount._id
 			? __( 'Update Account' )
 			: __( 'Add Account' ) }`;
-		const message = ( `${ account._id
+		const message = ( `${ editedAccount._id
 			? __( 'Updating existing account' )
-			: __( 'Adding a new account' )}: ${ account.name }` )
+			: __( 'Adding a new account' )}` )
+			+ `: ${ editedAccount.name }`
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise( ( resolve, _ ) => {
@@ -33,17 +34,18 @@ export const useAccount = ( { id }: useAccountProps = {} ) => {
 				message: message,
 				onAccept() {
 					realm.write( () => {
-						realm.create( Account, account, UpdateMode.Modified );
+						realm.create( Account, editedAccount, UpdateMode.Modified );
 					} );
-					resolve( account );
+
+					resolve( editedAccount );
 				}
 			} );
 		} )
-	}, [ account ] );
+	}, [] );
 
 	const removeAccount = useCallback( () => {
 		const title = __( 'Remove Account' );
-		const message = `${ __( 'Removing existing account' ) }: ${ account.name }`
+		const message = `${ __( 'Removing existing account' ) }: ${ existingAccount.name }`
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise( ( resolve, _ ) => {
@@ -54,6 +56,7 @@ export const useAccount = ( { id }: useAccountProps = {} ) => {
 					realm.write( () => {
 						realm.delete( account );
 					} );
+					setAccount( null );
 					resolve( true );
 				}
 			} );
@@ -61,9 +64,7 @@ export const useAccount = ( { id }: useAccountProps = {} ) => {
 	}, [ account ] );
 
 	useEffect( () => {
-		if ( ! existingAccount ) return;
-
-		setAccount( existingAccount );
+		existingAccount && setAccount( existingAccount );
 	}, [ existingAccount ] );
 	
 	return { account, setAccount, saveAccount, removeAccount }

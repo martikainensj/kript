@@ -108,6 +108,14 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Oletko varma?',
 		en_US: 'Are you sure?'
 	},
+	'no accounts': {
+		fi: 'Ei tilejä',
+		en_US: 'No Accounts'
+	},
+	'create a new account by clicking the "+" button in the top right corner.': {
+		fi: 'Luo uusi tili painamalla "+" painiketta oikeassa yläkulmassa',
+		en_US: 'Create a new account by clicking the "+" button in the top right corner.'
+	},
 	'name': {
 		fi: 'Nimi',
 		en_US: 'Name'
