@@ -40,7 +40,13 @@ const App: React.FC = () => {
 							<MenuProvider>
 								<BottomSheetProvider>
 									<Stack>
-										<Stack.Screen name="(tabs)" options={ { headerShown: false } } />
+										<Stack.Screen
+											name="(tabs)"
+											options={ {
+												headerShown: false
+											} } />
+										<Stack.Screen
+											name="accounts"  />
 									</Stack>
 								</BottomSheetProvider>
 							</MenuProvider>

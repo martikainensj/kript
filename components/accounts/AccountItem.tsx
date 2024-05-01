@@ -21,8 +21,14 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { account, saveAccount, removeAccount } = useAccount( { id } )
 
-	function onPressHandler() {
-		router.navigate(`accounts/${ account._id }`);
+	function onPress() {
+		router.navigate( {
+			pathname: 'accounts/[account]',
+			params: {
+				id: account._id.toString(),
+				name: account.name
+			}
+		} );
 	}
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
@@ -60,7 +66,7 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 
 	return (
 		<TouchableRipple
-			onPress={ onPressHandler }
+			onPress={ onPress }
 			onLongPress={ onLongPress }
 			theme={ Theme }>
 			<View style={ styles.container}>
