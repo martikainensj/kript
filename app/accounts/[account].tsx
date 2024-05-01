@@ -6,6 +6,8 @@ import { useLocalSearchParams } from "expo-router";
 import { GlobalStyles, Spacing } from "../../constants";
 import { __ } from "../../helpers";
 import { useAccount } from "../../hooks";
+import { Header } from "../../components/ui";
+import { BackButton } from "../../components/buttons";
 
 const Account: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ id: string }>();
@@ -14,7 +16,12 @@ const Account: React.FC = ( {} ) => {
 	
 	return (
 		<View style={ styles.container }>
-			<Text>{ account.name }</Text>
+			<Header
+				title={ account.name }
+				left={ <BackButton /> } />
+			<View style={ styles.contentContainer }>
+				<Text>{ account.name }</Text>
+			</View>
 		</View>
 	)
 }
@@ -24,6 +31,8 @@ export default Account;
 const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.container,
+	},
+	contentContainer: {
 		...GlobalStyles.gutter,
 		paddingTop: Spacing.md
 	}

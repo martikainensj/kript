@@ -46,7 +46,10 @@ const App: React.FC = () => {
 												headerShown: false
 											} } />
 										<Stack.Screen
-											name="accounts"  />
+											name="accounts"
+											options={ {
+												headerShown: false
+											} } />
 									</Stack>
 								</BottomSheetProvider>
 							</MenuProvider>

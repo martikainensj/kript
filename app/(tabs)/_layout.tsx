@@ -18,16 +18,14 @@ export default function TabsLayout() {
           title: __( 'Home' ),
           tabBarIcon: ( { color, focused } ) =>
 						<Icon name={ focused ? 'home' : 'home-outline' } color={ color } />
-        } }
-      />
+        } } />
       <BottomTabs.Screen
         name={ "accounts" }
         options={ {
           title: __( 'Accounts' ),
           tabBarIcon: ( { color, focused } ) =>
 						<Icon name={ focused ? 'wallet' : 'wallet-outline' } color={ color } />
-        } }
-      />
+        } } />
     </BottomTabs>
   );
 }

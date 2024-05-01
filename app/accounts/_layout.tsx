@@ -6,7 +6,8 @@ export default function AccountLayout() {
   return ( <>
 		<Stack.Screen options={ {
 			headerBackTitleVisible: false,
-			title: name
+			title: name,
+			animationDuration: 200
 		} }/>
 		<Slot />
 	</> );
