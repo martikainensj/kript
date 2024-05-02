@@ -1,3 +1,4 @@
+import React from 'react';
 import { IconButton as PaperIconButton, IconButtonProps as PaperIconButtonProps } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';

@@ -1,18 +1,17 @@
+import React from 'react';
 import { StyleSheet, View, ViewStyle } from 'react-native';
 import { Spacing } from '../../constants';
 
 interface RowProps {
 	children: React.ReactNode,
-	gap?: number,
 	style?: ViewStyle
 }
 
-export const Row: React.FC<RowProps> = ( { children, gap = Spacing.sm, style } ) => {
+export const Row: React.FC<RowProps> = ( { children, style } ) => {
 	return (
 		<View style={ [
 			styles.container,
-			style,
-			{ gap }
+			style
 		] }>
 			{ children }
 		</View>
@@ -24,6 +23,7 @@ const styles = StyleSheet.create( {
 		flexDirection: 'row',
 		alignItems: 'flex-end',
 		justifyContent: 'space-between',
-		flexWrap: 'wrap'
+		flexWrap: 'wrap',
+		gap: Spacing.md
 	}
 } );

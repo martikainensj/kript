@@ -1,4 +1,4 @@
-import {
+import React, {
 	useState,
 	createContext,
 	useContext,
@@ -7,7 +7,6 @@ import {
 	useCallback
 } from "react";
 import {
-	LayoutChangeEvent,
 	StyleSheet
 } from "react-native";
 import GorhomBottomSheet, {
@@ -23,30 +22,37 @@ import {
 
 import {
 	BorderRadius,
-	GlobalStyles,
-	Spacing
+	GlobalStyles
 } from "../../constants";
 import { IconButton } from "../buttons";
 import { Header } from "../ui";
 
 interface BottomSheetContext {
-	title?: string,
-	setTitle?: React.Dispatch<string>
-	content: React.ReactNode,
-	setContent: React.Dispatch<React.ReactNode>
+	title: string,
+	setTitle: React.Dispatch<React.SetStateAction<string>>
+	content: React.ReactNode | null,
+	setContent: React.Dispatch<React.SetStateAction<React.ReactNode>>;
 	visible: boolean,
 	openBottomSheet: () => void,
 	closeBottomSheet: () => void
 }
 
-const BottomSheetContext = createContext<BottomSheetContext>( null );
+const BottomSheetContext = createContext<BottomSheetContext>( {
+	title: '',
+	setTitle: () => {},
+	content: null,
+	setContent: () => {},
+	visible: false,
+	openBottomSheet: () => {},
+	closeBottomSheet: () => {}
+} );
 
 export const useBottomSheet = () => useContext( BottomSheetContext );
 
 export const BottomSheetProvider = ( { children } ) => {
 	const [ visible, setVisible ] = useState( false );
 	const [ title, setTitle ] = useState( '' );
-	const [ content, setContent ] = useState( null );
+	const [ content, setContent ] = useState<React.ReactNode>( null );
 
 	const openBottomSheet = useCallback( () => {
 		setVisible( true );

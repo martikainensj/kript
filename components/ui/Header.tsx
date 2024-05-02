@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GlobalStyles, Spacing } from "../../constants";
@@ -28,19 +29,11 @@ export const Header: React.FC<HeaderProps> = ( {
 			}
 		] }>
 			<Row style={ styles.row }>
-				{ left &&
-					<View style={ styles.left }>
-						{ left }
-					</View>
-				}
+				{ left && <View style={ styles.left } children={ left } /> }
 
 				<Title>{ title }</Title>
 
-				{ right && 
-					<View style={ styles.right }>
-						{ right }
-					</View>
-				}
+				{ right && <View style={ styles.right } children={ right } /> }
 			</Row>
 		</View>
 	</> );
@@ -55,7 +48,6 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.gutter,
 		paddingVertical: Spacing.md,
 		flexWrap: 'nowrap',
-		flexGrow: 0
 	},
 
 	left: {

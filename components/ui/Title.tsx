@@ -1,17 +1,20 @@
-import { StyleSheet } from "react-native";
+import React from 'react';
+import { StyleProp, StyleSheet, TextStyle } from "react-native";
 import { Text } from "react-native-paper";
 
-import { GlobalStyles, Spacing } from "../../constants";
+import { GlobalStyles } from "../../constants";
 
 interface TitleProps {
 	children: string,
+	style?: StyleProp<TextStyle>
 }
 
 export const Title: React.FC<TitleProps> = ( {
-	children
+	children,
+	style
 } ) => {
 	return (
-		<Text numberOfLines={ 1 } style={ styles.title }>
+		<Text numberOfLines={ 1 } style={ [ styles.title, style ] }>
 			{ children }
 		</Text>
 	);

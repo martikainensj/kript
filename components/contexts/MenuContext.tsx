@@ -7,24 +7,30 @@ export interface MenuItem extends MenuItemProps {
 	startsSection?: boolean
 }
 
-interface MenuContext {
+interface MenuContextProps {
 	visible: boolean
 	anchor: React.ReactNode | { x: number, y: number; }
 	menuItems: MenuItem[]
-	openMenu: ( anchor: MenuContext["anchor"], menuItems: MenuItem[] ) => void
+	openMenu: ( anchor: MenuContextProps["anchor"], menuItems: MenuContextProps['menuItems'] ) => void
 	closeMenu: () => void
 }
 
-const MenuContext = createContext<MenuContext>( null );
+const MenuContext = createContext<MenuContextProps>( {
+	visible: false,
+	anchor: { x: 0, y: 0 },
+	menuItems: [],
+	openMenu() {},
+	closeMenu() {}
+} );
 
 export const useMenu = () => useContext( MenuContext );
 
 export const MenuProvider = ( { children } ) => {
 	const [ visible, setVisible ] = useState( false );
-	const [ anchor, setAnchor ] = useState( null );
-  const [ menuItems, setMenuItems ] = useState( [] );
+	const [ anchor, setAnchor ] = useState<React.ReactNode | { x: number, y: number; }>();
+	const [ menuItems, setMenuItems ] = useState<MenuContextProps['menuItems']>( [] );
 
-	const openMenu = ( anchor: MenuContext["anchor"], menuItems: MenuContext["menuItems"] ) => {
+	const openMenu = ( anchor: MenuContextProps["anchor"], menuItems: MenuContextProps["menuItems"] ) => {
 		setAnchor( anchor );
 		setMenuItems( menuItems );
 		setVisible( true );
@@ -43,7 +49,7 @@ export const MenuProvider = ( { children } ) => {
 			closeMenu
 		} }>
       { children }
-			<Menu />
+		<Menu />
     </MenuContext.Provider>
   );
 }
