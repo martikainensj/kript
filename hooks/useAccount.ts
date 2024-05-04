@@ -64,7 +64,7 @@ export const useAccount = ( { id }: useAccountProps = {} ) => {
 	}, [ account ] );
 
 	useEffect( () => {
-		existingAccount && setAccount( existingAccount );
+		existingAccount?.isValid() && setAccount( existingAccount );
 	}, [ existingAccount ] );
 	
 	return { account, setAccount, saveAccount, removeAccount }
