@@ -36,8 +36,8 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 		const menuItems: MenuItem[] = [
 			{
 				title: __( 'Edit' ),
-				leadingIcon: ( { color, size } ) => 
-					<Icon name={ 'pencil-outline' } color={ color } size={ size } />,
+				leadingIcon: ( { color } ) => 
+					<Icon name={ 'create-outline' } color={ color } />,
 				onPress: () => {
 					setTitle( __( 'Edit Account' ) );
 					setContent(
@@ -53,8 +53,8 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 			},
 			{
 				title: __( 'Remove' ),
-				leadingIcon: ( { color, size } ) => 
-					<Icon name={ 'trash-bin' } color={ color } size={ size } />,
+				leadingIcon: ( { color } ) => 
+					<Icon name={ 'trash-outline' } color={ color } />,
 				onPress: removeAccount
 			}
 		];

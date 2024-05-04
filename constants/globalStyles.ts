@@ -34,8 +34,8 @@ export const GlobalStyles = StyleSheet.create({
 		shadowOpacity: 0.1,
 	},
 	title: {
-		fontSize: FontSize.md,
-		fontWeight: FontWeight.bold
+		fontSize: FontSize.lg,
+		fontWeight: FontWeight.regular
 	},
 	label: {
 		fontSize: FontSize.xs,
