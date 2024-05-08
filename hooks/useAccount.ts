@@ -4,6 +4,7 @@ import { useObject, useRealm, useUser } from "@realm/react"
 import { Account, AccountType } from "../models/Account"
 import { BSON, UpdateMode, User } from "realm";
 import { __, confirmation } from "../helpers";
+import { router } from "expo-router";
 
 interface useAccountProps {
 	id?: BSON.ObjectID
@@ -13,12 +14,12 @@ export const useAccount = ( { id }: useAccountProps = {} ) => {
 	const user: User = useUser();
 	const realm = useRealm();
 	const existingAccount = id && useObject( Account, id );
-	const [ account, setAccount ] = useState<AccountType>( {
+	const [ account, setAccount ] = useState<AccountType | Account>( {
 		name: '',
 		owner_id: user.id
 	} );
 
-	const saveAccount = useCallback( ( editedAccount: AccountType ) => {
+	const saveAccount = useCallback( ( editedAccount: Account ) => {
 		const title = `${ editedAccount._id
 			? __( 'Update Account' )
 			: __( 'Add Account' ) }`;
@@ -53,9 +54,12 @@ export const useAccount = ( { id }: useAccountProps = {} ) => {
 				title,
 				message,
 				onAccept() {
+					router.navigate( 'accounts/' );
+
 					realm.write( () => {
 						realm.delete( account );
 					} );
+
 					setAccount( null );
 					resolve( true );
 				}

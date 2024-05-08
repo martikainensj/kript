@@ -1,7 +1,7 @@
 import { useQuery, useRealm, useUser } from "@realm/react";
 
-import { Account, AccountType } from "../models/Account";
-import { BSON, UpdateMode, User } from "realm";
+import { Account } from "../models/Account";
+import { UpdateMode, User } from "realm";
 import { __, confirmation } from "../helpers";
 
 export const useAccounts = () => {
@@ -13,7 +13,7 @@ export const useAccounts = () => {
 		collection => collection.sorted( 'name' )
 	);
 
-	const addAccount = ( account: AccountType ) => {
+	const addAccount = ( account: Account ) => {
 		const title = `${ account._id
 			? __( 'Update Account' )
 			: __( 'Add Account' ) }`;

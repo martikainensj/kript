@@ -51,9 +51,9 @@ const Accounts: React.FC = () => {
 					title={ __( 'Accounts' ) }
 					noItemsTitleText={ __( 'No accounts' ) }
 					noItemsDescriptionText={ __( 'Create a new account by clicking the "+" button in the top right corner.' ) }
-					items={ accounts.map( account =>
-						<AccountItem id={ account._id }/>
-					 ) } />
+					items={ accounts.map( account => {
+						return <AccountItem id={ account._id }/>
+					} ) } />
 			</View>
 		</View>
 	);

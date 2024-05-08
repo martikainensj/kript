@@ -14,7 +14,7 @@ import { GlobalStyles, Theme } from '../constants';
 import { LoginScreen } from '../components/authentication';
 import { BottomSheetProvider } from '../components/contexts/BottomSheetContext';
 import { MenuProvider } from '../components/contexts/MenuContext';
-import { schemas } from '../models';
+import { Schemas } from '../models';
 
 import { CONFIG } from '../kript.config';
 
@@ -27,7 +27,7 @@ const App: React.FC = () => {
 			<AppProvider id={ appId }>
 				<UserProvider fallback={ <LoginScreen /> }>
 					<RealmProvider
-						schema={ schemas }
+						schema={ Schemas }
 						sync={ {
 							flexible: true,
 							existingRealmFileBehavior: {

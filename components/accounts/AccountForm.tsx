@@ -3,21 +3,20 @@ import { View, StyleSheet } from "react-native";
 
 import { IconButton } from "../buttons";
 import { TextInput } from "../inputs";
-import { Title } from "../ui";
 import { GlobalStyles, IconSize } from "../../constants";
 import { __ } from "../../helpers";
-import { AccountType } from "../../models";
+import { Account, AccountType } from "../../models/Account";
 
 interface AccountFormProps {
-	account: AccountType,
-	onSubmit: ( account: AccountType ) => void;
+	account: Account,
+	onSubmit: ( account: Account ) => void;
 }
 
 export const AccountForm = ( {
 	account,
 	onSubmit
 }: AccountFormProps ) => {
-	const [ editedAccount, setEditedAccount ] = useState( account );
+	const [ editedAccount, setEditedAccount ] = useState<AccountType>( { ...account } );
 
 	useEffect( () => {
 		setEditedAccount( account );
@@ -29,18 +28,16 @@ export const AccountForm = ( {
 				label={ __( 'Name' ) }
 				value={ editedAccount?.name }
 				placeholder={ `${ __( 'Example' ) }: ${ __( 'Investment Account' ) }` }
-				onChangeText={ name => setEditedAccount( {
-					...editedAccount,
-					name
-				} ) } />
+				onChangeText={ name => setEditedAccount(
+					Object.assign( { ...editedAccount }, { name } )
+				 ) } />
 			<TextInput
 				label={ __( 'Notes' ) }
 				value={ editedAccount?.notes }
 				placeholder={ `${ __( 'Enter notes here' ) }...` }
-				onChangeText={ notes => setEditedAccount( {
-					...editedAccount,
-					notes
-				} ) }
+				onChangeText={ notes => setEditedAccount( 
+					Object.assign( { ...editedAccount }, { notes } )
+				) }
 				multiline={ true } />
 			<IconButton
 				icon={ 'save' }

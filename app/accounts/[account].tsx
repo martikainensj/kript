@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { Text } from "react-native-paper";
 import { BSON } from "realm";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { __ } from "../../helpers";
@@ -44,11 +44,7 @@ const Account: React.FC = ( {} ) => {
 				title: __( 'Remove' ),
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'trash-outline' } color={ color } />,
-				onPress: () => {
-					removeAccount().then( () =>
-						router.navigate( 'accounts' )
-					);
-				}
+				onPress: removeAccount
 			}
 		];
 
@@ -65,7 +61,7 @@ const Account: React.FC = ( {} ) => {
 					onPress={ onPressOptions } />
 				} />
 			<View style={ styles.contentContainer }>
-				<Text>{ account.name }</Text>
+				<Text>{ JSON.stringify(account) }</Text>
 			</View>
 		</View>
 	)

@@ -1,7 +1,15 @@
 import { Account, AccountType } from './Account';
+import { Holding, HoldingType } from './Holding';
+import { Transaction, TransactionType } from './Transaction';
 
-export const schemas = [
-	Account
+export const Schemas = [
+	Account,
+	Holding,
+	Transaction
 ];
 
-export { AccountType }
+export {
+	AccountType,
+	HoldingType,
+	TransactionType
+};

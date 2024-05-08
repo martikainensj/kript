@@ -19,17 +19,15 @@ export const FAB: React.FC<FABProps> = ( {
 		setShowActions( ! showActions );
 	};
 
-	const FABIcon: React.FC = () => {
-		return showActions
-			? <Icon name={ 'close' } size={ IconSize.lg } />
-			: <Icon name={ 'add' } size={ IconSize.lg } />
-	}
-
 	return (
 		<PaperFAB.Group
 			open={ showActions }
 			visible={ !! actions }
-			icon={ FABIcon }
+			icon={ () => {
+				return showActions
+				? <Icon name={ 'close' } size={ IconSize.lg } />
+				: <Icon name={ 'add' } size={ IconSize.lg } />
+			} }
 			actions={ actions }
 			onStateChange={ onStateChange }
 			fabStyle={ styles.fabGroup }
