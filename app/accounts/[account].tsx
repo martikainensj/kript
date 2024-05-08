@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { Text } from "react-native-paper";
 import { BSON } from "realm";
@@ -12,12 +12,14 @@ import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { useBottomSheet } from "../../components/contexts";
 import { AccountForm } from "../../components/accounts";
+import { FABProvider, useFAB } from "../../components/contexts";
 
 const Account: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ id: string }>();
 	const accountId = new BSON.ObjectID( params.id );
 	const { account, saveAccount, removeAccount } = useAccount( { id: accountId } );
 	const { openMenu } = useMenu();
+	const { setActions, actions } = useFAB();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
@@ -50,19 +52,33 @@ const Account: React.FC = ( {} ) => {
 
 		openMenu( anchor, menuItems );
 	}, [ account ] );
+
+	useEffect( () => {
+		setActions( [
+			{
+				icon: ( { color, size } ) => { return (
+					<Icon name={ 'pricetag-outline' } size={ size } color={ color } />
+				) },
+				label: __( 'Add Transaction' ),
+				onPress: () => { /* TODO */ }
+			}
+		])
+	}, [] );
 	
 	return (
 		<View style={ styles.container }>
-			<Header
-				title={ account.name }
-				left={ <BackButton /> }
-				right={ <IconButton
-					icon={ 'ellipsis-vertical' }
-					onPress={ onPressOptions } />
-				} />
-			<View style={ styles.contentContainer }>
-				<Text>{ JSON.stringify(account) }</Text>
-			</View>
+			<FABProvider>
+				<Header
+					title={ account.name }
+					left={ <BackButton /> }
+					right={ <IconButton
+						icon={ 'ellipsis-vertical' }
+						onPress={ onPressOptions } />
+					} />
+				<View style={ styles.contentContainer }>
+					<Text>{ JSON.stringify(account) }</Text>
+				</View>
+			</FABProvider>
 		</View>
 	)
 }

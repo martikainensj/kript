@@ -81,7 +81,6 @@ export const BottomSheetProvider = ( { children } ) => {
 const BottomSheet = () => {
 	const { title, content, visible, closeBottomSheet } = useBottomSheet();
 	const bottomSheetRef = useRef<BottomSheetMethods>( null );
-	const [ contentHeight, setContentHeight ] = useState( 50 );
 
 	const renderBackdrop = useCallback( 
 		( props: BottomSheetDefaultBackdropProps ) => (

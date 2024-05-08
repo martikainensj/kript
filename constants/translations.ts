@@ -16,10 +16,6 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Koti',
 		en_US: "Home"
 	},
-	'accounts': {
-		fi: 'Tilit',
-		en_US: "Accounts"
-	},
 	'authentication': {
 		fi: 'Tunnistus',
 		en_US: 'Authentication'
@@ -72,6 +68,13 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Poista',
 		en_US: 'Remove'
 	},
+
+	// Account
+
+	'accounts': {
+		fi: 'Tilit',
+		en_US: "Accounts"
+	},
 	'new account': {
 		fi: 'Uusi tili',
 		en_US: 'New Account'
@@ -101,12 +104,8 @@ export const Translations: { [ key: string ]: Translation } = {
 		en_US: 'Updating existing account'
 	},
 	'adding a new account': {
-		fi: 'Lisätää uutta tiliä',
+		fi: 'Lisätään uutta tiliä',
 		en_US: 'Adding a new account'
-	},
-	'are you sure?': {
-		fi: 'Oletko varma?',
-		en_US: 'Are you sure?'
 	},
 	'no accounts': {
 		fi: 'Ei tilejä',
@@ -115,6 +114,93 @@ export const Translations: { [ key: string ]: Translation } = {
 	'create a new account by clicking the "+" button in the top right corner.': {
 		fi: 'Luo uusi tili painamalla "+" painiketta oikeassa yläkulmassa',
 		en_US: 'Create a new account by clicking the "+" button in the top right corner.'
+	},
+
+	// Holding
+
+	'holdings': {
+		fi: 'Omistukset',
+		en_US: "holdings"
+	},
+	'new holding': {
+		fi: 'Uusi omistus',
+		en_US: 'New holding'
+	},
+	'edit holding': {
+		fi: 'Muokkaa omistusta',
+		en_US: 'Edit holding'
+	},
+	'update holding': {
+		fi: 'Päivitä omistus',
+		en_US: 'Update holding'
+	},
+	'remove holding': {
+		fi: 'Poista omistus',
+		en_US: 'Remove holding'
+	},
+	'removing existing holding': {
+		fi: 'Poistetaan olemassa oleva omistus',
+		en_US: 'Removing existing holding'
+	},
+	'updating existing holding': {
+		fi: 'Päivitetään olemassa oleva omistus',
+		en_US: 'Updating existing holding'
+	},
+	'no holdings': {
+		fi: 'Ei omistuksia',
+		en_US: 'No holdings'
+	},
+
+	// Transaction
+
+	'transactions': {
+		fi: 'transaktiot',
+		en_US: "Transactions"
+	},
+	'new transaction': {
+		fi: 'Uusi transaktio',
+		en_US: 'New Transaction'
+	},
+	'edit transaction': {
+		fi: 'Muokkaa transaktiota',
+		en_US: 'Edit Transaction'
+	},
+	'add transaction': {
+		fi: 'Lisää transaktio',
+		en_US: 'Add Transaction'
+	},
+	'update transaction': {
+		fi: 'Päivitä transaktio',
+		en_US: 'Update Transaction'
+	},
+	'remove transaction': {
+		fi: 'Poista transaktio',
+		en_US: 'Remove Transaction'
+	},
+	'removing existing transaction': {
+		fi: 'Poistetaan olemassa oleva transaktio',
+		en_US: 'Removing existing Transaction'
+	},
+	'updating existing transaction': {
+		fi: 'Päivitetään olemassa oleva transaktio',
+		en_US: 'Updating existing Transaction'
+	},
+	'adding a new transaction': {
+		fi: 'Lisätään uutta transaktiota',
+		en_US: 'Adding a new Transaction'
+	},
+	'no transactions': {
+		fi: 'Ei tilejä',
+		en_US: 'No Transactions'
+	},
+	'create a new transaction by clicking the "+" button in the top right corner.': {
+		fi: 'Luo uusi transaktio painamalla "+" painiketta oikeassa yläkulmassa',
+		en_US: 'Create a new transaction by clicking the "+" button in the top right corner.'
+	},
+
+	'are you sure?': {
+		fi: 'Oletko varma?',
+		en_US: 'Are you sure?'
 	},
 	'name': {
 		fi: 'Nimi',
