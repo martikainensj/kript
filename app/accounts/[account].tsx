@@ -28,7 +28,7 @@ const Account: React.FC = ( {} ) => {
 			{
 				title: __( 'Edit' ),
 				leadingIcon: ( { color } ) => 
-					<Icon name={ 'create-outline' } color={ color } />,
+					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
 					setTitle( __( 'Edit Account' ) );
 					setContent(
@@ -45,7 +45,7 @@ const Account: React.FC = ( {} ) => {
 			{
 				title: __( 'Remove' ),
 				leadingIcon: ( { color } ) => 
-					<Icon name={ 'trash-outline' } color={ color } />,
+					<Icon name={ 'trash' } color={ color } />,
 				onPress: removeAccount
 			}
 		];
@@ -57,7 +57,7 @@ const Account: React.FC = ( {} ) => {
 		setActions( [
 			{
 				icon: ( { color, size } ) => { return (
-					<Icon name={ 'pricetag-outline' } size={ size } color={ color } />
+					<Icon name={ 'pricetag' } size={ size } color={ color } />
 				) },
 				label: __( 'Add Transaction' ),
 				onPress: () => { /* TODO */ }
