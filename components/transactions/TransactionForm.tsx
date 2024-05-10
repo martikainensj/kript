@@ -29,8 +29,8 @@ export const TransactionForm = ( {
 				label={ __( 'Notes' ) }
 				value={ editedTransaction?.notes }
 				placeholder={ `${ __( 'Enter notes here' ) }...` }
-				onChangeText={ notes => setEditedTransaction( 
-					Object.assign( editedTransaction, { notes } )
+				onChangeText={ notes => setEditedTransaction(
+					Object.assign( { ...editedTransaction }, { notes } )
 				) }
 				multiline={ true } />
 			<IconButton

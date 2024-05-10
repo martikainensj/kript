@@ -28,17 +28,16 @@ export const AccountForm = ( {
 				label={ __( 'Name' ) }
 				value={ editedAccount?.name }
 				placeholder={ `${ __( 'Example' ) }: ${ __( 'Investment Account' ) }` }
-				onChangeText={ name => setEditedAccount( {
-					...editedAccount,
-					name } ) } />
+				onChangeText={ name => setEditedAccount(
+					Object.assign( { ...editedAccount }, { name } )
+				) } />
 			<TextInput
 				label={ __( 'Notes' ) }
 				value={ editedAccount?.notes }
 				placeholder={ `${ __( 'Enter notes here' ) }...` }
-				onChangeText={ notes => setEditedAccount( {
-					...editedAccount,
-					notes
-				} ) }
+				onChangeText={ notes => setEditedAccount(
+					Object.assign( { ...editedAccount }, { notes } )
+				) }
 				multiline={ true } />
 			<IconButton
 				icon={ 'save' }

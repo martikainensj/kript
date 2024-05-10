@@ -60,6 +60,11 @@ export const BottomSheetProvider = ( { children } ) => {
 
 	const closeBottomSheet = useCallback( () => {
 		setVisible( false );
+
+		setTimeout( () => {
+			setTitle( '' );
+			setContent( null );
+		}, 250 );
 	}, [] );
 
   return (
@@ -90,7 +95,6 @@ const BottomSheet = () => {
 				appearsOnIndex={ 0 } />
 		), []
 	);
-
 	useEffect( () => {
 		visible
 			? bottomSheetRef.current?.expand()

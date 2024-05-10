@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { Text } from "react-native-paper";
-import { BSON } from "realm";
+import { BSON, User } from "realm";
 import { useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
@@ -13,10 +13,14 @@ import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { useBottomSheet } from "../../components/contexts";
 import { AccountForm } from "../../components/accounts";
 import { FABProvider, useFAB } from "../../components/contexts";
+import { TransactionForm } from "../../components/transactions/TransactionForm";
+import { useUser } from "@realm/react";
 
 const Account: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ id: string }>();
 	const accountId = new BSON.ObjectID( params.id );
+	const user: User = useUser();
+
 	const { account, saveAccount, removeAccount } = useAccount( { id: accountId } );
 	const { openMenu } = useMenu();
 	const { setActions, actions } = useFAB();
@@ -37,7 +41,7 @@ const Account: React.FC = ( {} ) => {
 							onSubmit={ ( editedAccount ) => {
 								saveAccount( editedAccount ).then( closeBottomSheet );
 							}	} />
-					)
+					);
 
 					openBottomSheet();
 				}
@@ -60,7 +64,26 @@ const Account: React.FC = ( {} ) => {
 					<Icon name={ 'pricetag' } size={ size } color={ color } />
 				) },
 				label: __( 'Add Transaction' ),
-				onPress: () => { /* TODO */ }
+				onPress: () => {
+					setTitle( __( 'New Transaction' ) );
+					setContent(
+						<TransactionForm
+							transaction={ {
+								_id: new BSON.ObjectID(),
+								owner_id: user.id,
+								notes: '',
+								account: account
+							} }
+							onSubmit={ ( editedTransaction ) => {
+								/** TODO
+								 * - Lisää useHolding johon addTransaction joka lisää myös uuden holdingin jollei löydy
+								 * - Lisää useTransaction johon saveTransaction ja deleteTransaction
+								 */
+							}	} />
+					);
+
+					openBottomSheet();
+				}
 			}
 		])
 	}, [] );
