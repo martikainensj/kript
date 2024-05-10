@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useObject, useRealm, useUser } from "@realm/react"
 
-import { Account, AccountType } from "../models/Account"
+import { Account } from "../models/Account"
 import { BSON, UpdateMode, User } from "realm";
 import { __, confirmation } from "../helpers";
 import { router } from "expo-router";
@@ -14,10 +14,7 @@ export const useAccount = ( { id }: useAccountProps = {} ) => {
 	const user: User = useUser();
 	const realm = useRealm();
 	const existingAccount = id && useObject( Account, id );
-	const [ account, setAccount ] = useState<AccountType | Account>( {
-		name: '',
-		owner_id: user.id
-	} );
+	const [ account, setAccount ] = useState<Account>();
 
 	const saveAccount = useCallback( ( editedAccount: Account ) => {
 		const title = `${ editedAccount._id

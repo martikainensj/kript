@@ -21,7 +21,7 @@ module.exports = function (api) {
   return {
     presets: ["babel-preset-expo"],
     plugins: [
-			"@realm/babel-plugin",
+			//"@realm/babel-plugin",
 			[
 				"@babel/plugin-proposal-decorators",
 				{ legacy: true }

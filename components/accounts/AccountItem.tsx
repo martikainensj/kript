@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 
 import { Icon, Row } from "../ui";
 import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
-import { Account, AccountType } from "../../models/Account";
+import { Account } from "../../models/Account";
 import { MenuItem, useMenu } from "../contexts/MenuContext";
 import { useAccount } from "../../hooks";
 import { __ } from "../../helpers";
@@ -13,7 +13,7 @@ import { useBottomSheet } from "../contexts";
 import { AccountForm } from "./AccountForm";
 
 interface AccountItemProps {
-	id: AccountType['_id']
+	id: Account['_id']
 }
 
 export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
@@ -31,6 +31,7 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 		} );
 	}
 
+	const test = { ...account }
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
 		const menuItems: MenuItem[] = [

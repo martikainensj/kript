@@ -5,7 +5,7 @@ import { IconButton } from "../buttons";
 import { TextInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
 import { __ } from "../../helpers";
-import { Account, AccountType } from "../../models/Account";
+import { Account } from "../../models/Account";
 
 interface AccountFormProps {
 	account: Account,
@@ -16,10 +16,10 @@ export const AccountForm = ( {
 	account,
 	onSubmit
 }: AccountFormProps ) => {
-	const [ editedAccount, setEditedAccount ] = useState<AccountType>( { ...account } );
+	const [ editedAccount, setEditedAccount ] = useState( { ...account } );
 
 	useEffect( () => {
-		setEditedAccount( account );
+		setEditedAccount( { ...account } );
 	}, [ account ] );
 
 	return (
@@ -28,16 +28,17 @@ export const AccountForm = ( {
 				label={ __( 'Name' ) }
 				value={ editedAccount?.name }
 				placeholder={ `${ __( 'Example' ) }: ${ __( 'Investment Account' ) }` }
-				onChangeText={ name => setEditedAccount(
-					Object.assign( { ...editedAccount }, { name } )
-				 ) } />
+				onChangeText={ name => setEditedAccount( {
+					...editedAccount,
+					name } ) } />
 			<TextInput
 				label={ __( 'Notes' ) }
 				value={ editedAccount?.notes }
 				placeholder={ `${ __( 'Enter notes here' ) }...` }
-				onChangeText={ notes => setEditedAccount( 
-					Object.assign( { ...editedAccount }, { notes } )
-				) }
+				onChangeText={ notes => setEditedAccount( {
+					...editedAccount,
+					notes
+				} ) }
 				multiline={ true } />
 			<IconButton
 				icon={ 'save' }

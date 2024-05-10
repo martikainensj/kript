@@ -1,23 +1,25 @@
-import { Object, BSON, List } from 'realm';
-import { Holding } from './Holding';
+import { Object, BSON, List, ObjectSchema } from 'realm';
 import { Transaction } from './Transaction';
+import { Holding } from './Holding';
 
-export type AccountType = {
-  _id?: BSON.ObjectId;
-  owner_id: string;
-  name: string;
-  notes?: string;
-	holdings?: Holding[];
-	transactions?: Transaction[];
-};
-
-export class Account extends Object<AccountType> {
-  _id: BSON.ObjectId = new BSON.ObjectId();
+export class Account extends Object<Account> {
+  _id: BSON.ObjectId;
   owner_id!: string;
   name!: string;
   notes?: string;
-	hodlings?: Holding[];
-	transactions?: Transaction[];
+	transactions: List<Transaction>;
+	holdings: List<Holding>;
 
-	static primaryKey = '_id';
+	static schema: ObjectSchema = {
+		name: 'Account',
+		properties: {
+			_id: 'objectId',
+			owner_id: 'string',
+			name: 'string',
+			notes: 'string?',
+			transactions: 'Transaction[]',
+			holdings: 'Holding[]'
+		},
+		primaryKey: '_id'
+	}
 }

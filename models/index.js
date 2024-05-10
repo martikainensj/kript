@@ -1,15 +1,9 @@
-import { Account, AccountType } from './Account';
-import { Holding, HoldingType } from './Holding';
-import { Transaction, TransactionType } from './Transaction';
+import { Account } from './Account';
+import { Holding } from './Holding';
+import { Transaction } from './Transaction';
 
 export const Schemas = [
 	Account,
 	Holding,
 	Transaction
 ];
-
-export {
-	AccountType,
-	HoldingType,
-	TransactionType
-};

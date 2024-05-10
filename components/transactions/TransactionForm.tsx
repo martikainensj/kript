@@ -5,7 +5,7 @@ import { IconButton } from "../buttons";
 import { TextInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
 import { __ } from "../../helpers";
-import { Transaction, TransactionType } from "../../models/Transaction";
+import { Transaction } from "../../models/Transaction";
 
 interface TransactionFormProps {
 	transaction: Transaction,
@@ -16,10 +16,11 @@ export const TransactionForm = ( {
 	transaction,
 	onSubmit
 }: TransactionFormProps ) => {
-	const [ editedTransaction, setEditedTransaction ] = useState<TransactionType>( { ...transaction } );
+	const [ editedTransaction, setEditedTransaction ]
+		= useState( { ...transaction } );
 
 	useEffect( () => {
-		setEditedTransaction( transaction );
+		setEditedTransaction( { ...transaction } );
 	}, [ transaction ] );
 
 	return (
@@ -29,7 +30,7 @@ export const TransactionForm = ( {
 				value={ editedTransaction?.notes }
 				placeholder={ `${ __( 'Enter notes here' ) }...` }
 				onChangeText={ notes => setEditedTransaction( 
-					Object.assign( { ...editedTransaction }, { notes } )
+					Object.assign( editedTransaction, { notes } )
 				) }
 				multiline={ true } />
 			<IconButton

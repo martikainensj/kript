@@ -69,7 +69,7 @@ const Account: React.FC = ( {} ) => {
 		<View style={ styles.container }>
 			<FABProvider>
 				<Header
-					title={ account.name }
+					title={ account?.name }
 					left={ <BackButton /> }
 					right={ <IconButton
 						icon={ 'ellipsis-vertical' }
