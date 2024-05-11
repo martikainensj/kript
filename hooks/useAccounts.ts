@@ -1,12 +1,11 @@
-import { useQuery, useRealm, useUser } from "@realm/react";
+import { UpdateMode } from "realm";
+import { useQuery, useRealm } from "@realm/react";
 
 import { Account } from "../models/Account";
-import { UpdateMode, User } from "realm";
 import { __, confirmation } from "../helpers";
 
 export const useAccounts = () => {
 	const realm = useRealm();
-	const user: User = useUser();
 
 	const accounts = useQuery(
 		Account,

@@ -38,7 +38,7 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 			{
 				title: __( 'Edit' ),
 				leadingIcon: ( { color } ) => 
-					<Icon name={ 'create-outline' } color={ color } />,
+					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
 					setTitle( __( 'Edit Account' ) );
 					setContent(
@@ -55,7 +55,7 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 			{
 				title: __( 'Remove' ),
 				leadingIcon: ( { color } ) => 
-					<Icon name={ 'trash-outline' } color={ color } />,
+					<Icon name={ 'trash' } color={ color } />,
 				onPress: removeAccount
 			}
 		];

@@ -5,35 +5,16 @@ import { BSON, UpdateMode, User } from "realm";
 import { __, confirmation } from "../helpers";
 import { router } from "expo-router";
 import { Transaction } from "../models/Transaction";
-import { Account } from "../models/Account";
-import { Holding } from "../models/Holding";
 
 interface useTransactionProps {
-	id?: BSON.ObjectID,
-	account?: Account,
-	holding?: Holding
+	id?: BSON.ObjectID
 }
 
-export const useTransaction = ( { id, account, holding }: useTransactionProps = {} ) => {
+export const useTransaction = ( { id }: useTransactionProps = {} ) => {
 	const user: User = useUser();
 	const realm = useRealm();
-	const existingTransaction = id && useObject( Transaction, id );
-	const [ transaction, setTransaction ] = useState<Transaction>(
-		Object.assign(
-			{},
-			realm.create(
-				Transaction, {
-					owner_id: user.id,
-					account,
-					holding,
-					amount: 0,
-					price: 0,
-					total: 0,
-					date: Date.now(),
-				}
-			)
-		)
-	);
+	const realmTransaction = id && useObject( Transaction, id );
+	const [ transaction, setTransaction ] = useState<Transaction>();
 	
 	const saveTransaction = useCallback( ( editedTransaction: Transaction ) => {
 		const title = `${ editedTransaction._id
@@ -42,7 +23,6 @@ export const useTransaction = ( { id, account, holding }: useTransactionProps = 
 		const message = ( `${ editedTransaction._id
 			? __( 'Updating existing transaction' )
 			: __( 'Adding a new transaction' )}` )
-			+ `: ${ editedTransaction.holding.name }`
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise( ( resolve, _ ) => {
@@ -62,7 +42,7 @@ export const useTransaction = ( { id, account, holding }: useTransactionProps = 
 
 	const removeTransaction = useCallback( () => {
 		const title = __( 'Remove Transaction' );
-		const message = `${ __( 'Removing existing transaction' ) }: ${ existingTransaction.holding.name }`
+		const message = `${ __( 'Removing existing transaction' ) }: ${ realmTransaction._id }`
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise( ( resolve, _ ) => {
@@ -84,8 +64,8 @@ export const useTransaction = ( { id, account, holding }: useTransactionProps = 
 	}, [ transaction ] );
 
 	useEffect( () => {
-		existingTransaction?.isValid() && setTransaction( existingTransaction );
-	}, [ existingTransaction ] );
+		realmTransaction?.isValid() && setTransaction( realmTransaction );
+	}, [ realmTransaction ] );
 	
 	return { transaction, setTransaction, saveTransaction, removeTransaction }
 }
