@@ -1,29 +1,54 @@
 import { useCallback, useEffect, useState } from "react";
-import { useObject, useRealm, useUser } from "@realm/react"
+import { useObject, useRealm } from "@realm/react"
 
-import { BSON, UpdateMode, User } from "realm";
+import { BSON, UpdateMode } from "realm";
 import { __, confirmation } from "../helpers";
 import { router } from "expo-router";
 import { Holding } from "../models/Holding";
+import { Transaction } from "../models/Transaction";
 
 interface useHoldingProps {
 	id?: BSON.ObjectID
 }
 
 export const useHolding = ( { id }: useHoldingProps = {} ) => {
-	const user: User = useUser();
 	const realm = useRealm();
 	const realmHolding = id && useObject( Holding, id );
 	const [ holding, setHolding ] = useState<Holding>();
+
+	const addTransaction = useCallback( ( transaction: Transaction ) => {
+		const title = __( 'Add Transaction' );
+		const message = `${ __( 'Adding a new transaction' ) }\n`
+			+ __( 'Are you sure?' );
+
+		return new Promise( ( resolve, _ ) => {
+			confirmation( {
+				title: title,
+				message: message,
+				onAccept() {
+					realm.write( () => {
+						if ( ! realmHolding ) {
+							realm.write( () => {
+								realm.create(
+									Holding,
+									transaction.holding,
+									UpdateMode.Modified
+								);
+							} );
+						} 
+
+						realm.create( Transaction, transaction, UpdateMode.Modified );
+					} );
+					resolve( transaction );
+				}
+			} );
+		} );
+	}, [] );
 	
 	const saveHolding = useCallback( ( editedHolding: Holding ) => {
-		const title = `${ editedHolding._id
-			? __( 'Update Holding' )
-			: __( 'Add Holding' ) }`;
-		const message = ( `${ editedHolding._id
-			? __( 'Updating existing holding' )
-			: __( 'Adding a new holding' )}` )
-			+ "\n" + __( 'Are you sure?' );
+		const title = __( 'Update Holding' );
+		const message =  `${ __( 'Updating existing holding' ) }\n`
+			+ __( 'Are you sure?' );
 
 		return new Promise( ( resolve, _ ) => {
 			confirmation( {
@@ -37,7 +62,7 @@ export const useHolding = ( { id }: useHoldingProps = {} ) => {
 					resolve( editedHolding );
 				}
 			} );
-		} )
+		} );
 	}, [] );
 
 	const removeHolding = useCallback( () => {
@@ -67,5 +92,5 @@ export const useHolding = ( { id }: useHoldingProps = {} ) => {
 		realmHolding?.isValid() && setHolding( realmHolding );
 	}, [ realmHolding ] );
 	
-	return { holding, setHolding, saveHolding, removeHolding }
+	return { holding, setHolding, saveHolding, removeHolding, addTransaction }
 }

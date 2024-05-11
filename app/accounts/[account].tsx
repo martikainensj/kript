@@ -6,7 +6,7 @@ import { useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { __ } from "../../helpers";
-import { useAccount } from "../../hooks";
+import { useAccount, useHolding } from "../../hooks";
 import { Header, Icon } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
@@ -22,6 +22,7 @@ const Account: React.FC = ( {} ) => {
 	const user: User = useUser();
 
 	const { account, saveAccount, removeAccount } = useAccount( { id: accountId } );
+	const { addTransaction } = useHolding();
 	const { openMenu } = useMenu();
 	const { setActions, actions } = useFAB();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
@@ -74,9 +75,11 @@ const Account: React.FC = ( {} ) => {
 								notes: '',
 								account: account
 							} }
+							holdings={ [ ...account?.holdings ] }
 							onSubmit={ ( editedTransaction ) => {
+								addTransaction( editedTransaction );
 								/** TODO
-								 * - Lisää useHolding johon addTransaction joka lisää myös uuden holdingin jollei löydy
+								 * - Jatka holdingInput et saa toimimaan
 								 * - Lisää useTransaction johon saveTransaction ja deleteTransaction
 								 */
 							}	} />

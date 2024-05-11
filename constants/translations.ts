@@ -206,6 +206,18 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Nimi',
 		en_US: 'Name'
 	},
+	'price': {
+		fi: 'Hinta',
+		en_US: 'Price'
+	},
+	'amount': {
+		fi: 'Määrä',
+		en_US: 'Amount'
+	},
+	'total': {
+		fi: 'Summa',
+		en_US: 'Total'
+	},
 	'notes': {
 		fi: 'Muistiinpanot',
 		en_US: 'Notes'
