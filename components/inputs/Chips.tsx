@@ -4,14 +4,14 @@ import { Chip } from "react-native-paper";
 
 import { BorderRadius, Spacing, Theme } from "../../constants";
 
-interface ChipProps {
+export interface ChipProps {
 	label: string
-	value: string | number
+	value: any
 }
 
 interface ChipsProps {
-	value: ChipProps['value'],
-	setValue: React.Dispatch<React.SetStateAction<ChipProps['value']>>
+	value: any,
+	setValue: React.Dispatch<React.SetStateAction<any>>
 	items: ChipProps[]
 }
 
@@ -21,8 +21,8 @@ export const Chips: React.FC<ChipsProps> = ( {
 	items,
 } ) => {
 
-	const onPressHandler = ( item ) => {
-		setValue( item.value );
+	const onPressHandler = ( item: ChipProps ) => {
+		setValue( item );
 	}
 	
 	return (
@@ -35,7 +35,7 @@ export const Chips: React.FC<ChipsProps> = ( {
 				<Chip
 					key={ key }
 					mode={ 'flat' }
-					selected={ chip.value === value }
+					selected={ chip === value }
 					onPress={ onPressHandler.bind( this, chip ) }
 					style={ styles.chip }
 					theme={ Theme }>
@@ -48,7 +48,8 @@ export const Chips: React.FC<ChipsProps> = ( {
 
 const styles = StyleSheet.create( {
 	contentContainer: {
-		gap: Spacing.sm
+		gap: Spacing.sm,
+		paddingHorizontal: Spacing.md
 	},
 	chip: {
 		borderRadius: BorderRadius.xl

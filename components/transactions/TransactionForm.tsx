@@ -32,7 +32,7 @@ export const TransactionForm = ( {
 			<HoldingInput
 				label={ __( 'Holding' ) }
 				value={ editedTransaction?.holding }
-				holdings={ holdings }
+				holdings={ holdings ?? [] }
 				placeholder={ `${ __( 'Example' ) }: Apple Inc` }
 				setValue={ holding => setEditedTransaction(
 					Object.assign( { ...editedTransaction }, { holding } )

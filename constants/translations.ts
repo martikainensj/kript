@@ -117,10 +117,13 @@ export const Translations: { [ key: string ]: Translation } = {
 	},
 
 	// Holding
-
+	'holding': {
+		fi: 'Omistus',
+		en_US: "Holding"
+	},
 	'holdings': {
 		fi: 'Omistukset',
-		en_US: "holdings"
+		en_US: "Holdings"
 	},
 	'new holding': {
 		fi: 'Uusi omistus',

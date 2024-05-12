@@ -6,14 +6,13 @@ import {
 	StyleSheet,
 	View,
 } from "react-native";
-import {
-	TextInput,
-	TextInputProps,
-} from "react-native-paper";
-import { Chips } from "./Chips";
+import { ChipProps, Chips } from "./Chips";
 import { FontSize, Spacing, Theme } from "../../constants";
 import { Holding } from "../../models/Holding";
 import { BSON } from "realm";
+import { TextInput } from "./TextInput";
+import { Icon } from "../ui";
+import { IconButton } from "../buttons";
 
 interface HoldingInputProps {
 	value: Holding
@@ -30,19 +29,12 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	placeholder,
 	holdings
 }) => {
-	const textInputRef = useRef();
 	const [ inputValue, setInputValue ] = useState( value?.name );
-	const [ chipsValue, setChipsValue ] = useState( value?._id.toString() );
+	const [ chipsValue, setChipsValue ] = useState( value );
 	const [ canShowChips, setCanShowChips ] = useState( false );
 	const [ filteredHoldings, setFilteredHoldings ] = useState( holdings );
 
 	const chipsVisible = ! value || canShowChips;
-
-	const getHolding = ( id: BSON.ObjectID ) => {
-		if ( ! id ) return;
-
-		return filteredHoldings?.find( holding => holding._id === id );
-	}
 
 	const onFocusHandler = () => {
 		setCanShowChips( true );
@@ -51,7 +43,7 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	const onClear = () => {
 		setInputValue( '' );
 		setValue( null );
-		setChipsValue( '' );
+		setChipsValue( null );
 		setFilteredHoldings( holdings );
 	}
 	
@@ -65,7 +57,7 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 				} )
 			: holdings;
 
-		if ( ! filteredHoldings.length ) {
+		if ( !! value && ! filteredHoldings.length  ) {
 			filteredHoldings.push( {
 				_id: new BSON.ObjectID(),
 				name: value,
@@ -75,11 +67,11 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 		setFilteredHoldings( filteredHoldings );
 
 		if ( ! value ) {
-			return setChipsValue( '' );
+			return setChipsValue( null );
 		}
 
 		setChipsValue( 
-			!! filteredHoldings.length && filteredHoldings[0]._id.toString()
+			!! filteredHoldings.length && filteredHoldings[0]
 		);
 	}
 
@@ -88,30 +80,23 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 			return onClear();
 		}
 
-		const holding = getHolding( new BSON.ObjectID( chipsValue ) );
-		
-		setValue( holding );
-		
-		setInputValue( holding.name );
+		setValue( chipsValue );
+		setInputValue( chipsValue.name );
 		setCanShowChips( false );
 	}
 
-	const onSelectChip = ( value: string ) => {
-		const id = new BSON.ObjectID( value );
-		const holding = getHolding( id );
-
-		setChipsValue( holding._id.toString() );
-		setValue( holding );
-		setInputValue( holding?.name );
+	const onSelectChip = ( value: ChipProps ) => {
+		setChipsValue( value.value );
+		setValue( value.value );
+		setInputValue( value.label );
 		setCanShowChips( false );
 	}
 
 	return (
-		<View>
+		<View style={ styles.container }>
 			<TextInput
-				ref={ textInputRef }
 				value={ inputValue }
-				mode={ 'outlined' }
+				mode={ 'flat' }
 				autoCorrect={ false }
 				label={ label }
 				placeholder={ placeholder }
@@ -123,19 +108,20 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 				style={ {
 					fontSize: FontSize.sm,
 				} }
-				right={ ( value ) && 
-					<TextInput.Icon
+				right={ inputValue && 
+					<IconButton
 						icon={ 'close' }
 						size={ 16 }
 						onPress={ onClear } />
 				} />
+
 			{ chipsVisible && 
 				<View style={ styles.chipsWrapper }>
 					<Chips
-						items={ filteredHoldings.map( ( holding ) => {
+						items={ filteredHoldings.map( holding => {
 							return {
 								label: holding.name,
-								value: holding._id.toString()
+								value: holding
 							}
 						} ) }
 						value={ chipsValue }
@@ -147,6 +133,9 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 }
 
 const styles = StyleSheet.create( {
+	container: {
+		gap: Spacing.sm
+	},
 	chipsWrapper: {
 		marginHorizontal: -Spacing.md
 	},

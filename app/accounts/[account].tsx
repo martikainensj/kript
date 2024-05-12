@@ -75,11 +75,11 @@ const Account: React.FC = ( {} ) => {
 								notes: '',
 								account: account
 							} }
-							holdings={ [ ...account?.holdings ] }
+							holdings={ account?.holdings && [ ...account.holdings ] }
 							onSubmit={ ( editedTransaction ) => {
-								addTransaction( editedTransaction );
+								//addTransaction( editedTransaction );
 								/** TODO
-								 * - Jatka holdingInput et saa toimimaan
+								 * - Testaa holdingInput ja transactionForm
 								 * - Lisää useTransaction johon saveTransaction ja deleteTransaction
 								 */
 							}	} />
