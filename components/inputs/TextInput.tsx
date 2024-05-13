@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { TextInput as PaperTextInput, TextInputProps } from 'react-native-paper';
 import { BorderRadius, FontSize, Theme } from "../../constants";
 import { StyleSheet } from "react-native";
+import { Icon } from "../ui";
 
 export const TextInput: React.FC<TextInputProps> = ( {
 	value = '',
@@ -47,6 +48,11 @@ export const TextInput: React.FC<TextInputProps> = ( {
 			contentStyle={ {
 				minHeight: multiline ? 128 : 0
 			} }
+			right={ editedValue &&
+				<PaperTextInput.Icon
+					icon={ () => <Icon name={ 'close' } /> }
+					onPress={ () => setEditedValue( null ) } />
+			}
 			{ ...rest } />
 	)
 }

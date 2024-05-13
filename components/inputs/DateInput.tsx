@@ -6,11 +6,13 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import { TouchableRipple } from "react-native-paper";
 
 interface DateInputProps {
+	label: string
 	value: number
 	setValue: React.Dispatch<React.SetStateAction<number>>
 }
 
 export const DateInput: React.FC<DateInputProps> = ( {
+	label,
 	value,
 	setValue
 } ) => {
@@ -56,7 +58,7 @@ export const DateInput: React.FC<DateInputProps> = ( {
 		<TouchableRipple onPress={ onPress }>
 			<View style={ styles.container }>
 				<TextInput
-					label={ __( 'Date' ) }
+					label={ label }
 					value={ textInputValue }
 					onChangeText={ () => {} }
 					editable={ false }

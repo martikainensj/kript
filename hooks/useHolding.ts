@@ -1,20 +1,24 @@
-import { useCallback, useEffect, useState } from "react";
-import { useObject, useRealm } from "@realm/react"
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useObject, useQuery, useRealm, useUser } from "@realm/react"
 
-import { BSON, UpdateMode } from "realm";
+import { BSON, UpdateMode, User } from "realm";
 import { __, confirmation } from "../helpers";
 import { router } from "expo-router";
 import { Holding } from "../models/Holding";
 import { Transaction } from "../models/Transaction";
 
 interface useHoldingProps {
-	id?: BSON.ObjectID
+	id: BSON.ObjectID
 }
 
-export const useHolding = ( { id }: useHoldingProps = {} ) => {
+export const useHolding = ( { id }: useHoldingProps ) => {
 	const realm = useRealm();
-	const realmHolding = id && useObject( Holding, id );
-	const [ holding, setHolding ] = useState<Holding>();
+	const user: User = useUser();
+
+	const holding = useMemo( () => {
+		const holding = realm.objectForPrimaryKey<Holding>( 'Holding', id );
+		return holding;
+	}, [ realm ] ); 
 
 	const addTransaction = useCallback( ( transaction: Transaction ) => {
 		const title = __( 'Add Transaction' );
@@ -27,23 +31,24 @@ export const useHolding = ( { id }: useHoldingProps = {} ) => {
 				message: message,
 				onAccept() {
 					realm.write( () => {
-						if ( ! realmHolding ) {
-							realm.write( () => {
-								realm.create(
-									Holding,
-									transaction.holding,
-									UpdateMode.Modified
-								);
-							} );
+						if ( ! holding ) {
+							realm.create(
+								'Holding',
+								{
+									...holding,
+									owner_id: user.id
+								},
+								UpdateMode.Modified
+							);
 						} 
 
-						realm.create( Transaction, transaction, UpdateMode.Modified );
+						realm.create( 'Transaction', transaction, UpdateMode.Modified );
 					} );
 					resolve( transaction );
 				}
 			} );
 		} );
-	}, [] );
+	}, [ holding ] );
 	
 	const saveHolding = useCallback( ( editedHolding: Holding ) => {
 		const title = __( 'Update Holding' );
@@ -56,7 +61,7 @@ export const useHolding = ( { id }: useHoldingProps = {} ) => {
 				message: message,
 				onAccept() {
 					realm.write( () => {
-						realm.create( Holding, editedHolding, UpdateMode.Modified );
+						realm.create( 'Holding', editedHolding, UpdateMode.Modified );
 					} );
 
 					resolve( editedHolding );
@@ -67,7 +72,7 @@ export const useHolding = ( { id }: useHoldingProps = {} ) => {
 
 	const removeHolding = useCallback( () => {
 		const title = __( 'Remove Holding' );
-		const message = `${ __( 'Removing existing holding' ) }: ${ realmHolding._id }`
+		const message = `${ __( 'Removing existing holding' ) }: ${ holding._id }`
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise( ( resolve, _ ) => {
@@ -75,22 +80,17 @@ export const useHolding = ( { id }: useHoldingProps = {} ) => {
 				title,
 				message,
 				onAccept() {
-					router.navigate( `accounts/${holding.account._id}` );
+					router.dismiss( 1 );
 
 					realm.write( () => {
 						realm.delete( holding );
 					} );
 
-					setHolding( null );
 					resolve( true );
 				}
 			} );
 		} );
 	}, [ holding ] );
 
-	useEffect( () => {
-		realmHolding?.isValid() && setHolding( realmHolding );
-	}, [ realmHolding ] );
-	
-	return { holding, setHolding, saveHolding, removeHolding, addTransaction }
+	return { holding, saveHolding, removeHolding, addTransaction }
 }

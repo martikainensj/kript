@@ -1,5 +1,4 @@
 import React, {
-	useRef,
 	useState,
 } from "react";
 import {
@@ -7,12 +6,12 @@ import {
 	View,
 } from "react-native";
 import { ChipProps, Chips } from "./Chips";
-import { FontSize, Spacing, Theme } from "../../constants";
+import { Spacing } from "../../constants";
 import { Holding } from "../../models/Holding";
-import { BSON } from "realm";
+import { BSON, List, User } from "realm";
 import { TextInput } from "./TextInput";
-import { Icon } from "../ui";
-import { IconButton } from "../buttons";
+import { useUser } from "@realm/react";
+import { Transaction } from "../../models/Transaction";
 
 interface HoldingInputProps {
 	value: Holding
@@ -29,12 +28,14 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	placeholder,
 	holdings
 }) => {
+	const user: User = useUser();
+
 	const [ inputValue, setInputValue ] = useState( value?.name );
 	const [ chipsValue, setChipsValue ] = useState( value );
 	const [ canShowChips, setCanShowChips ] = useState( false );
 	const [ filteredHoldings, setFilteredHoldings ] = useState( holdings );
 
-	const chipsVisible = ! value || canShowChips;
+	const chipsVisible = !! filteredHoldings.length && ( ! value || canShowChips );
 
 	const onFocusHandler = () => {
 		setCanShowChips( true );
@@ -61,6 +62,8 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 			filteredHoldings.push( {
 				_id: new BSON.ObjectID(),
 				name: value,
+				owner_id: user.id,
+				transactions: new List<Transaction>
 			} );
 		}
 
@@ -96,24 +99,12 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 		<View style={ styles.container }>
 			<TextInput
 				value={ inputValue }
-				mode={ 'flat' }
-				autoCorrect={ false }
 				label={ label }
 				placeholder={ placeholder }
 				onChangeText={ onChangeText }
 				onSubmitEditing={ onSubmitHandler }
 				onBlur={ onSubmitHandler }
-				onFocus={ onFocusHandler }
-				theme={ Theme }
-				style={ {
-					fontSize: FontSize.sm,
-				} }
-				right={ inputValue && 
-					<IconButton
-						icon={ 'close' }
-						size={ 16 }
-						onPress={ onClear } />
-				} />
+				onFocus={ onFocusHandler } />
 
 			{ chipsVisible && 
 				<View style={ styles.chipsWrapper }>

@@ -209,6 +209,10 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Nimi',
 		en_US: 'Name'
 	},
+	'date': {
+		fi: 'Päivämäärä',
+		en_US: 'Date'
+	},
 	'price': {
 		fi: 'Hinta',
 		en_US: 'Price'

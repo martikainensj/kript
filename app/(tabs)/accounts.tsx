@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { User, BSON } from 'realm';
+import { User, BSON, List } from 'realm';
 import { useApp, useRealm, useUser } from '@realm/react';
 
 import { GlobalStyles, Spacing } from '../../constants';
@@ -10,7 +10,8 @@ import { IconButton} from '../../components/buttons';
 import { Header, ItemList } from '../../components/ui';
 import { useAccounts } from '../../hooks';
 import { useBottomSheet } from '../../components/contexts';
-import { Account } from '../../models/Account';
+import { Holding } from '../../models/Holding';
+import { Transaction } from '../../models/Transaction';
 
 const Accounts: React.FC = () => {
 	const realm = useRealm();
@@ -26,7 +27,9 @@ const Accounts: React.FC = () => {
 				account={ {
 					_id: new BSON.ObjectID(),
 					owner_id: user.id,
-					name: ''
+					name: '',
+					holdings: new List<Holding>,
+					transactions: new List<Transaction>
 				}	}
 				onSubmit={ ( account ) => {
 					addAccount( account ).then( closeBottomSheet );
@@ -34,12 +37,6 @@ const Accounts: React.FC = () => {
 		);
 		openBottomSheet();
 	}
-
-	useEffect( () => {
-		realm.subscriptions.update( mutableSubs => {
-			mutableSubs.add( accounts );
-		} );
-	}, [ realm, accounts ] );
 
 	return (
 		<View style={ styles.container }>

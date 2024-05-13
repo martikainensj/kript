@@ -2,11 +2,12 @@ import React, { useCallback, useEffect } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { Text } from "react-native-paper";
 import { BSON, User } from "realm";
+import { useRealm, useUser } from "@realm/react";
 import { useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { __ } from "../../helpers";
-import { useAccount, useHolding } from "../../hooks";
+import { useAccount } from "../../hooks";
 import { Header, Icon } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
@@ -14,17 +15,17 @@ import { useBottomSheet } from "../../components/contexts";
 import { AccountForm } from "../../components/accounts";
 import { FABProvider, useFAB } from "../../components/contexts";
 import { TransactionForm } from "../../components/transactions/TransactionForm";
-import { useUser } from "@realm/react";
 
-const Account: React.FC = ( {} ) => {
+const AccountPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ id: string }>();
 	const accountId = new BSON.ObjectID( params.id );
 	const user: User = useUser();
+	const realm = useRealm();
 
 	const { account, saveAccount, removeAccount } = useAccount( { id: accountId } );
-	const { addTransaction } = useHolding();
+
 	const { openMenu } = useMenu();
-	const { setActions, actions } = useFAB();
+	const { setActions } = useFAB();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
@@ -72,14 +73,20 @@ const Account: React.FC = ( {} ) => {
 							transaction={ {
 								_id: new BSON.ObjectID(),
 								owner_id: user.id,
-								notes: '',
-								account: account
+								date: Date.now(),
+								price: 0,
+								amount: 0,
+								total: 0
 							} }
 							holdings={ account?.holdings && [ ...account.holdings ] }
 							onSubmit={ ( editedTransaction ) => {
-								//addTransaction( editedTransaction );
+								//addTransaction( editedTransaction ).then( closeBottomSheet );
 								/** TODO
-								 * - Testaa holdingInput ja transactionForm
+								 * - Tee addTransaction setit useAccountiin
+								 * 		- Sinne kaikki uusien holdingien käsittely jne
+								 * 		- Tranascktioon property holding joka on vaa nimi?
+								 * 			- Vois sit tarkistaa löytyykö nimel ja jos ei niin luodaan sellanen
+								 * 					- Samalla jotenki liitetään kyseinen transskatio siihe holgingiin
 								 * - Lisää useTransaction johon saveTransaction ja deleteTransaction
 								 */
 							}	} />
@@ -89,7 +96,7 @@ const Account: React.FC = ( {} ) => {
 				}
 			}
 		])
-	}, [] );
+	}, [ account ] );
 	
 	return (
 		<View style={ styles.container }>
@@ -109,7 +116,7 @@ const Account: React.FC = ( {} ) => {
 	)
 }
 
-export default Account;
+export default AccountPage;
 
 const styles = StyleSheet.create( {
 	container: {

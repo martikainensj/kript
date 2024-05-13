@@ -1,9 +1,9 @@
-import { Account } from './Account';
-import { Holding } from './Holding';
-import { Transaction } from './Transaction';
+import { AccountSchema } from './Account';
+import { HoldingSchema } from './Holding';
+import { TransactionSchema } from './Transaction';
 
 export const Schemas = [
-	Account,
-	Holding,
-	Transaction
+	AccountSchema,
+	HoldingSchema,
+	TransactionSchema
 ];

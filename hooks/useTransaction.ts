@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { useObject, useRealm, useUser } from "@realm/react"
+import { useCallback, useMemo } from "react";
+import { useRealm, useUser } from "@realm/react"
 
 import { BSON, UpdateMode, User } from "realm";
 import { __, confirmation } from "../helpers";
@@ -7,15 +7,18 @@ import { router } from "expo-router";
 import { Transaction } from "../models/Transaction";
 
 interface useTransactionProps {
-	id?: BSON.ObjectID
+	id: BSON.ObjectID
 }
 
-export const useTransaction = ( { id }: useTransactionProps = {} ) => {
+export const useTransaction = ( { id }: useTransactionProps ) => {
 	const user: User = useUser();
 	const realm = useRealm();
-	const realmTransaction = id && useObject( Transaction, id );
-	const [ transaction, setTransaction ] = useState<Transaction>();
-	
+
+	const transaction = useMemo( () => {
+		const transaction = realm.objectForPrimaryKey<Transaction>( 'Transaction', id );
+		return transaction;
+	}, [ realm ] ); 
+
 	const saveTransaction = useCallback( ( editedTransaction: Transaction ) => {
 		const title = `${ editedTransaction._id
 			? __( 'Update Transaction' )
@@ -31,7 +34,7 @@ export const useTransaction = ( { id }: useTransactionProps = {} ) => {
 				message: message,
 				onAccept() {
 					realm.write( () => {
-						realm.create( Transaction, editedTransaction, UpdateMode.Modified );
+						realm.create( 'Transaction', editedTransaction, UpdateMode.Modified );
 					} );
 
 					resolve( editedTransaction );
@@ -42,7 +45,7 @@ export const useTransaction = ( { id }: useTransactionProps = {} ) => {
 
 	const removeTransaction = useCallback( () => {
 		const title = __( 'Remove Transaction' );
-		const message = `${ __( 'Removing existing transaction' ) }: ${ realmTransaction._id }`
+		const message = `${ __( 'Removing existing transaction' ) }: ${ transaction._id }`
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise( ( resolve, _ ) => {
@@ -50,22 +53,17 @@ export const useTransaction = ( { id }: useTransactionProps = {} ) => {
 				title,
 				message,
 				onAccept() {
-					router.navigate( 'transactions/' );
+					router.dismiss( 1 );
 
 					realm.write( () => {
 						realm.delete( transaction );
 					} );
 
-					setTransaction( null );
 					resolve( true );
 				}
 			} );
 		} );
 	}, [ transaction ] );
-
-	useEffect( () => {
-		realmTransaction?.isValid() && setTransaction( realmTransaction );
-	}, [ realmTransaction ] );
 	
-	return { transaction, setTransaction, saveTransaction, removeTransaction }
+	return { transaction, saveTransaction, removeTransaction }
 }

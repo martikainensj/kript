@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { useObject, useRealm, useUser } from "@realm/react"
+import { useCallback, useMemo } from "react";
+import { useRealm, useUser } from "@realm/react"
 
 import { Account } from "../models/Account"
 import { BSON, UpdateMode, User } from "realm";
@@ -7,14 +7,17 @@ import { __, confirmation } from "../helpers";
 import { router } from "expo-router";
 
 interface useAccountProps {
-	id?: BSON.ObjectID
+	id: BSON.ObjectID
 }
 
-export const useAccount = ( { id }: useAccountProps = {} ) => {
+export const useAccount = ( { id }: useAccountProps ) => {
 	const user: User = useUser();
 	const realm = useRealm();
-	const existingAccount = id && useObject( Account, id );
-	const [ account, setAccount ] = useState<Account>();
+	
+	const account = useMemo( () => {
+		const account = realm.objectForPrimaryKey<Account>( 'Account', id );
+		return account;
+	}, [ realm ] ); 
 
 	const saveAccount = useCallback( ( editedAccount: Account ) => {
 		const title = `${ editedAccount._id
@@ -32,7 +35,7 @@ export const useAccount = ( { id }: useAccountProps = {} ) => {
 				message: message,
 				onAccept() {
 					realm.write( () => {
-						realm.create( Account, editedAccount, UpdateMode.Modified );
+						realm.create( 'Account', editedAccount, UpdateMode.Modified );
 					} );
 
 					resolve( editedAccount );
@@ -43,7 +46,7 @@ export const useAccount = ( { id }: useAccountProps = {} ) => {
 
 	const removeAccount = useCallback( () => {
 		const title = __( 'Remove Account' );
-		const message = `${ __( 'Removing existing account' ) }: ${ existingAccount.name }`
+		const message = `${ __( 'Removing existing account' ) }: ${ account.name }`
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise( ( resolve, _ ) => {
@@ -57,16 +60,11 @@ export const useAccount = ( { id }: useAccountProps = {} ) => {
 						realm.delete( account );
 					} );
 
-					setAccount( null );
 					resolve( true );
 				}
 			} );
 		} );
 	}, [ account ] );
 
-	useEffect( () => {
-		existingAccount?.isValid() && setAccount( existingAccount );
-	}, [ existingAccount ] );
-	
-	return { account, setAccount, saveAccount, removeAccount }
+	return { account, saveAccount, removeAccount }
 }
