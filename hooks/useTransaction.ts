@@ -2,7 +2,8 @@ import { useCallback } from "react";
 import { useObject, useRealm, useUser } from "@realm/react"
 
 import { BSON, UpdateMode, User } from "realm";
-import { __, confirmation } from "../helpers";
+import { confirmation } from "../helpers";
+import { __ } from "../localization";
 import { router } from "expo-router";
 import { Transaction } from "../models/Transaction";
 

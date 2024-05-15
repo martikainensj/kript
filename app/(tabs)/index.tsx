@@ -4,7 +4,8 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 
 import { GlobalStyles, Spacing } from '../../constants';
 import { IconButton } from '../../components/buttons';
-import { __, confirmation } from '../../helpers';
+import { confirmation } from '../../helpers';
+import { __ } from '../../localization';
 import { Header, Icon } from '../../components/ui';
 
 const Home: React.FC = () => {

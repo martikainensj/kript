@@ -6,7 +6,7 @@ import { useUser } from "@realm/react";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
-import { __ } from "../../helpers";
+import { __ } from "../../localization";
 import { useHolding } from "../../hooks";
 import { Header, Icon } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";

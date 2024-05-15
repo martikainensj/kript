@@ -2,7 +2,8 @@ import { useCallback, useMemo } from "react";
 import { useRealm, useUser } from "@realm/react"
 
 import Realm from "realm";
-import { __, confirmation } from "../helpers";
+import { confirmation } from "../helpers";
+import { __ } from "../localization";
 import { useAccount } from "./useAccount";
 import { Holding } from "../models/Holding";
 import { router } from "expo-router";

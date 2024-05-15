@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput } from "./TextInput";
-import { __, addTimeToDateTimestamp } from "../../helpers";
+import { addTimeToDateTimestamp } from "../../helpers";
+import { __ } from "../../localization";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { TouchableRipple } from "react-native-paper";
 

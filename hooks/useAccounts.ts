@@ -2,7 +2,8 @@ import { UpdateMode } from "realm";
 import { useQuery, useRealm } from "@realm/react";
 
 import { Account } from "../models/Account";
-import { __, confirmation } from "../helpers";
+import { confirmation } from "../helpers";
+import { __ } from "../localization";
 import { useEffect } from "react";
 
 export const useAccounts = () => {

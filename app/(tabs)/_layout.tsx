@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { __ } from '../../helpers';
+import { __ } from '../../localization';
 import { Icon } from '../../components/ui';
 import { BottomTabs } from '../../components/navigation';
 import { GlobalStyles } from '../../constants';

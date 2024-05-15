@@ -5,7 +5,7 @@ import { Text, TouchableRipple } from "react-native-paper";
 import { Icon, Row } from "../ui";
 import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
 import { useHolding } from "../../hooks";
-import { __ } from "../../helpers";
+import { __ } from "../../localization";
 import { Holding } from "../../models/Holding";
 import { MenuItem, useBottomSheet, useMenu } from "../contexts";
 import { router } from "expo-router";

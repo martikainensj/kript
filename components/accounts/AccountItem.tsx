@@ -8,7 +8,7 @@ import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
 import { Account } from "../../models/Account";
 import { MenuItem, useMenu } from "../contexts/MenuContext";
 import { useAccount } from "../../hooks";
-import { __ } from "../../helpers";
+import { __ } from "../../localization";
 import { useBottomSheet } from "../contexts";
 import { AccountForm } from "./AccountForm";
 

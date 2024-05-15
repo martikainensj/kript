@@ -4,7 +4,7 @@ import Realm from 'realm';
 import { useUser } from '@realm/react';
 
 import { GlobalStyles, Spacing } from '../../constants';
-import { __ } from '../../helpers';
+import { __ } from '../../localization';
 import { AccountItem, AccountForm  } from '../../components/accounts';
 import { IconButton} from '../../components/buttons';
 import { Header, ItemList } from '../../components/ui';

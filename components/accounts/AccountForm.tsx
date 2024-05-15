@@ -4,7 +4,7 @@ import { View, StyleSheet } from "react-native";
 import { IconButton } from "../buttons";
 import { TextInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
-import { __ } from "../../helpers";
+import { __ } from "../../localization";
 import { Account } from "../../models/Account";
 
 interface AccountFormProps {

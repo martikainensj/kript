@@ -1,17 +1,24 @@
+import { __ } from "../localization";
 import { Color } from "./colors";
+import { Ionicons } from '@expo/vector-icons';
 
-export const TransactionTypes = {
-	buy: {
+interface TransactionType {
+  id: string;
+  name: string;
+  color?: string;
+  icon?: React.ComponentProps<typeof Ionicons>['name'];
+}
+
+export const TransactionTypes: TransactionType[] = [
+	{
 		id: 'buy',
-		name: 'Buy',
-		color: Color.success
+		name: __( 'Buy' )
 	},
-	sell: {
+	{
 		id: 'sell',
-		name: 'Sell',
-		color: Color.failure
+		name: __( 'Sell' )
 	}
-};
+];
 
 export const TransferTypes = {
 	deposit: {

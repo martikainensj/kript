@@ -117,6 +117,7 @@ export const Translations: { [ key: string ]: Translation } = {
 	},
 
 	// Holding
+
 	'holding': {
 		fi: 'Omistus',
 		en_US: "Holding"
@@ -199,6 +200,14 @@ export const Translations: { [ key: string ]: Translation } = {
 	'create a new transaction by clicking the "+" button in the top right corner.': {
 		fi: 'Luo uusi transaktio painamalla "+" painiketta oikeassa yläkulmassa',
 		en_US: 'Create a new transaction by clicking the "+" button in the top right corner.'
+	},
+	'buy': {
+		fi: 'Osta',
+		en_US: 'Buy'
+	},
+	'sell': {
+		fi: 'Myy',
+		en_US: 'Sell'
 	},
 
 	'are you sure?': {

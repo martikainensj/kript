@@ -1,4 +1,4 @@
-import { Translations } from "../constants";
+import { Translations } from "./translations";
 
 /**
  * Get translation string
@@ -8,7 +8,7 @@ import { Translations } from "../constants";
 export const __ = ( key: string ) => {
 	// TODO: Tee language context
 	const lang = "en_US";
-
+	
 	const translation = Translations[key.toLocaleLowerCase()]?.[lang];
 
 	// Missing translation

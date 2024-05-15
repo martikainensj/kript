@@ -1,6 +1,6 @@
 
 import { AuthOperationName } from '@realm/react';
-import { __ } from '../../helpers';
+import { __ } from '../../localization';
 import { StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import { Color, FontSize } from '../../constants';

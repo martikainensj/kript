@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { IconButton } from "../buttons";
-import { DateInput, HoldingInput, TextInput } from "../inputs";
-import { GlobalStyles, IconSize } from "../../constants";
-import { __ } from "../../helpers";
+import { DateInput, HoldingInput, Select, TextInput } from "../inputs";
+import { GlobalStyles, IconSize, TransactionTypes } from "../../constants";
+import { __ } from "../../localization";
 import { Transaction } from "../../models/Transaction";
 import { Holding } from "../../models/Holding";
 import { Account } from "../../models/Account";
+import { Icon } from "../ui";
 
 interface TransactionFormProps {
 	transaction: Transaction,
@@ -20,6 +21,8 @@ export const TransactionForm = ( {
 	account,
 	onSubmit
 }: TransactionFormProps ) => {
+	const [ buy, sell ] = TransactionTypes;
+	const [ transactionType, setTransactionType ] = useState( buy.id );
 	const [ editedTransaction, setEditedTransaction ]
 		= useState( { ...transaction } );
 
@@ -27,8 +30,26 @@ export const TransactionForm = ( {
 		setEditedTransaction( { ...transaction } );
 	}, [ transaction ] );
 
+
 	return (
 		<View style={ styles.container }>
+			<Select
+				value={ transactionType }
+				setValue={ setTransactionType }
+				options={ TransactionTypes.map( transactionType => {
+					return {
+						icon: ( { size, color } ) => {
+							return (
+								<Icon
+									name={transactionType.icon}
+									size={ size }
+									color={ color } />
+							)
+						},
+						label: transactionType.name,
+						value: transactionType.id
+					}
+				} ) } />
 			<DateInput
 				label={ __( 'Date' ) }
 				value={ editedTransaction.date }

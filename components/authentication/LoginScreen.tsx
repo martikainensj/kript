@@ -7,7 +7,7 @@ import AuthenticationErrorMessage from './AuthenticationErrorMessage';
 import { DefaultButton } from '../buttons';
 import { TextInput } from '../inputs';
 import { GlobalStyles, Spacing, IconSize } from '../../constants';
-import { __ } from '../../helpers';
+import { __ } from '../../localization';
 import { Header, Icon } from '../ui';
 
 export const LoginScreen = () => {
