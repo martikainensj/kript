@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from "react";
-import { useRealm, useUser } from "@realm/react"
+import { useCallback } from "react";
+import { useObject, useRealm, useUser } from "@realm/react"
 
 import { BSON, UpdateMode, User } from "realm";
 import { __, confirmation } from "../helpers";
@@ -13,11 +13,7 @@ interface useTransactionProps {
 export const useTransaction = ( { id }: useTransactionProps ) => {
 	const user: User = useUser();
 	const realm = useRealm();
-
-	const transaction = useMemo( () => {
-		const transaction = realm.objectForPrimaryKey<Transaction>( 'Transaction', id );
-		return transaction;
-	}, [ realm ] ); 
+	const transaction = useObject<Transaction>( 'Transaction', id );
 
 	const saveTransaction = useCallback( ( editedTransaction: Transaction ) => {
 		const title = `${ editedTransaction._id

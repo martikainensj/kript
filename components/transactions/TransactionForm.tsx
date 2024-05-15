@@ -7,16 +7,17 @@ import { GlobalStyles, IconSize } from "../../constants";
 import { __ } from "../../helpers";
 import { Transaction } from "../../models/Transaction";
 import { Holding } from "../../models/Holding";
+import { Account } from "../../models/Account";
 
 interface TransactionFormProps {
 	transaction: Transaction,
-	holdings?: Holding[],
-	onSubmit: ( transaction: Transaction ) => void;
+	account: Account,
+	onSubmit: ( transaction: Transaction, holding: Holding ) => void;
 }
 
 export const TransactionForm = ( {
 	transaction,
-	holdings,
+	account,
 	onSubmit
 }: TransactionFormProps ) => {
 	const [ editedTransaction, setEditedTransaction ]
@@ -34,14 +35,14 @@ export const TransactionForm = ( {
 				setValue={ date => setEditedTransaction(
 					Object.assign( { ...editedTransaction }, { date } )
 				) } />
-			{/*<HoldingInput
+			<HoldingInput
 				label={ __( 'Holding' ) }
-				value={ editedTransaction?.holding }
-				holdings={ holdings ?? [] }
+				value={ editedTransaction.holding_name }
+				account={account }
 				placeholder={ `${ __( 'Example' ) }: Apple Inc` }
-				setValue={ holding => setEditedTransaction(
-					Object.assign( { ...editedTransaction }, { holding } )
-				) } />*/}
+				setValue={ holding_name => setEditedTransaction(
+					Object.assign( { ...editedTransaction }, { holding_name } )
+				) } />
 			<TextInput
 				label={ __( 'Price' ) }
 				value={ editedTransaction?.price?.toString() }

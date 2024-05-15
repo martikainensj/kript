@@ -1,35 +1,40 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useMemo } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
-import { MenuItemProps, Text, TouchableRipple } from "react-native-paper";
-import { router } from 'expo-router';
+import { Text, TouchableRipple } from "react-native-paper";
 
 import { Icon, Row } from "../ui";
 import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
-import { Account } from "../../models/Account";
-import { MenuItem, useMenu } from "../contexts/MenuContext";
-import { useAccount } from "../../hooks";
+import { useHolding } from "../../hooks";
 import { __ } from "../../helpers";
-import { useBottomSheet } from "../contexts";
-import { AccountForm } from "./AccountForm";
+import { Holding } from "../../models/Holding";
+import { MenuItem, useBottomSheet, useMenu } from "../contexts";
+import { router } from "expo-router";
 
-interface AccountItemProps {
-	id: Account['_id']
+interface HoldingItemProps {
+	holding: Holding,
 }
 
-export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
+export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
 	const { openMenu } = useMenu();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { account, saveAccount, removeAccount } = useAccount( { id } )
+	const { removeHolding } = useHolding( { holding } );
 
-	function onPress() {
+	const {
+		name,
+		notes,
+		transactions,
+		owner_id,
+		account_id
+	} = useMemo( () => {
+		return holding
+	}, [ holding ] );
+
+	const onPress = () => {
 		router.navigate( {
-			pathname: 'accounts/[account]',
-			params: {
-				id: account._id.toString(),
-				name: account.name
-			}
+			pathname: 'holdings/[holding]',
+			params: { ...holding }
 		} );
-	}
+	};
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -39,13 +44,9 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
-					setTitle( __( 'Edit Account' ) );
+					setTitle( __( 'Edit Holding' ) );
 					setContent(
-						<AccountForm
-							account={ account }
-							onSubmit={ ( editedAccount ) => {
-								saveAccount( editedAccount ).then( closeBottomSheet );
-							}	} />
+						<Text>Todo</Text>
 					)
 
 					openBottomSheet();
@@ -55,14 +56,12 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 				title: __( 'Remove' ),
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'trash' } color={ color } />,
-				onPress: removeAccount
+				onPress: removeHolding
 			}
 		];
 
 		openMenu( anchor, menuItems );
-	}, [ account ] );
-
-	if ( ! account ) return;
+	}, [ holding ] );
 
 	return (
 		<TouchableRipple
@@ -71,14 +70,15 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 			theme={ Theme }>
 			<View style={ styles.container}>
 				<Row>
-					<Text style={ styles.name }>{ account.name }</Text>
+					<Text style={ styles.name }>{ holding.name }</Text>
+					<Text>{ holding.transactions.length }</Text>
 				</Row>
 			</View>
 		</TouchableRipple>
 	)
 }
 
-export default AccountItem;
+export default HoldingItem;
 
 const styles = StyleSheet.create( {
 	container: {

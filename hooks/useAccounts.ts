@@ -1,5 +1,5 @@
 import { UpdateMode } from "realm";
-import { useRealm } from "@realm/react";
+import { useQuery, useRealm } from "@realm/react";
 
 import { Account } from "../models/Account";
 import { __, confirmation } from "../helpers";
@@ -7,8 +7,7 @@ import { useEffect } from "react";
 
 export const useAccounts = () => {
 	const realm = useRealm();
-
-	const accounts = realm.objects<Account>( 'Account' )
+	const accounts = useQuery<Account>( 'Account' );
 
 	const addAccount = ( account: Account ) => {
 		const title = `${ account._id
@@ -35,6 +34,7 @@ export const useAccounts = () => {
 
 	useEffect( () => {
 		realm.subscriptions.update( mutableSubs => {
+			//mutableSubs.removeAll();
 			mutableSubs.add( accounts );
 		} );
 	}, [ realm, accounts ] );

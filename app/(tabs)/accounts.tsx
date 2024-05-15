@@ -28,8 +28,6 @@ const Accounts: React.FC = () => {
 					_id: new BSON.ObjectID(),
 					owner_id: user.id,
 					name: '',
-					holdings: new List<Holding>,
-					transactions: new List<Transaction>
 				}	}
 				onSubmit={ ( account ) => {
 					addAccount( account ).then( closeBottomSheet );

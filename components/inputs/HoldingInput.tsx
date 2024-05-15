@@ -8,17 +8,17 @@ import {
 import { ChipProps, Chips } from "./Chips";
 import { Spacing } from "../../constants";
 import { Holding } from "../../models/Holding";
-import { BSON, List, User } from "realm";
+import Realm from "realm";
 import { TextInput } from "./TextInput";
 import { useUser } from "@realm/react";
-import { Transaction } from "../../models/Transaction";
+import { Account } from "../../models/Account";
 
 interface HoldingInputProps {
-	value: Holding
-	setValue: React.Dispatch<React.SetStateAction<Holding>>
+	value: string
+	setValue: React.Dispatch<React.SetStateAction<string>>
 	label: string
 	placeholder: string,
-	holdings: Holding[]
+	account: Account
 }
 
 export const HoldingInput: React.FC<HoldingInputProps> = ({
@@ -26,14 +26,14 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	setValue,
 	label,
 	placeholder,
-	holdings
+	account
 }) => {
-	const user: User = useUser();
+	const user: Realm.User = useUser();
 
-	const [ inputValue, setInputValue ] = useState( value?.name );
+	const [ inputValue, setInputValue ] = useState( value );
 	const [ chipsValue, setChipsValue ] = useState( value );
 	const [ canShowChips, setCanShowChips ] = useState( false );
-	const [ filteredHoldings, setFilteredHoldings ] = useState( holdings );
+	const [ filteredHoldings, setFilteredHoldings ] = useState( [ ...account.holdings ] );
 
 	const chipsVisible = !! filteredHoldings.length && ( ! value || canShowChips );
 
@@ -45,25 +45,24 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 		setInputValue( '' );
 		setValue( null );
 		setChipsValue( null );
-		setFilteredHoldings( holdings );
+		setFilteredHoldings( [ ...account.holdings ] );
 	}
 	
 	const onChangeText = ( value: string ) => {
 		setInputValue( value );
 
 		const filteredHoldings = !! value
-			? holdings.filter( holding => {
+			? [ ...account.holdings ].filter( holding => {
 					const label = holding.name?.toLowerCase();
 					return label.includes( value.toString().toLowerCase() );
 				} )
-			: holdings;
+			: [ ...account.holdings ];
 
 		if ( !! value && ! filteredHoldings.length  ) {
 			filteredHoldings.push( {
-				_id: new BSON.ObjectID(),
 				name: value,
 				owner_id: user.id,
-				transactions: new List<Transaction>
+				account_id: account._id
 			} );
 		}
 
@@ -74,7 +73,7 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 		}
 
 		setChipsValue( 
-			!! filteredHoldings.length && filteredHoldings[0]
+			!! filteredHoldings.length && filteredHoldings[0].name
 		);
 	}
 
@@ -84,7 +83,7 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 		}
 
 		setValue( chipsValue );
-		setInputValue( chipsValue.name );
+		setInputValue( chipsValue );
 		setCanShowChips( false );
 	}
 
@@ -112,7 +111,7 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 						items={ filteredHoldings.map( holding => {
 							return {
 								label: holding.name,
-								value: holding
+								value: holding.name
 							}
 						} ) }
 						value={ chipsValue }

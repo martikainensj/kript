@@ -1,25 +1,25 @@
-import Realm from "realm";
+import Realm from 'realm';
 
 export type Transaction = {
-  _id: Realm.BSON.ObjectId;
   amount: number;
   date: number;
   notes?: string;
   owner_id: string;
   price: number;
   total: number;
+	holding_name: string
 };
 
 export const TransactionSchema = {
   name: 'Transaction',
+	embedded: true,
   properties: {
-    _id: 'objectId',
     amount: 'double',
     date: 'double',
     notes: 'string?',
     owner_id: 'string',
     price: 'double',
     total: 'double',
-  },
-  primaryKey: '_id',
+		holding_name: 'string',
+  }
 };

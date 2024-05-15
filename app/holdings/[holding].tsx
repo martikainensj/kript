@@ -1,29 +1,34 @@
 import React, { useCallback, useEffect } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { Text } from "react-native-paper";
-import { BSON, User } from "realm";
-import { useRealm, useUser } from "@realm/react";
-import { useLocalSearchParams } from "expo-router";
+import Realm from "realm";
+import { useUser } from "@realm/react";
+import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { __ } from "../../helpers";
-import { useAccount } from "../../hooks";
-import { Header, Icon, ItemList } from "../../components/ui";
+import { useHolding } from "../../hooks";
+import { Header, Icon } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { useBottomSheet } from "../../components/contexts";
-import { AccountForm } from "../../components/accounts";
 import { FABProvider, useFAB } from "../../components/contexts";
 import { TransactionForm } from "../../components/transactions/TransactionForm";
-import HoldingItem from "../../components/holdings/HoldingItem";
 
-const AccountPage: React.FC = ( {} ) => {
-  const params = useLocalSearchParams<{ id: string }>();
-	const accountId = new BSON.ObjectID( params.id );
-	const user: User = useUser();
-	const realm = useRealm();
 
-	const { account, saveAccount, removeAccount, addTransaction } = useAccount( { id: accountId } );
+const HoldingPage: React.FC = ( {} ) => {
+  const params = useLocalSearchParams<{ name: string, account_id: string }>();
+	const name = params.name;
+	const account_id = new Realm.BSON.ObjectID( params.account_id );
+	const user: Realm.User = useUser();
+
+	const { holding, removeHolding, account, addTransaction } = useHolding( {
+		holding: {
+			name,
+			account_id,
+			owner_id: user.id
+		}
+	} );
 
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
@@ -37,13 +42,9 @@ const AccountPage: React.FC = ( {} ) => {
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
-					setTitle( __( 'Edit Account' ) );
+					setTitle( __( 'Edit Holding' ) );
 					setContent(
-						<AccountForm
-							account={ account }
-							onSubmit={ ( editedAccount ) => {
-								saveAccount( editedAccount ).then( closeBottomSheet );
-							}	} />
+						<Text>Todo</Text>
 					);
 
 					openBottomSheet();
@@ -53,12 +54,14 @@ const AccountPage: React.FC = ( {} ) => {
 				title: __( 'Remove' ),
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'trash' } color={ color } />,
-				onPress: removeAccount
+				onPress: () => {
+					removeHolding().then( router.back	)
+				}
 			}
 		];
 
 		openMenu( anchor, menuItems );
-	}, [ account ] );
+	}, [ holding, account ] );
 
 	useEffect( () => {
 		setActions( [
@@ -77,17 +80,12 @@ const AccountPage: React.FC = ( {} ) => {
 								price: null,
 								amount: null,
 								total: null,
-								holding_name: ''
+								holding_name: holding.name
 							} }
 							account={ account }
 							onSubmit={ ( transaction ) => {
 								addTransaction( transaction ).then( closeBottomSheet );
-								/** TODO
-								 * - TYHJENNÄ REALM JA PISTÄ KOKO PASKA UUSIKS KÄYNTIIN
-								 * - Tee addTransaction setit useAccountiin
-								 * 		- Sinne kaikki uusien holdingien käsittely jne
-								 * - Lisää useTransaction johon saveTransaction ja deleteTransaction
-								 */
+
 							}	} />
 					);
 
@@ -101,27 +99,18 @@ const AccountPage: React.FC = ( {} ) => {
 		<View style={ styles.container }>
 			<FABProvider>
 				<Header
-					title={ account?.name }
+					title={ holding?.name }
 					left={ <BackButton /> }
 					right={ <IconButton
 						icon={ 'ellipsis-vertical' }
 						onPress={ onPressOptions } />
 					} />
-				<View style={ styles.contentContainer }>
-					<ItemList
-						title={ __( 'Holdings' ) }
-						noItemsTitleText={ __( 'No holdings' ) }
-						noItemsDescriptionText={ __( 'Create a new holding by clicking the "+" button in the bottom right corner.' ) }
-						items={ account.holdings.map( holding => {
-							return <HoldingItem holding={ holding } />
-						} ) } />
-				</View>
 			</FABProvider>
 		</View>
 	)
 }
 
-export default AccountPage;
+export default HoldingPage;
 
 const styles = StyleSheet.create( {
 	container: {

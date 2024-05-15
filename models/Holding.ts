@@ -2,21 +2,21 @@ import Realm from "realm";
 import { Transaction } from "./Transaction";
 
 export type Holding = {
-  _id: Realm.BSON.ObjectId;
   name: string;
   notes?: string;
   owner_id: string;
-  transactions: Realm.List<Transaction>;
+	account_id: Realm.BSON.ObjectID;
+  transactions?: Realm.List<Transaction>;
 };
 
 export const HoldingSchema = {
   name: 'Holding',
+	embedded: true,
   properties: {
-    _id: 'objectId',
     name: 'string',
     notes: 'string?',
     owner_id: 'string',
+		account_id: 'objectId',
     transactions: 'Transaction[]',
-  },
-  primaryKey: '_id',
+  }
 };
