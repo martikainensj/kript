@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { User, BSON, List } from 'realm';
-import { useApp, useRealm, useUser } from '@realm/react';
+import Realm from 'realm';
+import { useUser } from '@realm/react';
 
 import { GlobalStyles, Spacing } from '../../constants';
 import { __ } from '../../helpers';
@@ -10,12 +10,9 @@ import { IconButton} from '../../components/buttons';
 import { Header, ItemList } from '../../components/ui';
 import { useAccounts } from '../../hooks';
 import { useBottomSheet } from '../../components/contexts';
-import { Holding } from '../../models/Holding';
-import { Transaction } from '../../models/Transaction';
 
 const Accounts: React.FC = () => {
-	const realm = useRealm();
-	const user: User = useUser();
+	const user: Realm.User = useUser();
 	
 	const { accounts, addAccount } = useAccounts();
 	const { openBottomSheet, closeBottomSheet, setTitle, setContent } = useBottomSheet();
@@ -25,7 +22,7 @@ const Accounts: React.FC = () => {
 		setContent(
 			<AccountForm
 				account={ {
-					_id: new BSON.ObjectID(),
+					_id: new Realm.BSON.ObjectID(),
 					owner_id: user.id,
 					name: '',
 				}	}

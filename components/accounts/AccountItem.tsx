@@ -19,7 +19,7 @@ interface AccountItemProps {
 export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 	const { openMenu } = useMenu();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { account, saveAccount, removeAccount } = useAccount( { id } )
+	const { account, saveAccount, removeAccount, getBalance, getValue } = useAccount( { id } )
 
 	function onPress() {
 		router.navigate( {
@@ -72,6 +72,8 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 			<View style={ styles.container}>
 				<Row>
 					<Text style={ styles.name }>{ account.name }</Text>
+					<Text>{ getBalance() }</Text>
+					<Text>{ getValue() }</Text>
 				</Row>
 			</View>
 		</TouchableRipple>

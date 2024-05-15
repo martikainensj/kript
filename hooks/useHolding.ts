@@ -11,10 +11,11 @@ interface useHoldingProps {
 	holding: Holding,
 }
 
-export const useHolding = ( { holding }: useHoldingProps ) => {
+export const useHolding = ( props: useHoldingProps ) => {
 	const realm = useRealm();
 	const user: Realm.User = useUser();
-	const { account, getHoldingId, addTransaction } = useAccount( { id: holding.account_id } );
+	const { account, getHoldingId, getHolding, addTransaction } = useAccount( { id: props.holding.account_id } );
+	const holding = getHolding( props.holding.name );
 
 	const removeHolding = useCallback( () => {
 		const title = __( 'Remove Holding' );

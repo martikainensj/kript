@@ -105,6 +105,9 @@ const HoldingPage: React.FC = ( {} ) => {
 						icon={ 'ellipsis-vertical' }
 						onPress={ onPressOptions } />
 					} />
+					<View style={ styles.contentContainer }>
+						<Text>{ JSON.stringify( holding ) }</Text>
+					</View>
 			</FABProvider>
 		</View>
 	)
@@ -119,6 +122,6 @@ const styles = StyleSheet.create( {
 	contentContainer: {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
-		paddingTop: Spacing.md
+		paddingVertical: Spacing.md
 	}
 } );

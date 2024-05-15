@@ -1,11 +1,10 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useObject, useQuery, useRealm, useUser } from "@realm/react"
 import { router } from "expo-router";
 
 import { Account } from "../models/Account"
 import Realm, { BSON, UpdateMode, User } from "realm";
 import { __, confirmation } from "../helpers";
-import { Holding } from "../models/Holding";
 import { Transaction } from "../models/Transaction";
 
 interface useAccountProps {
@@ -17,23 +16,34 @@ export const useAccount = ( { id }: useAccountProps ) => {
 	const realm = useRealm();
 	const account = useObject<Account>( 'Account', id );
 
+	const {
+		_id,
+		name,
+		owner_id,
+		holdings,
+		notes,
+		transfers,
+	} = useMemo( () => {
+		return account;
+	}, [ account ] );
+
 	const getHoldingId = useCallback( ( name: string ) => {
-		return account.holdings.findIndex( holding => {
+		return holdings.findIndex( holding => {
 			return name === holding.name;
 		} );
 	}, [ realm ] );
 
 	const getHolding = useCallback( ( name: string ) => {
-		const existingHolding = account.holdings[ getHoldingId( name ) ];
+		const existingHolding = holdings[ getHoldingId( name ) ];
 
 		if ( ! existingHolding ) {
-			account.holdings.push( {
+			holdings.push( {
 				name,
 				owner_id: user.id,
-				account_id: account._id
+				account_id: _id
 			} );
 
-			return account.holdings[ account.holdings.length - 1 ];
+			return holdings[ holdings.length - 1 ];
 		}
 
 		return existingHolding;
@@ -106,9 +116,80 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		} );
 	}, [ account ] );
 
+	// Getters
+
+	const getTotal = useCallback( ( fractionDigits?: number ) => {
+		const total = holdings.reduce( ( holdingsTotal, holding ) => {
+			const { transactions } = holding;
+
+			return holdingsTotal + transactions.reduce( ( transactionsTotal, transaction ) => {
+				const { total } = transaction;
+
+				return transactionsTotal + total;
+			}, 0 );
+		}, 0 );
+
+		if ( fractionDigits ) {
+			return parseFloat( total.toFixed( fractionDigits ) );
+		}
+
+		return total;
+	}, [ account ] );
+
+	const getTransfersAmount = useCallback( ( fractionDigits?: number ) => {
+		const transfersAmount = transfers.reduce( ( amount, transfer ) => {
+			return amount + transfer.amount
+		}, 0 );
+
+		return transfersAmount;
+	}, [ account ] );
+
+	const getBalance = useCallback( ( fractionDigits?: number ) => {
+		const total = getTotal();
+		const transfersAmount = getTransfersAmount();
+
+		const balance = transfersAmount - total;
+
+		if ( fractionDigits ) {
+			return parseFloat( balance.toFixed( fractionDigits ) );
+		}
+
+		return balance;
+	}, [ account] );
+
+	const getValue = useCallback( ( fractionDigits?: number ) => {
+		const balance = getBalance();
+		
+		const value = holdings.reduce( ( totalValue, holding ) => {
+			const { transactions } = holding;
+		
+			// Get latest price
+			const { price } = transactions.reduce( ( latest, current ) => {
+				return ! latest || current.date > latest.date
+					? current
+					: latest;
+		  } );
+		
+			// Get amount
+			const amount = transactions.reduce( ( totalAmount, transaction ) => {
+				const { amount } = transaction;
+				return totalAmount + amount;
+			}, 0 );
+		
+			return totalValue + ( price * amount );
+		}, balance); 
+
+		if ( fractionDigits ) {
+			return parseFloat( value.toFixed( fractionDigits ) );
+		}
+
+		return value;
+	}, [ account ] );
+
 	return {
 		account, saveAccount, removeAccount,
 		getHoldingId, getHolding,
-		addTransaction
+		addTransaction,
+		getBalance, getValue
 	}
 }

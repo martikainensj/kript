@@ -29,8 +29,7 @@ export const LoginScreen = () => {
 	return (
 		<View style={ styles.container }>
 			<Header	title={ __( 'Welcome to Kript' ) } />
-			<View
-				style={ styles.contentContainer }>
+			<View style={ styles.contentContainer }>
 				<View style={ styles.inputsContainer }>
 					<TextInput
 						label={ __( 'Email' ) }
@@ -89,7 +88,7 @@ const styles = StyleSheet.create({
 
 	contentContainer: {
 		...GlobalStyles.container,
-		paddingTop: Spacing.md,
+		paddingVertical: Spacing.md,
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		gap: Spacing.md
