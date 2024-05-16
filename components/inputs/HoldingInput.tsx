@@ -18,7 +18,8 @@ interface HoldingInputProps {
 	setValue: React.Dispatch<React.SetStateAction<string>>
 	label: string
 	placeholder: string,
-	account: Account
+	account: Account,
+	disabled?: boolean,
 }
 
 export const HoldingInput: React.FC<HoldingInputProps> = ({
@@ -26,7 +27,8 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	setValue,
 	label,
 	placeholder,
-	account
+	account,
+	disabled,
 }) => {
 	const user: Realm.User = useUser();
 
@@ -103,7 +105,8 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 				onChangeText={ onChangeText }
 				onSubmitEditing={ onSubmitHandler }
 				onBlur={ onSubmitHandler }
-				onFocus={ onFocusHandler } />
+				onFocus={ onFocusHandler }
+				disabled={ disabled } />
 
 			{ chipsVisible && 
 				<View style={ styles.chipsWrapper }>

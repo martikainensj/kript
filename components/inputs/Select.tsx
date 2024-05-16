@@ -2,7 +2,7 @@ import React from 'react';
 import { GestureResponderEvent, StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { SegmentedButtons } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
-import { BorderRadius } from '../../constants';
+import { BorderRadius, Spacing, Theme } from '../../constants';
 
 interface OptionProps {
 	value: string;
@@ -22,13 +22,15 @@ interface OptionProps {
 interface SelectProps {
 	value: any,
 	setValue: React.Dispatch<React.SetStateAction<any>>
-	options: OptionProps[]
+	options: OptionProps[],
+	style?: StyleProp<ViewStyle>;
 }
 
 export const Select: React.FC<SelectProps> = ( {
-	options,
 	value,
-	setValue
+	setValue,
+	options,
+	style
 } ) => {
 	const onValueChange = ( value ) => {
 		setValue( value );
@@ -38,18 +40,42 @@ export const Select: React.FC<SelectProps> = ( {
 		<SegmentedButtons
 			value={ value }
 			onValueChange={ onValueChange }
+			theme={ { roundness: 0 } }
 			buttons={ options?.map( option => {
 				return {
 					...option,
-					showSelectedCheck: true
+					showSelectedCheck: true,
+					style: [
+						styles.buttonContainer,
+						option.value === value && {
+							backgroundColor: Theme.colors.background
+						}
+					]
 				}	
 			} ) }
-			style={ styles.container } />
+			style={ [
+				styles.container,
+				style
+			] } />
 	);
 }
 
 const styles = StyleSheet.create( {
 	container: {
-
+		padding: Spacing.xs,
+		backgroundColor: Theme.colors.surfaceVariant,
+		borderRadius: BorderRadius.md,
+		gap: Spacing.xs
+	},
+	buttonContainer: {
+		borderTopLeftRadius: BorderRadius.sm,
+		borderTopRightRadius: BorderRadius.sm,
+		borderBottomLeftRadius: BorderRadius.sm,
+		borderBottomRightRadius: BorderRadius.sm,
+		borderTopWidth: 0,
+		borderLeftWidth: 0,
+		borderRightWidth: 0,
+		borderBottomWidth: 0,
+		overflow: 'hidden',
 	}
 } );

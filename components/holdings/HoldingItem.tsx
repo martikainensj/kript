@@ -44,12 +44,11 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
+					openBottomSheet();
 					setTitle( __( 'Edit Holding' ) );
 					setContent(
 						<Text>Todo</Text>
 					)
-
-					openBottomSheet();
 				}
 			},
 			{

@@ -39,6 +39,7 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
+					openBottomSheet();
 					setTitle( __( 'Edit Account' ) );
 					setContent(
 						<AccountForm
@@ -47,8 +48,6 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 								saveAccount( editedAccount ).then( closeBottomSheet );
 							}	} />
 					)
-
-					openBottomSheet();
 				}
 			},
 			{

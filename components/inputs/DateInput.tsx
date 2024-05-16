@@ -17,7 +17,7 @@ export const DateInput: React.FC<DateInputProps> = ( {
 	value,
 	setValue
 } ) => {
-	const [ textInputValue, setTextInputValue ] = useState<string>();
+	const [ textInputValue, setTextInputValue ] = useState<string>( new Date( value ).toLocaleDateString() );
 	const [ isDatePickerVisible, setDatePickerVisibility ] = useState(false);
 	
 	const show = () => {
@@ -33,7 +33,9 @@ export const DateInput: React.FC<DateInputProps> = ( {
 	}
 
   const onConfirm = ( date: Date ) => {
-		setValue( addTimeToDateTimestamp( date.getTime() ) );
+		const timestamp = addTimeToDateTimestamp( date.getTime() );
+		setValue( timestamp );
+		setTextInputValue( date.toLocaleDateString() );
     hide();
   };
 
@@ -49,12 +51,7 @@ export const DateInput: React.FC<DateInputProps> = ( {
 			setValue( currentTimestamp );
 		}
 	}, [] );
-
-	useEffect( () => {
-		value &&
-			setTextInputValue( new Date( value ).toLocaleDateString() );	
-	}, [ value ] );
-
+	
 	return (
 		<TouchableRipple onPress={ onPress }>
 			<View style={ styles.container }>

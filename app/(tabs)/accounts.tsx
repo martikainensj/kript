@@ -18,6 +18,7 @@ const Accounts: React.FC = () => {
 	const { openBottomSheet, closeBottomSheet, setTitle, setContent } = useBottomSheet();
 
 	const onPressAdd = () => {
+		openBottomSheet();
 		setTitle( __( 'New Account' ) );
 		setContent(
 			<AccountForm
@@ -30,7 +31,6 @@ const Accounts: React.FC = () => {
 					addAccount( account ).then( closeBottomSheet );
 				}	} />
 		);
-		openBottomSheet();
 	}
 
 	return (

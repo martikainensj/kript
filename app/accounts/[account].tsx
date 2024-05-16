@@ -37,6 +37,7 @@ const AccountPage: React.FC = ( {} ) => {
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
+					openBottomSheet();
 					setTitle( __( 'Edit Account' ) );
 					setContent(
 						<AccountForm
@@ -45,8 +46,6 @@ const AccountPage: React.FC = ( {} ) => {
 								saveAccount( editedAccount ).then( closeBottomSheet );
 							}	} />
 					);
-
-					openBottomSheet();
 				}
 			},
 			{
@@ -68,6 +67,7 @@ const AccountPage: React.FC = ( {} ) => {
 				) },
 				label: __( 'Add Transaction' ),
 				onPress: () => {
+					openBottomSheet();
 					setTitle( __( 'New Transaction' ) );
 					setContent(
 						<TransactionForm
@@ -90,8 +90,6 @@ const AccountPage: React.FC = ( {} ) => {
 								 */
 							}	} />
 					);
-
-					openBottomSheet();
 				}
 			}
 		])

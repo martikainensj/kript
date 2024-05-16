@@ -1,6 +1,7 @@
 import { __ } from "../localization";
 import { Color } from "./colors";
 import { Ionicons } from '@expo/vector-icons';
+import { Theme } from "./theme";
 
 interface TransactionType {
   id: string;
@@ -12,11 +13,15 @@ interface TransactionType {
 export const TransactionTypes: TransactionType[] = [
 	{
 		id: 'buy',
-		name: __( 'Buy' )
+		name: __( 'Buy' ),
+		color: Theme.colors.success,
+		icon: 'enter-outline'
 	},
 	{
 		id: 'sell',
-		name: __( 'Sell' )
+		name: __( 'Sell' ),
+		color: Theme.colors.error,
+		icon: 'exit-outline'
 	}
 ];
 

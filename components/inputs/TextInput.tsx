@@ -14,6 +14,7 @@ export const TextInput: React.FC<TextInputProps> = ( {
 	autoComplete = "off",
 	autoCorrect = false,
 	mode = 'flat',
+	disabled,
 	...rest
 } ) => {
 	const [ editedValue, setEditedValue ] = useState( value );
@@ -48,11 +49,12 @@ export const TextInput: React.FC<TextInputProps> = ( {
 			contentStyle={ {
 				minHeight: multiline ? 128 : 0
 			} }
-			right={ editedValue &&
+			right={ ( ! disabled && editedValue ) &&
 				<PaperTextInput.Icon
 					icon={ () => <Icon name={ 'close' } /> }
 					onPress={ () => setEditedValue( null ) } />
 			}
+			disabled={ disabled }
 			{ ...rest } />
 	)
 }

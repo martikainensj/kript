@@ -42,12 +42,11 @@ const HoldingPage: React.FC = ( {} ) => {
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
+					openBottomSheet();
 					setTitle( __( 'Edit Holding' ) );
 					setContent(
 						<Text>Todo</Text>
 					);
-
-					openBottomSheet();
 				}
 			},
 			{
@@ -71,6 +70,7 @@ const HoldingPage: React.FC = ( {} ) => {
 				) },
 				label: __( 'Add Transaction' ),
 				onPress: () => {
+					openBottomSheet();
 					setTitle( __( 'New Transaction' ) );
 					setContent(
 						<TransactionForm
@@ -85,11 +85,8 @@ const HoldingPage: React.FC = ( {} ) => {
 							account={ account }
 							onSubmit={ ( transaction ) => {
 								addTransaction( transaction ).then( closeBottomSheet );
-
 							}	} />
 					);
-
-					openBottomSheet();
 				}
 			}
 		])

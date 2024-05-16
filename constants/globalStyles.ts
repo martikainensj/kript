@@ -58,6 +58,6 @@ export const GlobalStyles = StyleSheet.create({
 	},
 	form: {
 		gap: Spacing.sm,
-		paddingBottom: Spacing.xl
+		paddingVertical: Spacing.md
 	}
 })

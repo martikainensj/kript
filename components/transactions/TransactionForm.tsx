@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 
 import { IconButton } from "../buttons";
 import { DateInput, HoldingInput, Select, TextInput } from "../inputs";
-import { GlobalStyles, IconSize, TransactionTypes } from "../../constants";
+import { GlobalStyles, IconSize, Spacing, TransactionTypes } from "../../constants";
 import { __ } from "../../localization";
 import { Transaction } from "../../models/Transaction";
 import { Holding } from "../../models/Holding";
@@ -30,9 +30,14 @@ export const TransactionForm = ( {
 		setEditedTransaction( { ...transaction } );
 	}, [ transaction ] );
 
-
 	return (
 		<View style={ styles.container }>
+			<DateInput
+				label={ __( 'Date' ) }
+				value={ editedTransaction.date }
+				setValue={ date => setEditedTransaction(
+					Object.assign( { ...editedTransaction }, { date } )
+				) } />
 			<Select
 				value={ transactionType }
 				setValue={ setTransactionType }
@@ -47,15 +52,11 @@ export const TransactionForm = ( {
 							)
 						},
 						label: transactionType.name,
-						value: transactionType.id
+						value: transactionType.id,
+						checkedColor: transactionType.color
 					}
-				} ) } />
-			<DateInput
-				label={ __( 'Date' ) }
-				value={ editedTransaction.date }
-				setValue={ date => setEditedTransaction(
-					Object.assign( { ...editedTransaction }, { date } )
-				) } />
+				} ) }
+				style={ styles.selectContainer } />
 			<HoldingInput
 				label={ __( 'Holding' ) }
 				value={ editedTransaction.holding_name }
@@ -63,7 +64,8 @@ export const TransactionForm = ( {
 				placeholder={ `${ __( 'Example' ) }: Apple Inc` }
 				setValue={ holding_name => setEditedTransaction(
 					Object.assign( { ...editedTransaction }, { holding_name } )
-				) } />
+				) }
+				disabled={ !! transaction.holding_name } />
 			<TextInput
 				label={ __( 'Price' ) }
 				value={ editedTransaction?.price?.toString() }
@@ -118,9 +120,13 @@ export const TransactionForm = ( {
 
 const styles = StyleSheet.create( {
 	container: {
-		...GlobalStyles.form
+		...GlobalStyles.form,
+		
 	},
 	submitButton: {
 		alignSelf: 'flex-end'
+	},
+	selectContainer: {
+		marginBottom: Spacing.md
 	}
 } );
