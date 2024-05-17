@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
-import { TextInput as PaperTextInput, TextInputProps } from 'react-native-paper';
+import { TextInput as PaperTextInput, TextInputProps as PaperTextInputProps } from 'react-native-paper';
 import { BorderRadius, FontSize, Theme } from "../../constants";
 import { StyleSheet } from "react-native";
 import { Icon } from "../ui";
 
+interface TextInputProps extends Omit<PaperTextInputProps, 'value' | 'onChangeText'> {
+	value: string | number,
+	onChangeText: ( ( text: string | number ) => void ) & Function
+}
+
 export const TextInput: React.FC<TextInputProps> = ( {
-	value = '',
+	value,
 	onChangeText,
 	placeholder = 'Write here...',
 	keyboardType = 'default',
@@ -17,25 +21,40 @@ export const TextInput: React.FC<TextInputProps> = ( {
 	disabled,
 	...rest
 } ) => {
-	const [ editedValue, setEditedValue ] = useState( value );
+	const onChangeTextHandler = ( string: string ) => {
+		if ( keyboardType === 'numeric' ) {
+			string = string.replace(/[^0-9.]/g, '');
 
-	const onChangeTextHandler = ( value: string ) => {
-		setEditedValue( value );
+			if ( string.split( '.' ).length > 2 ) {
+				return;
+			}
+
+			if ( string.startsWith( '.' ) ) {
+				return onChangeText( `0${ string }` );
+			}
+		}
+
+		onChangeText( string );
 	}
 
-	useEffect( () => {
-		editedValue !== value && setEditedValue( value );
-	}, [ value ] );
+	const onBlur = () => {
+		if ( keyboardType === 'numeric' ) {
+			const numberValue = parseFloat( value?.toString() );
 
-	useEffect( () => {
-		editedValue !== value && onChangeText( editedValue );
-	}, [ editedValue ] );
+			if ( isNaN( numberValue ) ) {
+				return onChangeText( null );
+			}
+
+			onChangeText( numberValue );
+		}
+	}
 
 	return (
 		<PaperTextInput
 			mode={ mode }
-			value={ !! editedValue ? editedValue.toString() : null }
+			value={ value?.toString() ?? null }
 			onChangeText={ onChangeTextHandler }
+			onBlur={ onBlur }
 			placeholder={ placeholder }
 			keyboardType={ keyboardType }
 			editable={ editable }
@@ -49,10 +68,10 @@ export const TextInput: React.FC<TextInputProps> = ( {
 			contentStyle={ {
 				minHeight: multiline ? 128 : 0
 			} }
-			right={ ( ! disabled && editedValue ) &&
+			right={ ( ! disabled && value ) &&
 				<PaperTextInput.Icon
 					icon={ () => <Icon name={ 'close' } /> }
-					onPress={ () => setEditedValue( null ) } />
+					onPress={ () => onChangeText( null ) } />
 			}
 			disabled={ disabled }
 			{ ...rest } />

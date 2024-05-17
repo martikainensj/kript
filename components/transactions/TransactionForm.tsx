@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { IconButton } from "../buttons";
@@ -6,14 +6,13 @@ import { DateInput, HoldingInput, Select, TextInput } from "../inputs";
 import { GlobalStyles, IconSize, Spacing, TransactionTypes } from "../../constants";
 import { __ } from "../../localization";
 import { Transaction } from "../../models/Transaction";
-import { Holding } from "../../models/Holding";
 import { Account } from "../../models/Account";
 import { Icon } from "../ui";
 
 interface TransactionFormProps {
 	transaction: Transaction,
 	account: Account,
-	onSubmit: ( transaction: Transaction, holding: Holding ) => void;
+	onSubmit: ( transaction: Transaction ) => void;
 }
 
 export const TransactionForm = ( {
@@ -26,6 +25,10 @@ export const TransactionForm = ( {
 	const [ editedTransaction, setEditedTransaction ]
 		= useState( { ...transaction } );
 
+	const { date, price, amount, total, holding_name, notes } = useMemo( () => {
+		return editedTransaction
+	}, [ editedTransaction ] );
+		
 	useEffect( () => {
 		setEditedTransaction( { ...transaction } );
 	}, [ transaction ] );
@@ -34,10 +37,11 @@ export const TransactionForm = ( {
 		<View style={ styles.container }>
 			<DateInput
 				label={ __( 'Date' ) }
-				value={ editedTransaction.date }
+				value={ date }
 				setValue={ date => setEditedTransaction(
 					Object.assign( { ...editedTransaction }, { date } )
 				) } />
+
 			<Select
 				value={ transactionType }
 				setValue={ setTransactionType }
@@ -57,51 +61,50 @@ export const TransactionForm = ( {
 					}
 				} ) }
 				style={ styles.selectContainer } />
+
 			<HoldingInput
 				label={ __( 'Holding' ) }
-				value={ editedTransaction.holding_name }
-				account={account }
+				value={ holding_name }
+				account={ account }
 				placeholder={ `${ __( 'Example' ) }: Apple Inc` }
 				setValue={ holding_name => setEditedTransaction(
 					Object.assign( { ...editedTransaction }, { holding_name } )
 				) }
 				disabled={ !! transaction.holding_name } />
+
 			<TextInput
 				label={ __( 'Price' ) }
-				value={ editedTransaction?.price?.toString() }
+				value={ price }
 				placeholder={ '0' }
+				keyboardType={ 'numeric' }
 				inputMode={ 'decimal' }
 				onChangeText={ price => setEditedTransaction(
-					Object.assign( { ...editedTransaction }, {
-						price: price && parseFloat( price )
-					} )
+					Object.assign( { ...editedTransaction }, { price } )
 				) } />
 
 			<TextInput
 				label={ __( 'Amount' ) }
-				value={ editedTransaction?.amount?.toString() }
+				value={ amount }
 				placeholder={ '0' }
+				keyboardType={ 'numeric' }
 				inputMode={ 'decimal' }
 				onChangeText={ amount => setEditedTransaction(
-					Object.assign( { ...editedTransaction }, {
-						amount: amount && parseFloat( amount ) 
-					} )
-				) } />
+					Object.assign( { ...editedTransaction }, { amount } )
+	 			) } />
 
 			<TextInput
 				label={ __( 'Total' ) }
-				value={ editedTransaction?.total?.toString() }
+				value={ total }
 				placeholder={ '0' }
+				keyboardType={ 'numeric' }
 				inputMode={ 'decimal' }
 				onChangeText={ total => setEditedTransaction(
-					Object.assign( { ...editedTransaction }, {
-						total: total && parseFloat( total )
-					} )
-				) } />
+					Object.assign( { ...editedTransaction }, { total } )
+	 			) } />
 
 			<TextInput
 				label={ __( 'Notes' ) }
-				value={ editedTransaction?.notes }
+				value={ notes }
 				placeholder={ `${ __( 'Enter notes here' ) }...` }
 				onChangeText={ notes => setEditedTransaction(
 					Object.assign( { ...editedTransaction }, { notes } )

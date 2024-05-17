@@ -1,4 +1,4 @@
-export function addTimeToDateTimestamp( timestamp: number ) {
+export const addTimeToDateTimestamp = ( timestamp: number ) => {
 	const date = new Date( timestamp );
 	const currentDate = new Date();
 	
@@ -8,4 +8,4 @@ export function addTimeToDateTimestamp( timestamp: number ) {
 	date.setMilliseconds( currentDate.getMilliseconds() );
  
 	return date.valueOf();
- }
+}
