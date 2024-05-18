@@ -1,6 +1,6 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
-import { MenuItemProps, Text, TouchableRipple } from "react-native-paper";
+import { Text, TouchableRipple } from "react-native-paper";
 import { router } from 'expo-router';
 
 import { Icon, Row } from "../ui";
@@ -11,6 +11,7 @@ import { useAccount } from "../../hooks";
 import { __ } from "../../localization";
 import { useBottomSheet } from "../contexts";
 import { AccountForm } from "./AccountForm";
+import { Grid, Value } from "../ui";
 
 interface AccountItemProps {
 	id: Account['_id']
@@ -20,6 +21,10 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 	const { openMenu } = useMenu();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { account, saveAccount, removeAccount, getBalance, getValue } = useAccount( { id } )
+	const values = useMemo( () => [
+		<Value label={ __( 'Balance' ) } value={ getBalance() } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ getValue() } isVertical={ true } />,
+	], [ account ] );
 
 	function onPress() {
 		router.navigate( {
@@ -69,11 +74,12 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 			onLongPress={ onLongPress }
 			theme={ Theme }>
 			<View style={ styles.container}>
-				<Row>
-					<Text style={ styles.name }>{ account.name }</Text>
-					<Text>{ getBalance() }</Text>
-					<Text>{ getValue() }</Text>
-				</Row>
+				<Grid
+					columns={ 2 }
+					items={ [ <Text style={ styles.name }>{ account.name }</Text> ] } />
+				<Grid
+					columns={ 4 }
+					items= { values } />
 			</View>
 		</TouchableRipple>
 	)

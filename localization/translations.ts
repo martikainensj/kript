@@ -209,6 +209,14 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Myy',
 		en_US: 'Sell'
 	},
+	'balance': {
+    fi: 'Saldo',
+    en_US: 'Balance'
+  },
+  'value': {
+    fi: 'Arvo',
+    en_US: 'Value'
+  },
 
 	'are you sure?': {
 		fi: 'Oletko varma?',
