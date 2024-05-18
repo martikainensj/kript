@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-native";
 
 import { IconButton } from "../buttons";
 import { DateInput, HoldingInput, Select, TextInput } from "../inputs";
@@ -8,6 +8,7 @@ import { __ } from "../../localization";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
 import { Icon } from "../ui";
+import { stripRealmListsFromObject } from "../../helpers";
 
 interface TransactionFormProps {
 	transaction: Transaction,
@@ -28,96 +29,107 @@ export const TransactionForm = ( {
 	const { date, price, amount, total, holding_name, notes } = useMemo( () => {
 		return editedTransaction
 	}, [ editedTransaction ] );
+
+	const handleDismissKeyboard = ( ) => {
+    Keyboard.dismiss();
+  };
+
+	const onSubmitHandler = () => {
+		onSubmit( stripRealmListsFromObject( editedTransaction ) )
+	}
 		
 	useEffect( () => {
 		setEditedTransaction( { ...transaction } );
 	}, [ transaction ] );
 
 	return (
-		<View style={ styles.container }>
-			<DateInput
-				label={ __( 'Date' ) }
-				value={ date }
-				setValue={ date => setEditedTransaction(
-					Object.assign( { ...editedTransaction }, { date } )
-				) } />
+    <TouchableWithoutFeedback onPress={ handleDismissKeyboard }>
+			<View style={ styles.container }>
+				<DateInput
+					label={ __( 'Date' ) }
+					value={ date }
+					setValue={ date => setEditedTransaction(
+						Object.assign( { ...editedTransaction }, { date } )
+					) } />
 
-			<Select
-				value={ transactionType }
-				setValue={ setTransactionType }
-				options={ TransactionTypes.map( transactionType => {
-					return {
-						icon: ( { size, color } ) => {
-							return (
-								<Icon
-									name={transactionType.icon}
-									size={ size }
-									color={ color } />
-							)
-						},
-						label: transactionType.name,
-						value: transactionType.id,
-						checkedColor: transactionType.color
-					}
-				} ) }
-				style={ styles.selectContainer } />
+				<Select
+					value={ transactionType }
+					setValue={ setTransactionType }
+					options={ TransactionTypes.map( transactionType => {
+						return {
+							icon: ( { size, color } ) => {
+								return (
+									<Icon
+										name={transactionType.icon}
+										size={ size }
+										color={ color } />
+								)
+							},
+							label: transactionType.name,
+							value: transactionType.id,
+							checkedColor: transactionType.color
+						}
+					} ) }
+					style={ styles.selectContainer } />
 
-			<HoldingInput
-				label={ __( 'Holding' ) }
-				value={ holding_name }
-				account={ account }
-				placeholder={ `${ __( 'Example' ) }: Apple Inc` }
-				setValue={ holding_name => setEditedTransaction(
-					Object.assign( { ...editedTransaction }, { holding_name } )
-				) }
-				disabled={ !! transaction.holding_name } />
+				<HoldingInput
+					label={ __( 'Holding' ) }
+					value={ holding_name }
+					account={ account }
+					placeholder={ `${ __( 'Example' ) }: Apple Inc` }
+					setValue={ holding_name => setEditedTransaction(
+						Object.assign( { ...editedTransaction }, { holding_name } )
+					) }
+					disabled={ !! transaction.holding_name } />
 
-			<TextInput
-				label={ __( 'Price' ) }
-				value={ price }
-				placeholder={ '0' }
-				keyboardType={ 'numeric' }
-				inputMode={ 'decimal' }
-				onChangeText={ price => setEditedTransaction(
-					Object.assign( { ...editedTransaction }, { price } )
-				) } />
+				<TextInput
+					label={ __( 'Price' ) }
+					value={ price }
+					placeholder={ '0' }
+					keyboardType={ 'numeric' }
+					inputMode={ 'decimal' }
+					onChangeText={ price => setEditedTransaction(
+						Object.assign( { ...editedTransaction }, { price } )
+					) } />
 
-			<TextInput
-				label={ __( 'Amount' ) }
-				value={ amount }
-				placeholder={ '0' }
-				keyboardType={ 'numeric' }
-				inputMode={ 'decimal' }
-				onChangeText={ amount => setEditedTransaction(
-					Object.assign( { ...editedTransaction }, { amount } )
-	 			) } />
+				<TextInput
+					label={ __( 'Amount' ) }
+					value={ amount }
+					placeholder={ '0' }
+					keyboardType={ 'numeric' }
+					inputMode={ 'decimal' }
+					onChangeText={ amount => setEditedTransaction(
+						Object.assign( { ...editedTransaction }, { amount } )
+					) } />
 
-			<TextInput
-				label={ __( 'Total' ) }
-				value={ total }
-				placeholder={ '0' }
-				keyboardType={ 'numeric' }
-				inputMode={ 'decimal' }
-				onChangeText={ total => setEditedTransaction(
-					Object.assign( { ...editedTransaction }, { total } )
-	 			) } />
+				<TextInput
+					label={ __( 'Total' ) }
+					value={ total }
+					placeholder={ '0' }
+					keyboardType={ 'numeric' }
+					inputMode={ 'decimal' }
+					onChangeText={ total => setEditedTransaction(
+						Object.assign( { ...editedTransaction }, { total } )
+					) } />
 
-			<TextInput
-				label={ __( 'Notes' ) }
-				value={ notes }
-				placeholder={ `${ __( 'Enter notes here' ) }...` }
-				onChangeText={ notes => setEditedTransaction(
-					Object.assign( { ...editedTransaction }, { notes } )
-				) }
-				multiline={ true } />
+				<TextInput
+					label={ __( 'Notes' ) }
+					value={ notes }
+					placeholder={ `${ __( 'Enter notes here' ) }...` }
+					onChangeText={ notes => setEditedTransaction(
+						Object.assign( { ...editedTransaction }, { notes } )
+					) }
+					multiline={ true } />
 
-			<IconButton
-				icon={ 'save' }
-				size={ IconSize.xl }
-				style={ styles.submitButton }
-				disabled={ ! editedTransaction }
-				onPress={ onSubmit.bind( this, editedTransaction ) } />
-		</View>
+				<IconButton
+					icon={ 'save' }
+					size={ IconSize.xl }
+					style={ styles.submitButton }
+					disabled={ ! editedTransaction }
+					onPressIn={ handleDismissKeyboard }
+					onPressOut={ onSubmitHandler } />
+			</View>
+		</TouchableWithoutFeedback>
 	)
 }
 

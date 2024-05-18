@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 
 import { IconButton } from "../buttons";
 import { TextInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
 import { __ } from "../../localization";
 import { Account } from "../../models/Account";
-
+import { stripRealmListsFromObject } from "../../helpers";
 interface AccountFormProps {
-	account: Account,
+	account?: Account,
 	onSubmit: ( account: Account ) => void;
 }
 
@@ -16,36 +16,50 @@ export const AccountForm = ( {
 	account,
 	onSubmit
 }: AccountFormProps ) => {
-	const [ editedAccount, setEditedAccount ] = useState( { ...account } );
+	const [ editedAccount, setEditedAccount ] = useState<Account>( { ...account } );
+
+	const handleDismissKeyboard = ( ) => {
+    Keyboard.dismiss();
+  };
+
+	const onSubmitHandler = () => {
+		handleDismissKeyboard();
+		onSubmit( stripRealmListsFromObject( editedAccount ) )
+	}
 
 	useEffect( () => {
 		setEditedAccount( { ...account } );
 	}, [ account ] );
 
 	return (
-		<View style={ styles.container }>
-			<TextInput
-				label={ __( 'Name' ) }
-				value={ editedAccount?.name }
-				placeholder={ `${ __( 'Example' ) }: ${ __( 'Investment Account' ) }` }
-				onChangeText={ name => setEditedAccount(
-					Object.assign( { ...editedAccount }, { name } )
-				) } />
-			<TextInput
-				label={ __( 'Notes' ) }
-				value={ editedAccount?.notes }
-				placeholder={ `${ __( 'Enter notes here' ) }...` }
-				onChangeText={ notes => setEditedAccount(
-					Object.assign( { ...editedAccount }, { notes } )
-				) }
-				multiline={ true } />
-			<IconButton
-				icon={ 'save' }
-				size={ IconSize.xl }
-				style={ styles.submitButton }
-				disabled={ ! editedAccount?.name }
-				onPress={ onSubmit.bind( this, editedAccount ) } />
-		</View>
+    <TouchableWithoutFeedback onPress={ handleDismissKeyboard }>
+			<View style={ styles.container }>
+				<TextInput
+					label={ __( 'Name' ) }
+					value={ editedAccount?.name }
+					placeholder={ `${ __( 'Example' ) }: ${ __( 'Investment Account' ) }` }
+					onChangeText={ name => setEditedAccount(
+						Object.assign( { ...editedAccount }, { name } )
+					) } />
+
+				<TextInput
+					label={ __( 'Notes' ) }
+					value={ editedAccount?.notes }
+					placeholder={ `${ __( 'Enter notes here' ) }...` }
+					onChangeText={ notes => setEditedAccount(
+						Object.assign( { ...editedAccount }, { notes } )
+					) }
+					multiline={ true } />
+
+				<IconButton
+					icon={ 'save' }
+					size={ IconSize.xl }
+					style={ styles.submitButton }
+					disabled={ ! editedAccount?.name }
+					onPressIn={ handleDismissKeyboard }
+					onPressOut={ onSubmitHandler } />
+			</View>
+		</TouchableWithoutFeedback>
 	)
 }
 
