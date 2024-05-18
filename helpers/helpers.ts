@@ -13,14 +13,15 @@ export const addTimeToDateTimestamp = ( timestamp: number ) => {
 }
 
 export const stripRealmListsFromObject = <Type>( object: Type ) => {
-  const editedProps = <Type>{ ...object };
-
   for ( const key in object ) {
 		if ( object[key] instanceof Realm.List ) {
-			console.log(key)
 			delete object[key];
 		}
   }
 
   return object;
+}
+
+export const peek = <Type>( array: Type[] ) => {
+  return array[array.length - 1];
 }

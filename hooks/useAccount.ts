@@ -17,36 +17,27 @@ export const useAccount = ( { id }: useAccountProps ) => {
 	const realm = useRealm();
 	const account = useObject<Account>( 'Account', id );
 
-	const {
-		_id,
-		name,
-		owner_id,
-		holdings,
-		notes,
-		transfers,
-	} = useMemo( () => account, [ account ] );
-
 	const getHoldingId = useCallback( ( name: string ) => {
-		return holdings.findIndex( holding => {
+		return account?.holdings.findIndex( holding => {
 			return name === holding.name;
 		} );
-	}, [ realm ] );
+	}, [ realm, account ] );
 
 	const getHolding = useCallback( ( name: string ) => {
-		const existingHolding = holdings[ getHoldingId( name ) ];
+		const existingHolding = account?.holdings[ getHoldingId( name ) ];
 
 		if ( ! existingHolding ) {
-			holdings.push( {
+			account?.holdings.push( {
 				name,
 				owner_id: user.id,
-				account_id: _id
+				account_id: account?._id
 			} );
 
-			return holdings[ holdings.length - 1 ];
+			return account?.holdings[ account?.holdings.length - 1 ];
 		}
 
 		return existingHolding;
-	}, [ realm ] );
+	}, [ realm, account ] );
 
 	const addTransaction = useCallback( ( transaction: Transaction ) => {
 		const title = __( 'Add Transaction' );
@@ -118,7 +109,7 @@ export const useAccount = ( { id }: useAccountProps ) => {
 	// Getters
 
 	const getTotal = useCallback( ( fractionDigits?: number ) => {
-		const total = holdings.reduce( ( holdingsTotal, holding ) => {
+		const total = account?.holdings.reduce( ( holdingsTotal, holding ) => {
 			const { transactions } = holding;
 
 			return holdingsTotal + transactions.reduce( ( transactionsTotal, transaction ) => {
@@ -133,15 +124,15 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		}
 
 		return total;
-	}, [ account ] );
+	}, [ realm, account ] );
 
 	const getTransfersAmount = useCallback( ( fractionDigits?: number ) => {
-		const transfersAmount = transfers.reduce( ( amount, transfer ) => {
+		const transfersAmount = account?.transfers.reduce( ( amount, transfer ) => {
 			return amount + transfer.amount
 		}, 0 );
 
 		return transfersAmount;
-	}, [ account ] );
+	}, [ realm, account ] );
 
 	const getBalance = useCallback( ( fractionDigits?: number ) => {
 		const total = getTotal();
@@ -154,19 +145,20 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		}
 
 		return balance;
-	}, [ account] );
+	}, [ realm, account] );
 
 	const getValue = useCallback( ( fractionDigits?: number ) => {
 		const balance = getBalance();
-		const value = holdings.reduce( ( totalValue, holding ) => {
+		const value = account?.holdings.reduce( ( totalValue, holding ) => {
 			const { transactions } = holding;
 		
 			// Get latest price
-			const { price } = transactions.reduce( ( latest, current ) => {
+			const latestTransaction = transactions?.reduce( ( latest, current ) => {
 				return ! latest || current.date > latest.date
 					? current
 					: latest;
 		  } );
+			const price = latestTransaction?.price ?? 0;
 		
 			// Get amount
 			const amount = transactions.reduce( ( totalAmount, transaction ) => {
@@ -182,7 +174,7 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		}
 
 		return value;
-	}, [ account ] );
+	}, [ realm, account ] );
 
 	return {
 		account, saveAccount, removeAccount,

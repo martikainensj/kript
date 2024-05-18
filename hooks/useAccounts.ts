@@ -4,19 +4,15 @@ import { useQuery, useRealm } from "@realm/react";
 import { Account } from "../models/Account";
 import { confirmation } from "../helpers";
 import { __ } from "../localization";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 export const useAccounts = () => {
 	const realm = useRealm();
 	const accounts = useQuery<Account>( 'Account' );
 
-	const addAccount = ( account: Account ) => {
-		const title = `${ account._id
-			? __( 'Update Account' )
-			: __( 'Add Account' ) }`;
-		const message = ( `${ account._id
-			? __( 'Updating existing account' )
-			: __( 'Adding a new account' )}: ${ account.name }` )
+	const addAccount = useCallback( ( account: Account ) => {
+		const title = __( 'Add Account' );
+		const message = `${ __( 'Adding a new account' ) }: ${ account.name }`
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise( ( resolve, _ ) => {
@@ -31,7 +27,7 @@ export const useAccounts = () => {
 				}
 			} );
 		} );
-	};
+	}, [] );
 
 	useEffect( () => {
 		realm.subscriptions.update( mutableSubs => {

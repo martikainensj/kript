@@ -7,6 +7,7 @@ import React, {
 	useCallback
 } from "react";
 import {
+	Keyboard,
 	StyleSheet
 } from "react-native";
 import GorhomBottomSheet, {
@@ -59,12 +60,8 @@ export const BottomSheetProvider = ( { children } ) => {
 	}, [] );
 
 	const closeBottomSheet = useCallback( () => {
+		Keyboard.dismiss();
 		setVisible( false );
-
-		setTimeout( () => {
-			setTitle( '' );
-			setContent( null );
-		}, 250 );
 	}, [] );
 
   return (
@@ -84,7 +81,7 @@ export const BottomSheetProvider = ( { children } ) => {
 }
 
 const BottomSheet = () => {
-	const { title, content, visible, closeBottomSheet } = useBottomSheet();
+	const { title, setTitle, content, setContent, visible, closeBottomSheet } = useBottomSheet();
 	const bottomSheetRef = useRef<BottomSheetMethods>( null );
 
 	const renderBackdrop = useCallback( 
@@ -95,6 +92,14 @@ const BottomSheet = () => {
 				appearsOnIndex={ 0 } />
 		), []
 	);
+
+	const onChange = useCallback( ( index: number ) => {
+    if ( index === -1 ) {
+			setTitle( null );
+			setContent( null );
+    }
+  }, [] );
+
 	useEffect( () => {
 		visible
 			? bottomSheetRef.current?.expand()
@@ -112,6 +117,7 @@ const BottomSheet = () => {
 			containerStyle={ styles.container }
 			enableDynamicSizing={ true }
 			backgroundStyle={ styles.background }
+			onChange={ onChange }
 			handleComponent={ () => 
 				<Header
 					title={ title }

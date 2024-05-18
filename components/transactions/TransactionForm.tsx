@@ -35,6 +35,7 @@ export const TransactionForm = ( {
   };
 
 	const onSubmitHandler = () => {
+		handleDismissKeyboard();
 		onSubmit( stripRealmListsFromObject( editedTransaction ) )
 	}
 		
@@ -126,8 +127,7 @@ export const TransactionForm = ( {
 					size={ IconSize.xl }
 					style={ styles.submitButton }
 					disabled={ ! editedTransaction }
-					onPressIn={ handleDismissKeyboard }
-					onPressOut={ onSubmitHandler } />
+					onPress={ onSubmitHandler } />
 			</View>
 		</TouchableWithoutFeedback>
 	)
