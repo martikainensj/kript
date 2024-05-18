@@ -23,7 +23,6 @@ const { appId } = CONFIG;
 const App: React.FC = () => {
 	return (
 		<GestureHandlerRootView style={ styles.container }>
-			<StatusBar style="auto" />
 			<AppProvider id={ appId }>
 				<UserProvider fallback={ <LoginScreen /> }>
 					<RealmProvider
@@ -39,6 +38,7 @@ const App: React.FC = () => {
 						<PaperProvider theme={ Theme }>
 							<MenuProvider>
 								<BottomSheetProvider>
+									<StatusBar style={ Theme.dark ? 'light' : 'dark' } />
 									<Stack>
 										<Stack.Screen
 											name="(tabs)"
