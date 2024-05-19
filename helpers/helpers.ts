@@ -25,3 +25,11 @@ export const stripRealmListsFromObject = <Type>( object: Type ) => {
 export const peek = <Type>( array: Type[] ) => {
   return array[array.length - 1];
 }
+
+export const truncateString = ( string: string, limit = 24 ) => {
+	const trimmedTitle = string?.length >= limit
+		?	string?.slice(0, limit) + "..."
+		:	string;
+
+	return trimmedTitle;
+}
