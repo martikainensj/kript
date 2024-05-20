@@ -22,7 +22,7 @@ export const stripRealmListsFromObject = <Type>( object: Type ) => {
   return object;
 }
 
-export const peek = <Type>( array: Type[] ) => {
+export const peak = <Type>( array: Type[] ) => {
   return array[array.length - 1];
 }
 

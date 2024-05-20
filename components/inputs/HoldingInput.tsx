@@ -1,4 +1,5 @@
 import React, {
+	useMemo,
 	useState,
 } from "react";
 import {
@@ -7,7 +8,6 @@ import {
 } from "react-native";
 import { ChipProps, Chips } from "./Chips";
 import { Spacing } from "../../constants";
-import { Holding } from "../../models/Holding";
 import Realm from "realm";
 import { TextInput } from "./TextInput";
 import { useUser } from "@realm/react";
@@ -37,7 +37,9 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	const [ canShowChips, setCanShowChips ] = useState( false );
 	const [ filteredHoldings, setFilteredHoldings ] = useState( [ ...account.holdings ] );
 
-	const chipsVisible = !! filteredHoldings.length && ( ! value || canShowChips );
+	const chipsVisible = useMemo( () => {
+		return !! filteredHoldings.length && ( ! value || canShowChips );
+	}, [filteredHoldings, canShowChips, value] );
 
 	const onFocusHandler = () => {
 		setCanShowChips( true );
@@ -47,6 +49,7 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 		setInputValue( '' );
 		setValue( null );
 		setChipsValue( null );
+		setCanShowChips( true );
 		setFilteredHoldings( [ ...account.holdings ] );
 	}
 	
@@ -60,18 +63,16 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 				} )
 			: [ ...account.holdings ];
 
-		if ( !! value && ! filteredHoldings.length  ) {
-			filteredHoldings.push( {
-				name: value,
-				owner_id: user.id,
-				account_id: account._id
-			} );
-		}
+		filteredHoldings.push( {
+			name: value,
+			owner_id: user.id,
+			account_id: account._id
+		} );
 
 		setFilteredHoldings( filteredHoldings );
 
 		if ( ! value ) {
-			return setChipsValue( null );
+			return onClear();
 		}
 
 		setChipsValue( 
@@ -80,10 +81,6 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	}
 
 	const onSubmitHandler = () => {
-		if ( ! chipsValue ) {
-			return onClear();
-		}
-
 		setValue( chipsValue );
 		setInputValue( chipsValue );
 		setCanShowChips( false );

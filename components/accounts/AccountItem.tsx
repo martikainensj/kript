@@ -24,8 +24,8 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { account, saveAccount, removeAccount, getBalance, getValue } = useAccount( { id } )
 	const values = useMemo( () =>  [
-		<Value label={ __( 'Balance' ) } value={ getBalance() } isVertical={ true } />,
-		<Value label={ __( 'Value' ) } value={ getValue() } isVertical={ true } />,
+		<Value label={ __( 'Balance' ) } value={ getBalance(2) } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ getValue(2) } isVertical={ true } />,
 	], [ realm, account ] );
 
 	function onPress() {

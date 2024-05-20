@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { Chip } from "react-native-paper";
 
@@ -20,6 +20,19 @@ export const Chips: React.FC<ChipsProps> = ( {
 	setValue,
 	items,
 } ) => {
+	const uniqueValues = useMemo( () => {
+		const seen = new Set();
+
+		return items.filter( item => {
+			const value = item.value;
+			if ( seen.has( value ) ) {
+				return false;
+			} 
+			
+			seen.add( value );
+			return true;
+		} );
+	}, [items] );
 
 	const onPressHandler = ( item: ChipProps ) => {
 		setValue( item );
@@ -31,11 +44,11 @@ export const Chips: React.FC<ChipsProps> = ( {
 			keyboardShouldPersistTaps="handled"
 			showsHorizontalScrollIndicator={ false }
 			contentContainerStyle={ styles.contentContainer }>
-			{ items.map( ( chip, key ) => (
+			{ uniqueValues.map( ( chip, key ) => (
 				<Chip
 					key={ key }
 					mode={ 'flat' }
-					selected={ chip === value }
+					selected={ chip.value === value }
 					onPress={ onPressHandler.bind( this, chip ) }
 					style={ styles.chip }
 					theme={ Theme }>

@@ -2,8 +2,7 @@ import { TextInput as PaperTextInput, TextInputProps as PaperTextInputProps } fr
 import { BorderRadius, FontSize, Theme } from "../../constants";
 import { StyleSheet } from "react-native";
 import { Icon } from "../ui";
-import { useEffect, useState } from 'react';
-import { peek } from '../../helpers';
+import { useEffect, useMemo, useState } from 'react';
 
 interface TextInputProps extends Omit<PaperTextInputProps, 'value' | 'onChangeText'> {
 	value: string | number,
@@ -24,25 +23,34 @@ export const TextInput: React.FC<TextInputProps> = ( {
 	...rest
 } ) => {
 	const [inputValue, setInputValue] = useState( value );
+	const rightIsVisible = useMemo( () => {
+		const isVisible = ! disabled && editable && value;
+		return isVisible;
+	}, [ editable, disabled, value ] );
 
 	const onChangeTextHandler = ( string: string ) => {
 		if ( keyboardType === 'numeric' ) {
 			string = string.replace(/[^0-9.]/g, '');
 
-			const decimalParts =  string.split( '.' );
-			const lastPart = peek( decimalParts );
-			const lastChar = lastPart.slice(-1);
+			const parts = string.split( '.' );
+			const maxPartLength = 12;
 
 			// Prevent multiple dots in the string
-			if ( decimalParts.length > 2 ) {
+			if ( parts.length > 2 ) {
 				return;
 			}
 
-			// Limit decimal places to 3 digits
-			if ( decimalParts.length > 1 && lastPart.length > 3 ) {
-				return setInputValue(
-					inputValue.toString().slice(0, -1) + lastChar
-				);
+			let wholePart = parts[0];
+			let decimalPart = parts[1];
+
+			// Limit the whole part length
+			if ( wholePart?.length > maxPartLength ) {
+				return;
+			}
+
+			// Limit the decimal part length
+			if ( decimalPart?.length > maxPartLength ) {
+				return;
 			}
 
 			// Prefix string with '0' if it starts with a dot
@@ -68,6 +76,12 @@ export const TextInput: React.FC<TextInputProps> = ( {
 		onChangeText( inputValue );
 	}, [inputValue] );
 
+	useEffect( () => {
+    if ( value?.toString() !== inputValue?.toString() ) {		
+      setInputValue( value ?? '' );
+    }
+  }, [value] );
+
 	return (
 		<PaperTextInput
 			mode={ mode }
@@ -86,7 +100,7 @@ export const TextInput: React.FC<TextInputProps> = ( {
 			contentStyle={ {
 				minHeight: multiline ? 128 : 0
 			} }
-			right={ ( ! disabled && value ) &&
+			right={ rightIsVisible &&
 				<PaperTextInput.Icon
 					icon={ () => <Icon name={ 'close' } /> }
 					onPress={ () => onChangeText( null ) } />

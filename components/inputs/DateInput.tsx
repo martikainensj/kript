@@ -17,37 +17,30 @@ export const DateInput: React.FC<DateInputProps> = ( {
 	value,
 	setValue
 } ) => {
-	const [ textInputValue, setTextInputValue ] = useState<string>( new Date( value ).toLocaleDateString() );
+	const [ inputValue, setInputValue ] = useState<string>( new Date( value ).toLocaleDateString() );
 	const [ isDatePickerVisible, setDatePickerVisibility ] = useState(false);
-	
-	const show = () => {
-    setDatePickerVisibility( true );
-  };
-
-  const hide = () => {
-    setDatePickerVisibility( false );
-  };
 
 	const onPress = () => {
-		show();
+    setDatePickerVisibility( true );
+	}
+
+	const onCandel = () => {
+    setDatePickerVisibility( false );
 	}
 
   const onConfirm = ( date: Date ) => {
 		const timestamp = addTimeToDateTimestamp( date.getTime() );
-		setValue( timestamp );
-		setTextInputValue( date.toLocaleDateString() );
-    hide();
-  };
 
-	const onCandel = () => {
-		hide();
-	}
+		setValue( timestamp );
+		setInputValue( date.toLocaleDateString() );
+    setDatePickerVisibility( false );
+  };
 
 	useEffect( () => {
 		if ( ! value ) {
 			const currentTimestamp = Date.now();
 
-			setTextInputValue( new Date( currentTimestamp ).toLocaleDateString() );
+			setInputValue( new Date( currentTimestamp ).toLocaleDateString() );
 			setValue( currentTimestamp );
 		}
 	}, [] );
@@ -57,13 +50,14 @@ export const DateInput: React.FC<DateInputProps> = ( {
 			<View style={ styles.container }>
 				<TextInput
 					label={ label }
-					value={ textInputValue }
+					value={ inputValue }
 					onChangeText={ () => {} }
 					editable={ false }
 					pointerEvents={ 'none' } />
 				<DateTimePicker
 					isVisible={ isDatePickerVisible }
 					mode={ 'date' }
+					date={ new Date( value ) }
 					onConfirm={ onConfirm }
 					onCancel={ onCandel } />
 			</View>
