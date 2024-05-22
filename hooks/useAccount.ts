@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import Realm from "realm";
-import { useObject, useRealm, useUser } from "@realm/react"
+import { useObject, useQuery, useRealm, useUser } from "@realm/react"
 import { router } from "expo-router";
 
 import { Account } from "../models/Account"
@@ -15,7 +15,8 @@ interface useAccountProps {
 export const useAccount = ( { id }: useAccountProps ) => {
 	const user: Realm.User = useUser();
 	const realm = useRealm();
-	const account = useObject<Account>( 'Account', id );
+	const account = useQuery<Account>( 'Account' )
+		.filtered( '_id == $0', id )[0];
 
 	const getHoldingId = useCallback( ( name: string ) => {
 		return account?.holdings.findIndex( holding => {

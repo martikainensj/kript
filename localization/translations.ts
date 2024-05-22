@@ -16,6 +16,10 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Koti',
 		en_US: "Home"
 	},
+	'settings': {
+		fi: 'Asetukset',
+		en_US: "Settings"
+	},
 	'authentication': {
 		fi: 'Tunnistus',
 		en_US: 'Authentication'
