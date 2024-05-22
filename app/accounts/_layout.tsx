@@ -13,8 +13,8 @@ export default function AccountLayout() {
 				options={ {
 					headerBackTitleVisible: false,
 					title: name,
-					animationDuration: 150,
-					animation: 'fade',
+					animationDuration: 200,
+					animation: 'fade_from_bottom',
 					contentStyle: styles.contentContainer
 				} } />
 			<Slot />

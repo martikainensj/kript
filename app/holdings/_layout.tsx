@@ -14,7 +14,7 @@ export default function HoldingLayout() {
 					headerBackTitleVisible: false,
 					title: name,
 					animationDuration: 150,
-					animation: 'fade',
+					animation: 'fade_from_bottom',
 					contentStyle: styles.contentContainer
 				} } />
 			<Slot />
