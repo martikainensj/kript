@@ -3,45 +3,48 @@ import { Color } from "./colors";
 import { Ionicons } from '@expo/vector-icons';
 import { Theme } from "./theme";
 
-interface TransactionType {
+interface Type {
   id: string;
   name: string;
   color?: string;
   icon?: React.ComponentProps<typeof Ionicons>['name'];
 }
 
-export const TransactionTypes: TransactionType[] = [
+export const TransactionTypes: Type[] = [
 	{
 		id: 'buy',
 		name: __( 'Buy' ),
 		color: Theme.colors.success,
-		icon: 'enter-outline'
+		icon: 'enter-outline',
 	},
 	{
 		id: 'sell',
 		name: __( 'Sell' ),
 		color: Theme.colors.error,
-		icon: 'exit-outline'
+		icon: 'exit-outline',
 	}
 ];
 
-export const TransferTypes = {
-	deposit: {
+export const TransferTypes: Type[] = [
+	{
 		id: 'deposit',
-		name: 'Deposit',
-		color: Color.success
+		name: __( 'Deposit' ),
+		color: Theme.colors.success,
+		icon: 'enter-outline',
 	},
-	withdrawal: {
+	{
 		id: 'withdrawal',
-		name: 'Withdrawal',
-		color: Color.failure
+		name: __( 'Withdrawal' ),
+		color: Theme.colors.error,
+		icon: 'exit-outline',
 	},
-	dividend: {
+	{
 		id: 'dividend',
-		name: 'Dividend',
-		color: Color.accent
+		name: __( 'Dividend' ),
+		color: Theme.colors.primary,
+		icon: 'cash-outline',
 	}
-};
+];
 
 export const HoldingUpdateTypes = {
 	stockSplit: {

@@ -20,10 +20,10 @@ interface OptionProps {
 }
 
 interface SelectProps {
-	value: any,
+	value: any
 	setValue: React.Dispatch<React.SetStateAction<any>>
-	options: OptionProps[],
-	style?: StyleProp<ViewStyle>;
+	options: OptionProps[]
+	style?: StyleProp<ViewStyle>
 }
 
 export const Select: React.FC<SelectProps> = ( {

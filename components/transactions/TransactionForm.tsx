@@ -7,8 +7,8 @@ import { GlobalStyles, IconSize, Spacing, TransactionTypes } from "../../constan
 import { __ } from "../../localization";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
-import { Icon } from "../ui";
-import { stripRealmListsFromObject } from "../../helpers";
+import { Icon, Spacer } from "../ui";
+import { allSet, stripRealmListsFromObject } from "../../helpers";
 
 interface TransactionFormProps {
 	transaction: Transaction,
@@ -70,8 +70,7 @@ export const TransactionForm = ( {
 							value: transactionType.id,
 							checkedColor: transactionType.color
 						}
-					} ) }
-					style={ styles.selectContainer } />
+					} ) } />
 
 				<HoldingInput
 					label={ __( 'Holding' ) }
@@ -83,6 +82,8 @@ export const TransactionForm = ( {
 					) }
 					disabled={ !! transaction.holding_name } />
 
+				<Spacer />
+				
 				<TextInput
 					label={ __( 'Price' ) }
 					value={ price }
@@ -126,7 +127,7 @@ export const TransactionForm = ( {
 					icon={ 'save' }
 					size={ IconSize.xl }
 					style={ styles.submitButton }
-					disabled={ ! editedTransaction }
+					disabled={ ! allSet( holding_name, price, amount, total ) }
 					onPress={ onSubmitHandler } />
 			</View>
 		</TouchableWithoutFeedback>
@@ -140,8 +141,5 @@ const styles = StyleSheet.create( {
 	},
 	submitButton: {
 		alignSelf: 'flex-end'
-	},
-	selectContainer: {
-		marginBottom: Spacing.md
 	}
 } );

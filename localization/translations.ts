@@ -205,6 +205,54 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Luo uusi transaktio painamalla "+" painiketta oikeassa yläkulmassa',
 		en_US: 'Create a new transaction by clicking the "+" button in the top right corner.'
 	},
+
+	// Transfers
+
+	'transfers': {
+		fi: 'siirrot',
+		en_US: 'Transfers'
+	},
+	'new transfer': {
+		fi: 'Uusi siirto',
+		en_US: 'New Transfer'
+	},
+	'edit transfer': {
+		fi: 'Muokkaa siirtoa',
+		en_US: 'Edit Transfer'
+	},
+	'add transfer': {
+		fi: 'Lisää siirto',
+		en_US: 'Add Transfer'
+	},
+	'update transfer': {
+		fi: 'Päivitä siirto',
+		en_US: 'Update Transfer'
+	},
+	'remove transfer': {
+		fi: 'Poista siirto',
+		en_US: 'Remove Transfer'
+	},
+	'removing existing transfer': {
+		fi: 'Poistetaan olemassa oleva siirto',
+		en_US: 'Removing existing Transfer'
+	},
+	'updating existing transfer': {
+		fi: 'Päivitetään olemassa oleva siirto',
+		en_US: 'Updating existing Transfer'
+	},
+	'adding a new transfer': {
+		fi: 'Lisätään uutta siirtoa',
+		en_US: 'Adding a new Transfer'
+	},
+	'no transfers': {
+		fi: 'Ei siirtoja',
+		en_US: 'No Transfers'
+	},
+	'create a new transfer by clicking the "+" button in the top right corner.': {
+		fi: 'Luo uusi siirto painamalla "+" painiketta oikeassa yläkulmassa',
+		en_US: 'Create a new transfer by clicking the "+" button in the top right corner.'
+	},
+
 	'buy': {
 		fi: 'Osta',
 		en_US: 'Buy'
@@ -212,6 +260,18 @@ export const Translations: { [ key: string ]: Translation } = {
 	'sell': {
 		fi: 'Myy',
 		en_US: 'Sell'
+	},
+	'deposit': {
+    fi: 'Talletus',
+    en_US: 'Deposit'
+	},
+	'withdrawal': {
+			fi: 'Nosto',
+			en_US: 'Withdrawal'
+	},
+	'dividend': {
+			fi: 'Osinko',
+			en_US: 'Dividend'
 	},
 	'balance': {
     fi: 'Saldo',

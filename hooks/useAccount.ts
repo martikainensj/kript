@@ -7,6 +7,7 @@ import { Account } from "../models/Account"
 import { confirmation } from "../helpers";
 import { __ } from "../localization";
 import { Transaction } from "../models/Transaction";
+import { Transfer } from "../models/Transfer";
 
 interface useAccountProps {
 	id: Realm.BSON.ObjectID
@@ -56,6 +57,25 @@ export const useAccount = ( { id }: useAccountProps ) => {
 						holding.transactions.push( transaction );
 
 						return holding.transactions[ holding.transactions.length - 1 ];
+					} ) );
+				}
+			} );
+		} );
+	}, [] );
+
+	const addTransfer = useCallback( ( transfer: Transfer ) => {
+		const title = __( 'Add Transfer' );
+		const message = `${ __( 'Adding a new transfer' ) }\n`
+			+ __( 'Are you sure?' );
+
+		return new Promise( ( resolve, _ ) => {
+			confirmation( {
+				title: title,
+				message: message,
+				onAccept() {
+					resolve( realm.write( async () => {
+						account.transfers.push( transfer );
+						return account.transfers[ account.transfers.length - 1 ];
 					} ) );
 				}
 			} );
@@ -181,6 +201,7 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		account, saveAccount, removeAccount,
 		getHoldingId, getHolding,
 		addTransaction,
+		addTransfer,
 		getBalance, getValue
 	}
 }

@@ -3,8 +3,10 @@ import React, {
 	useState,
 } from "react";
 import {
+	StyleProp,
 	StyleSheet,
 	View,
+	ViewStyle,
 } from "react-native";
 import { ChipProps, Chips } from "./Chips";
 import { Spacing } from "../../constants";
@@ -20,6 +22,7 @@ interface HoldingInputProps {
 	placeholder: string,
 	account: Account,
 	disabled?: boolean,
+	style?: StyleProp<ViewStyle>
 }
 
 export const HoldingInput: React.FC<HoldingInputProps> = ({
@@ -29,6 +32,7 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	placeholder,
 	account,
 	disabled,
+	style,
 }) => {
 	const user: Realm.User = useUser();
 
@@ -94,7 +98,10 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	}
 
 	return (
-		<View style={ styles.container }>
+		<View style={ [
+			styles.container,
+			style
+		] }>
 			<TextInput
 				value={ inputValue }
 				label={ label }

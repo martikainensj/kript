@@ -1,7 +1,7 @@
 import React, { Children } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { GlobalStyles, Spacing } from "../../constants";
+import { GlobalStyles, Spacing, Theme } from "../../constants";
 import { Row } from "./Row";
 import { Title } from "./Title";
 
@@ -25,10 +25,7 @@ export const Header: React.FC<HeaderProps> = ( {
 	return ( <>
 		<View style={ [
 			styles.container,
-			isScreenHeader && {
-				...GlobalStyles.header,
-				marginTop: insets.top
-			}
+			isScreenHeader && { marginTop: insets.top }
 		] }>
 			<Row style={ styles.row }>
 				{ left && <View style={ styles.left } children={ left } /> }
@@ -50,7 +47,9 @@ const styles = StyleSheet.create( {
 	container: {
 		width: '100%',
 		paddingVertical: Spacing.md,
-		gap: Spacing.md
+		gap: Spacing.md,
+		borderBottomWidth: StyleSheet.hairlineWidth,
+		borderColor: Theme.colors.outlineVariant
 	},
 
 	row: {

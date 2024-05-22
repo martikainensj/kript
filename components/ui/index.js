@@ -5,3 +5,4 @@ export * from './ItemList';
 export * from './Title';
 export * from './Grid';
 export * from './Value';
+export * from './Spacer';

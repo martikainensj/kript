@@ -13,11 +13,6 @@ export const GlobalStyles = StyleSheet.create({
 	container: {
 		flex: 1
 	},
-	header: {
-		backgroundColor: Theme.colors.background,
-		borderBottomWidth: StyleSheet.hairlineWidth,
-		borderColor: Theme.colors.outlineVariant
-	},
 	footer: {
 		backgroundColor: Theme.colors.background,
 		borderTopWidth: StyleSheet.hairlineWidth,

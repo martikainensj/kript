@@ -33,3 +33,7 @@ export const truncateString = ( string: string, limit = 24 ) => {
 
 	return trimmedTitle;
 }
+
+export const allSet = ( ...params: any[] ): boolean => {
+  return params.every( param => !! param );
+}

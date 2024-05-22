@@ -16,13 +16,14 @@ import { AccountForm } from "../../components/accounts";
 import { FABProvider, useFAB } from "../../components/contexts";
 import { TransactionForm } from "../../components/transactions/TransactionForm";
 import HoldingItem from "../../components/holdings/HoldingItem";
+import { TransferForm } from "../../components/transfers/TransferForm";
 
 const AccountPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ id: string }>();
 	const accountId = new BSON.ObjectID( params.id );
 	const user: User = useUser();
 	const realm = useRealm();
-	const { account, saveAccount, removeAccount, addTransaction, getBalance, getValue } = useAccount( { id: accountId } );
+	const { account, saveAccount, removeAccount, addTransaction, addTransfer, getBalance, getValue } = useAccount( { id: accountId } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
@@ -84,12 +85,30 @@ const AccountPage: React.FC = ( {} ) => {
 							account={ account }
 							onSubmit={ ( transaction ) => {
 								addTransaction( transaction ).then( closeBottomSheet );
-								/** TODO
-								 * - TYHJENNÄ REALM JA PISTÄ KOKO PASKA UUSIKS KÄYNTIIN
-								 * - Tee addTransaction setit useAccountiin
-								 * 		- Sinne kaikki uusien holdingien käsittely jne
-								 * - Lisää useTransaction johon saveTransaction ja deleteTransaction
-								 */
+							}	} />
+					);
+				}
+			},
+			{
+				icon: ( { color, size } ) => { return (
+					<Icon name={ 'swap-horizontal-outline' } size={ size } color={ color } />
+				) },
+				label: __( 'Add Transfer' ),
+				onPress: () => {
+					openBottomSheet();
+					setTitle( __( 'New Transfer' ) );
+					setContent(
+						<TransferForm
+							transfer={ {
+								account_id: account._id,
+								owner_id: user.id,
+								date: Date.now(),
+								amount: null,
+								holding_name: ''
+							} }
+							account={ account }
+							onSubmit={ ( transfer ) => {
+								addTransfer( transfer ).then( closeBottomSheet );
 							}	} />
 					);
 				}
