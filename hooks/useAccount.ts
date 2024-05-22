@@ -74,7 +74,9 @@ export const useAccount = ( { id }: useAccountProps ) => {
 				message: message,
 				onAccept() {
 					resolve( realm.write( async () => {
+						transfer.holding_name && getHolding( transfer.holding_name );
 						account.transfers.push( transfer );
+						
 						return account.transfers[ account.transfers.length - 1 ];
 					} ) );
 				}
