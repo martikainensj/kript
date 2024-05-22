@@ -26,6 +26,13 @@ export default function TabsLayout() {
           tabBarIcon: ( { color, focused } ) =>
 						<Icon name={ focused ? 'wallet' : 'wallet-outline' } color={ color } />
         } } />
+			<BottomTabs.Screen
+				name={ "settings" }
+				options={ {
+					title: __( 'Settings' ),
+					tabBarIcon: ( { color, focused } ) =>
+						<Icon name={ focused ? 'settings' : 'settings-outline' } color={ color } />
+				} } />
     </BottomTabs>
   );
 }
