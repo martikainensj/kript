@@ -46,12 +46,13 @@ export const Header: React.FC<HeaderProps> = ( {
 
 const styles = StyleSheet.create( {
 	container: {
-		width: '100%'
+		width: '100%',
+		paddingBottom: Spacing.md,
+		gap: Spacing.md
 	},
 
 	row: {
 		...GlobalStyles.gutter,
-		paddingVertical: Spacing.md,
 		flexWrap: 'nowrap',
 	},
 

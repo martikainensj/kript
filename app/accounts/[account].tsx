@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { Text } from "react-native-paper";
 import { BSON, User } from "realm";
@@ -8,7 +8,7 @@ import { useLocalSearchParams } from "expo-router";
 import { GlobalStyles, Spacing } from "../../constants";
 import { __ } from "../../localization";
 import { useAccount } from "../../hooks";
-import { Header, Icon, ItemList } from "../../components/ui";
+import { Grid, Header, Icon, ItemList, Value } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { useBottomSheet } from "../../components/contexts";
@@ -22,12 +22,14 @@ const AccountPage: React.FC = ( {} ) => {
 	const accountId = new BSON.ObjectID( params.id );
 	const user: User = useUser();
 	const realm = useRealm();
-
-	const { account, saveAccount, removeAccount, addTransaction } = useAccount( { id: accountId } );
-
+	const { account, saveAccount, removeAccount, addTransaction, getBalance, getValue } = useAccount( { id: accountId } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const values = useMemo( () =>  [
+		<Value label={ __( 'Balance' ) } value={ getBalance(2) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ getValue(2) } unit={ '€' } isVertical={ true } />,
+	], [ realm, account ] );
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -104,7 +106,11 @@ const AccountPage: React.FC = ( {} ) => {
 					right={ <IconButton
 						icon={ 'ellipsis-vertical' }
 						onPress={ onPressOptions } />
-					} />
+					}>
+						<Grid
+							columns={ 4 }
+							items= { values } />
+				</Header>
 				<View style={ styles.contentContainer }>
 					<ItemList
 						title={ __( 'Holdings' ) }
