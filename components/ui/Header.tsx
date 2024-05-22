@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Children } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GlobalStyles, Spacing } from "../../constants";
@@ -6,17 +6,19 @@ import { Row } from "./Row";
 import { Title } from "./Title";
 
 interface HeaderProps {
-	title: string,
-	left?: React.ReactNode,
-	right?: React.ReactNode,
+	title: string
+	left?: React.ReactNode
+	right?: React.ReactNode
 	isScreenHeader?: boolean
+	children?: React.ReactNode
 }
 
 export const Header: React.FC<HeaderProps> = ( {
 	title,
 	left,
 	right,
-	isScreenHeader = true
+	isScreenHeader = true,
+	children
 } ) => {
 	const insets = useSafeAreaInsets();
 
@@ -35,6 +37,9 @@ export const Header: React.FC<HeaderProps> = ( {
 
 				{ right && <View style={ styles.right } children={ right } /> }
 			</Row>
+			<View style={ styles.children }>
+				{ children }
+			</View>
 		</View>
 	</> );
 }
@@ -53,7 +58,12 @@ const styles = StyleSheet.create( {
 	left: {
 		gap: Spacing.md
 	},
+
 	right: {
 		gap: Spacing.md
+	},
+
+	children: {
+		...GlobalStyles.gutter
 	}
 } );
