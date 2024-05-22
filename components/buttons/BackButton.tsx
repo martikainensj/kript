@@ -12,5 +12,3 @@ export const BackButton: React.FC= () => {
 			onPress={ back } />
 	)
 }
-
-export default BackButton;

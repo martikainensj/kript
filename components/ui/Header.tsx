@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ( {
 			styles.container,
 			isScreenHeader && {
 				...GlobalStyles.header,
-				paddingTop: insets.top
+				marginTop: insets.top
 			}
 		] }>
 			<Row style={ styles.row }>
@@ -37,9 +37,11 @@ export const Header: React.FC<HeaderProps> = ( {
 
 				{ right && <View style={ styles.right } children={ right } /> }
 			</Row>
-			<View style={ styles.children }>
-				{ children }
-			</View>
+			{ children &&
+				<View style={ styles.children }>
+					{ children }
+				</View>
+			}
 		</View>
 	</> );
 }
@@ -47,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ( {
 const styles = StyleSheet.create( {
 	container: {
 		width: '100%',
-		paddingBottom: Spacing.md,
+		paddingVertical: Spacing.md,
 		gap: Spacing.md
 	},
 
