@@ -7,9 +7,9 @@ import { GlobalStyles, IconSize, Spacing, TransferTypes } from "../../constants"
 import { __ } from "../../localization";
 import { Transfer } from "../../models/Transfer";
 import { Account } from "../../models/Account";
-import { Icon, Spacer } from "../ui";
+import { Divider, Icon } from "../ui";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
-import { Text } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface TransferFormProps {
 	transfer: Transfer,
@@ -23,7 +23,8 @@ export const TransferForm = ( {
 	onSubmit
 }: TransferFormProps ) => {
 	const [ deposit, withdraw, dividend ] = TransferTypes;
-	const [ transferType, setTransferType ] = useState( deposit.id );
+	const [ transferType, setTransferType ]
+		= useState( !! transfer.holding_name ? dividend.id : deposit.id );
 	const [ editedTransfer, setEditedTransfer ]
 		= useState( { ...transfer } );
 
@@ -51,10 +52,12 @@ export const TransferForm = ( {
 	}, [ transfer ] );
 
 	useEffect( () => {
+		if ( !! transfer.holding_name ) return;
+
 		setEditedTransfer(
 			Object.assign( { ...editedTransfer }, { holding_name: '' } )
 		);
-	}, [transferType] )
+	}, [ transferType ] )
 
 	return (
     <TouchableWithoutFeedback onPress={ handleDismissKeyboard }>
@@ -66,24 +69,26 @@ export const TransferForm = ( {
 						Object.assign( { ...editedTransfer }, { date } )
 					) } />
 
-				<Select
-					value={ transferType }
-					setValue={ setTransferType }
-					options={ TransferTypes.map( transferType => {
-						return {
-							icon: ( { size, color } ) => {
-								return (
-									<Icon
-										name={ transferType.icon }
-										size={ size }
-										color={ color } />
-								)
-							},
-							label: transferType.name,
-							value: transferType.id,
-							checkedColor: transferType.color
-						}
-					} ) } />
+				{ ! transfer.holding_name &&
+					<Select
+						value={ transferType }
+						setValue={ setTransferType }
+						options={ TransferTypes.map( transferType => {
+							return {
+								icon: ( { size, color } ) => {
+									return (
+										<Icon
+											name={ transferType.icon }
+											size={ size }
+											color={ color } />
+									)
+								},
+								label: transferType.name,
+								value: transferType.id,
+								checkedColor: transferType.color
+							}
+						} ) } />
+				}
 
 				{ transferType === dividend.id &&
 					<HoldingInput
@@ -97,7 +102,7 @@ export const TransferForm = ( {
 						disabled={ !! transfer.holding_name } />
 				}
 
-				<Spacer />
+				<Divider />
 
 				<TextInput
 					label={ __( 'Amount' ) }
@@ -118,6 +123,8 @@ export const TransferForm = ( {
 					) }
 					multiline={ true } />
 
+				<Divider />
+
 				<IconButton
 					icon={ 'save' }
 					size={ IconSize.xl }
@@ -132,7 +139,6 @@ export const TransferForm = ( {
 const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.form,
-		
 	},
 	submitButton: {
 		alignSelf: 'flex-end'

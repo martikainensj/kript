@@ -7,8 +7,9 @@ import { GlobalStyles, IconSize, Spacing, TransactionTypes } from "../../constan
 import { __ } from "../../localization";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
-import { Icon, Spacer } from "../ui";
+import { Divider, Icon, Spacer } from "../ui";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface TransactionFormProps {
 	transaction: Transaction,
@@ -82,7 +83,7 @@ export const TransactionForm = ( {
 					) }
 					disabled={ !! transaction.holding_name } />
 
-				<Spacer />
+				<Divider />
 				
 				<TextInput
 					label={ __( 'Price' ) }
@@ -122,6 +123,8 @@ export const TransactionForm = ( {
 						Object.assign( { ...editedTransaction }, { notes } )
 					) }
 					multiline={ true } />
+
+				<Divider />
 
 				<IconButton
 					icon={ 'save' }

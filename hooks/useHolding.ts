@@ -15,8 +15,30 @@ interface useHoldingProps {
 export const useHolding = ( props: useHoldingProps ) => {
 	const realm = useRealm();
 	const user: Realm.User = useUser();
-	const { account, getHoldingId, getHolding, addTransaction } = useAccount( { id: props.holding.account_id } );
-	const holding = getHolding( props.holding.name );
+	const { account, getHoldingId, getHolding, addTransaction, addTransfer } = useAccount( { id: props.holding.account_id } );
+	const holding = useMemo( () => {
+		console.log( props.holding.name );
+		return getHolding( props.holding.name )
+	}, [ props ] );
+
+	const saveHolding = useCallback( ( editedHolding: Holding ) => {
+		const title = __( 'Save Holding' );
+		const message = `${ __( 'Saving existing holding' ) }: ${ editedHolding.name }`
+			+ "\n" + __( 'Are you sure?' );
+
+		return new Promise( ( resolve, _ ) => {
+			confirmation( {
+				title,
+				message,
+				onAccept() {
+					resolve( realm.write( () => {
+						console.log( editedHolding );
+						Object.assign( holding, { ...editedHolding } );
+					} ) );
+				}
+			} );
+		} );
+	}, [ holding, account ] );
 
 	const removeHolding = useCallback( () => {
 		const title = __( 'Remove Holding' );
@@ -38,8 +60,9 @@ export const useHolding = ( props: useHoldingProps ) => {
 	}, [ holding, account ] );
 
 	return {
-		holding, removeHolding,
+		holding, saveHolding, removeHolding,
 		account,
-		addTransaction
+		addTransaction,
+		addTransfer
 	}
 }

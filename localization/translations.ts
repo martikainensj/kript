@@ -75,6 +75,10 @@ export const Translations: { [ key: string ]: Translation } = {
 
 	// Account
 
+	'account': {
+		fi: 'Tili',
+		en_US: "Account"
+	},
 	'accounts': {
 		fi: 'Tilit',
 		en_US: "Accounts"
@@ -161,8 +165,12 @@ export const Translations: { [ key: string ]: Translation } = {
 
 	// Transaction
 
+	'transaction': {
+		fi: 'Transaktio',
+		en_US: "Transaction"
+	},
 	'transactions': {
-		fi: 'transaktiot',
+		fi: 'Transaktiot',
 		en_US: "Transactions"
 	},
 	'new transaction': {
@@ -198,18 +206,18 @@ export const Translations: { [ key: string ]: Translation } = {
 		en_US: 'Adding a new Transaction'
 	},
 	'no transactions': {
-		fi: 'Ei tilejä',
+		fi: 'Ei transaktioita',
 		en_US: 'No Transactions'
-	},
-	'create a new transaction by clicking the "+" button in the top right corner.': {
-		fi: 'Luo uusi transaktio painamalla "+" painiketta oikeassa yläkulmassa',
-		en_US: 'Create a new transaction by clicking the "+" button in the top right corner.'
 	},
 
 	// Transfers
 
+	'transfer': {
+		fi: 'Siirto',
+		en_US: 'Transfer'
+	},
 	'transfers': {
-		fi: 'siirrot',
+		fi: 'Siirrot',
 		en_US: 'Transfers'
 	},
 	'new transfer': {
@@ -248,9 +256,52 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Ei siirtoja',
 		en_US: 'No Transfers'
 	},
-	'create a new transfer by clicking the "+" button in the top right corner.': {
-		fi: 'Luo uusi siirto painamalla "+" painiketta oikeassa yläkulmassa',
-		en_US: 'Create a new transfer by clicking the "+" button in the top right corner.'
+
+	// Dividends
+
+	'dividend': {
+		fi: 'Osinko',
+		en_US: 'Dividend'
+	},
+	'dividends': {
+		fi: 'Osingot',
+		en_US: 'Dividends'
+	},
+	'new dividend': {
+		fi: 'Uusi osinko',
+		en_US: 'New Dividend'
+	},
+	'edit dividend': {
+		fi: 'Muokkaa osinkoa',
+		en_US: 'Edit Dividend'
+	},
+	'add dividend': {
+		fi: 'Lisää osinko',
+		en_US: 'Add Dividend'
+	},
+	'update dividend': {
+		fi: 'Päivitä osinko',
+		en_US: 'Update Dividend'
+	},
+	'remove dividend': {
+		fi: 'Poista osinko',
+		en_US: 'Remove Dividend'
+	},
+	'removing existing dividend': {
+		fi: 'Poistetaan olemassa oleva osinko',
+		en_US: 'Removing existing Dividend'
+	},
+	'updating existing dividend': {
+		fi: 'Päivitetään olemassa oleva osinko',
+		en_US: 'Updating existing Dividend'
+	},
+	'adding a new dividend': {
+		fi: 'Lisätään uutta osinkoa',
+		en_US: 'Adding a new Dividend'
+	},
+	'no dividends': {
+		fi: 'Ei osinkoja',
+		en_US: 'No Dividends'
 	},
 
 	'buy': {
@@ -262,25 +313,21 @@ export const Translations: { [ key: string ]: Translation } = {
 		en_US: 'Sell'
 	},
 	'deposit': {
-    fi: 'Talletus',
-    en_US: 'Deposit'
+		fi: 'Talletus',
+		en_US: 'Deposit'
 	},
 	'withdrawal': {
-			fi: 'Nosto',
-			en_US: 'Withdrawal'
-	},
-	'dividend': {
-			fi: 'Osinko',
-			en_US: 'Dividend'
+		fi: 'Nosto',
+		en_US: 'Withdrawal'
 	},
 	'balance': {
-    fi: 'Saldo',
-    en_US: 'Balance'
-  },
-  'value': {
-    fi: 'Arvo',
-    en_US: 'Value'
-  },
+		fi: 'Saldo',
+		en_US: 'Balance'
+	},
+	'value': {
+		fi: 'Arvo',
+		en_US: 'Value'
+	},
 
 	'are you sure?': {
 		fi: 'Oletko varma?',

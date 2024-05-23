@@ -14,6 +14,8 @@ import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { useBottomSheet } from "../../components/contexts";
 import { FABProvider, useFAB } from "../../components/contexts";
 import { TransactionForm } from "../../components/transactions/TransactionForm";
+import { TransferForm } from "../../components/transfers/TransferForm";
+import { HoldingForm } from "../../components/holdings/HoldingForm";
 
 
 const HoldingPage: React.FC = ( {} ) => {
@@ -21,8 +23,11 @@ const HoldingPage: React.FC = ( {} ) => {
 	const name = params.name;
 	const account_id = new Realm.BSON.ObjectID( params.account_id );
 	const user: Realm.User = useUser();
-
-	const { holding, removeHolding, account, addTransaction } = useHolding( {
+	// TODO: vaihda params.name johonki params.holding_id
+	// holding_id on sit holdingin indeksi accountin holdings arrayssa
+	// nimeä vaihtaessa tää pakottaa viel aikasempaa nimee ja se aiheuttaa
+	// errorin. array sijainti ei vaihdu vaik mitä tapahtuis eli holding_id 6/5
+	const { holding, saveHolding, removeHolding, account, addTransaction, addTransfer } = useHolding( {
 		holding: {
 			name,
 			account_id,
@@ -45,7 +50,11 @@ const HoldingPage: React.FC = ( {} ) => {
 					openBottomSheet();
 					setTitle( __( 'Edit Holding' ) );
 					setContent(
-						<Text>Todo</Text>
+						<HoldingForm
+							holding={ holding }
+							onSubmit={ holding => {
+								saveHolding( holding ).then( closeBottomSheet ) }
+							} />
 					);
 				}
 			},
@@ -85,6 +94,30 @@ const HoldingPage: React.FC = ( {} ) => {
 							account={ account }
 							onSubmit={ ( transaction ) => {
 								addTransaction( transaction ).then( closeBottomSheet );
+							}	} />
+					);
+				}
+			},
+			{
+				icon: ( props ) => { return (
+					<Icon name={ 'swap-horizontal-outline' } { ...props } />
+				) },
+				label: __( 'Add Dividend' ),
+				onPress: () => {
+					openBottomSheet();
+					setTitle( __( 'New Dividend' ) );
+					setContent(
+						<TransferForm
+							transfer={ {
+								account_id: account._id,
+								owner_id: user.id,
+								date: Date.now(),
+								amount: null,
+								holding_name: holding.name
+							} }
+							account={ account }
+							onSubmit={ ( transfer ) => {
+								addTransfer( transfer ).then( closeBottomSheet );
 							}	} />
 					);
 				}

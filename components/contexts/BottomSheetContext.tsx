@@ -27,6 +27,7 @@ import {
 } from "../../constants";
 import { IconButton } from "../buttons";
 import { Header } from "../ui";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface BottomSheetContext {
 	title: string,
@@ -81,6 +82,7 @@ export const BottomSheetProvider = ( { children } ) => {
 }
 
 const BottomSheet = () => {
+	const insets = useSafeAreaInsets();
 	const { title, setTitle, content, setContent, visible, closeBottomSheet } = useBottomSheet();
 	const bottomSheetRef = useRef<BottomSheetMethods>( null );
 
@@ -129,7 +131,10 @@ const BottomSheet = () => {
 					} />
 			}>
 			<BottomSheetScrollView
-				contentContainerStyle={ styles.contentContainer }
+				contentContainerStyle={ [
+					styles.contentContainer,
+					{ paddingBottom: insets.bottom }
+				] }
 				keyboardShouldPersistTaps='handled'>
 				{ content }
 			</BottomSheetScrollView>
