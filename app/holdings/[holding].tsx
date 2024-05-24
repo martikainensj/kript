@@ -19,22 +19,12 @@ import { HoldingForm } from "../../components/holdings/HoldingForm";
 
 
 const HoldingPage: React.FC = ( {} ) => {
-  const params = useLocalSearchParams<{ name: string, account_id: string }>();
-	const name = params.name;
+  const params = useLocalSearchParams<{ id: string, account_id: string }>();
+	const id = parseInt( params.id );
 	const account_id = new Realm.BSON.ObjectID( params.account_id );
 	const user: Realm.User = useUser();
-	// TODO: vaihda params.name johonki params.holding_id
-	// holding_id on sit holdingin indeksi accountin holdings arrayssa
-	// nimeä vaihtaessa tää pakottaa viel aikasempaa nimee ja se aiheuttaa
-	// errorin. array sijainti ei vaihdu vaik mitä tapahtuis eli holding_id 6/5
-	const { holding, saveHolding, removeHolding, account, addTransaction, addTransfer } = useHolding( {
-		holding: {
-			name,
-			account_id,
-			owner_id: user.id
-		}
-	} );
-
+	const { holding, saveHolding, removeHolding, account, addTransaction, addTransfer }
+		= useHolding( { id, account_id } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
@@ -124,7 +114,12 @@ const HoldingPage: React.FC = ( {} ) => {
 			}
 		])
 	}, [ account ] );
-	
+
+	if ( ! holding.isValid() ) {
+		router.back();
+		return;
+	}
+
 	return (
 		<View style={ styles.container }>
 			<FABProvider>

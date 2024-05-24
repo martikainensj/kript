@@ -9,6 +9,7 @@ export type Account = {
   owner_id: string;
   holdings?: Realm.List<Holding>;
   transfers?: Realm.List<Transfer>;
+	isValid?: () => boolean;
 };
 
 export const AccountSchema = {

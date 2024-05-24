@@ -6,20 +6,19 @@ import { confirmation } from "../helpers";
 import { __ } from "../localization";
 import { useAccount } from "./useAccount";
 import { Holding } from "../models/Holding";
-import { router } from "expo-router";
 
 interface useHoldingProps {
-	holding: Holding,
+	id: number,
+	account_id: Realm.BSON.ObjectID
 }
 
-export const useHolding = ( props: useHoldingProps ) => {
+export const useHolding = ( { id, account_id }: useHoldingProps ) => {
 	const realm = useRealm();
 	const user: Realm.User = useUser();
-	const { account, getHoldingId, getHolding, addTransaction, addTransfer } = useAccount( { id: props.holding.account_id } );
+	const { account, getHoldingById, addTransaction, addTransfer } = useAccount( { id: account_id } );
 	const holding = useMemo( () => {
-		console.log( props.holding.name );
-		return getHolding( props.holding.name )
-	}, [ props ] );
+		return getHoldingById( id );
+	}, [] );
 
 	const saveHolding = useCallback( ( editedHolding: Holding ) => {
 		const title = __( 'Save Holding' );
@@ -32,7 +31,6 @@ export const useHolding = ( props: useHoldingProps ) => {
 				message,
 				onAccept() {
 					resolve( realm.write( () => {
-						console.log( editedHolding );
 						Object.assign( holding, { ...editedHolding } );
 					} ) );
 				}
@@ -51,8 +49,7 @@ export const useHolding = ( props: useHoldingProps ) => {
 				message,
 				onAccept() {
 					resolve( realm.write( () => {
-						const holdingId = getHoldingId( holding.name )
-						account.holdings.remove( holdingId );
+						account.holdings.remove( id );
 					} ) );
 				}
 			} );

@@ -3,7 +3,7 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { Text } from "react-native-paper";
 import { BSON, User } from "realm";
 import { useRealm, useUser } from "@realm/react";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { __ } from "../../localization";
@@ -27,10 +27,6 @@ const AccountPage: React.FC = ( {} ) => {
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const values = useMemo( () =>  [
-		<Value label={ __( 'Balance' ) } value={ getBalance(2) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Value' ) } value={ getValue(2) } unit={ '€' } isVertical={ true } />,
-	], [ realm, account ] );
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -115,7 +111,17 @@ const AccountPage: React.FC = ( {} ) => {
 			}
 		])
 	}, [ account ] );
-	
+
+	if ( ! account?.isValid() ) {
+		router.back();
+		return;
+	}
+
+	const values = [
+		<Value label={ __( 'Balance' ) } value={ getBalance(2) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ getValue(2) } unit={ '€' } isVertical={ true } />,
+	];
+
 	return (
 		<View style={ styles.container }>
 			<FABProvider>
@@ -135,8 +141,8 @@ const AccountPage: React.FC = ( {} ) => {
 						title={ __( 'Holdings' ) }
 						noItemsTitleText={ __( 'No holdings' ) }
 						noItemsDescriptionText={ __( 'Create a new holding by clicking the "+" button in the bottom right corner.' ) }
-						items={ account.holdings.map( holding => {
-							return <HoldingItem holding={ holding } />
+						items={ account.holdings.map( ( holding, id ) => {
+							return <HoldingItem id={ id } { ...holding } />
 						} ) } />
 				</View>
 			</FABProvider>

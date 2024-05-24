@@ -7,7 +7,8 @@ export type Transaction = {
   owner_id: string;
   price: number;
   total: number;
-	holding_name: string
+	holding_name: string;
+	isValid?: () => boolean;
 };
 
 export const TransactionSchema = {

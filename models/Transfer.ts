@@ -7,6 +7,7 @@ export type Transfer = {
   owner_id: string;
 	account_id: Realm.BSON.ObjectID;
 	holding_name?: string;
+	isValid?: () => boolean;
 };
 
 export const TransferSchema = {

@@ -1,8 +1,9 @@
 import React, { useMemo } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { Chip } from "react-native-paper";
 
 import { BorderRadius, Spacing, Theme } from "../../constants";
+import { ScrollView } from "react-native-gesture-handler";
 
 export interface ChipProps {
 	label: string

@@ -1,40 +1,32 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
+import Realm from "realm";
 
 import { Icon, Row } from "../ui";
 import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
 import { useHolding } from "../../hooks";
 import { __ } from "../../localization";
-import { Holding } from "../../models/Holding";
 import { MenuItem, useBottomSheet, useMenu } from "../contexts";
 import { router } from "expo-router";
+import { HoldingForm } from "./HoldingForm";
 
 interface HoldingItemProps {
-	holding: Holding,
+	id: number,
+	account_id: Realm.BSON.ObjectID
 }
 
-export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
+export const HoldingItem: React.FC<HoldingItemProps> = ( { id, account_id } ) => {
 	const { openMenu } = useMenu();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { removeHolding } = useHolding( { holding } );
+	const { holding, saveHolding, removeHolding } = useHolding( { id, account_id } );
 
-	const {
-		name,
-		notes,
-		transactions,
-		owner_id,
-		account_id
-	} = useMemo( () => {
-		return holding
-	}, [ holding ] );
-
-	const onPress = () => {
+	const onPress = useCallback( () => {
 		router.navigate( {
 			pathname: 'holdings/[holding]',
-			params: { ...holding }
+			params: { id, ...holding }
 		} );
-	};
+	}, [ holding ] );
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -47,7 +39,11 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
 					openBottomSheet();
 					setTitle( __( 'Edit Holding' ) );
 					setContent(
-						<Text>Todo</Text>
+						<HoldingForm
+							holding={ holding }
+							onSubmit={ holding => {
+								saveHolding( holding ).then( closeBottomSheet ) }
+							} />
 					)
 				}
 			},
@@ -62,6 +58,8 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
 		openMenu( anchor, menuItems );
 	}, [ holding ] );
 
+	if ( ! holding.isValid() ) return;
+	
 	return (
 		<TouchableRipple
 			onPress={ onPress }
@@ -69,8 +67,8 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
 			theme={ Theme }>
 			<View style={ styles.container}>
 				<Row>
-					<Text style={ styles.name }>{ holding.name }</Text>
-					<Text>{ holding.transactions.length }</Text>
+					<Text style={ styles.name }>{ holding?.name }</Text>
+					<Text>{ holding?.transactions.length }</Text>
 				</Row>
 			</View>
 		</TouchableRipple>

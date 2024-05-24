@@ -25,6 +25,11 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		} );
 	}, [ realm, account ] );
 
+	const getHoldingById = useCallback( ( id: number ) => {
+		const holding = account?.holdings[ id ];
+		return holding;
+	}, [ realm, account ] );
+
 	const getHolding = useCallback( ( name: string ) => {
 		const existingHolding = account?.holdings[ getHoldingId( name ) ];
 
@@ -201,7 +206,7 @@ export const useAccount = ( { id }: useAccountProps ) => {
 
 	return {
 		account, saveAccount, removeAccount,
-		getHoldingId, getHolding,
+		getHoldingId, getHoldingById, getHolding,
 		addTransaction,
 		addTransfer,
 		getBalance, getValue
