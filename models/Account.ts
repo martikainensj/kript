@@ -3,7 +3,7 @@ import { Holding } from './Holding';
 import { Transfer } from './Transfer';
 
 export type Account = {
-  _id: Realm.BSON.ObjectId;
+  _id: Realm.BSON.UUID;
   name: string;
   notes?: string;
   owner_id: string;
@@ -15,7 +15,7 @@ export type Account = {
 export const AccountSchema = {
   name: 'Account',
   properties: {
-    _id: 'objectId',
+    _id: 'uuid',
     name: 'string',
     notes: 'string?',
     owner_id: 'string',

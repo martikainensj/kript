@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-native";
+import { View, StyleSheet, Keyboard, TouchableWithoutFeedback, ScrollView } from "react-native";
 
 import { IconButton } from "../buttons";
 import { DateInput, HoldingInput, Select, TextInput } from "../inputs";
@@ -61,7 +61,7 @@ export const TransferForm = ( {
 
 	return (
     <TouchableWithoutFeedback onPress={ handleDismissKeyboard }>
-			<View style={ styles.container }>
+			<ScrollView style={ styles.container }>
 				<DateInput
 					label={ __( 'Date' ) }
 					value={ date }
@@ -131,7 +131,7 @@ export const TransferForm = ( {
 					style={ styles.submitButton }
 					disabled={ ! allSet( amount, ( transferType !== dividend.id || !! holding_name ) ) }
 					onPress={ onSubmitHandler } />
-			</View>
+			</ScrollView>
 		</TouchableWithoutFeedback>
 	)
 }

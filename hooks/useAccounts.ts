@@ -30,6 +30,7 @@ export const useAccounts = () => {
 	}, [] );
 
 	useEffect( () => {
+		//realm.deleteAll();
 		realm.subscriptions.update( mutableSubs => {
 			//mutableSubs.removeAll();
 			mutableSubs.add( accounts );

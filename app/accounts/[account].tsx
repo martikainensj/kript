@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { Text } from "react-native-paper";
-import { BSON, User } from "realm";
+import Realm from "realm";
 import { useRealm, useUser } from "@realm/react";
 import { router, useLocalSearchParams } from "expo-router";
 
@@ -17,11 +17,13 @@ import { FABProvider, useFAB } from "../../components/contexts";
 import { TransactionForm } from "../../components/transactions/TransactionForm";
 import HoldingItem from "../../components/holdings/HoldingItem";
 import { TransferForm } from "../../components/transfers/TransferForm";
+import TransferItem from "../../components/transfers/TransferItem";
+import { GestureHandlerRootView, NativeViewGestureHandler } from "react-native-gesture-handler";
 
 const AccountPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ id: string }>();
-	const accountId = new BSON.ObjectID( params.id );
-	const user: User = useUser();
+	const accountId = new Realm.BSON.UUID( params.id );
+	const user: Realm.User = useUser();
 	const realm = useRealm();
 	const { account, saveAccount, removeAccount, addTransaction, addTransfer, getBalance, getValue } = useAccount( { id: accountId } );
 	const { openMenu } = useMenu();
@@ -49,9 +51,28 @@ const AccountPage: React.FC = ( {} ) => {
 			},
 			{
 				title: __( 'Remove' ),
-				leadingIcon: ( { color } ) => 
-					<Icon name={ 'trash' } color={ color } />,
-				onPress: removeAccount
+				leadingIcon: ( props ) => 
+					<Icon name={ 'trash' } { ...props } />,
+				onPress: removeAccount,
+			},
+			{
+				title: __( 'Transfers' ),
+				leadingIcon: ( props ) => 
+					<Icon name={ 'swap-horizontal-outline' } { ...props } />,
+				onPress: () => {
+					openBottomSheet();
+					setTitle( __( 'Transfers' ) );
+					setContent(
+						<ItemList
+							noItemsTitleText={ __( 'No Transfers' ) }
+							noItemsDescriptionText={ __( 'Create a new transfers by clicking the "+" button in the bottom right corner.' ) }
+							items={ account.transfers.map( ( transfers ) => {
+								return <TransferItem { ...transfers } />
+							} ) }
+							style={ styles.bottomSheetItemList } />
+					);
+				},
+				startsSection: true
 			}
 		];
 
@@ -71,12 +92,14 @@ const AccountPage: React.FC = ( {} ) => {
 					setContent(
 						<TransactionForm
 							transaction={ {
+								_id: new Realm.BSON.UUID(),
 								owner_id: user.id,
 								date: Date.now(),
 								price: null,
 								amount: null,
 								total: null,
-								holding_name: ''
+								holding_name: '',
+								account_id: account._id
 							} }
 							account={ account }
 							onSubmit={ ( transaction ) => {
@@ -96,6 +119,7 @@ const AccountPage: React.FC = ( {} ) => {
 					setContent(
 						<TransferForm
 							transfer={ {
+								_id: new Realm.BSON.UUID(),
 								account_id: account._id,
 								owner_id: user.id,
 								date: Date.now(),
@@ -141,8 +165,8 @@ const AccountPage: React.FC = ( {} ) => {
 						title={ __( 'Holdings' ) }
 						noItemsTitleText={ __( 'No holdings' ) }
 						noItemsDescriptionText={ __( 'Create a new holding by clicking the "+" button in the bottom right corner.' ) }
-						items={ account.holdings.map( ( holding, id ) => {
-							return <HoldingItem id={ id } { ...holding } />
+						items={ account.holdings.map( ( holding ) => {
+							return <HoldingItem { ...holding } />
 						} ) } />
 				</View>
 			</FABProvider>
@@ -159,6 +183,9 @@ const styles = StyleSheet.create( {
 	contentContainer: {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
-		paddingVertical: Spacing.md
+	},
+	bottomSheetItemList: {
+		flex: 0,
+		height: 300
 	}
 } );

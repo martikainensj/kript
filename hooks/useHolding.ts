@@ -8,17 +8,23 @@ import { useAccount } from "./useAccount";
 import { Holding } from "../models/Holding";
 
 interface useHoldingProps {
-	id: number,
-	account_id: Realm.BSON.ObjectID
+	_id: Realm.BSON.UUID,
+	account_id: Realm.BSON.UUID
 }
 
-export const useHolding = ( { id, account_id }: useHoldingProps ) => {
+export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	const realm = useRealm();
 	const user: Realm.User = useUser();
 	const { account, getHoldingById, addTransaction, addTransfer } = useAccount( { id: account_id } );
 	const holding = useMemo( () => {
-		return getHoldingById( id );
-	}, [] );
+		return getHoldingById( _id );
+	}, [ realm, account ] );
+
+	const getTransactionById = useCallback( ( id: Realm.BSON.UUID ) => {
+		const transaction = holding?.transactions
+			.filtered( '_id == $0', id )[0];
+		return transaction;
+	}, [ realm, holding ] );
 
 	const saveHolding = useCallback( ( editedHolding: Holding ) => {
 		const title = __( 'Save Holding' );
@@ -49,7 +55,11 @@ export const useHolding = ( { id, account_id }: useHoldingProps ) => {
 				message,
 				onAccept() {
 					resolve( realm.write( () => {
-						account.holdings.remove( id );
+						const index = account.holdings.findIndex( holding => {
+							return holding._id.equals( _id );
+						} );
+						
+						account.holdings.remove( index );
 					} ) );
 				}
 			} );
@@ -59,7 +69,7 @@ export const useHolding = ( { id, account_id }: useHoldingProps ) => {
 	return {
 		holding, saveHolding, removeHolding,
 		account,
-		addTransaction,
+		addTransaction, getTransactionById,
 		addTransfer
 	}
 }

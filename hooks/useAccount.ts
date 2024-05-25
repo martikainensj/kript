@@ -8,9 +8,10 @@ import { confirmation } from "../helpers";
 import { __ } from "../localization";
 import { Transaction } from "../models/Transaction";
 import { Transfer } from "../models/Transfer";
+import { Holding } from "../models/Holding";
 
 interface useAccountProps {
-	id: Realm.BSON.ObjectID
+	id: Realm.BSON.UUID
 }
 
 export const useAccount = ( { id }: useAccountProps ) => {
@@ -19,31 +20,28 @@ export const useAccount = ( { id }: useAccountProps ) => {
 	const account = useQuery<Account>( 'Account' )
 		.filtered( '_id == $0', id )[0];
 
-	const getHoldingId = useCallback( ( name: string ) => {
-		return account?.holdings.findIndex( holding => {
-			return name === holding.name;
-		} );
-	}, [ realm, account ] );
-
-	const getHoldingById = useCallback( ( id: number ) => {
-		const holding = account?.holdings[ id ];
+	const getHoldingById = useCallback( ( id: Realm.BSON.UUID ) => {
+		const holding = account?.holdings
+			.filtered( '_id == $0', id )[0];
 		return holding;
 	}, [ realm, account ] );
 
-	const getHolding = useCallback( ( name: string ) => {
-		const existingHolding = account?.holdings[ getHoldingId( name ) ];
+	const getHoldingByName = useCallback( ( name: string ) => {
+		const holding = account?.holdings
+			.filtered( 'name == $0', name )[0];
+		return holding;
+	}, [ realm, account ] );
 
-		if ( ! existingHolding ) {
-			account?.holdings.push( {
-				name,
-				owner_id: user.id,
-				account_id: account?._id
-			} );
-
-			return account?.holdings[ account?.holdings.length - 1 ];
+	const addHolding = useCallback( ( name: string ) => {
+		const holding: Holding = {
+			_id: new Realm.BSON.UUID,
+			name,
+			owner_id: user.id,
+			account_id: account._id
 		}
 
-		return existingHolding;
+		account.holdings.push( holding );
+		return account.holdings[ account?.holdings.length - 1 ];
 	}, [ realm, account ] );
 
 	const addTransaction = useCallback( ( transaction: Transaction ) => {
@@ -57,9 +55,13 @@ export const useAccount = ( { id }: useAccountProps ) => {
 				message: message,
 				onAccept() {
 					resolve( realm.write( async () => {
-						const holding = getHolding( transaction.holding_name );
+						const holding = getHoldingByName( transaction.holding_name )
+							?? addHolding( transaction.holding_name );
 
-						holding.transactions.push( transaction );
+						holding.transactions.push( {
+							...transaction,
+							holding_id: holding._id
+					 	} );
 
 						return holding.transactions[ holding.transactions.length - 1 ];
 					} ) );
@@ -67,6 +69,12 @@ export const useAccount = ( { id }: useAccountProps ) => {
 			} );
 		} );
 	}, [] );
+
+	const getTransferById = useCallback( ( id: Realm.BSON.UUID ) => {
+		const transfer = account?.transfers
+			.filtered( '_id == $0', id )[0];
+		return transfer;
+	}, [ realm, account ] );
 
 	const addTransfer = useCallback( ( transfer: Transfer ) => {
 		const title = __( 'Add Transfer' );
@@ -79,9 +87,14 @@ export const useAccount = ( { id }: useAccountProps ) => {
 				message: message,
 				onAccept() {
 					resolve( realm.write( async () => {
-						transfer.holding_name && getHolding( transfer.holding_name );
-						account.transfers.push( transfer );
-						
+						const holding = !! transfer.holding_name
+							&& ( getHoldingByName( transfer.holding_name ) ?? addHolding( transfer.holding_name ) );
+
+						account.transfers.push( {
+							...transfer,
+							holding_id: holding?._id
+					 	} );
+
 						return account.transfers[ account.transfers.length - 1 ];
 					} ) );
 				}
@@ -206,9 +219,9 @@ export const useAccount = ( { id }: useAccountProps ) => {
 
 	return {
 		account, saveAccount, removeAccount,
-		getHoldingId, getHoldingById, getHolding,
+		addHolding, getHoldingById, getHoldingByName,
 		addTransaction,
-		addTransfer,
+		addTransfer, getTransferById,
 		getBalance, getValue
 	}
 }

@@ -3,28 +3,22 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import Realm from "realm";
 
-import { Icon, Row } from "../ui";
+import { Grid, Icon, Value } from "../ui";
 import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
-import { useHolding } from "../../hooks";
+import { useTransfer } from "../../hooks";
 import { __ } from "../../localization";
 import { MenuItem, useBottomSheet, useMenu } from "../contexts";
-import { router } from "expo-router";
-import { HoldingForm } from "./HoldingForm";
-import { Holding } from "../../models/Holding";
+import { TransferForm } from "./TransferForm";
 
-interface HoldingItemProps extends Holding {}
+interface TransferItemProps {
+	_id: Realm.BSON.UUID,
+	account_id: Realm.BSON.UUID
+}
 
-export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) => {
+export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id } ) => {
 	const { openMenu } = useMenu();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { holding, saveHolding, removeHolding } = useHolding( { _id, account_id } );
-
-	const onPress = useCallback( () => {
-		router.navigate( {
-			pathname: 'holdings/[holding]',
-			params: { ...holding }
-		} );
-	}, [ holding ] );
+	const { transfer, saveTransfer, removeTransfer, type, account } = useTransfer( { _id, account_id } );
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -35,12 +29,13 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
 					openBottomSheet();
-					setTitle( __( 'Edit Holding' ) );
+					setTitle( __( 'Edit Transfer' ) );
 					setContent(
-						<HoldingForm
-							holding={ holding }
-							onSubmit={ holding => {
-								saveHolding( holding ).then( closeBottomSheet ) }
+						<TransferForm
+							account={ account }
+							transfer={ transfer }
+							onSubmit={ transfer => {
+								saveTransfer( transfer ).then( closeBottomSheet ) }
 							} />
 					)
 				}
@@ -49,31 +44,41 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 				title: __( 'Remove' ),
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'trash' } color={ color } />,
-				onPress: removeHolding
+				onPress: removeTransfer
 			}
 		];
 
 		openMenu( anchor, menuItems );
-	}, [ holding ] );
+	}, [ transfer ] );
 
-	if ( ! holding.isValid() ) return;
+	if ( ! transfer?.isValid() ) return;
 	
+	const meta = [
+		<Text style={ styles.date }>{ new Date( transfer?.date ).toLocaleDateString( 'fi' ) }</Text>,
+		<Text style={ [ styles.type, { color: type.color } ] }>{ type.name }</Text>
+	];
+
+	const values = [
+		<Value label={ __( 'Amount' ) } value={ transfer?.amount } isVertical={ true } />
+	];
+
 	return (
 		<TouchableRipple
-			onPress={ onPress }
 			onLongPress={ onLongPress }
 			theme={ Theme }>
 			<View style={ styles.container}>
-				<Row>
-					<Text style={ styles.name }>{ holding?.name }</Text>
-					<Text>{ holding?.transactions.length }</Text>
-				</Row>
+				<Grid
+					columns={ 2 }
+					items={ meta } />
+				<Grid
+					columns={ 4 }
+					items= { values } />
 			</View>
 		</TouchableRipple>
 	)
 }
 
-export default HoldingItem;
+export default TransferItem;
 
 const styles = StyleSheet.create( {
 	container: {
@@ -89,5 +94,12 @@ const styles = StyleSheet.create( {
 	},
 	valueValueStyle: {
 		
-	}
+	},
+	date: {
+		fontWeight: FontWeight.bold
+	},
+	type: {
+		fontWeight: FontWeight.bold,
+		textAlign: 'right'
+	},
 } );

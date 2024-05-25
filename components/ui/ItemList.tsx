@@ -75,8 +75,7 @@ const PlaceholderItem: React.FC<PlaceholderItemProps> = ( {
 const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.container,
-		marginHorizontal: -Spacing.md,
-		marginTop: -Spacing.md
+		marginHorizontal: -Spacing.md
 	},
 
 	titleContainer: {

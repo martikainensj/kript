@@ -23,7 +23,7 @@ const Accounts: React.FC = () => {
 		setContent(
 			<AccountForm
 				account={ {
-					_id: new Realm.BSON.ObjectID(),
+					_id: new Realm.BSON.UUID(),
 					owner_id: user.id,
 					name: '',
 				}	}

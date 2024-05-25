@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface TransactionFormProps {
 	transaction: Transaction,
-	account: Account,
+	account?: Account,
 	onSubmit: ( transaction: Transaction ) => void;
 }
 
@@ -73,15 +73,17 @@ export const TransactionForm = ( {
 						}
 					} ) } />
 
-				<HoldingInput
-					label={ __( 'Holding' ) }
-					value={ holding_name }
-					account={ account }
-					placeholder={ `${ __( 'Example' ) }: Apple Inc` }
-					setValue={ holding_name => setEditedTransaction(
-						Object.assign( { ...editedTransaction }, { holding_name } )
-					) }
-					disabled={ !! transaction.holding_name } />
+				{ account &&
+					<HoldingInput
+						label={ __( 'Holding' ) }
+						value={ holding_name }
+						account={ account }
+						placeholder={ `${ __( 'Example' ) }: Apple Inc` }
+						setValue={ holding_name => setEditedTransaction(
+							Object.assign( { ...editedTransaction }, { holding_name } )
+						) }
+						disabled={ !! transaction.holding_name } />
+				}
 
 				<Divider />
 				
