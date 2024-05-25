@@ -156,6 +156,5 @@ const styles = StyleSheet.create( {
 	contentContainer: {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
-		paddingVertical: Spacing.md
 	}
 } );

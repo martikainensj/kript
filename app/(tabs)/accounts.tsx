@@ -65,6 +65,5 @@ const styles = StyleSheet.create( {
 	contentContainer: {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
-		paddingTop: Spacing.md
 	}
 } );
