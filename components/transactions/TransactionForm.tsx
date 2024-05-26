@@ -23,12 +23,20 @@ export const TransactionForm = ( {
 	onSubmit
 }: TransactionFormProps ) => {
 	const [ buy, sell ] = TransactionTypes;
-	const [ transactionType, setTransactionType ] = useState( buy.id );
+	const [ transactionType, setTransactionType ] = useState(
+		transaction.total >= 0
+			? buy.id
+			: sell.id
+	);
 	const [ editedTransaction, setEditedTransaction ]
 		= useState( { ...transaction } );
 
 	const { date, price, amount, total, holding_name, notes } = useMemo( () => {
-		return editedTransaction
+		return {
+			...editedTransaction,
+			amount: editedTransaction.amount && Math.abs( editedTransaction.amount ),
+			total: editedTransaction.total && Math.abs( editedTransaction.total ),
+		}
 	}, [ editedTransaction ] );
 
 	const handleDismissKeyboard = ( ) => {
@@ -37,7 +45,15 @@ export const TransactionForm = ( {
 
 	const onSubmitHandler = () => {
 		handleDismissKeyboard();
-		onSubmit( stripRealmListsFromObject( editedTransaction ) )
+		onSubmit( stripRealmListsFromObject( {
+			...editedTransaction,
+			amount: transactionType === sell.id
+				? -amount
+				: Math.abs( amount ),
+			total: transactionType === sell.id
+				? -total
+				: Math.abs( total )
+		} ) )
 	}
 		
 	useEffect( () => {

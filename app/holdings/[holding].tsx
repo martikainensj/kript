@@ -17,25 +17,60 @@ import { TransactionForm } from "../../components/transactions/TransactionForm";
 import { TransferForm } from "../../components/transfers/TransferForm";
 import { HoldingForm } from "../../components/holdings/HoldingForm";
 import TransactionItem from "../../components/transactions/TransactionItem";
+import TransferItem from "../../components/transfers/TransferItem";
 
 const HoldingPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ _id: string, account_id: string }>();
 	const _id = new Realm.BSON.UUID( params._id );
 	const account_id = new Realm.BSON.UUID( params.account_id );
 	const user: Realm.User = useUser();
-	const { holding, saveHolding, removeHolding, account, addTransaction, addTransfer }
+	const {
+		holding, saveHolding, removeHolding,
+		account,
+		transactions, addTransaction,
+		dividends, addTransfer }
 		= useHolding( { _id, account_id } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
-	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
 		const menuItems: MenuItem[] = [
 			{
+				title: __( 'Transactions' ),
+				leadingIcon: ( props ) =>
+					<Icon name={ 'pricetag' } { ...props } />,
+				onPress: () => {
+					openBottomSheet(
+						__( 'Transactions' ),
+						<ItemList
+							noItemsDescriptionText={ __( 'No Transactions' ) }
+							items={ transactions.map( transaction =>
+								<TransactionItem { ...transaction } />
+							) } />
+					)
+				}
+			},
+			{
+				title: __( 'Dividends' ),
+				leadingIcon: ( props ) =>
+					<Icon name={ 'swap-horizontal' } { ...props } />,
+				onPress: () => {
+					openBottomSheet(
+						__( 'Dividends' ),
+						<ItemList
+							noItemsDescriptionText={ __( 'No Dividends' ) }
+							items={ dividends.map( dividend =>
+								<TransferItem { ...dividend } />
+							) } />
+					)
+				}
+			},
+			{
 				title: __( 'Edit' ),
-				leadingIcon: ( { color } ) => 
-					<Icon name={ 'create' } color={ color } />,
+				leadingIcon: ( props ) => 
+					<Icon name={ 'create' } { ...props }/>,
 				onPress: () => {
 					openBottomSheet(
 						__( 'Edit Holding' ),
@@ -45,16 +80,17 @@ const HoldingPage: React.FC = ( {} ) => {
 								saveHolding( holding ).then( closeBottomSheet ) }
 							} />
 					);
-				}
+				},
+				startsSection: true
 			},
 			{
 				title: __( 'Remove' ),
-				leadingIcon: ( { color } ) => 
-					<Icon name={ 'trash' } color={ color } />,
+				leadingIcon: ( props ) => 
+					<Icon name={ 'trash' } { ...props } />,
 				onPress: () => {
 					removeHolding().then( router.back	)
 				}
-			}
+			},
 		];
 
 		openMenu( anchor, menuItems );
@@ -63,8 +99,8 @@ const HoldingPage: React.FC = ( {} ) => {
 	useEffect( () => {
 		setActions( [
 			{
-				icon: ( { color, size } ) => { return (
-					<Icon name={ 'pricetag' } size={ size } color={ color } />
+				icon: ( props ) => { return (
+					<Icon name={ 'pricetag' } { ...props } />
 				) },
 				label: __( 'Add Transaction' ),
 				onPress: () => {
@@ -131,13 +167,7 @@ const HoldingPage: React.FC = ( {} ) => {
 						onPress={ onPressOptions } />
 					} />
 					<View style={ styles.contentContainer }>
-						<ItemList
-							title={ __( 'Transactions' ) }
-							noItemsTitleText={ __( 'No transactions' ) }
-							noItemsDescriptionText={ __( 'Create a new transaction by clicking the "+" button in the bottom right corner.' ) }
-							items={ holding.transactions.map( ( transaction ) => {
-								return <TransactionItem { ...transaction } />
-							} ) } />
+						
 					</View>
 			</FABProvider>
 		</View>

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import Realm from "realm";
@@ -12,13 +12,20 @@ import { TransferForm } from "./TransferForm";
 
 interface TransferItemProps {
 	_id: Realm.BSON.UUID,
-	account_id: Realm.BSON.UUID
+	account_id: Realm.BSON.UUID,
+	showHolding?: boolean
 }
 
-export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id } ) => {
+export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, showHolding } ) => {
 	const { openMenu } = useMenu();
-	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { transfer, saveTransfer, removeTransfer, type, account } = useTransfer( { _id, account_id } );
+	const { amount, date, holding_name } = useMemo( () => {
+		return {
+			...transfer,
+			amount: Math.abs( transfer.amount ),
+		}
+	}, [ transfer ] );
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -53,12 +60,17 @@ export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id } )
 	if ( ! transfer?.isValid() ) return;
 	
 	const meta = [
-		<Text style={ styles.date }>{ new Date( transfer?.date ).toLocaleDateString( 'fi' ) }</Text>,
+		<View style={ styles.header }>
+			<Text style={ styles.date }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>
+			{ ( showHolding && holding_name )
+				&& <Text numberOfLines={ 1 } style={ styles.holding }>{ holding_name }</Text>
+			}
+		</View>,
 		<Text style={ [ styles.type, { color: type.color } ] }>{ type.name }</Text>
 	];
 
 	const values = [
-		<Value label={ __( 'Amount' ) } value={ transfer?.amount } isVertical={ true } />
+		<Value label={ __( 'Amount' ) } value={ amount } isVertical={ true } />
 	];
 
 	return (
@@ -94,11 +106,21 @@ const styles = StyleSheet.create( {
 	valueValueStyle: {
 		
 	},
+	header: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		flex: 1,
+		gap: Spacing.sm
+	},
 	date: {
-		fontWeight: FontWeight.bold
+		fontWeight: FontWeight.bold,
 	},
 	type: {
 		fontWeight: FontWeight.bold,
 		textAlign: 'right'
 	},
+	holding: {
+		fontWeight: FontWeight.bold,
+		color: Theme.colors.primary
+	}
 } );

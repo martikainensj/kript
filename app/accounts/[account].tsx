@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
-import { Text } from "react-native-paper";
 import Realm from "realm";
 import { useRealm, useUser } from "@realm/react";
 import { router, useLocalSearchParams } from "expo-router";
 
-import { GlobalStyles, Spacing } from "../../constants";
+import { GlobalStyles } from "../../constants";
 import { __ } from "../../localization";
 import { useAccount } from "../../hooks";
 import { Grid, Header, Icon, ItemList, Value } from "../../components/ui";
@@ -18,7 +17,6 @@ import { TransactionForm } from "../../components/transactions/TransactionForm";
 import HoldingItem from "../../components/holdings/HoldingItem";
 import { TransferForm } from "../../components/transfers/TransferForm";
 import TransferItem from "../../components/transfers/TransferItem";
-import { GestureHandlerRootView, NativeViewGestureHandler } from "react-native-gesture-handler";
 
 const AccountPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ id: string }>();
@@ -34,6 +32,22 @@ const AccountPage: React.FC = ( {} ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
 		const menuItems: MenuItem[] = [
 			{
+				title: __( 'Transfers' ),
+				leadingIcon: ( props ) => 
+					<Icon name={ 'swap-horizontal-outline' } { ...props } />,
+				onPress: () => {
+					openBottomSheet(
+						__( 'Transfers' ),
+						<ItemList
+							noItemsTitleText={ __( 'No Transfers' ) }
+							noItemsDescriptionText={ __( 'Create a new transfers by clicking the "+" button in the bottom right corner.' ) }
+							items={ account.transfers.map( ( transfers ) => {
+								return <TransferItem { ...transfers } showHolding={ true } />
+							} ) } />
+					);
+				}
+			},
+			{
 				title: __( 'Edit' ),
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
@@ -46,7 +60,8 @@ const AccountPage: React.FC = ( {} ) => {
 								saveAccount( editedAccount ).then( closeBottomSheet );
 							}	} />
 					);
-				}
+				},
+				startsSection: true
 			},
 			{
 				title: __( 'Remove' ),
@@ -54,24 +69,6 @@ const AccountPage: React.FC = ( {} ) => {
 					<Icon name={ 'trash' } { ...props } />,
 				onPress: removeAccount,
 			},
-			{
-				title: __( 'Transfers' ),
-				leadingIcon: ( props ) => 
-					<Icon name={ 'swap-horizontal-outline' } { ...props } />,
-				onPress: () => {
-					openBottomSheet(
-						__( 'Transfers' ),
-						<ItemList
-							noItemsTitleText={ __( 'No Transfers' ) }
-							noItemsDescriptionText={ __( 'Create a new transfers by clicking the "+" button in the bottom right corner.' ) }
-							items={ account.transfers.map( ( transfers ) => {
-								return <TransferItem { ...transfers } />
-							} ) }
-							style={ styles.bottomSheetItemList } />
-					);
-				},
-				startsSection: true
-			}
 		];
 
 		openMenu( anchor, menuItems );
@@ -180,8 +177,4 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
 	},
-	bottomSheetItemList: {
-		flex: 0,
-		height: 300
-	}
 } );

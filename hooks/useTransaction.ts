@@ -19,7 +19,10 @@ interface useTransactionProps {
 export const useTransaction = ( { _id, holding_id, account_id }: useTransactionProps ) => {
 	const realm = useRealm();
 	const user: Realm.User = useUser();
-	const { holding, getTransactionById } = useHolding( { _id: holding_id, account_id: account_id } );
+	const {
+		holding, 
+		transactions, getTransactionById
+	} = useHolding( { _id: holding_id, account_id: account_id } );
 	const transaction = useMemo( () => {
 		const transaction = getTransactionById( _id );
 		return transaction;
@@ -57,16 +60,16 @@ export const useTransaction = ( { _id, holding_id, account_id }: useTransactionP
 				message,
 				onAccept() {
 					resolve( realm.write( () => {
-						const index = holding.transactions.findIndex( transaction => {
+						const index = transactions.findIndex( transaction => {
 							return transaction._id.equals( _id );
 						} );
 						
-						holding.transactions.remove( index );
+						transactions.remove( index );
 					} ) );
 				}
 			} );
 		} );
-	}, [ transaction, holding ] );
+	}, [ transaction, transactions ] );
 
 	return {
 		transaction, saveTransaction, removeTransaction,

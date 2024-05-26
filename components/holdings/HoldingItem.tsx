@@ -16,8 +16,12 @@ interface HoldingItemProps extends Holding {}
 
 export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) => {
 	const { openMenu } = useMenu();
-	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { holding, saveHolding, removeHolding } = useHolding( { _id, account_id } );
+	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const {
+		holding, saveHolding, removeHolding,
+		transactions,
+		dividends
+	} = useHolding( { _id, account_id } );
 
 	const onPress = useCallback( () => {
 		router.navigate( {
@@ -31,8 +35,8 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 		const menuItems: MenuItem[] = [
 			{
 				title: __( 'Edit' ),
-				leadingIcon: ( { color } ) => 
-					<Icon name={ 'create' } color={ color } />,
+				leadingIcon: ( props ) => 
+					<Icon name={ 'create' } { ...props } />,
 				onPress: () => {
 					openBottomSheet(
 						__( 'Edit Holding' ),
@@ -46,8 +50,8 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 			},
 			{
 				title: __( 'Remove' ),
-				leadingIcon: ( { color } ) => 
-					<Icon name={ 'trash' } color={ color } />,
+				leadingIcon: ( props ) => 
+					<Icon name={ 'trash' } { ...props } />,
 				onPress: removeHolding
 			}
 		];
@@ -65,7 +69,7 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 			<View style={ styles.container}>
 				<Row>
 					<Text style={ styles.name }>{ holding?.name }</Text>
-					<Text>{ holding?.transactions.length }</Text>
+					<Text>{ transactions.length }</Text>
 				</Row>
 			</View>
 		</TouchableRipple>

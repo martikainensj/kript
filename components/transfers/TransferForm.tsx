@@ -22,13 +22,21 @@ export const TransferForm = ( {
 	onSubmit
 }: TransferFormProps ) => {
 	const [ deposit, withdraw, dividend ] = TransferTypes;
-	const [ transferType, setTransferType ]
-		= useState( !! transfer.holding_name ? dividend.id : deposit.id );
+	const [ transferType, setTransferType ]	= useState(
+		!! transfer.holding_name 
+			? dividend.id 
+			: transfer.amount >= 0
+				? deposit.id
+				: withdraw.id
+	);
 	const [ editedTransfer, setEditedTransfer ]
 		= useState( { ...transfer } );
 
 	const { date, amount, holding_name, notes } = useMemo( () => {
-		return editedTransfer
+		return { 
+			...editedTransfer,
+			amount: editedTransfer.amount && Math.abs( editedTransfer.amount ),
+		}
 	}, [ editedTransfer ] );
 
 	const handleDismissKeyboard = ( ) => {

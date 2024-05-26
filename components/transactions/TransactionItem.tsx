@@ -1,14 +1,13 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import Realm from "realm";
 
-import { Grid, Icon, Row, Value } from "../ui";
-import { FontWeight, GlobalStyles, Spacing, Theme, TransactionTypes } from "../../constants";
+import { Grid, Icon, Value } from "../ui";
+import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
 import { useTransaction } from "../../hooks";
 import { __ } from "../../localization";
 import { MenuItem, useBottomSheet, useMenu } from "../contexts";
-import { router } from "expo-router";
 import { TransactionForm } from "./TransactionForm";
 import { Transaction } from "../../models/Transaction";
 
@@ -20,14 +19,14 @@ interface TransactionItemProps {
 
 export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, holding_id, account_id } ) => {
 	const { openMenu } = useMenu();
-	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { transaction, saveTransaction, removeTransaction, type } = useTransaction( { _id, holding_id, account_id } );
-
-	const onPress = useCallback( () => {
-		/*router.navigate( {
-			pathname: 'transactions/[transaction]',
-			params: { id, ...transaction }
-		} );*/
+	const { amount, date, price, total } = useMemo( () => {
+		return {
+			...transaction,
+			amount: Math.abs( transaction.amount ),
+			total: Math.abs( transaction.total ),
+		}
 	}, [ transaction ] );
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
@@ -62,19 +61,18 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, holding_
 	if ( ! transaction?.isValid() ) return;
 	
 	const meta = [
-		<Text style={ styles.date }>{ new Date( transaction?.date ).toLocaleDateString( 'fi' ) }</Text>,
+		<Text style={ styles.date }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>,
 		<Text style={ [ styles.type, { color: type.color } ] }>{ type.name }</Text>
 	];
 
 	const values = [
-		<Value label={ __( 'Amount' ) } value={ transaction?.amount } isVertical={ true } />,
-		<Value label={ __( 'Price' ) } value={ transaction?.price } isVertical={ true } unit={ '€' } />,
-		<Value label={ __( 'Total' ) } value={ transaction?.total } isVertical={ true } unit={ '€' } />
+		<Value label={ __( 'Amount' ) } value={ amount } isVertical={ true } />,
+		<Value label={ __( 'Price' ) } value={ price } isVertical={ true } unit={ '€' } />,
+		<Value label={ __( 'Total' ) } value={ total } isVertical={ true } unit={ '€' } />
 	];
 
 	return (
 		<TouchableRipple
-			onPress={ onPress }
 			onLongPress={ onLongPress }
 			theme={ Theme }>
 			<View style={ styles.container}>

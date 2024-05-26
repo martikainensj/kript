@@ -20,8 +20,16 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		return getHoldingById( _id );
 	}, [ realm, account ] );
 
+	const { transactions, dividends } = useMemo( () => {
+		return {
+			transactions: holding.transactions,
+			dividends: account.transfers
+				.filtered( 'holding_id == $0', holding._id )
+		}
+	}, [ realm, holding, account ] );
+
 	const getTransactionById = useCallback( ( id: Realm.BSON.UUID ) => {
-		const transaction = holding?.transactions
+		const transaction = transactions
 			.filtered( '_id == $0', id )[0];
 		return transaction;
 	}, [ realm, holding ] );
@@ -69,7 +77,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	return {
 		holding, saveHolding, removeHolding,
 		account,
-		addTransaction, getTransactionById,
-		addTransfer
+		transactions, addTransaction, getTransactionById,
+		dividends, addTransfer,
 	}
 }
