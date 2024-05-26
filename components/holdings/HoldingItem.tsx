@@ -34,15 +34,14 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
-					openBottomSheet();
-					setTitle( __( 'Edit Holding' ) );
-					setContent(
+					openBottomSheet(
+						__( 'Edit Holding' ),
 						<HoldingForm
 							holding={ holding }
 							onSubmit={ holding => {
 								saveHolding( holding ).then( closeBottomSheet ) }
 							} />
-					)
+					);
 				}
 			},
 			{

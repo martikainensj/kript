@@ -28,16 +28,15 @@ export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id } )
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
-					openBottomSheet();
-					setTitle( __( 'Edit Transfer' ) );
-					setContent(
+					openBottomSheet(
+						__( 'Edit Transfer' ),
 						<TransferForm
 							account={ account }
 							transfer={ transfer }
 							onSubmit={ transfer => {
 								saveTransfer( transfer ).then( closeBottomSheet ) }
 							} />
-					)
+					);
 				}
 			},
 			{

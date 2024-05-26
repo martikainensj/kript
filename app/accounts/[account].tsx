@@ -38,9 +38,8 @@ const AccountPage: React.FC = ( {} ) => {
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
-					openBottomSheet();
-					setTitle( __( 'Edit Account' ) );
-					setContent(
+					openBottomSheet(
+						__( 'Edit Account' ),
 						<AccountForm
 							account={ account }
 							onSubmit={ ( editedAccount ) => {
@@ -60,9 +59,8 @@ const AccountPage: React.FC = ( {} ) => {
 				leadingIcon: ( props ) => 
 					<Icon name={ 'swap-horizontal-outline' } { ...props } />,
 				onPress: () => {
-					openBottomSheet();
-					setTitle( __( 'Transfers' ) );
-					setContent(
+					openBottomSheet(
+						__( 'Transfers' ),
 						<ItemList
 							noItemsTitleText={ __( 'No Transfers' ) }
 							noItemsDescriptionText={ __( 'Create a new transfers by clicking the "+" button in the bottom right corner.' ) }
@@ -87,9 +85,8 @@ const AccountPage: React.FC = ( {} ) => {
 				) },
 				label: __( 'Add Transaction' ),
 				onPress: () => {
-					openBottomSheet();
-					setTitle( __( 'New Transaction' ) );
-					setContent(
+					openBottomSheet(
+						__( 'New Transaction' ),
 						<TransactionForm
 							transaction={ {
 								_id: new Realm.BSON.UUID(),
@@ -114,9 +111,8 @@ const AccountPage: React.FC = ( {} ) => {
 				) },
 				label: __( 'Add Transfer' ),
 				onPress: () => {
-					openBottomSheet();
-					setTitle( __( 'New Transfer' ) );
-					setContent(
+					openBottomSheet(
+						__( 'New Transfer' ),
 						<TransferForm
 							transfer={ {
 								_id: new Realm.BSON.UUID(),

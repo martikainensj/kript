@@ -36,7 +36,7 @@ interface BottomSheetContext {
 	content: React.ReactNode | null,
 	setContent: React.Dispatch<React.SetStateAction<React.ReactNode>>;
 	visible: boolean,
-	openBottomSheet: () => void,
+	openBottomSheet: ( title: string, content: React.ReactNode ) => void,
 	closeBottomSheet: () => void
 }
 
@@ -57,7 +57,9 @@ export const BottomSheetProvider = ( { children } ) => {
 	const [ title, setTitle ] = useState( '' );
 	const [ content, setContent ] = useState<React.ReactNode>( null );
 
-	const openBottomSheet = useCallback( () => {
+	const openBottomSheet = useCallback( ( title: string, content: React.ReactNode ) => {
+		setTitle( title );
+		setContent( content );
 		setVisible( true );
 	}, [] );
 
@@ -69,10 +71,10 @@ export const BottomSheetProvider = ( { children } ) => {
   return (
     <BottomSheetContext.Provider value={ {
 			title,
-			content,
-			visible,
 			setTitle,
+			content,
 			setContent,
+			visible,
 			openBottomSheet,
 			closeBottomSheet
 		} }>

@@ -37,9 +37,8 @@ const HoldingPage: React.FC = ( {} ) => {
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
-					openBottomSheet();
-					setTitle( __( 'Edit Holding' ) );
-					setContent(
+					openBottomSheet(
+						__( 'Edit Holding' ),
 						<HoldingForm
 							holding={ holding }
 							onSubmit={ holding => {
@@ -69,9 +68,8 @@ const HoldingPage: React.FC = ( {} ) => {
 				) },
 				label: __( 'Add Transaction' ),
 				onPress: () => {
-					openBottomSheet();
-					setTitle( __( 'New Transaction' ) );
-					setContent(
+					openBottomSheet(
+						__( 'New Transaction' ),
 						<TransactionForm
 							transaction={ {
 								_id: new Realm.BSON.UUID(),
@@ -96,9 +94,8 @@ const HoldingPage: React.FC = ( {} ) => {
 				) },
 				label: __( 'Add Dividend' ),
 				onPress: () => {
-					openBottomSheet();
-					setTitle( __( 'New Dividend' ) );
-					setContent(
+					openBottomSheet(
+						__( 'New Dividend' ),
 						<TransferForm
 							transfer={ {
 								_id: new Realm.BSON.UUID(),

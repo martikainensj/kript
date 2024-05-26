@@ -15,12 +15,11 @@ const Accounts: React.FC = () => {
 	const user: Realm.User = useUser();
 	
 	const { accounts, addAccount } = useAccounts();
-	const { openBottomSheet, closeBottomSheet, setTitle, setContent } = useBottomSheet();
+	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 
 	const onPressAdd = () => {
-		openBottomSheet();
-		setTitle( __( 'New Account' ) );
-		setContent(
+		openBottomSheet(
+			__( 'New Account' ),
 			<AccountForm
 				account={ {
 					_id: new Realm.BSON.UUID(),

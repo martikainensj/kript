@@ -38,15 +38,14 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, holding_
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
-					openBottomSheet();
-					setTitle( __( 'Edit Transaction' ) );
-					setContent(
+					openBottomSheet(
+						__( 'Edit Transaction' ),
 						<TransactionForm
 							transaction={ transaction }
 							onSubmit={ transaction => {
 								saveTransaction( transaction ).then( closeBottomSheet ) }
 							} />
-					)
+					);
 				}
 			},
 			{
