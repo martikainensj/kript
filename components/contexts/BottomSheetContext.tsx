@@ -144,10 +144,10 @@ const BottomSheet = () => {
 
 const styles = StyleSheet.create( {
   container: {
-		...GlobalStyles.container
+		//...GlobalStyles.container
   },
 	contentContainer: {
-		...GlobalStyles.gutter,
+		...GlobalStyles.gutter
 	},
 	background: {
 		borderRadius: BorderRadius.xl
