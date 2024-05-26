@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import {
 	Keyboard,
+	Platform,
 	StyleSheet
 } from "react-native";
 import GorhomBottomSheet, {
@@ -122,6 +123,8 @@ const BottomSheet = () => {
 			containerStyle={ styles.container }
 			enableDynamicSizing={ true }
 			backgroundStyle={ styles.background }
+			keyboardBehavior={ Platform.OS === 'android' ? 'extend' : 'interactive' }
+			keyboardBlurBehavior={ 'restore' }
 			onChange={ onChange }
 			handleComponent={ () => 
 				<Header
@@ -146,10 +149,12 @@ const BottomSheet = () => {
 
 const styles = StyleSheet.create( {
   container: {
-		//...GlobalStyles.container
+		...GlobalStyles.container
   },
 	contentContainer: {
-		...GlobalStyles.gutter
+		...GlobalStyles.gutter,
+		flex: 0,
+		minHeight: 100,
 	},
 	background: {
 		borderRadius: BorderRadius.xl

@@ -1,15 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { View, StyleSheet, Keyboard, TouchableWithoutFeedback, ScrollView } from "react-native";
+import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-native";
 
 import { IconButton } from "../buttons";
 import { DateInput, HoldingInput, Select, TextInput } from "../inputs";
-import { GlobalStyles, IconSize, Spacing, TransferTypes } from "../../constants";
+import { GlobalStyles, IconSize, TransferTypes } from "../../constants";
 import { __ } from "../../localization";
 import { Transfer } from "../../models/Transfer";
 import { Account } from "../../models/Account";
 import { Divider, Icon } from "../ui";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface TransferFormProps {
 	transfer: Transfer,
@@ -61,7 +60,7 @@ export const TransferForm = ( {
 
 	return (
     <TouchableWithoutFeedback onPress={ handleDismissKeyboard }>
-			<ScrollView style={ styles.container }>
+			<View style={ styles.container }>
 				<DateInput
 					label={ __( 'Date' ) }
 					value={ date }
@@ -131,7 +130,7 @@ export const TransferForm = ( {
 					style={ styles.submitButton }
 					disabled={ ! allSet( amount, ( transferType !== dividend.id || !! holding_name ) ) }
 					onPress={ onSubmitHandler } />
-			</ScrollView>
+			</View>
 		</TouchableWithoutFeedback>
 	)
 }
