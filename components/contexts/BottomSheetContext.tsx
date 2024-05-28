@@ -23,8 +23,8 @@ import {
 } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
 
 import {
-	BorderRadius,
-	GlobalStyles
+	GlobalStyles,
+	Theme
 } from "../../constants";
 import { IconButton } from "../buttons";
 import { Header } from "../ui";
@@ -119,7 +119,6 @@ const BottomSheet = () => {
 			onClose={ closeBottomSheet }
 			enablePanDownToClose={ true }
 			style={ styles.container }
-			containerStyle={ styles.container }
 			enableDynamicSizing={ true }
 			backgroundStyle={ styles.background }
 			keyboardBehavior={ Platform.OS === 'android' ? 'extend' : 'interactive' }
@@ -148,7 +147,7 @@ const BottomSheet = () => {
 
 const styles = StyleSheet.create( {
   container: {
-		...GlobalStyles.container
+		...GlobalStyles.container,
   },
 	contentContainer: {
 		...GlobalStyles.gutter,
@@ -156,6 +155,6 @@ const styles = StyleSheet.create( {
 		minHeight: 350,
 	},
 	background: {
-		borderRadius: BorderRadius.xl
+		backgroundColor: Theme.colors.background,
 	}
 } );

@@ -3,6 +3,7 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import Realm from "realm";
 import { useRealm, useUser } from "@realm/react";
 import { router, useLocalSearchParams } from "expo-router";
+import { TabsProvider, Tabs, TabScreen } from 'react-native-paper-tabs';
 
 import { GlobalStyles } from "../../constants";
 import { __ } from "../../localization";
@@ -17,6 +18,7 @@ import { TransactionForm } from "../../components/transactions/TransactionForm";
 import HoldingItem from "../../components/holdings/HoldingItem";
 import { TransferForm } from "../../components/transfers/TransferForm";
 import TransferItem from "../../components/transfers/TransferItem";
+import { Text } from "react-native-paper";
 
 const AccountPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ id: string }>();
@@ -32,22 +34,6 @@ const AccountPage: React.FC = ( {} ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
 		const menuItems: MenuItem[] = [
 			{
-				title: __( 'Transfers' ),
-				leadingIcon: ( props ) => 
-					<Icon name={ 'swap-horizontal-outline' } { ...props } />,
-				onPress: () => {
-					openBottomSheet(
-						__( 'Transfers' ),
-						<ItemList
-							noItemsTitleText={ __( 'No Transfers' ) }
-							noItemsDescriptionText={ __( 'Create a new transfers by clicking the "+" button in the bottom right corner.' ) }
-							items={ account.transfers.map( ( transfers ) => {
-								return <TransferItem { ...transfers } showHolding={ true } />
-							} ) } />
-					);
-				}
-			},
-			{
 				title: __( 'Edit' ),
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
@@ -61,7 +47,6 @@ const AccountPage: React.FC = ( {} ) => {
 							}	} />
 					);
 				},
-				startsSection: true
 			},
 			{
 				title: __( 'Remove' ),
@@ -140,30 +125,62 @@ const AccountPage: React.FC = ( {} ) => {
 	];
 
 	return (
-		<View style={ styles.container }>
+		<TabsProvider	defaultIndex={ 0 }>
 			<FABProvider>
-				<Header
-					title={ account?.name }
-					left={ <BackButton /> }
-					right={ <IconButton
-						icon={ 'ellipsis-vertical' }
-						onPress={ onPressOptions } />
-					}>
-						<Grid
-							columns={ 4 }
-							items= { values } />
-				</Header>
-				<View style={ styles.contentContainer }>
-					<ItemList
-						title={ __( 'Holdings' ) }
-						noItemsTitleText={ __( 'No holdings' ) }
-						noItemsDescriptionText={ __( 'Create a new holding by clicking the "+" button in the bottom right corner.' ) }
-						items={ account.holdings.map( ( holding ) => {
-							return <HoldingItem { ...holding } />
-						} ) } />
+				<View style={ styles.container }>
+					<Header
+						title={ account?.name }
+						left={ <BackButton /> }
+						right={ <IconButton
+							icon={ 'ellipsis-vertical' }
+							onPress={ onPressOptions } />
+						}>
+							<Grid
+								columns={ 4 }
+								items= { values } />
+					</Header>
+					
+					{ /* TODO: Tabs context 
+					- Vois olla iha vaa toi provider ja tabs componentit
+						peräkkäi ja sit ottais vastaan "tabs" propin johon sit 
+						{ title, content } tyylil kamat ja kovaa ajoo
+					*/ }
+
+					<Tabs
+           	mode="scrollable"
+         		showLeadingSpace={ false }>
+
+						<TabScreen label={ __( 'Overview' ) }>
+							<View style={ styles.contentContainer }>
+								<Text>Overview</Text>
+							</View>
+						</TabScreen>
+
+						<TabScreen label={ __( 'Holdings' ) }>
+							<View style={ styles.contentContainer }>
+								<ItemList
+									noItemsTitleText={ __( 'No Holdings' ) }
+									noItemsDescriptionText={ __( 'Create a new holding by clicking the "+" button in the bottom right corner.' ) }
+									items={ account.holdings.map( ( holding ) => {
+										return <HoldingItem { ...holding } />
+									} ) } />
+							</View>
+						</TabScreen>
+
+						<TabScreen label={ __( 'Transfers' ) }>
+							<View style={ styles.contentContainer }>
+								<ItemList
+									noItemsTitleText={ __( 'No Transfers' ) }
+									noItemsDescriptionText={ __( 'Create a new transfer by clicking the "+" button in the bottom right corner.' ) }
+									items={ account.transfers.map( ( transfer ) => {
+										return <TransferItem { ...transfer } />
+									} ) } />
+							</View>
+						</TabScreen>
+					</Tabs>
 				</View>
 			</FABProvider>
-		</View>
+		</TabsProvider>
 	)
 }
 

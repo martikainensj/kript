@@ -20,12 +20,10 @@ export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, sh
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { transfer, saveTransfer, removeTransfer, type, account } = useTransfer( { _id, account_id } );
-	const { amount, date, holding_name } = useMemo( () => {
-		return {
-			...transfer,
-			amount: Math.abs( transfer.amount ),
-		}
-	}, [ transfer ] );
+	const { amount, date, holding_name } = {
+		...transfer,
+		amount: Math.abs( transfer?.amount ),
+	};
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };

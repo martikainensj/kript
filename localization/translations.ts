@@ -60,6 +60,10 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Rekisteröityminen epäonnistui. Tarkista antamasi tiedot ja yritä uudelleen.',
 		en_US: 'Registration failed. Please check the information you provided and try again.'
 	},
+	'overview': {
+		fi: 'Yleistä',
+		en_US: 'Overview'
+	},
 	'new': {
 		fi: 'Uusi',
 		en_US: 'New'

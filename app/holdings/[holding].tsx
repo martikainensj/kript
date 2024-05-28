@@ -4,6 +4,7 @@ import { Text } from "react-native-paper";
 import Realm from "realm";
 import { useUser } from "@realm/react";
 import { router, useLocalSearchParams } from "expo-router";
+import { TabsProvider, Tabs, TabScreen } from 'react-native-paper-tabs';
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { __ } from "../../localization";
@@ -38,36 +39,6 @@ const HoldingPage: React.FC = ( {} ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
 		const menuItems: MenuItem[] = [
 			{
-				title: __( 'Transactions' ),
-				leadingIcon: ( props ) =>
-					<Icon name={ 'pricetag' } { ...props } />,
-				onPress: () => {
-					openBottomSheet(
-						__( 'Transactions' ),
-						<ItemList
-							noItemsDescriptionText={ __( 'No Transactions' ) }
-							items={ transactions.map( transaction =>
-								<TransactionItem { ...transaction } />
-							) } />
-					)
-				}
-			},
-			{
-				title: __( 'Dividends' ),
-				leadingIcon: ( props ) =>
-					<Icon name={ 'swap-horizontal' } { ...props } />,
-				onPress: () => {
-					openBottomSheet(
-						__( 'Dividends' ),
-						<ItemList
-							noItemsDescriptionText={ __( 'No Dividends' ) }
-							items={ dividends.map( dividend =>
-								<TransferItem { ...dividend } />
-							) } />
-					)
-				}
-			},
-			{
 				title: __( 'Edit' ),
 				leadingIcon: ( props ) => 
 					<Icon name={ 'create' } { ...props }/>,
@@ -80,8 +51,7 @@ const HoldingPage: React.FC = ( {} ) => {
 								saveHolding( holding ).then( closeBottomSheet ) }
 							} />
 					);
-				},
-				startsSection: true
+				}
 			},
 			{
 				title: __( 'Remove' ),
@@ -95,7 +65,6 @@ const HoldingPage: React.FC = ( {} ) => {
 
 		openMenu( anchor, menuItems );
 	}, [ holding, account ] );
-
 	useEffect( () => {
 		setActions( [
 			{
@@ -149,7 +118,7 @@ const HoldingPage: React.FC = ( {} ) => {
 				}
 			}
 		])
-	}, [ account ] );
+	}, [ holding, account ] );
 
 	if ( ! holding.isValid() ) {
 		router.back();
@@ -157,20 +126,49 @@ const HoldingPage: React.FC = ( {} ) => {
 	}
 	
 	return (
-		<View style={ styles.container }>
+		<TabsProvider	defaultIndex={ 0 }>
 			<FABProvider>
-				<Header
-					title={ holding?.name }
-					left={ <BackButton /> }
-					right={ <IconButton
-						icon={ 'ellipsis-vertical' }
-						onPress={ onPressOptions } />
-					} />
-					<View style={ styles.contentContainer }>
+				<View style={ styles.container }>
+					<Header
+						title={ holding?.name }
+						left={ <BackButton /> }
+						right={ <IconButton
+							icon={ 'ellipsis-vertical' }
+							onPress={ onPressOptions } />
+						} />
+
+					<Tabs
+           	mode="scrollable"
+         		showLeadingSpace={ false }>
+						<TabScreen label={ __( 'Overview' ) }>
+							<View style={ styles.contentContainer }>
+								<Text>Overview</Text>
+							</View>
+						</TabScreen>
+
+						<TabScreen label={ __( 'Transactions' ) }>
+							<View style={ styles.contentContainer }>
+								<ItemList
+									noItemsDescriptionText={ __( 'No Transactions' ) }
+									items={ transactions.map( transaction =>
+										<TransactionItem { ...transaction } />
+									) } />
+							</View>
+						</TabScreen>
 						
-					</View>
+						<TabScreen label={ __( 'Dividends' ) }>
+							<View style={ styles.contentContainer }>
+								<ItemList
+									noItemsTitleText={ __( 'No Dividends' ) }
+									items={ dividends.map( dividend =>
+										<TransferItem { ...dividend } />
+									) } />
+							</View>
+						</TabScreen>
+					</Tabs>
+				</View>
 			</FABProvider>
-		</View>
+		</TabsProvider>
 	)
 }
 
