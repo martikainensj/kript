@@ -3,12 +3,11 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import Realm from "realm";
 import { useRealm, useUser } from "@realm/react";
 import { router, useLocalSearchParams } from "expo-router";
-import { TabsProvider, Tabs, TabScreen } from 'react-native-paper-tabs';
 
 import { GlobalStyles } from "../../constants";
 import { __ } from "../../localization";
 import { useAccount } from "../../hooks";
-import { Grid, Header, Icon, ItemList, Value } from "../../components/ui";
+import { Grid, Header, Icon, ItemList, Tabs, Value } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { useBottomSheet } from "../../components/contexts";
@@ -29,6 +28,8 @@ const AccountPage: React.FC = ( {} ) => {
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
+
+	const { _id, name, notes, holdings, transfers } = account;
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -78,7 +79,7 @@ const AccountPage: React.FC = ( {} ) => {
 								amount: null,
 								total: null,
 								holding_name: '',
-								account_id: account._id
+								account_id: _id
 							} }
 							account={ account }
 							onSubmit={ ( transaction ) => {
@@ -98,7 +99,7 @@ const AccountPage: React.FC = ( {} ) => {
 						<TransferForm
 							transfer={ {
 								_id: new Realm.BSON.UUID(),
-								account_id: account._id,
+								account_id: _id,
 								owner_id: user.id,
 								date: Date.now(),
 								amount: null,
@@ -125,62 +126,52 @@ const AccountPage: React.FC = ( {} ) => {
 	];
 
 	return (
-		<TabsProvider	defaultIndex={ 0 }>
 			<FABProvider>
 				<View style={ styles.container }>
 					<Header
-						title={ account?.name }
+						title={ name }
 						left={ <BackButton /> }
 						right={ <IconButton
 							icon={ 'ellipsis-vertical' }
 							onPress={ onPressOptions } />
-						}>
+						}
+						showDivider={ false }>
 							<Grid
 								columns={ 4 }
 								items= { values } />
 					</Header>
-					
-					{ /* TODO: Tabs context 
-					- Vois olla iha vaa toi provider ja tabs componentit
-						peräkkäi ja sit ottais vastaan "tabs" propin johon sit 
-						{ title, content } tyylil kamat ja kovaa ajoo
-					*/ }
 
-					<Tabs
-           	mode="scrollable"
-         		showLeadingSpace={ false }>
-
-						<TabScreen label={ __( 'Overview' ) }>
-							<View style={ styles.contentContainer }>
+					<Tabs screens={ [
+						{
+							label: __( 'Overview' ),
+							content: (
 								<Text>Overview</Text>
-							</View>
-						</TabScreen>
-
-						<TabScreen label={ __( 'Holdings' ) }>
-							<View style={ styles.contentContainer }>
+							)
+						},
+						{
+							label: __( 'Holdings' ),
+							content: (
 								<ItemList
 									noItemsTitleText={ __( 'No Holdings' ) }
-									noItemsDescriptionText={ __( 'Create a new holding by clicking the "+" button in the bottom right corner.' ) }
-									items={ account.holdings.map( ( holding ) => {
-										return <HoldingItem { ...holding } />
-									} ) } />
-							</View>
-						</TabScreen>
-
-						<TabScreen label={ __( 'Transfers' ) }>
-							<View style={ styles.contentContainer }>
+									items={ holdings.map( holding =>
+										<HoldingItem { ...holding } />
+									) } />
+							)
+						},
+						{
+							label: __( 'Transfers' ),
+							content: (
 								<ItemList
 									noItemsTitleText={ __( 'No Transfers' ) }
-									noItemsDescriptionText={ __( 'Create a new transfer by clicking the "+" button in the bottom right corner.' ) }
-									items={ account.transfers.map( ( transfer ) => {
-										return <TransferItem { ...transfer } />
-									} ) } />
-							</View>
-						</TabScreen>
+									items={ transfers.map( transfer =>
+										<TransferItem { ...transfer } />
+									) } />
+							)
+						}
+					] }>
 					</Tabs>
 				</View>
 			</FABProvider>
-		</TabsProvider>
 	)
 }
 

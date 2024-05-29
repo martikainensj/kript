@@ -10,6 +10,7 @@ interface HeaderProps {
 	left?: React.ReactNode
 	right?: React.ReactNode
 	isScreenHeader?: boolean
+	showDivider?: boolean
 	children?: React.ReactNode
 }
 
@@ -18,6 +19,7 @@ export const Header: React.FC<HeaderProps> = ( {
 	left,
 	right,
 	isScreenHeader = true,
+	showDivider = true,
 	children
 } ) => {
 	const insets = useSafeAreaInsets();
@@ -25,7 +27,11 @@ export const Header: React.FC<HeaderProps> = ( {
 	return ( <>
 		<View style={ [
 			styles.container,
-			isScreenHeader && { marginTop: insets.top }
+			isScreenHeader && { marginTop: insets.top },
+			showDivider && { 
+				borderBottomWidth: StyleSheet.hairlineWidth,
+				borderColor: Theme.colors.outlineVariant
+			}
 		] }>
 			<Row style={ styles.row }>
 				{ left && <View style={ styles.left } children={ left } /> }
@@ -48,8 +54,6 @@ const styles = StyleSheet.create( {
 		width: '100%',
 		paddingVertical: Spacing.md,
 		gap: Spacing.md,
-		borderBottomWidth: StyleSheet.hairlineWidth,
-		borderColor: Theme.colors.outlineVariant
 	},
 
 	row: {

@@ -67,10 +67,13 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 			onLongPress={ onLongPress }
 			theme={ Theme }>
 			<View style={ styles.container}>
-				<Row>
-					<Text style={ styles.name }>{ holding?.name }</Text>
-					<Text>{ transactions.length }</Text>
-				</Row>
+				<View style={ styles.contentContainer}>
+					<Row>
+						<Text style={ styles.name }>{ holding?.name }</Text>
+						<Text>{ transactions.length }</Text>
+					</Row>
+				</View>
+				<Icon name={ 'chevron-forward' } />
 			</View>
 		</TouchableRipple>
 	)
@@ -81,8 +84,14 @@ export default HoldingItem;
 const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.gutter,
+		flexDirection: 'row',
+		alignItems: 'center',
 		paddingVertical: Spacing.md,
 		gap: Spacing.sm
+	},
+	contentContainer: {
+		gap: Spacing.sm,
+		flexGrow: 1
 	},
 	name: {
 		fontWeight: FontWeight.bold

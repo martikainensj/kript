@@ -23,45 +23,45 @@ const { appId } = CONFIG;
 const App: React.FC = () => {
 	return (
 		<GestureHandlerRootView style={ styles.container }>
-			<AppProvider id={ appId }>
-				<UserProvider fallback={ <LoginScreen /> }>
-					<RealmProvider
-						schema={ Schemas }
-						sync={ {
-							flexible: true,
-							existingRealmFileBehavior: {
-								type: OpenRealmBehaviorType.DownloadBeforeOpen,
-								timeOut: 1000,
-								timeOutBehavior: OpenRealmTimeOutBehavior?.OpenLocalRealm,
-							},
-						} }>
-						<PaperProvider theme={ Theme }>
-							<MenuProvider>
-								<BottomSheetProvider>
-									<StatusBar style={ Theme.dark ? 'light' : 'dark' } />
-									<Stack>
-										<Stack.Screen
-											name="(tabs)"
-											options={ {
-												headerShown: false
-											} } />
-										<Stack.Screen
-											name="accounts"
-											options={ {
-												headerShown: false
-											} } />
-										<Stack.Screen
-											name="holdings"
-											options={ {
-												headerShown: false
-											} } />
-									</Stack>
-								</BottomSheetProvider>
-							</MenuProvider>
-						</PaperProvider>
-					</RealmProvider>
-				</UserProvider>
-			</AppProvider>
+			<PaperProvider theme={ Theme }>
+				<AppProvider id={ appId }>
+					<UserProvider fallback={ <LoginScreen /> }>
+						<RealmProvider
+							schema={ Schemas }
+							sync={ {
+								flexible: true,
+								existingRealmFileBehavior: {
+									type: OpenRealmBehaviorType.DownloadBeforeOpen,
+									timeOut: 1000,
+									timeOutBehavior: OpenRealmTimeOutBehavior?.OpenLocalRealm,
+								},
+							} }>
+								<MenuProvider>
+									<BottomSheetProvider>
+										<StatusBar style={ Theme.dark ? 'light' : 'dark' } />
+										<Stack>
+											<Stack.Screen
+												name="(tabs)"
+												options={ {
+													headerShown: false
+												} } />
+											<Stack.Screen
+												name="accounts"
+												options={ {
+													headerShown: false
+												} } />
+											<Stack.Screen
+												name="holdings"
+												options={ {
+													headerShown: false
+												} } />
+										</Stack>
+									</BottomSheetProvider>
+								</MenuProvider>
+						</RealmProvider>
+					</UserProvider>
+				</AppProvider>
+			</PaperProvider>
 		</GestureHandlerRootView>
 	);
 };

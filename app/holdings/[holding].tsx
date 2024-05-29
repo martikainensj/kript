@@ -4,12 +4,11 @@ import { Text } from "react-native-paper";
 import Realm from "realm";
 import { useUser } from "@realm/react";
 import { router, useLocalSearchParams } from "expo-router";
-import { TabsProvider, Tabs, TabScreen } from 'react-native-paper-tabs';
 
-import { GlobalStyles, Spacing } from "../../constants";
+import { GlobalStyles } from "../../constants";
 import { __ } from "../../localization";
 import { useHolding } from "../../hooks";
-import { Header, Icon, ItemList } from "../../components/ui";
+import { Header, Icon, ItemList, Tabs } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { useBottomSheet } from "../../components/contexts";
@@ -126,7 +125,6 @@ const HoldingPage: React.FC = ( {} ) => {
 	}
 	
 	return (
-		<TabsProvider	defaultIndex={ 0 }>
 			<FABProvider>
 				<View style={ styles.container }>
 					<Header
@@ -135,40 +133,40 @@ const HoldingPage: React.FC = ( {} ) => {
 						right={ <IconButton
 							icon={ 'ellipsis-vertical' }
 							onPress={ onPressOptions } />
-						} />
+						}
+						showDivider={ false } />
 
-					<Tabs
-           	mode="scrollable"
-         		showLeadingSpace={ false }>
-						<TabScreen label={ __( 'Overview' ) }>
-							<View style={ styles.contentContainer }>
+					<Tabs screens={ [
+						{
+							label: __( 'Overview' ),
+							content: (
 								<Text>Overview</Text>
-							</View>
-						</TabScreen>
-
-						<TabScreen label={ __( 'Transactions' ) }>
-							<View style={ styles.contentContainer }>
+							)
+						},
+						{
+							label: __( 'Transactions' ),
+							content: (
 								<ItemList
 									noItemsDescriptionText={ __( 'No Transactions' ) }
 									items={ transactions.map( transaction =>
 										<TransactionItem { ...transaction } />
 									) } />
-							</View>
-						</TabScreen>
-						
-						<TabScreen label={ __( 'Dividends' ) }>
-							<View style={ styles.contentContainer }>
+							)
+						},
+						{
+							label: __( 'Dividends' ),
+							content: (
 								<ItemList
 									noItemsTitleText={ __( 'No Dividends' ) }
 									items={ dividends.map( dividend =>
 										<TransferItem { ...dividend } />
 									) } />
-							</View>
-						</TabScreen>
+							)
+						}
+					] }>
 					</Tabs>
 				</View>
 			</FABProvider>
-		</TabsProvider>
 	)
 }
 
@@ -178,8 +176,4 @@ const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.container,
 	},
-	contentContainer: {
-		...GlobalStyles.container,
-		...GlobalStyles.gutter,
-	}
 } );

@@ -7,3 +7,4 @@ export * from './Grid';
 export * from './Value';
 export * from './Spacer';
 export * from './Divider';
+export * from './Tabs';

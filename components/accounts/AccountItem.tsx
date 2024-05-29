@@ -19,9 +19,8 @@ interface AccountItemProps {
 }
 
 export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
-	const realm = useRealm();
 	const { openMenu } = useMenu();
-	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { account, saveAccount, removeAccount, getBalance, getValue } = useAccount( { id } )
 
 	function onPress() {
@@ -42,15 +41,14 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
-					openBottomSheet();
-					setTitle( __( 'Edit Account' ) );
-					setContent(
+					openBottomSheet(
+						__( 'Edit Account' ),
 						<AccountForm
 							account={ account }
 							onSubmit={ ( editedAccount ) => {
 								saveAccount( editedAccount ).then( closeBottomSheet );
 							}	} />
-					)
+					);
 				}
 			},
 			{
@@ -76,15 +74,19 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 	return (
 		<TouchableRipple
 			onPress={ onPress }
-			onLongPress={ onLongPress }
-			theme={ Theme }>
-			<View style={ styles.container}>
-				<Grid
-					columns={ 2 }
-					items={ [ <Text style={ styles.name }>{ account.name }</Text> ] } />
-				<Grid
-					columns={ 4 }
-					items= { values } />
+			onLongPress={ onLongPress }>
+			<View style={ styles.container }>
+				<View style={ styles.contentContainer }>
+					<Grid
+						columns={ 2 }
+						items={ [ <Text style={ styles.name }>{ account.name }</Text> ] } />
+					
+					<Grid
+						columns={ 4 }
+						items= { values } />
+				</View>
+
+				<Icon name={ 'chevron-forward' } />
 			</View>
 		</TouchableRipple>
 	)
@@ -95,8 +97,14 @@ export default AccountItem;
 const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.gutter,
+		flexDirection: 'row',
+		alignItems: 'center',
 		paddingVertical: Spacing.md,
 		gap: Spacing.sm
+	},
+	contentContainer: {
+		gap: Spacing.sm,
+		flexGrow: 1
 	},
 	name: {
 		fontWeight: FontWeight.bold

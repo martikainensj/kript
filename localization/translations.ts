@@ -8,6 +8,10 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Käännös puuttuu',
 		en_US: 'Missing translation'
 	},
+	'welcome to': {
+		fi: 'Tervetuloa',
+		en_US: 'Welcome to'
+	},
 	'welcome to kript': {
 		fi: 'Tervetuloa Kriptiin',
 		en_US: 'Welcome to Kript'
