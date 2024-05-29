@@ -8,7 +8,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { GlobalStyles } from "../../constants";
 import { __ } from "../../localization";
 import { useHolding } from "../../hooks";
-import { Header, Icon, ItemList, Tabs } from "../../components/ui";
+import { Grid, Header, Icon, ItemList, Tabs, Value } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { useBottomSheet } from "../../components/contexts";
@@ -28,8 +28,9 @@ const HoldingPage: React.FC = ( {} ) => {
 		holding, saveHolding, removeHolding,
 		account,
 		addTransaction,
-		dividends, addTransfer }
-		= useHolding( { _id, account_id } );
+		dividends, addTransfer,
+		value, amount, returnValue, returnPercentage
+	}	= useHolding( { _id, account_id } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
@@ -119,6 +120,13 @@ const HoldingPage: React.FC = ( {} ) => {
 		])
 	}, [ holding, account ] );
 
+	const values = [
+		<Value label={ __( 'Amount' ) } value={ amount.toPrecision(3) } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ value.toPrecision(3) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Return' ) } value={ returnValue.toPrecision(3) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Return' ) } value={ returnPercentage.toPrecision(3) } unit={ '%' } isVertical={ true } />,
+	];
+
 	if ( ! holding?.isValid() ) {
 		router.back();
 		return;
@@ -136,7 +144,11 @@ const HoldingPage: React.FC = ( {} ) => {
 							icon={ 'ellipsis-vertical' }
 							onPress={ onPressOptions } />
 						}
-						showDivider={ false } />
+						showDivider={ false }>
+							<Grid
+								columns={ 4 }
+								items= { values } />
+					</Header>
 
 					<Tabs screens={ [
 						{

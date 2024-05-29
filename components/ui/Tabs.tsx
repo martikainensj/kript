@@ -28,7 +28,8 @@ export const Tabs: React.FC<TabsProps> = ( {
 			<PaperTabs
 				mode="scrollable"
 				showLeadingSpace={ false }
-				style={ styles.container }>
+				style={ styles.container }
+				tabLabelStyle={ styles.labelContainer }>
 				{ screens.map( ( screen, key ) => {
 					const {	label, content } = screen;
 					return <TabScreen key={ key } label={ label }>
@@ -46,6 +47,9 @@ const styles = StyleSheet.create( {
 	container: {
 		borderBottomWidth: StyleSheet.hairlineWidth,
 		borderColor: Theme.colors.outlineVariant
+	},
+	labelContainer: {
+		...GlobalStyles.label,
 	},
 	contentContainer: {
 		...GlobalStyles.container,

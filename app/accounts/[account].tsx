@@ -24,7 +24,7 @@ const AccountPage: React.FC = ( {} ) => {
 	const accountId = new Realm.BSON.UUID( params.id );
 	const user: Realm.User = useUser();
 	const realm = useRealm();
-	const { account, saveAccount, removeAccount, addTransaction, addTransfer, getBalance, getValue } = useAccount( { id: accountId } );
+	const { account, saveAccount, removeAccount, addTransaction, addTransfer, balance, value } = useAccount( { id: accountId } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
@@ -113,17 +113,17 @@ const AccountPage: React.FC = ( {} ) => {
 		])
 	}, [ account ] );
 
+	const values = [
+		<Value label={ __( 'Balance' ) } value={ balance.toPrecision(3) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ value.toPrecision(3) } unit={ '€' } isVertical={ true } />,
+	];
+
 	if ( ! account?.isValid() ) {
 		router.back();
 		return;
 	}
 
 	const { _id, name, notes, holdings, transfers } = account;
-
-	const values = [
-		<Value label={ __( 'Balance' ) } value={ getBalance(2) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Value' ) } value={ getValue(2) } unit={ '€' } isVertical={ true } />,
-	];
 
 	return (
 			<FABProvider>

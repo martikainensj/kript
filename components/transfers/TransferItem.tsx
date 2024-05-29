@@ -69,7 +69,7 @@ export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, sh
 	];
 
 	const values = [
-		<Value label={ __( 'Amount' ) } value={ amount } isVertical={ true } />
+		<Value label={ __( 'Amount' ) } value={ amount } unit={ '€' } isVertical={ true } />
 	];
 
 	return (

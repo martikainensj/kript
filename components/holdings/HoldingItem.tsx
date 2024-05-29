@@ -3,7 +3,7 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import Realm from "realm";
 
-import { Icon, Row } from "../ui";
+import { Grid, Icon, Row, Value } from "../ui";
 import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
 import { useHolding } from "../../hooks";
 import { __ } from "../../localization";
@@ -20,7 +20,8 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 	const {
 		holding, saveHolding, removeHolding,
 		transactions,
-		dividends
+		dividends,
+		value, amount, returnValue, returnPercentage
 	} = useHolding( { _id, account_id } );
 
 	const onPress = useCallback( () => {
@@ -59,21 +60,38 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 		openMenu( anchor, menuItems );
 	}, [ holding ] );
 
+	const values = [
+		<Value label={ __( 'Amount' ) } value={ amount.toPrecision(3) } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ value.toPrecision(3) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Return' ) } value={ returnValue.toPrecision(3) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Return' ) } value={ returnPercentage.toPrecision(3) } unit={ '%' } isVertical={ true } />,
+	];
+
 	if ( ! holding?.isValid() ) return;
+
+	const meta = [
+		<Text style={ styles.name }>{ holding?.name }</Text>
+	]
 	
 	return (
 		<TouchableRipple
 			onPress={ onPress }
 			onLongPress={ onLongPress }
 			theme={ Theme }>
-			<View style={ styles.container}>
-				<View style={ styles.contentContainer}>
-					<Row>
-						<Text style={ styles.name }>{ holding?.name }</Text>
-						<Text>{ transactions.length }</Text>
-					</Row>
+			<View style={ styles.container }>
+				<View style={ styles.contentContainer }>
+					<Grid
+						columns={ 2 }
+						items={ meta } />
+					
+					<Grid
+						columns={ 4 }
+						items= { values } />
 				</View>
-				<Icon name={ 'chevron-forward' } />
+
+				<View style={ styles.iconContainer }>
+					<Icon name={ 'chevron-forward' } />
+				</View>
 			</View>
 		</TouchableRipple>
 	)
@@ -91,10 +109,13 @@ const styles = StyleSheet.create( {
 	},
 	contentContainer: {
 		gap: Spacing.sm,
-		flexGrow: 1
+		flexGrow: 1,
+		flexShrink: 1
 	},
 	name: {
 		fontWeight: FontWeight.bold,
 		color: Theme.colors.primary
+	},
+	iconContainer: {
 	}
 } );

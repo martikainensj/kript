@@ -340,6 +340,10 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Arvo',
 		en_US: 'Value'
 	},
+	'return': {
+		fi: 'Tuotto',
+		en_US: 'Return'
+	},
 
 	'are you sure?': {
 		fi: 'Oletko varma?',

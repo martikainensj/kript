@@ -21,7 +21,7 @@ interface AccountItemProps {
 export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { account, saveAccount, removeAccount, getBalance, getValue } = useAccount( { id } )
+	const { account, saveAccount, removeAccount, balance, value } = useAccount( { id } )
 
 	function onPress() {
 		router.navigate( {
@@ -62,15 +62,15 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 		openMenu( anchor, menuItems );
 	}, [ account ] );
 
+	const values = [
+		<Value label={ __( 'Balance' ) } value={ balance.toPrecision(3) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ value.toPrecision(3) } unit={ '€' } isVertical={ true } />,
+	];
+
 	if ( ! account?.isValid() ) return;
 
 	const meta = [
 		<Text style={ styles.name }>{ account.name }</Text>
-	];
-
-	const values = [
-		<Value label={ __( 'Balance' ) } value={ getBalance(2) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Value' ) } value={ getValue(2) } unit={ '€' } isVertical={ true } />,
 	];
 
 	return (
