@@ -95,15 +95,6 @@ const styles = StyleSheet.create( {
 		paddingVertical: Spacing.md,
 		gap: Spacing.sm
 	},
-	name: {
-		fontWeight: FontWeight.bold
-	},
-	value: {
-		fontWeight: FontWeight.bold
-	},
-	valueValueStyle: {
-		
-	},
 	header: {
 		flexDirection: 'row',
 		alignItems: 'center',
@@ -112,13 +103,13 @@ const styles = StyleSheet.create( {
 	},
 	date: {
 		fontWeight: FontWeight.bold,
+		color: Theme.colors.primary
 	},
 	type: {
 		fontWeight: FontWeight.bold,
 		textAlign: 'right'
 	},
 	holding: {
-		fontWeight: FontWeight.bold,
-		color: Theme.colors.primary
+		fontWeight: FontWeight.bold
 	}
 } );

@@ -107,12 +107,7 @@ const styles = StyleSheet.create( {
 		flexGrow: 1
 	},
 	name: {
-		fontWeight: FontWeight.bold
-	},
-	value: {
-		fontWeight: FontWeight.bold
-	},
-	valueValueStyle: {
-		
+		fontWeight: FontWeight.bold,
+		color: Theme.colors.primary
 	}
 } );

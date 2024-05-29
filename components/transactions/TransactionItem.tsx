@@ -95,17 +95,9 @@ const styles = StyleSheet.create( {
 		paddingVertical: Spacing.md,
 		gap: Spacing.sm
 	},
-	name: {
-		fontWeight: FontWeight.bold
-	},
-	value: {
-		fontWeight: FontWeight.bold
-	},
-	valueValueStyle: {
-		
-	},
 	date: {
-		fontWeight: FontWeight.bold
+		fontWeight: FontWeight.bold,
+		color: Theme.colors.primary
 	},
 	type: {
 		fontWeight: FontWeight.bold,

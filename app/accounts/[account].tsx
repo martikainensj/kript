@@ -164,7 +164,7 @@ const AccountPage: React.FC = ( {} ) => {
 								<ItemList
 									noItemsTitleText={ __( 'No Transfers' ) }
 									items={ transfers.map( transfer =>
-										<TransferItem { ...transfer } />
+										<TransferItem { ...transfer } showHolding={ true } />
 									) } />
 							)
 						}
