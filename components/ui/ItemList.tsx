@@ -2,11 +2,11 @@ import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { Color, GlobalStyles, Spacing } from "../../constants";
 import { Divider, Text } from "react-native-paper";
 import React from "react";
+import { __ } from "../../localization";
 
 interface ItemListProps {
 	title?: string,
-	noItemsTitleText?: string,
-	noItemsDescriptionText?: string,
+	noItemsText?: string,
 	items: ArrayLike<any>,
 	style?: StyleProp<ViewStyle>
 	contentContainerStyle?: StyleProp<ViewStyle>
@@ -14,8 +14,7 @@ interface ItemListProps {
 
 export const ItemList: React.FC<ItemListProps> = ( {
 	title,
-	noItemsTitleText,
-	noItemsDescriptionText = 'No items',
+	noItemsText = __( 'No items' ),
 	items,
 	style,
 	contentContainerStyle
@@ -31,10 +30,11 @@ export const ItemList: React.FC<ItemListProps> = ( {
 					<Divider />
 				</View>
 			}
+
 			<FlatList
 				data={ items }
 				ItemSeparatorComponent={ Divider }
-				ListEmptyComponent={ <PlaceholderItem title={ noItemsTitleText } description={ noItemsDescriptionText } /> }
+				ListEmptyComponent={ <PlaceholderItem value={ noItemsText } /> }
 				keyExtractor={ ( _, index ) => index.toString() }
 				renderItem={ ( { item } ) => item }
 				contentContainerStyle={ [
@@ -46,28 +46,17 @@ export const ItemList: React.FC<ItemListProps> = ( {
 }
 
 interface PlaceholderItemProps {
-	title?: string,
-	description?: string
+	value: string,
 }
 
 const PlaceholderItem: React.FC<PlaceholderItemProps> = ( {
-	title,
-	description
+	value
 } ) => {
-	if ( ! title && ! description ) return;
-
 	return (
 		<View style={ styles.placeholderContainer }>
-			{ title &&
-				<Text style={ styles.placeholderTitle }>
-					{ title }
+				<Text style={ styles.placeholderText }>
+					{ value }
 				</Text>
-			}
-			{ description &&
-				<Text style={ styles.placeholderDescription }>
-					{ description }
-				</Text>
-			}
 		</View>
 	)
 }
@@ -94,11 +83,11 @@ const styles = StyleSheet.create( {
 	
 	placeholderContainer: {
 		...GlobalStyles.gutter,
-		paddingVertical: Spacing.sm
+		paddingVertical: Spacing.md
 	},
 	
-	placeholderTitle: {
-		...GlobalStyles.title
+	placeholderText: {
+		...GlobalStyles.label
 	},
 	
 	placeholderDescription: {

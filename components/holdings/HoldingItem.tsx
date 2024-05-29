@@ -59,7 +59,7 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 		openMenu( anchor, menuItems );
 	}, [ holding ] );
 
-	if ( ! holding.isValid() ) return;
+	if ( ! holding?.isValid() ) return;
 	
 	return (
 		<TouchableRipple

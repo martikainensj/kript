@@ -17,18 +17,20 @@ interface useTransferProps {
 
 export const useTransfer = ( { _id, account_id }: useTransferProps ) => {
 	const realm = useRealm();
-	const user: Realm.User = useUser();
 	const { account, getTransferById } = useAccount( { id: account_id } );
 	const transfer = useMemo( () => {
 		const transfer = getTransferById( _id );
 		return transfer;
 	}, [ realm, account ] );
+	
 	const [ deposit, withdrawal, dividend ] = TransferTypes;
-	const type = !! transfer?.holding_id
-		? dividend
-		: transfer?.amount > 0
-			? deposit
-			: withdrawal;
+	const type = transfer?.isValid() && (
+		!! transfer?.holding_id
+			? dividend
+			: transfer?.amount > 0
+				? deposit
+				: withdrawal
+	);
 
 	const saveTransfer = useCallback( ( editedTransfer: Transfer ) => {
 		const title = __( 'Save Transfer' );

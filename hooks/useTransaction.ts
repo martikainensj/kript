@@ -29,7 +29,11 @@ export const useTransaction = ( { _id, holding_id, account_id }: useTransactionP
 	}, [ realm, holding ] );
 
 	const [ buy, sell ] = TransactionTypes;
-	const type = transaction?.total > 0 ? buy : sell;
+	const type = transaction?.isValid() && (
+		transaction?.total > 0
+			? buy
+			: sell
+	);
 
 	const saveTransaction = useCallback( ( editedTransaction: Transaction ) => {
 		const title = __( 'Save Transaction' );

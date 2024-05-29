@@ -21,7 +21,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	}, [ realm, account ] );
 
 	const { transactions, dividends } = {
-		transactions: holding.transactions,
+		...holding,
 		dividends: account.transfers
 			.filtered( 'holding_id == $0', holding._id )
 	}

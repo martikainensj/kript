@@ -80,6 +80,10 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Poista',
 		en_US: 'Remove'
 	},
+	'no items': {
+		fi: 'Ei kohteita',
+		en_US: 'No items'
+	},
 
 	// Account
 

@@ -44,8 +44,7 @@ const Accounts: React.FC = () => {
 			<View style={ styles.contentContainer }>
 				<ItemList 
 					title={ __( 'Accounts' ) }
-					noItemsTitleText={ __( 'No accounts' ) }
-					noItemsDescriptionText={ __( 'Create a new account by clicking the "+" button in the top right corner.' ) }
+					noItemsText={ __( 'No accounts' ) }
 					items={ accounts.map( account => {
 						return <AccountItem id={ account._id }/>
 					} ) } />

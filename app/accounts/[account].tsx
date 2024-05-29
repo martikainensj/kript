@@ -29,8 +29,6 @@ const AccountPage: React.FC = ( {} ) => {
 	const { setActions } = useFAB();
 	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
 
-	const { _id, name, notes, holdings, transfers } = account;
-
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
 		const menuItems: MenuItem[] = [
@@ -79,7 +77,7 @@ const AccountPage: React.FC = ( {} ) => {
 								amount: null,
 								total: null,
 								holding_name: '',
-								account_id: _id
+								account_id: account._id
 							} }
 							account={ account }
 							onSubmit={ ( transaction ) => {
@@ -99,7 +97,7 @@ const AccountPage: React.FC = ( {} ) => {
 						<TransferForm
 							transfer={ {
 								_id: new Realm.BSON.UUID(),
-								account_id: _id,
+								account_id: account._id,
 								owner_id: user.id,
 								date: Date.now(),
 								amount: null,
@@ -119,6 +117,8 @@ const AccountPage: React.FC = ( {} ) => {
 		router.back();
 		return;
 	}
+
+	const { _id, name, notes, holdings, transfers } = account;
 
 	const values = [
 		<Value label={ __( 'Balance' ) } value={ getBalance(2) } unit={ '€' } isVertical={ true } />,
@@ -152,7 +152,7 @@ const AccountPage: React.FC = ( {} ) => {
 							label: __( 'Holdings' ),
 							content: (
 								<ItemList
-									noItemsTitleText={ __( 'No Holdings' ) }
+									noItemsText={ __( 'No Holdings' ) }
 									items={ holdings.map( holding =>
 										<HoldingItem { ...holding } />
 									) } />
@@ -162,7 +162,7 @@ const AccountPage: React.FC = ( {} ) => {
 							label: __( 'Transfers' ),
 							content: (
 								<ItemList
-									noItemsTitleText={ __( 'No Transfers' ) }
+									noItemsText={ __( 'No Transfers' ) }
 									items={ transfers.map( transfer =>
 										<TransferItem { ...transfer } showHolding={ true } />
 									) } />

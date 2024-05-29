@@ -27,7 +27,7 @@ const HoldingPage: React.FC = ( {} ) => {
 	const {
 		holding, saveHolding, removeHolding,
 		account,
-		transactions, addTransaction,
+		addTransaction,
 		dividends, addTransfer }
 		= useHolding( { _id, account_id } );
 	const { openMenu } = useMenu();
@@ -119,16 +119,18 @@ const HoldingPage: React.FC = ( {} ) => {
 		])
 	}, [ holding, account ] );
 
-	if ( ! holding.isValid() ) {
+	if ( ! holding?.isValid() ) {
 		router.back();
 		return;
 	}
+
+	const { name, transactions } = holding;
 	
 	return (
 			<FABProvider>
 				<View style={ styles.container }>
 					<Header
-						title={ holding?.name }
+						title={ name }
 						left={ <BackButton /> }
 						right={ <IconButton
 							icon={ 'ellipsis-vertical' }
@@ -147,7 +149,7 @@ const HoldingPage: React.FC = ( {} ) => {
 							label: __( 'Transactions' ),
 							content: (
 								<ItemList
-									noItemsDescriptionText={ __( 'No Transactions' ) }
+									noItemsText={ __( 'No Transactions' ) }
 									items={ transactions.map( transaction =>
 										<TransactionItem { ...transaction } />
 									) } />
@@ -157,7 +159,7 @@ const HoldingPage: React.FC = ( {} ) => {
 							label: __( 'Dividends' ),
 							content: (
 								<ItemList
-									noItemsTitleText={ __( 'No Dividends' ) }
+									noItemsText={ __( 'No Dividends' ) }
 									items={ dividends.map( dividend =>
 										<TransferItem { ...dividend } />
 									) } />
