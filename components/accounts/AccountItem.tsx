@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import { router } from 'expo-router';
@@ -62,9 +62,11 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 		openMenu( anchor, menuItems );
 	}, [ account ] );
 
-	if ( ! account ) return;
+	if ( ! account?.isValid() ) return;
 
-	if ( ! account.isValid() ) return;
+	const meta = [
+		<Text style={ styles.name }>{ account.name }</Text>
+	];
 
 	const values = [
 		<Value label={ __( 'Balance' ) } value={ getBalance(2) } unit={ '€' } isVertical={ true } />,
@@ -79,7 +81,7 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 				<View style={ styles.contentContainer }>
 					<Grid
 						columns={ 2 }
-						items={ [ <Text style={ styles.name }>{ account.name }</Text> ] } />
+						items={ meta } />
 					
 					<Grid
 						columns={ 4 }

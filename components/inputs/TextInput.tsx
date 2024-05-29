@@ -2,7 +2,7 @@ import { TextInput as PaperTextInput, TextInputProps as PaperTextInputProps } fr
 import { BorderRadius, FontSize, Theme } from "../../constants";
 import { StyleSheet } from "react-native";
 import { Icon } from "../ui";
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface TextInputProps extends Omit<PaperTextInputProps, 'value' | 'onChangeText'> {
 	value: string | number,
@@ -23,10 +23,8 @@ export const TextInput: React.FC<TextInputProps> = ( {
 	...rest
 } ) => {
 	const [inputValue, setInputValue] = useState( value );
-	const rightIsVisible = useMemo( () => {
-		const isVisible = ! disabled && editable && value;
-		return isVisible;
-	}, [ editable, disabled, value ] );
+	const rightIsVisible =
+		! disabled && editable && value;
 
 	const onChangeTextHandler = ( string: string ) => {
 		if ( keyboardType === 'numeric' ) {

@@ -23,15 +23,12 @@ export const useTransfer = ( { _id, account_id }: useTransferProps ) => {
 		const transfer = getTransferById( _id );
 		return transfer;
 	}, [ realm, account ] );
-	const type = useMemo( () => {
-		const [ deposit, withdrawal, dividend ] = TransferTypes;
-
-		if ( !! transfer?.holding_id ) {
-			return dividend;
-		}
-
-		return transfer?.amount > 0 ? deposit : withdrawal;
-	}, [ realm, transfer ] );
+	const [ deposit, withdrawal, dividend ] = TransferTypes;
+	const type = !! transfer?.holding_id
+		? dividend
+		: transfer?.amount > 0
+			? deposit
+			: withdrawal;
 
 	const saveTransfer = useCallback( ( editedTransfer: Transfer ) => {
 		const title = __( 'Save Transfer' );

@@ -27,11 +27,9 @@ export const useTransaction = ( { _id, holding_id, account_id }: useTransactionP
 		const transaction = getTransactionById( _id );
 		return transaction;
 	}, [ realm, holding ] );
-	const type = useMemo( () => {
-		const [ buy, sell ] = TransactionTypes;
 
-		return transaction?.total > 0 ? buy : sell;
-	}, [ realm, transaction ] );
+	const [ buy, sell ] = TransactionTypes;
+	const type = transaction?.total > 0 ? buy : sell;
 
 	const saveTransaction = useCallback( ( editedTransaction: Transaction ) => {
 		const title = __( 'Save Transaction' );

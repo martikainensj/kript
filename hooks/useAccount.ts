@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import Realm from "realm";
-import { useObject, useQuery, useRealm, useUser } from "@realm/react"
+import { useQuery, useRealm, useUser } from "@realm/react"
 import { router } from "expo-router";
 
 import { Account } from "../models/Account"

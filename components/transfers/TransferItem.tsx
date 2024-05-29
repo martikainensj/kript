@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import Realm from "realm";
@@ -20,10 +20,6 @@ export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, sh
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { transfer, saveTransfer, removeTransfer, type, account } = useTransfer( { _id, account_id } );
-	const { amount, date, holding_name } = {
-		...transfer,
-		amount: Math.abs( transfer?.amount ),
-	};
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -56,6 +52,11 @@ export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, sh
 	}, [ transfer ] );
 
 	if ( ! transfer?.isValid() ) return;
+
+	const { amount, date, holding_name } = {
+		...transfer,
+		amount: Math.abs( transfer?.amount ),
+	};
 	
 	const meta = [
 		<View style={ styles.header }>

@@ -1,7 +1,4 @@
-import React, {
-	useMemo,
-	useState,
-} from "react";
+import React, { useState } from "react";
 import {
 	StyleProp,
 	StyleSheet,
@@ -41,9 +38,8 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	const [ canShowChips, setCanShowChips ] = useState( false );
 	const [ filteredHoldings, setFilteredHoldings ] = useState( [ ...account.holdings ] );
 
-	const chipsVisible = useMemo( () => {
-		return !! filteredHoldings.length && ( ! value || canShowChips );
-	}, [filteredHoldings, canShowChips, value] );
+	const chipsVisible =
+		!! filteredHoldings.length && ( ! value || canShowChips );
 
 	const onFocusHandler = () => {
 		setCanShowChips( true );

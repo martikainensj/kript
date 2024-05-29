@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-native";
 
 import { IconButton } from "../buttons";
@@ -21,9 +21,7 @@ export const HoldingForm = ( {
 	const [ editedHolding, setEditedHolding ]
 		= useState( { ...holding } );
 
-	const { name, notes } = useMemo( () => {
-		return editedHolding
-	}, [ editedHolding ] );
+	const { name, notes } = editedHolding;
 
 	const handleDismissKeyboard = ( ) => {
     Keyboard.dismiss();

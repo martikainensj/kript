@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import Realm from "realm";
@@ -21,13 +21,6 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, holding_
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { transaction, saveTransaction, removeTransaction, type } = useTransaction( { _id, holding_id, account_id } );
-	const { amount, date, price, total } = useMemo( () => {
-		return {
-			...transaction,
-			amount: Math.abs( transaction.amount ),
-			total: Math.abs( transaction.total ),
-		}
-	}, [ transaction ] );
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -59,6 +52,12 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, holding_
 	}, [ transaction ] );
 
 	if ( ! transaction?.isValid() ) return;
+
+	const { amount, date, price, total } = {
+		...transaction,
+		amount: Math.abs( transaction.amount ),
+		total: Math.abs( transaction.total ),
+	};
 	
 	const meta = [
 		<Text style={ styles.date }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>,

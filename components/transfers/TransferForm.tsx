@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-native";
 
 import { IconButton } from "../buttons";
@@ -32,12 +32,10 @@ export const TransferForm = ( {
 	const [ editedTransfer, setEditedTransfer ]
 		= useState( { ...transfer } );
 
-	const { date, amount, holding_name, notes } = useMemo( () => {
-		return { 
-			...editedTransfer,
-			amount: editedTransfer.amount && Math.abs( editedTransfer.amount ),
-		}
-	}, [ editedTransfer ] );
+	const { date, amount, holding_name, notes } = { 
+		...editedTransfer,
+		amount: editedTransfer.amount && Math.abs( editedTransfer.amount ),
+	};
 
 	const handleDismissKeyboard = ( ) => {
     Keyboard.dismiss();
