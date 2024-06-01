@@ -26,13 +26,13 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		const holding = holdings.filtered( '_id == $0', id )[0];
 
 		return holding;
-	}, [ realm, holdings ] );
+	}, [ holdings ] );
 
 	const getHoldingByName = useCallback( ( name: string ) => {
 		const holding = holdings.filtered( 'name == $0', name )[0];
 
 		return holding;
-	}, [ realm, holdings ] );
+	}, [ holdings ] );
 
 	const addHolding = useCallback( ( name: string ) => {
 		const holding: Holding = {
@@ -44,7 +44,7 @@ export const useAccount = ( { id }: useAccountProps ) => {
 
 		holdings.push( holding );
 		return holdings[ holdings.length - 1 ];
-	}, [ realm, holdings ] );
+	}, [ holdings, _id ] );
 
 	const addTransaction = useCallback( ( transaction: Transaction ) => {
 		const title = __( 'Add Transaction' );
@@ -70,13 +70,13 @@ export const useAccount = ( { id }: useAccountProps ) => {
 				}
 			} );
 		} );
-	}, [] );
+	}, [ account ] );
 
 	const getTransferById = useCallback( ( id: Realm.BSON.UUID ) => {
 		const transfer = transfers.filtered( '_id == $0', id )[0];
 
 		return transfer;
-	}, [ realm, transfers ] );
+	}, [ transfers ] );
 
 	const addTransfer = useCallback( ( transfer: Transfer ) => {
 		const title = __( 'Add Transfer' );
@@ -102,7 +102,7 @@ export const useAccount = ( { id }: useAccountProps ) => {
 				}
 			} );
 		} );
-	}, [ realm, transfers ] );
+	}, [ transfers ] );
 
 	const saveAccount = useCallback( ( editedAccount: Account ) => {
 		const title = `${ editedAccount._id
@@ -147,7 +147,7 @@ export const useAccount = ( { id }: useAccountProps ) => {
 				}
 			} );
 		} );
-	}, [ realm, account ] );
+	}, [ account ] );
 
 	// Variables
 
@@ -163,7 +163,7 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		}, 0 );
 
 		return total;
-	}, [ realm, holdings ] );
+	}, [ holdings ] );
 
 	const transfersAmount = useMemo( () => {
 		const transfersAmount = transfers.reduce( ( amount, transfer ) => {
@@ -171,13 +171,13 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		}, 0 );
 
 		return transfersAmount;
-	}, [ realm, transfers ] );
+	}, [ transfers ] );
 
 	const balance = useMemo( () => {
 		const balance = transfersAmount - total;
 
 		return balance;
-	}, [ realm, transfersAmount, total ] );
+	}, [ transfersAmount, total ] );
 
 	const value = useMemo( () => {
 		const value = holdings.reduce( ( value, holding ) => {
@@ -185,7 +185,9 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		
 			const lastTransaction = transactions.sorted( 'date', true )[0]
 
-			const lastPrice = lastTransaction?.price ?? 0;
+			const lastPrice = lastTransaction?.isValid()
+				? lastTransaction.price
+				: 0;
 		
 			const amount = transactions.reduce( ( amount, transaction ) => {
 				return amount + transaction.amount
@@ -195,7 +197,7 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		}, balance ); 
 
 		return value;
-	}, [ realm, holdings, balance ] );
+	}, [ holdings, balance ] );
 
 	return {
 		account, saveAccount, removeAccount,

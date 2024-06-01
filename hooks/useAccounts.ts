@@ -35,7 +35,7 @@ export const useAccounts = () => {
 			//mutableSubs.removeAll();
 			mutableSubs.add( accounts );
 		} );
-	}, [ realm, accounts ] );
+	}, [ accounts ] );
 
 	return { accounts, addAccount }
 }

@@ -18,6 +18,7 @@ import { TransferForm } from "../../components/transfers/TransferForm";
 import { HoldingForm } from "../../components/holdings/HoldingForm";
 import TransactionItem from "../../components/transactions/TransactionItem";
 import TransferItem from "../../components/transfers/TransferItem";
+import { prettifyNumber } from "../../helpers";
 
 const HoldingPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ _id: string, account_id: string }>();
@@ -121,10 +122,10 @@ const HoldingPage: React.FC = ( {} ) => {
 	}, [ holding, account ] );
 
 	const values = [
-		<Value label={ __( 'Amount' ) } value={ amount.toPrecision(3) } isVertical={ true } />,
-		<Value label={ __( 'Value' ) } value={ value.toPrecision(3) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Return' ) } value={ returnValue.toPrecision(3) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Return' ) } value={ returnPercentage.toPrecision(3) } unit={ '%' } isVertical={ true } />,
+		<Value label={ __( 'Amount' ) } value={ prettifyNumber( amount ) } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ prettifyNumber( value ) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Return' ) } value={ prettifyNumber( returnValue ) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Return' ) } value={ prettifyNumber( returnPercentage ) } unit={ '%' } isVertical={ true } />,
 	];
 
 	if ( ! holding?.isValid() ) {

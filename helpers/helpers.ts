@@ -37,3 +37,20 @@ export const truncateString = ( string: string, limit = 24 ) => {
 export const allSet = ( ...params: any[] ): boolean => {
   return params.every( param => !! param );
 }
+
+export const prettifyNumber = (
+	value: number,
+	fractionDigits: number = 2,
+	locales: Intl.LocalesArgument = 'fi-FI'
+): string => {
+  const parts = value.toFixed( fractionDigits ).split('.');
+  const integerPart = parseInt( parts[0] ).toLocaleString( locales );
+  const decimalPart = parts[1];
+  const trimmedDecimalPart = decimalPart
+		? decimalPart.replace( /0+$/, '' )
+		: '';
+
+  return trimmedDecimalPart
+		? `${ integerPart }.${ trimmedDecimalPart }`
+		: integerPart;
+}

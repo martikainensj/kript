@@ -18,6 +18,7 @@ import HoldingItem from "../../components/holdings/HoldingItem";
 import { TransferForm } from "../../components/transfers/TransferForm";
 import TransferItem from "../../components/transfers/TransferItem";
 import { Text } from "react-native-paper";
+import { prettifyNumber } from "../../helpers";
 
 const AccountPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ id: string }>();
@@ -114,8 +115,8 @@ const AccountPage: React.FC = ( {} ) => {
 	}, [ account ] );
 
 	const values = [
-		<Value label={ __( 'Balance' ) } value={ balance.toPrecision(3) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Value' ) } value={ value.toPrecision(3) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Balance' ) } value={ prettifyNumber( balance, 0 ) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ prettifyNumber( value, 0 ) } unit={ '€' } isVertical={ true } />,
 	];
 
 	if ( ! account?.isValid() ) {

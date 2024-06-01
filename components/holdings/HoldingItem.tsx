@@ -11,6 +11,7 @@ import { MenuItem, useBottomSheet, useMenu } from "../contexts";
 import { router } from "expo-router";
 import { HoldingForm } from "./HoldingForm";
 import { Holding } from "../../models/Holding";
+import { prettifyNumber } from "../../helpers";
 
 interface HoldingItemProps extends Holding {}
 
@@ -61,10 +62,10 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 	}, [ holding ] );
 
 	const values = [
-		<Value label={ __( 'Amount' ) } value={ amount.toPrecision(3) } isVertical={ true } />,
-		<Value label={ __( 'Value' ) } value={ value.toPrecision(3) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Return' ) } value={ returnValue.toPrecision(3) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Return' ) } value={ returnPercentage.toPrecision(3) } unit={ '%' } isVertical={ true } />,
+		<Value label={ __( 'Amount' ) } value={ prettifyNumber( amount ) } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ prettifyNumber( value ) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Return' ) } value={ prettifyNumber( returnValue ) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Return' ) } value={ prettifyNumber( returnPercentage ) } unit={ '%' } isVertical={ true } />,
 	];
 
 	if ( ! holding?.isValid() ) return;

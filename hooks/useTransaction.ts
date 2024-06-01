@@ -26,7 +26,7 @@ export const useTransaction = ( { _id, holding_id, account_id }: useTransactionP
 	const transaction = useMemo( () => {
 		const transaction = getTransactionById( _id );
 		return transaction;
-	}, [ realm, holding ] );
+	}, [ holding ] );
 
 	const [ buy, sell ] = TransactionTypes;
 	const type = transaction?.isValid() && (

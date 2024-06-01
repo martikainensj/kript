@@ -13,6 +13,7 @@ import { useBottomSheet } from "../contexts";
 import { AccountForm } from "./AccountForm";
 import { Grid, Value } from "../ui";
 import { useRealm } from "@realm/react";
+import { prettifyNumber } from "../../helpers";
 
 interface AccountItemProps {
 	id: Account['_id']
@@ -63,8 +64,8 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 	}, [ account ] );
 
 	const values = [
-		<Value label={ __( 'Balance' ) } value={ balance.toPrecision(3) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Value' ) } value={ value.toPrecision(3) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Balance' ) } value={ prettifyNumber( balance, 0 ) } unit={ '€' } isVertical={ true } />,
+		<Value label={ __( 'Value' ) } value={ prettifyNumber( value, 0 ) } unit={ '€' } isVertical={ true } />,
 	];
 
 	if ( ! account?.isValid() ) return;

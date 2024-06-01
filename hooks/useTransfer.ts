@@ -21,7 +21,7 @@ export const useTransfer = ( { _id, account_id }: useTransferProps ) => {
 	const transfer = useMemo( () => {
 		const transfer = getTransferById( _id );
 		return transfer;
-	}, [ realm, account ] );
+	}, [ account ] );
 	
 	const [ deposit, withdrawal, dividend ] = TransferTypes;
 	const type = transfer?.isValid() && (

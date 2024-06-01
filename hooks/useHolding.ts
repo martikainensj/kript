@@ -19,21 +19,21 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	const { account, getHoldingById, addTransaction, addTransfer } = useAccount( { id: account_id } );
 	const holding = useMemo( () => {
 		return getHoldingById( _id );
-	}, [ realm, account ] );
+	}, [ account ] );
 
 	const { transactions, dividends } = useMemo( () => {
 		return {
 			...holding,
-			dividends: account.transfers
-				.filtered( 'holding_id == $0', holding._id )
+			dividends: account?.transfers
+				.filtered( 'holding_id == $0', holding?._id )
 		}
-	}, [ realm, account, holding ] );
+	}, [ account, holding ] );
 
 	const getTransactionById = useCallback( ( id: Realm.BSON.UUID ) => {
 		const transaction = transactions
 			.filtered( '_id == $0', id )[0];
 		return transaction;
-	}, [ realm, holding ] );
+	}, [ holding ] );
 
 	const saveHolding = useCallback( ( editedHolding: Holding ) => {
 		const title = __( 'Save Holding' );
@@ -79,9 +79,11 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 
 	const lastTransaction = useMemo( () => {
 		return transactions.sorted( 'date', true )[0];
-	}, [ realm, transactions ] );
+	}, [ transactions ] );
 
-	const lastPrice = lastTransaction?.price ?? 0;
+	const lastPrice = lastTransaction?.isValid()
+		? lastTransaction.price
+		: 0;
 
 	const amount = useMemo( () => {
 		const amount = transactions.reduce( ( amount, transaction ) => {
@@ -89,7 +91,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		}, 0 );
 
 		return amount;
-	}, [ realm, transactions ] );
+	}, [ transactions ] );
 
 	const transactionSum = useMemo( () => {
 		const sum = transactions.reduce( ( sum, transaction ) => {
@@ -97,7 +99,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		}, 0 );
 
 		return sum;
-	}, [ realm, transactions ] );
+	}, [ transactions ] );
 
 	const total = useMemo( () => {
 		const total = transactions.reduce( ( total, transaction ) => {
@@ -105,7 +107,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		}, 0 );
 
 		return total;
-	}, [ realm, transactions ])
+	}, [ transactions ])
 
 	const dividendSum = useMemo( () => {
 		const sum = dividends.reduce( ( sum, dividend ) => {
@@ -113,7 +115,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		}, 0 );
 
 		return sum
-	}, [ realm, dividends ] );
+	}, [ dividends ] );
 
 	const fees = total - transactionSum;
 	const averagePrice = amount ? transactionSum / amount : 0;
