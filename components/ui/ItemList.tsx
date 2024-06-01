@@ -1,6 +1,6 @@
 import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { Color, GlobalStyles, Spacing } from "../../constants";
-import { Divider, Text } from "react-native-paper";
+import { Divider, Text, useTheme } from "react-native-paper";
 import React from "react";
 import { __ } from "../../localization";
 
@@ -17,8 +17,10 @@ export const ItemList: React.FC<ItemListProps> = ( {
 	noItemsText = __( 'No items' ),
 	items,
 	style,
-	contentContainerStyle
+	contentContainerStyle,
 } ) => {
+	const theme = useTheme();
+
 	return (
 		<View style={ [
 			styles.container,
@@ -26,7 +28,9 @@ export const ItemList: React.FC<ItemListProps> = ( {
 		] }>
 			{ title &&
 				<View style={ styles.titleContainer }>
-					<Text style={ styles.title }>{ title }</Text>
+					<Text style={ [ styles.title, { color: theme.colors.secondary } ] }>
+						{ title }
+					</Text>
 					<Divider />
 				</View>
 			}
@@ -74,8 +78,7 @@ const styles = StyleSheet.create( {
 	
 	title: {
 		...GlobalStyles.gutter,
-		...GlobalStyles.label,
-		color: Color.grey
+		...GlobalStyles.label
 	},
 	
 	contentContainer: {

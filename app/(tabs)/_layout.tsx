@@ -3,14 +3,20 @@ import React from 'react';
 import { __ } from '../../localization';
 import { Icon } from '../../components/ui';
 import { BottomTabs } from '../../components/navigation';
-import { GlobalStyles } from '../../constants';
+import { StyleSheet } from 'react-native';
+import { useTheme } from 'react-native-paper';
 
 export default function TabsLayout() {
+	const theme = useTheme();
   return (
     <BottomTabs
 			sceneAnimationEnabled={ true }
 			sceneAnimationType={ 'shifting' }
-			barStyle={ GlobalStyles.footer }
+			barStyle={ {
+				backgroundColor: theme.colors.background,
+				borderTopWidth: StyleSheet.hairlineWidth,
+				borderColor: theme.colors.outlineVariant
+			} }
 			shifting={ true }>
       <BottomTabs.Screen
         name={ "index" }

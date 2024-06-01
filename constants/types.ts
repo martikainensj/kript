@@ -1,7 +1,6 @@
 import { __ } from "../localization";
 import { Color } from "./colors";
 import { Ionicons } from '@expo/vector-icons';
-import { Theme } from "./theme";
 
 interface Type {
   id: string;
@@ -14,13 +13,13 @@ export const TransactionTypes: Type[] = [
 	{
 		id: 'buy',
 		name: __( 'Buy' ),
-		color: Theme.colors.success,
+		color: Color.success,
 		icon: 'enter-outline',
 	},
 	{
 		id: 'sell',
 		name: __( 'Sell' ),
-		color: Theme.colors.error,
+		color: Color.error,
 		icon: 'exit-outline',
 	}
 ];
@@ -29,19 +28,19 @@ export const TransferTypes: Type[] = [
 	{
 		id: 'deposit',
 		name: __( 'Deposit' ),
-		color: Theme.colors.success,
+		color: Color.success,
 		icon: 'enter-outline',
 	},
 	{
 		id: 'withdrawal',
 		name: __( 'Withdrawal' ),
-		color: Theme.colors.error,
+		color: Color.error,
 		icon: 'exit-outline',
 	},
 	{
 		id: 'dividend',
 		name: __( 'Dividend' ),
-		color: Theme.colors.primary,
+		color: Color.fallbackSourceColor,
 		icon: 'cash-outline',
 	}
 ];

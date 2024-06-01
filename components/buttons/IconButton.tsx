@@ -2,7 +2,7 @@ import React from 'react';
 import { IconButton as PaperIconButton, IconButtonProps as PaperIconButtonProps } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
-import { IconSize, Theme } from '../../constants';
+import { IconSize } from '../../constants';
 import { Icon } from '../ui';
 
 interface IconButtonProps extends PaperIconButtonProps {
@@ -22,7 +22,6 @@ export const IconButton: React.FC<IconButtonProps> = ( {
 			mode={ mode }
 			size={ size }
 			style={ [ styles.container, style ] }
-			theme={ Theme }
 			{ ...rest }
 			/>
 	)

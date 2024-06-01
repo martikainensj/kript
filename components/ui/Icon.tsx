@@ -1,6 +1,7 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { IconSize, Theme } from '../../constants';
+import { IconSize } from '../../constants';
+import { useTheme } from 'react-native-paper';
 
 interface IconProps {
 	name: React.ComponentProps<typeof Ionicons>['name'],
@@ -11,7 +12,8 @@ interface IconProps {
 export const Icon: React.FC<IconProps> = ( {
 	name,
 	size = IconSize.md,
-	color = Theme.colors.primary
+	color
 } ) => {
-  return <Ionicons name={ name } size={ size } color={ color } />;
+	const theme = useTheme();
+  return <Ionicons name={ name } size={ size } color={ color ?? theme.colors.primary } />;
 }

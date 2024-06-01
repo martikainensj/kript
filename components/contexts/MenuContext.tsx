@@ -1,7 +1,6 @@
 import React, { useState, createContext, useContext, useCallback } from "react";
 import { Divider, MenuItemProps, Menu as PaperMenu } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
-import { Theme } from "../../constants";
 
 export interface MenuItem extends MenuItemProps {
 	startsSection?: boolean
@@ -69,8 +68,7 @@ const Menu = () => {
 			visible={ visible }
 			anchor={ anchor }
 			onDismiss={ onDismiss }
-			contentStyle={ styles.contentContainer }
-			theme={ Theme }>
+			contentStyle={ styles.contentContainer }>
 			{ menuItems?.map( ( menuItem, key ) => {
 				const { startsSection, title, leadingIcon, onPress } = menuItem;
 

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Button as PaperButton, ButtonProps } from 'react-native-paper';
-import { BorderRadius, FontSize, FontWeight, Spacing, Theme } from '../../constants';
+import { BorderRadius, FontSize, FontWeight, Spacing } from '../../constants';
 
 export const DefaultButton: React.FC<ButtonProps> = ( {
 	mode = 'contained',
@@ -16,7 +16,6 @@ export const DefaultButton: React.FC<ButtonProps> = ( {
 			style={ [ styles.container, style ] }
 			labelStyle={ [ styles.label, labelStyle ] }
 			contentStyle={ [ styles.content, contentStyle ] }
-			theme={ Theme }
 			{ ...rest }>
 			{ children }
 		</PaperButton>

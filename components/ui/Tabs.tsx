@@ -4,10 +4,7 @@ import {
 } from "react-native";
 import { TabsProvider, TabScreen, Tabs as PaperTabs } from "react-native-paper-tabs";
 
-import {
-	GlobalStyles,
-	Theme,
-} from "../../constants";
+import { GlobalStyles } from "../../constants";
 
 interface TabsScreenContentProps {
 	label: string,
@@ -46,7 +43,6 @@ export const Tabs: React.FC<TabsProps> = ( {
 const styles = StyleSheet.create( {
 	container: {
 		borderBottomWidth: StyleSheet.hairlineWidth,
-		borderColor: Theme.colors.outlineVariant
 	},
 	labelContainer: {
 		...GlobalStyles.label,

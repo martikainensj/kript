@@ -1,5 +1,5 @@
 import { TextInput as PaperTextInput, TextInputProps as PaperTextInputProps } from 'react-native-paper';
-import { BorderRadius, FontSize, Theme } from "../../constants";
+import { BorderRadius, FontSize } from "../../constants";
 import { StyleSheet } from "react-native";
 import { Icon } from "../ui";
 import { useEffect, useState } from 'react';
@@ -91,7 +91,6 @@ export const TextInput: React.FC<TextInputProps> = ( {
 			multiline={ multiline }
 			autoComplete={ autoComplete }
 			autoCorrect={ autoCorrect }
-			theme={ Theme }
 			style={ styles.container }
 			underlineStyle={ styles.underline }
 			outlineStyle={ styles.outline }

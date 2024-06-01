@@ -344,6 +344,18 @@ export const Translations: { [ key: string ]: Translation } = {
 		fi: 'Tuotto',
 		en_US: 'Return'
 	},
+	'light': {
+		fi: 'Vaalea',
+		en_US: 'Light'
+	},
+	'dark': {
+		fi: 'Tumma',
+		en_US: 'Dark'
+	},
+	'system': {
+		fi: 'Järjestelmä',
+		en_US: 'System'
+	},
 
 	'are you sure?': {
 		fi: 'Oletko varma?',

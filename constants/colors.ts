@@ -1,9 +1,6 @@
 export const Color = {
-	light: '#FFFFFF',
-	dark: '#2E2E2E',
-	accent: '#4D6CFA',
+	fallbackSourceColor: '#4963C1',
 	success: '#66a077',
-	failure: '#C2452D',
+	error: '#BA1A1A',
 	grey: '#8D8D8D',
-	darkOpacity: 'rgba(46, 46, 46, 0.5)'
 };

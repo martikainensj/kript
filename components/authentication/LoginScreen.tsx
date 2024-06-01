@@ -6,11 +6,13 @@ import { AuthOperationName, useAuth, useEmailPasswordAuth } from '@realm/react';
 import AuthenticationErrorMessage from './AuthenticationErrorMessage';
 import { DefaultButton } from '../buttons';
 import { TextInput } from '../inputs';
-import { GlobalStyles, Spacing, IconSize, Theme } from '../../constants';
+import { GlobalStyles, Spacing, IconSize } from '../../constants';
 import { __ } from '../../localization';
 import { Header, Icon } from '../ui';
+import { useTheme } from 'react-native-paper';
 
 export const LoginScreen = () => {
+	const theme = useTheme();
 	const { result, logInWithEmailPassword } = useAuth();
 	const { register } = useEmailPasswordAuth();
 	const [ email, setEmail ] = useState( '' );
@@ -32,7 +34,7 @@ export const LoginScreen = () => {
 
 	return (
     <TouchableWithoutFeedback onPress={ handleDismissKeyboard }>
-			<View style={ styles.container }>
+			<View style={ [ styles.container, { backgroundColor: theme.colors.background } ] }>
 				<Header title={ __( 'Welcome to' ) } >
 					<Image style={ styles.logo } source={require('../../assets/KriptLogo.png')} />
 				</Header>
@@ -64,7 +66,12 @@ export const LoginScreen = () => {
 
 					<View style={ [
 						styles.buttonsContainer,
-						{ paddingBottom: insets.bottom }
+						{
+							paddingBottom: insets.bottom,
+							backgroundColor: theme.colors.background,
+							borderTopWidth: StyleSheet.hairlineWidth,
+							borderColor: theme.colors.outlineVariant
+						}
 					] }>
 						<DefaultButton
 							icon={ ( { color } ) => <Icon name={ 'log-in-outline' } size={ IconSize.lg } color={ color } /> }
@@ -92,7 +99,6 @@ export const LoginScreen = () => {
 const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.container,
-		backgroundColor: Theme.colors.background
 	},
 
 	logo: {
@@ -117,7 +123,6 @@ const styles = StyleSheet.create({
 	},
 	
 	buttonsContainer: {
-		...GlobalStyles.footer,
 		...GlobalStyles.gutter,
 		flexDirection: 'row',
 		gap: Spacing.md,

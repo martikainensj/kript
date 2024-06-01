@@ -36,6 +36,6 @@ const styles = StyleSheet.create( {
 	container: {
     textAlign: 'center',
     fontSize: FontSize.sm,
-    color: Color.failure,
+    color: Color.error,
   },
 } );

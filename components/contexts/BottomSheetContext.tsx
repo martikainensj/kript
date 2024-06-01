@@ -22,13 +22,11 @@ import {
 	BottomSheetDefaultBackdropProps
 } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
 
-import {
-	GlobalStyles,
-	Theme
-} from "../../constants";
+import { GlobalStyles } from "../../constants";
 import { IconButton } from "../buttons";
 import { Header } from "../ui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTheme } from "react-native-paper";
 
 interface BottomSheetContext {
 	title: string,
@@ -85,6 +83,7 @@ export const BottomSheetProvider = ( { children } ) => {
 }
 
 const BottomSheet = () => {
+	const theme = useTheme();
 	const insets = useSafeAreaInsets();
 	const { title, setTitle, content, setContent, visible, closeBottomSheet } = useBottomSheet();
 	const bottomSheetRef = useRef<BottomSheetMethods>( null );
@@ -120,7 +119,7 @@ const BottomSheet = () => {
 			enablePanDownToClose={ true }
 			style={ styles.container }
 			enableDynamicSizing={ true }
-			backgroundStyle={ styles.background }
+			backgroundStyle={ { backgroundColor: theme.colors.background } }
 			keyboardBehavior={ Platform.OS === 'android' ? 'extend' : 'interactive' }
 			keyboardBlurBehavior={ 'restore' }
 			onChange={ onChange }
@@ -153,8 +152,5 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.gutter,
 		flex: 0,
 		minHeight: 350,
-	},
-	background: {
-		backgroundColor: Theme.colors.background,
 	}
 } );

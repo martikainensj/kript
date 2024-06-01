@@ -1,14 +1,13 @@
 import React, { useCallback } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
-import { Text, TouchableRipple } from "react-native-paper";
-import Realm from "realm";
+import { Text, TouchableRipple, useTheme } from "react-native-paper";
+import { router } from "expo-router";
 
 import { Grid, Icon, Row, Value } from "../ui";
-import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
+import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { useHolding } from "../../hooks";
 import { __ } from "../../localization";
 import { MenuItem, useBottomSheet, useMenu } from "../contexts";
-import { router } from "expo-router";
 import { HoldingForm } from "./HoldingForm";
 import { Holding } from "../../models/Holding";
 import { prettifyNumber } from "../../helpers";
@@ -16,6 +15,7 @@ import { prettifyNumber } from "../../helpers";
 interface HoldingItemProps extends Holding {}
 
 export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) => {
+	const theme = useTheme();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const {
@@ -71,14 +71,13 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 	if ( ! holding?.isValid() ) return;
 
 	const meta = [
-		<Text style={ styles.name }>{ holding?.name }</Text>
+		<Text style={ [ styles.name, { color: theme.colors.primary } ] }>{ holding?.name }</Text>
 	]
 	
 	return (
 		<TouchableRipple
 			onPress={ onPress }
-			onLongPress={ onLongPress }
-			theme={ Theme }>
+			onLongPress={ onLongPress }>
 			<View style={ styles.container }>
 				<View style={ styles.contentContainer }>
 					<Grid
@@ -115,7 +114,6 @@ const styles = StyleSheet.create( {
 	},
 	name: {
 		fontWeight: FontWeight.bold,
-		color: Theme.colors.primary
 	},
 	iconContainer: {
 	}

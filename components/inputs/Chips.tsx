@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { StyleSheet } from "react-native";
 import { Chip } from "react-native-paper";
 
-import { BorderRadius, Spacing, Theme } from "../../constants";
+import { BorderRadius, Spacing } from "../../constants";
 import { ScrollView } from "react-native-gesture-handler";
 
 export interface ChipProps {
@@ -51,8 +51,7 @@ export const Chips: React.FC<ChipsProps> = ( {
 					mode={ 'flat' }
 					selected={ chip.value === value }
 					onPress={ onPressHandler.bind( this, chip ) }
-					style={ styles.chip }
-					theme={ Theme }>
+					style={ styles.chip }>
 					{ chip.label }
 				</Chip>
 			) ) }

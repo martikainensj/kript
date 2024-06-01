@@ -1,9 +1,10 @@
-import React, { Children } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { GlobalStyles, Spacing, Theme } from "../../constants";
+import { GlobalStyles, Spacing } from "../../constants";
 import { Row } from "./Row";
 import { Title } from "./Title";
+import { useTheme } from "react-native-paper";
 
 interface HeaderProps {
 	title: string
@@ -22,6 +23,7 @@ export const Header: React.FC<HeaderProps> = ( {
 	showDivider = true,
 	children
 } ) => {
+	const theme = useTheme();
 	const insets = useSafeAreaInsets();
 
 	return ( <>
@@ -30,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ( {
 			isScreenHeader && { marginTop: insets.top },
 			showDivider && { 
 				borderBottomWidth: StyleSheet.hairlineWidth,
-				borderColor: Theme.colors.outlineVariant
+				borderColor: theme.colors.outlineVariant
 			}
 		] }>
 			<Row style={ styles.row }>

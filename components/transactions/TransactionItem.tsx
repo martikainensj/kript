@@ -1,15 +1,14 @@
 import React, { useCallback } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
-import { Text, TouchableRipple } from "react-native-paper";
+import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import Realm from "realm";
 
 import { Grid, Icon, Value } from "../ui";
-import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
+import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { useTransaction } from "../../hooks";
 import { __ } from "../../localization";
 import { MenuItem, useBottomSheet, useMenu } from "../contexts";
 import { TransactionForm } from "./TransactionForm";
-import { Transaction } from "../../models/Transaction";
 
 interface TransactionItemProps {
 	_id: Realm.BSON.UUID,
@@ -18,6 +17,7 @@ interface TransactionItemProps {
 }
 
 export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, holding_id, account_id } ) => {
+	const theme = useTheme();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { transaction, saveTransaction, removeTransaction, type } = useTransaction( { _id, holding_id, account_id } );
@@ -60,7 +60,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, holding_
 	};
 	
 	const meta = [
-		<Text style={ styles.date }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>,
+		<Text style={ [ styles.date, { color: theme.colors.primary } ] }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>,
 		<Text style={ [ styles.type, { color: type.color } ] }>{ type.name }</Text>
 	];
 
@@ -72,8 +72,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, holding_
 
 	return (
 		<TouchableRipple
-			onLongPress={ onLongPress }
-			theme={ Theme }>
+			onLongPress={ onLongPress }>
 			<View style={ styles.container}>
 				<Grid
 					columns={ 2 }
@@ -96,7 +95,6 @@ const styles = StyleSheet.create( {
 	},
 	date: {
 		fontWeight: FontWeight.bold,
-		color: Theme.colors.primary
 	},
 	type: {
 		fontWeight: FontWeight.bold,

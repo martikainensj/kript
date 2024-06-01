@@ -1,10 +1,10 @@
 import React from 'react';
 import { GestureResponderEvent, StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
-import { SegmentedButtons } from 'react-native-paper';
+import { SegmentedButtons, useTheme } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
-import { BorderRadius, Spacing, Theme } from '../../constants';
+import { BorderRadius, Spacing } from '../../constants';
 
-interface OptionProps {
+export interface OptionProps {
 	value: string;
 	icon?: IconSource;
 	disabled?: boolean;
@@ -32,6 +32,7 @@ export const Select: React.FC<SelectProps> = ( {
 	options,
 	style
 } ) => {
+	const theme = useTheme();
 	const onValueChange = ( value ) => {
 		setValue( value );
 	}
@@ -41,20 +42,21 @@ export const Select: React.FC<SelectProps> = ( {
 			value={ value }
 			onValueChange={ onValueChange }
 			theme={ { roundness: 0 } }
-			buttons={ options?.map( option => {
+			buttons={ options?.filter( option => option.label ).map( option => {
 				return {
 					...option,
 					showSelectedCheck: true,
 					style: [
 						styles.buttonContainer,
 						option.value === value && {
-							backgroundColor: Theme.colors.background
+							backgroundColor: theme.colors.background
 						}
 					]
 				}	
 			} ) }
 			style={ [
 				styles.container,
+				{ backgroundColor: theme.colors.surfaceVariant },
 				style
 			] } />
 	);
@@ -63,7 +65,6 @@ export const Select: React.FC<SelectProps> = ( {
 const styles = StyleSheet.create( {
 	container: {
 		padding: Spacing.xs,
-		backgroundColor: Theme.colors.surfaceVariant,
 		borderRadius: BorderRadius.md,
 		gap: Spacing.xs
 	},

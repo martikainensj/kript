@@ -1,10 +1,10 @@
 import React, { useCallback } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
-import { Text, TouchableRipple } from "react-native-paper";
+import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import Realm from "realm";
 
 import { Grid, Icon, Value } from "../ui";
-import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
+import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { useTransfer } from "../../hooks";
 import { __ } from "../../localization";
 import { MenuItem, useBottomSheet, useMenu } from "../contexts";
@@ -17,6 +17,7 @@ interface TransferItemProps {
 }
 
 export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, showHolding } ) => {
+	const theme = useTheme();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { transfer, saveTransfer, removeTransfer, type, account } = useTransfer( { _id, account_id } );
@@ -60,7 +61,7 @@ export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, sh
 	
 	const meta = [
 		<View style={ styles.header }>
-			<Text style={ styles.date }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>
+			<Text style={ [ styles.date, { color: theme.colors.primary } ] }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>
 			{ ( showHolding && holding_name )
 				&& <Text numberOfLines={ 1 } style={ styles.holding }>{ holding_name }</Text>
 			}
@@ -73,9 +74,7 @@ export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, sh
 	];
 
 	return (
-		<TouchableRipple
-			onLongPress={ onLongPress }
-			theme={ Theme }>
+		<TouchableRipple onLongPress={ onLongPress }>
 			<View style={ styles.container}>
 				<Grid
 					columns={ 2 }
@@ -104,7 +103,6 @@ const styles = StyleSheet.create( {
 	},
 	date: {
 		fontWeight: FontWeight.bold,
-		color: Theme.colors.primary
 	},
 	type: {
 		fontWeight: FontWeight.bold,

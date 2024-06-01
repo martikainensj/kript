@@ -1,10 +1,10 @@
 import React, { useCallback } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
-import { Text, TouchableRipple } from "react-native-paper";
+import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import { router } from 'expo-router';
 
 import { Icon } from "../ui";
-import { FontWeight, GlobalStyles, Spacing, Theme } from "../../constants";
+import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { Account } from "../../models/Account";
 import { MenuItem, useMenu } from "../contexts/MenuContext";
 import { useAccount } from "../../hooks";
@@ -12,7 +12,6 @@ import { __ } from "../../localization";
 import { useBottomSheet } from "../contexts";
 import { AccountForm } from "./AccountForm";
 import { Grid, Value } from "../ui";
-import { useRealm } from "@realm/react";
 import { prettifyNumber } from "../../helpers";
 
 interface AccountItemProps {
@@ -20,6 +19,7 @@ interface AccountItemProps {
 }
 
 export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
+	const theme = useTheme();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { account, saveAccount, removeAccount, balance, value } = useAccount( { id } )
@@ -71,7 +71,7 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 	if ( ! account?.isValid() ) return;
 
 	const meta = [
-		<Text style={ styles.name }>{ account.name }</Text>
+		<Text style={ [ styles.name, { color: theme.colors.primary} ] }>{ account.name }</Text>
 	];
 
 	return (
@@ -111,6 +111,5 @@ const styles = StyleSheet.create( {
 	},
 	name: {
 		fontWeight: FontWeight.bold,
-		color: Theme.colors.primary
 	}
 } );
