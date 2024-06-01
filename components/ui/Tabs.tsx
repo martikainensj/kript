@@ -5,6 +5,7 @@ import {
 import { TabsProvider, TabScreen, Tabs as PaperTabs } from "react-native-paper-tabs";
 
 import { GlobalStyles } from "../../constants";
+import { useTheme } from "react-native-paper";
 
 interface TabsScreenContentProps {
 	label: string,
@@ -20,12 +21,17 @@ export const Tabs: React.FC<TabsProps> = ( {
 	defaultIndex = 0,
 	screens = []
 } ) => {
+	const theme = useTheme();
+
   return (
 		<TabsProvider	defaultIndex={ defaultIndex }>
 			<PaperTabs
 				mode="scrollable"
 				showLeadingSpace={ false }
-				style={ styles.container }
+				style={ {
+					...styles.container,
+					borderColor: theme.colors.outlineVariant 
+				} }
 				tabLabelStyle={ styles.labelContainer }>
 				{ screens.map( ( screen, key ) => {
 					const {	label, content } = screen;
