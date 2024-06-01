@@ -1,396 +1,398 @@
 interface Translation {
-	fi?: string,
+	fi_FI?: string,
 	en_US?: string
 }
 
-export const Translations: { [ key: string ]: Translation } = {
+const Translations: { [ key: string ]: Translation } = {
 	missingKey: {
-		fi: 'Käännös puuttuu',
+		fi_FI: 'Käännös puuttuu',
 		en_US: 'Missing translation'
 	},
 	'welcome to': {
-		fi: 'Tervetuloa',
+		fi_FI: 'Tervetuloa',
 		en_US: 'Welcome to'
 	},
 	'welcome to kript': {
-		fi: 'Tervetuloa Kriptiin',
+		fi_FI: 'Tervetuloa Kriptiin',
 		en_US: 'Welcome to Kript'
 	},
 	'home': {
-		fi: 'Koti',
+		fi_FI: 'Koti',
 		en_US: "Home"
 	},
 	'settings': {
-		fi: 'Asetukset',
+		fi_FI: 'Asetukset',
 		en_US: "Settings"
 	},
 	'authentication': {
-		fi: 'Tunnistus',
+		fi_FI: 'Tunnistus',
 		en_US: 'Authentication'
 	},
 	'email': {
-		fi: 'Sähköposti',
+		fi_FI: 'Sähköposti',
 		en_US: 'Email'
 	},
 	'password': {
-		fi: 'Salasana',
+		fi_FI: 'Salasana',
 		en_US: 'Password'
 	},
 	'example': {
-		fi: 'Esimerkki',
+		fi_FI: 'Esimerkki',
 		en_US: 'Example'
 	},
 	'login': {
-		fi: 'Kirjaudu',
+		fi_FI: 'Kirjaudu',
 		en_US: 'Login'
 	},
 	'sign up': {
-		fi: 'Rekisteröidy',
+		fi_FI: 'Rekisteröidy',
 		en_US: 'Sign up'
 	},
 	'logout': {
-		fi: 'Kirjaudu ulos',
+		fi_FI: 'Kirjaudu ulos',
 		en_US: 'Logout'
 	},
 	'are you sure you want to log out?': {
-		fi: 'Haluatko varmasti kirjautua ulos?',
+		fi_FI: 'Haluatko varmasti kirjautua ulos?',
 		en_US: 'Are you sure you want to log out?'
 	},
 	'login failed. please check your username and password and try again.': {
-		fi: 'Kirjautuminen epäonnistui. Tarkista käyttäjätunnus ja salasana ja yritä uudelleen.',
+		fi_FI: 'Kirjautuminen epäonnistui. Tarkista käyttäjätunnus ja salasana ja yritä uudelleen.',
 		en_US: 'Login failed. Please check your username and password and try again.'
 	},
 	'registration failed. please check the information you provided and try again.': {
-		fi: 'Rekisteröityminen epäonnistui. Tarkista antamasi tiedot ja yritä uudelleen.',
+		fi_FI: 'Rekisteröityminen epäonnistui. Tarkista antamasi tiedot ja yritä uudelleen.',
 		en_US: 'Registration failed. Please check the information you provided and try again.'
 	},
 	'overview': {
-		fi: 'Yleistä',
+		fi_FI: 'Yleistä',
 		en_US: 'Overview'
 	},
 	'new': {
-		fi: 'Uusi',
+		fi_FI: 'Uusi',
 		en_US: 'New'
 	},
 	'edit': {
-		fi: 'Muokkaa',
+		fi_FI: 'Muokkaa',
 		en_US: 'Edit'
 	},
 	'remove': {
-		fi: 'Poista',
+		fi_FI: 'Poista',
 		en_US: 'Remove'
 	},
 	'no items': {
-		fi: 'Ei kohteita',
+		fi_FI: 'Ei kohteita',
 		en_US: 'No items'
 	},
 
 	// Account
 
 	'account': {
-		fi: 'Tili',
+		fi_FI: 'Tili',
 		en_US: "Account"
 	},
 	'accounts': {
-		fi: 'Tilit',
+		fi_FI: 'Tilit',
 		en_US: "Accounts"
 	},
 	'new account': {
-		fi: 'Uusi tili',
+		fi_FI: 'Uusi tili',
 		en_US: 'New Account'
 	},
 	'edit account': {
-		fi: 'Muokkaa tiliä',
+		fi_FI: 'Muokkaa tiliä',
 		en_US: 'Edit Account'
 	},
 	'add account': {
-		fi: 'Lisää tili',
+		fi_FI: 'Lisää tili',
 		en_US: 'Add Account'
 	},
 	'update account': {
-		fi: 'Päivitä tili',
+		fi_FI: 'Päivitä tili',
 		en_US: 'Update Account'
 	},
 	'remove account': {
-		fi: 'Poista tili',
+		fi_FI: 'Poista tili',
 		en_US: 'Remove Account'
 	},
 	'removing existing account': {
-		fi: 'Poistetaan olemassa oleva tili',
+		fi_FI: 'Poistetaan olemassa oleva tili',
 		en_US: 'Removing existing account'
 	},
 	'updating existing account': {
-		fi: 'Päivitetään olemassa oleva tili',
+		fi_FI: 'Päivitetään olemassa oleva tili',
 		en_US: 'Updating existing account'
 	},
 	'adding a new account': {
-		fi: 'Lisätään uutta tiliä',
+		fi_FI: 'Lisätään uutta tiliä',
 		en_US: 'Adding a new account'
 	},
 	'no accounts': {
-		fi: 'Ei tilejä',
+		fi_FI: 'Ei tilejä',
 		en_US: 'No Accounts'
 	},
 	'create a new account by clicking the "+" button in the top right corner.': {
-		fi: 'Luo uusi tili painamalla "+" painiketta oikeassa yläkulmassa',
+		fi_FI: 'Luo uusi tili painamalla "+" painiketta oikeassa yläkulmassa',
 		en_US: 'Create a new account by clicking the "+" button in the top right corner.'
 	},
 
 	// Holding
 
 	'holding': {
-		fi: 'Omistus',
+		fi_FI: 'Omistus',
 		en_US: "Holding"
 	},
 	'holdings': {
-		fi: 'Omistukset',
+		fi_FI: 'Omistukset',
 		en_US: "Holdings"
 	},
 	'new holding': {
-		fi: 'Uusi omistus',
+		fi_FI: 'Uusi omistus',
 		en_US: 'New holding'
 	},
 	'edit holding': {
-		fi: 'Muokkaa omistusta',
+		fi_FI: 'Muokkaa omistusta',
 		en_US: 'Edit holding'
 	},
 	'update holding': {
-		fi: 'Päivitä omistus',
+		fi_FI: 'Päivitä omistus',
 		en_US: 'Update holding'
 	},
 	'remove holding': {
-		fi: 'Poista omistus',
+		fi_FI: 'Poista omistus',
 		en_US: 'Remove holding'
 	},
 	'removing existing holding': {
-		fi: 'Poistetaan olemassa oleva omistus',
+		fi_FI: 'Poistetaan olemassa oleva omistus',
 		en_US: 'Removing existing holding'
 	},
 	'updating existing holding': {
-		fi: 'Päivitetään olemassa oleva omistus',
+		fi_FI: 'Päivitetään olemassa oleva omistus',
 		en_US: 'Updating existing holding'
 	},
 	'no holdings': {
-		fi: 'Ei omistuksia',
+		fi_FI: 'Ei omistuksia',
 		en_US: 'No holdings'
 	},
 
 	// Transaction
 
 	'transaction': {
-		fi: 'Transaktio',
+		fi_FI: 'Transaktio',
 		en_US: "Transaction"
 	},
 	'transactions': {
-		fi: 'Transaktiot',
+		fi_FI: 'Transaktiot',
 		en_US: "Transactions"
 	},
 	'new transaction': {
-		fi: 'Uusi transaktio',
+		fi_FI: 'Uusi transaktio',
 		en_US: 'New Transaction'
 	},
 	'edit transaction': {
-		fi: 'Muokkaa transaktiota',
+		fi_FI: 'Muokkaa transaktiota',
 		en_US: 'Edit Transaction'
 	},
 	'add transaction': {
-		fi: 'Lisää transaktio',
+		fi_FI: 'Lisää transaktio',
 		en_US: 'Add Transaction'
 	},
 	'update transaction': {
-		fi: 'Päivitä transaktio',
+		fi_FI: 'Päivitä transaktio',
 		en_US: 'Update Transaction'
 	},
 	'remove transaction': {
-		fi: 'Poista transaktio',
+		fi_FI: 'Poista transaktio',
 		en_US: 'Remove Transaction'
 	},
 	'removing existing transaction': {
-		fi: 'Poistetaan olemassa oleva transaktio',
+		fi_FI: 'Poistetaan olemassa oleva transaktio',
 		en_US: 'Removing existing Transaction'
 	},
 	'updating existing transaction': {
-		fi: 'Päivitetään olemassa oleva transaktio',
+		fi_FI: 'Päivitetään olemassa oleva transaktio',
 		en_US: 'Updating existing Transaction'
 	},
 	'adding a new transaction': {
-		fi: 'Lisätään uutta transaktiota',
+		fi_FI: 'Lisätään uutta transaktiota',
 		en_US: 'Adding a new Transaction'
 	},
 	'no transactions': {
-		fi: 'Ei transaktioita',
+		fi_FI: 'Ei transaktioita',
 		en_US: 'No Transactions'
 	},
 
 	// Transfers
 
 	'transfer': {
-		fi: 'Siirto',
+		fi_FI: 'Siirto',
 		en_US: 'Transfer'
 	},
 	'transfers': {
-		fi: 'Siirrot',
+		fi_FI: 'Siirrot',
 		en_US: 'Transfers'
 	},
 	'new transfer': {
-		fi: 'Uusi siirto',
+		fi_FI: 'Uusi siirto',
 		en_US: 'New Transfer'
 	},
 	'edit transfer': {
-		fi: 'Muokkaa siirtoa',
+		fi_FI: 'Muokkaa siirtoa',
 		en_US: 'Edit Transfer'
 	},
 	'add transfer': {
-		fi: 'Lisää siirto',
+		fi_FI: 'Lisää siirto',
 		en_US: 'Add Transfer'
 	},
 	'update transfer': {
-		fi: 'Päivitä siirto',
+		fi_FI: 'Päivitä siirto',
 		en_US: 'Update Transfer'
 	},
 	'remove transfer': {
-		fi: 'Poista siirto',
+		fi_FI: 'Poista siirto',
 		en_US: 'Remove Transfer'
 	},
 	'removing existing transfer': {
-		fi: 'Poistetaan olemassa oleva siirto',
+		fi_FI: 'Poistetaan olemassa oleva siirto',
 		en_US: 'Removing existing Transfer'
 	},
 	'updating existing transfer': {
-		fi: 'Päivitetään olemassa oleva siirto',
+		fi_FI: 'Päivitetään olemassa oleva siirto',
 		en_US: 'Updating existing Transfer'
 	},
 	'adding a new transfer': {
-		fi: 'Lisätään uutta siirtoa',
+		fi_FI: 'Lisätään uutta siirtoa',
 		en_US: 'Adding a new Transfer'
 	},
 	'no transfers': {
-		fi: 'Ei siirtoja',
+		fi_FI: 'Ei siirtoja',
 		en_US: 'No Transfers'
 	},
 
 	// Dividends
 
 	'dividend': {
-		fi: 'Osinko',
+		fi_FI: 'Osinko',
 		en_US: 'Dividend'
 	},
 	'dividends': {
-		fi: 'Osingot',
+		fi_FI: 'Osingot',
 		en_US: 'Dividends'
 	},
 	'new dividend': {
-		fi: 'Uusi osinko',
+		fi_FI: 'Uusi osinko',
 		en_US: 'New Dividend'
 	},
 	'edit dividend': {
-		fi: 'Muokkaa osinkoa',
+		fi_FI: 'Muokkaa osinkoa',
 		en_US: 'Edit Dividend'
 	},
 	'add dividend': {
-		fi: 'Lisää osinko',
+		fi_FI: 'Lisää osinko',
 		en_US: 'Add Dividend'
 	},
 	'update dividend': {
-		fi: 'Päivitä osinko',
+		fi_FI: 'Päivitä osinko',
 		en_US: 'Update Dividend'
 	},
 	'remove dividend': {
-		fi: 'Poista osinko',
+		fi_FI: 'Poista osinko',
 		en_US: 'Remove Dividend'
 	},
 	'removing existing dividend': {
-		fi: 'Poistetaan olemassa oleva osinko',
+		fi_FI: 'Poistetaan olemassa oleva osinko',
 		en_US: 'Removing existing Dividend'
 	},
 	'updating existing dividend': {
-		fi: 'Päivitetään olemassa oleva osinko',
+		fi_FI: 'Päivitetään olemassa oleva osinko',
 		en_US: 'Updating existing Dividend'
 	},
 	'adding a new dividend': {
-		fi: 'Lisätään uutta osinkoa',
+		fi_FI: 'Lisätään uutta osinkoa',
 		en_US: 'Adding a new Dividend'
 	},
 	'no dividends': {
-		fi: 'Ei osinkoja',
+		fi_FI: 'Ei osinkoja',
 		en_US: 'No Dividends'
 	},
 
 	'buy': {
-		fi: 'Osta',
+		fi_FI: 'Osta',
 		en_US: 'Buy'
 	},
 	'sell': {
-		fi: 'Myy',
+		fi_FI: 'Myy',
 		en_US: 'Sell'
 	},
 	'deposit': {
-		fi: 'Talletus',
+		fi_FI: 'Talletus',
 		en_US: 'Deposit'
 	},
 	'withdrawal': {
-		fi: 'Nosto',
+		fi_FI: 'Nosto',
 		en_US: 'Withdrawal'
 	},
 	'balance': {
-		fi: 'Saldo',
+		fi_FI: 'Saldo',
 		en_US: 'Balance'
 	},
 	'value': {
-		fi: 'Arvo',
+		fi_FI: 'Arvo',
 		en_US: 'Value'
 	},
 	'return': {
-		fi: 'Tuotto',
+		fi_FI: 'Tuotto',
 		en_US: 'Return'
 	},
 	'light': {
-		fi: 'Vaalea',
+		fi_FI: 'Vaalea',
 		en_US: 'Light'
 	},
 	'dark': {
-		fi: 'Tumma',
+		fi_FI: 'Tumma',
 		en_US: 'Dark'
 	},
 	'system': {
-		fi: 'Järjestelmä',
+		fi_FI: 'Järjestelmä',
 		en_US: 'System'
 	},
 
 	'are you sure?': {
-		fi: 'Oletko varma?',
+		fi_FI: 'Oletko varma?',
 		en_US: 'Are you sure?'
 	},
 	'name': {
-		fi: 'Nimi',
+		fi_FI: 'Nimi',
 		en_US: 'Name'
 	},
 	'date': {
-		fi: 'Päivämäärä',
+		fi_FI: 'Päivämäärä',
 		en_US: 'Date'
 	},
 	'price': {
-		fi: 'Hinta',
+		fi_FI: 'Hinta',
 		en_US: 'Price'
 	},
 	'amount': {
-		fi: 'Määrä',
+		fi_FI: 'Määrä',
 		en_US: 'Amount'
 	},
 	'total': {
-		fi: 'Summa',
+		fi_FI: 'Summa',
 		en_US: 'Total'
 	},
 	'notes': {
-		fi: 'Muistiinpanot',
+		fi_FI: 'Muistiinpanot',
 		en_US: 'Notes'
 	},
 	'enter notes here': {
-		fi: 'Kirjoita muistiinpanot tähän',
+		fi_FI: 'Kirjoita muistiinpanot tähän',
 		en_US: 'Enter notes here'
 	},
 	'investment account': {
-		fi: 'Arvo-osuustili',
+		fi_FI: 'Arvo-osuustili',
 		en_US: 'Investment Account'
 	}
 }
+
+export default Translations;

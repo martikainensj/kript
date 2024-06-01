@@ -1,15 +1,16 @@
 import React from 'react';
 import { useAuth } from '@realm/react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { GlobalStyles, Spacing } from '../../constants';
+import { GlobalStyles } from '../../constants';
 import { IconButton } from '../../components/buttons';
 import { confirmation } from '../../helpers';
-import { __ } from '../../localization';
-import { Header, Icon } from '../../components/ui';
+import { Header } from '../../components/ui';
+import { useI18n } from '../../components/contexts/I18nContext';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();
+	const { __ } = useI18n();
 
 	const logOutHandler = () => {
 		confirmation( {

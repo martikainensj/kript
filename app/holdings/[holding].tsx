@@ -6,7 +6,6 @@ import { useUser } from "@realm/react";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles } from "../../constants";
-import { __ } from "../../localization";
 import { useHolding } from "../../hooks";
 import { Grid, Header, Icon, ItemList, Tabs, Value } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
@@ -19,12 +18,14 @@ import { HoldingForm } from "../../components/holdings/HoldingForm";
 import TransactionItem from "../../components/transactions/TransactionItem";
 import TransferItem from "../../components/transfers/TransferItem";
 import { prettifyNumber } from "../../helpers";
+import { useI18n } from '../../components/contexts/I18nContext';
 
 const HoldingPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ _id: string, account_id: string }>();
 	const _id = new Realm.BSON.UUID( params._id );
 	const account_id = new Realm.BSON.UUID( params.account_id );
 	const user: Realm.User = useUser();
+	const { __ } = useI18n();
 	const {
 		holding, saveHolding, removeHolding,
 		account,

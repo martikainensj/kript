@@ -6,9 +6,9 @@ import Realm from "realm";
 import { Grid, Icon, Value } from "../ui";
 import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { useTransfer } from "../../hooks";
-import { __ } from "../../localization";
 import { MenuItem, useBottomSheet, useMenu } from "../contexts";
 import { TransferForm } from "./TransferForm";
+import { useI18n } from '../contexts/I18nContext';
 
 interface TransferItemProps {
 	_id: Realm.BSON.UUID,
@@ -18,6 +18,7 @@ interface TransferItemProps {
 
 export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, showHolding } ) => {
 	const theme = useTheme();
+	const { __ } = useI18n();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { transfer, saveTransfer, removeTransfer, type, account } = useTransfer( { _id, account_id } );

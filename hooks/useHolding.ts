@@ -3,10 +3,9 @@ import { useRealm, useUser } from "@realm/react"
 
 import Realm from "realm";
 import { confirmation } from "../helpers";
-import { __ } from "../localization";
 import { useAccount } from "./useAccount";
 import { Holding } from "../models/Holding";
-import { Transaction } from "../models/Transaction";
+import { useI18n } from "../components/contexts/I18nContext";
 
 interface useHoldingProps {
 	_id: Realm.BSON.UUID,
@@ -14,6 +13,7 @@ interface useHoldingProps {
 }
 
 export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
+	const { __ } = useI18n();
 	const realm = useRealm();
 	const user: Realm.User = useUser();
 	const { account, getHoldingById, addTransaction, addTransfer } = useAccount( { id: account_id } );

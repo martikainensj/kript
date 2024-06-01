@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import Realm from "realm";
-import { useRealm, useUser } from "@realm/react";
+import { useUser } from "@realm/react";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles } from "../../constants";
-import { __ } from "../../localization";
 import { useAccount } from "../../hooks";
 import { Grid, Header, Icon, ItemList, Tabs, Value } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
@@ -19,12 +18,13 @@ import { TransferForm } from "../../components/transfers/TransferForm";
 import TransferItem from "../../components/transfers/TransferItem";
 import { Text } from "react-native-paper";
 import { prettifyNumber } from "../../helpers";
+import { useI18n } from '../../components/contexts/I18nContext';
 
 const AccountPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ id: string }>();
 	const accountId = new Realm.BSON.UUID( params.id );
 	const user: Realm.User = useUser();
-	const realm = useRealm();
+	const { __ } = useI18n();
 	const { account, saveAccount, removeAccount, addTransaction, addTransfer, balance, value } = useAccount( { id: accountId } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();

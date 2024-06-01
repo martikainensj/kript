@@ -3,16 +3,17 @@ import { StyleSheet, View } from 'react-native';
 import Realm from 'realm';
 import { useUser } from '@realm/react';
 
-import { GlobalStyles, Spacing } from '../../constants';
-import { __ } from '../../localization';
+import { GlobalStyles } from '../../constants';
 import { AccountItem, AccountForm  } from '../../components/accounts';
 import { IconButton} from '../../components/buttons';
 import { Header, ItemList } from '../../components/ui';
 import { useAccounts } from '../../hooks';
 import { useBottomSheet } from '../../components/contexts';
+import { useI18n } from '../../components/contexts/I18nContext';
 
 const Accounts: React.FC = () => {
 	const user: Realm.User = useUser();
+	const { __ } = useI18n();
 	
 	const { accounts, addAccount } = useAccounts();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();

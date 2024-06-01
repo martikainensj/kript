@@ -9,6 +9,7 @@ interface Type {
   icon?: React.ComponentProps<typeof Ionicons>['name'];
 }
 
+// TODO: siirrä typet niiden hookkeihin
 export const TransactionTypes: Type[] = [
 	{
 		id: 'buy',

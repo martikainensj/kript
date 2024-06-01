@@ -5,10 +5,10 @@ import { router } from "expo-router";
 
 import { Account } from "../models/Account"
 import { confirmation } from "../helpers";
-import { __ } from "../localization";
 import { Transaction } from "../models/Transaction";
 import { Transfer } from "../models/Transfer";
 import { Holding } from "../models/Holding";
+import { useI18n } from "../components/contexts/I18nContext";
 
 interface useAccountProps {
 	id: Realm.BSON.UUID
@@ -16,6 +16,7 @@ interface useAccountProps {
 
 export const useAccount = ( { id }: useAccountProps ) => {
 	const user: Realm.User = useUser();
+	const { __ } = useI18n();
 	const realm = useRealm();
 	const account = useQuery<Account>( 'Account' )
 		.filtered( '_id == $0', id )[0];

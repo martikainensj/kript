@@ -3,10 +3,11 @@ import { useQuery, useRealm } from "@realm/react";
 
 import { Account } from "../models/Account";
 import { confirmation } from "../helpers";
-import { __ } from "../localization";
 import { useCallback, useEffect } from "react";
+import { useI18n } from "../components/contexts/I18nContext";
 
 export const useAccounts = () => {
+	const { __ } = useI18n();
 	const realm = useRealm();
 	const accounts = useQuery<Account>( 'Account' );
 

@@ -1,25 +1,29 @@
 import React from 'react';
-import { Appearance, Platform, StyleSheet, View } from 'react-native';
+import { Appearance, ColorSchemeName, StyleSheet, View } from 'react-native';
 import Realm from 'realm';
 import { useUser } from '@realm/react';
 
 import { GlobalStyles, Spacing } from '../../constants';
-import { __ } from '../../localization';
 import { Header, Icon } from '../../components/ui';
-import { useBottomSheet } from '../../components/contexts';
 import { IconButton } from '../../components/buttons';
 import { Select } from '../../components/inputs';
+import { useStorage } from '../../hooks/useStorage';
+import { useI18n, Languages } from '../../components/contexts/I18nContext';
 
 const Accounts: React.FC = () => {
+	const { setData } = useStorage();
+	const { __, currentLang, languages, setLang } = useI18n();
 	const user: Realm.User = useUser();
 	
-	const { openBottomSheet, closeBottomSheet, setTitle, setContent } = useBottomSheet();
-	const colorSchemeOptions = [
-		{ value: 'dark', label: __( 'Dark' ), icon: ( props ) => <Icon name={ 'moon' } { ...props } /> },
-		{ value: 'light', label: __( 'Light' ), icon: ( props ) => <Icon name={ 'sunny' } { ...props } /> }
-	];
+	const onSetColorMode = ( value: ColorSchemeName ) => {
+		Appearance.setColorScheme( value );
+		setData( '@settings/colorMode', value );
+	}
 
-	
+	const onSetLanguage = ( value: keyof Languages ) => {
+		setLang( value );
+	}
+
 	return (
 		<View style={ styles.container }>
 			<Header
@@ -31,8 +35,18 @@ const Accounts: React.FC = () => {
 			<View style={ styles.contentContainer }>
 				<Select
 					value={ Appearance.getColorScheme() }
-					options={ colorSchemeOptions }
-					setValue={ Appearance.setColorScheme } />
+					options={ [
+						{ value: 'dark', label: __( 'Dark' ), icon: ( props ) => <Icon name={ 'moon' } { ...props } /> },
+						{ value: 'light', label: __( 'Light' ), icon: ( props ) => <Icon name={ 'sunny' } { ...props } /> }
+					] }
+					setValue={ onSetColorMode } />
+
+				<Select
+					value={ currentLang }
+					options={ languages.map( language => {
+						return { label: language.name, value: language.id }
+					} ) }
+					setValue={ onSetLanguage } />
 			</View>
 		</View>
 	);
@@ -48,5 +62,7 @@ const styles = StyleSheet.create( {
 	contentContainer: {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
+		gap: Spacing.sm,
+		paddingTop: Spacing.md
 	}
 } );

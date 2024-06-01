@@ -1,13 +1,15 @@
 import React from 'react';
 
-import { __ } from '../../localization';
 import { Icon } from '../../components/ui';
 import { BottomTabs } from '../../components/navigation';
 import { StyleSheet } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import { useI18n } from '../../components/contexts/I18nContext';
 
 export default function TabsLayout() {
 	const theme = useTheme();
+	const { __ } = useI18n();
+	
   return (
     <BottomTabs
 			sceneAnimationEnabled={ true }

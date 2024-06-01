@@ -4,10 +4,10 @@ import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-nati
 import { IconButton } from "../buttons";
 import { TextInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
-import { __ } from "../../localization";
 import { Divider } from "../ui";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
 import { Holding } from "../../models/Holding";
+import { useI18n } from "../contexts/I18nContext";
 
 interface HoldingFormProps {
 	holding: Holding,
@@ -18,6 +18,7 @@ export const HoldingForm = ( {
 	holding,
 	onSubmit
 }: HoldingFormProps ) => {
+	const { __ } = useI18n();
 	const [ editedHolding, setEditedHolding ]
 		= useState( { ...holding } );
 

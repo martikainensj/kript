@@ -8,11 +8,11 @@ import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { Account } from "../../models/Account";
 import { MenuItem, useMenu } from "../contexts/MenuContext";
 import { useAccount } from "../../hooks";
-import { __ } from "../../localization";
 import { useBottomSheet } from "../contexts";
 import { AccountForm } from "./AccountForm";
 import { Grid, Value } from "../ui";
 import { prettifyNumber } from "../../helpers";
+import { useI18n } from '../../components/contexts/I18nContext';
 
 interface AccountItemProps {
 	id: Account['_id']
@@ -20,6 +20,7 @@ interface AccountItemProps {
 
 export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 	const theme = useTheme();
+	const { __ } = useI18n();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { account, saveAccount, removeAccount, balance, value } = useAccount( { id } )

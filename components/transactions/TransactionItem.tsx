@@ -6,9 +6,9 @@ import Realm from "realm";
 import { Grid, Icon, Value } from "../ui";
 import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { useTransaction } from "../../hooks";
-import { __ } from "../../localization";
 import { MenuItem, useBottomSheet, useMenu } from "../contexts";
 import { TransactionForm } from "./TransactionForm";
+import { useI18n } from '../contexts/I18nContext';
 
 interface TransactionItemProps {
 	_id: Realm.BSON.UUID,
@@ -18,6 +18,7 @@ interface TransactionItemProps {
 
 export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, holding_id, account_id } ) => {
 	const theme = useTheme();
+	const { __ } = useI18n();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { transaction, saveTransaction, removeTransaction, type } = useTransaction( { _id, holding_id, account_id } );

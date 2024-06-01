@@ -4,11 +4,11 @@ import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-nati
 import { IconButton } from "../buttons";
 import { DateInput, HoldingInput, Select, TextInput } from "../inputs";
 import { GlobalStyles, IconSize, TransferTypes } from "../../constants";
-import { __ } from "../../localization";
 import { Transfer } from "../../models/Transfer";
 import { Account } from "../../models/Account";
 import { Divider, Icon } from "../ui";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
+import { useI18n } from "../contexts/I18nContext";
 
 interface TransferFormProps {
 	transfer: Transfer,
@@ -21,6 +21,7 @@ export const TransferForm = ( {
 	account,
 	onSubmit
 }: TransferFormProps ) => {
+	const { __ } = useI18n();
 	const [ deposit, withdraw, dividend ] = TransferTypes;
 	const [ transferType, setTransferType ]	= useState(
 		!! transfer.holding_name 

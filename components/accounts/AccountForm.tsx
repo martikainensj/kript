@@ -4,9 +4,10 @@ import { View, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-nati
 import { IconButton } from "../buttons";
 import { TextInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
-import { __ } from "../../localization";
 import { Account } from "../../models/Account";
 import { stripRealmListsFromObject } from "../../helpers";
+import { useI18n } from '../../components/contexts/I18nContext';
+
 interface AccountFormProps {
 	account?: Account,
 	onSubmit: ( account: Account ) => void;
@@ -16,6 +17,7 @@ export const AccountForm = ( {
 	account,
 	onSubmit
 }: AccountFormProps ) => {
+	const { __ } = useI18n();
 	const [ editedAccount, setEditedAccount ] = useState<Account>( { ...account } );
 
 	const handleDismissKeyboard = ( ) => {

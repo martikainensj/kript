@@ -1,4 +1,4 @@
-import { Translations } from "./translations";
+import Translations from "./translations";
 
 /**
  * Get translation string

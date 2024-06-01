@@ -7,12 +7,13 @@ import AuthenticationErrorMessage from './AuthenticationErrorMessage';
 import { DefaultButton } from '../buttons';
 import { TextInput } from '../inputs';
 import { GlobalStyles, Spacing, IconSize } from '../../constants';
-import { __ } from '../../localization';
 import { Header, Icon } from '../ui';
 import { useTheme } from 'react-native-paper';
+import { useI18n } from '../../components/contexts/I18nContext';
 
 export const LoginScreen = () => {
 	const theme = useTheme();
+	const { __ } = useI18n();
 	const { result, logInWithEmailPassword } = useAuth();
 	const { register } = useEmailPasswordAuth();
 	const [ email, setEmail ] = useState( '' );

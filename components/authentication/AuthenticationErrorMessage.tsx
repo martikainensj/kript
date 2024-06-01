@@ -1,9 +1,9 @@
 
 import { AuthOperationName } from '@realm/react';
-import { __ } from '../../localization';
 import { StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import { Color, FontSize } from '../../constants';
+import { useI18n } from '../../components/contexts/I18nContext';
 
 interface ErrorMessageProps {
 	operationError: AuthOperationName
@@ -12,6 +12,8 @@ interface ErrorMessageProps {
 const AuthenticationErrorMessage:React.FC<ErrorMessageProps> = ( props: {
 	operationError: AuthOperationName
 } ) => {
+	const { __ } = useI18n();
+	
 	let errorMessage = '';
 
 	switch ( props.operationError ) {

@@ -3,19 +3,20 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import { router } from "expo-router";
 
-import { Grid, Icon, Row, Value } from "../ui";
+import { Grid, Icon, Value } from "../ui";
 import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { useHolding } from "../../hooks";
-import { __ } from "../../localization";
 import { MenuItem, useBottomSheet, useMenu } from "../contexts";
 import { HoldingForm } from "./HoldingForm";
 import { Holding } from "../../models/Holding";
 import { prettifyNumber } from "../../helpers";
+import { useI18n } from '../contexts/I18nContext';
 
 interface HoldingItemProps extends Holding {}
 
 export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) => {
 	const theme = useTheme();
+	const { __ } = useI18n();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const {

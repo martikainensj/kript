@@ -3,13 +3,12 @@ import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-nati
 
 import { IconButton } from "../buttons";
 import { DateInput, HoldingInput, Select, TextInput } from "../inputs";
-import { GlobalStyles, IconSize, Spacing, TransactionTypes } from "../../constants";
-import { __ } from "../../localization";
+import { GlobalStyles, IconSize, TransactionTypes } from "../../constants";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
-import { Divider, Icon, Spacer } from "../ui";
+import { Divider, Icon } from "../ui";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useI18n } from "../contexts/I18nContext";
 
 interface TransactionFormProps {
 	transaction: Transaction,
@@ -22,6 +21,7 @@ export const TransactionForm = ( {
 	account,
 	onSubmit
 }: TransactionFormProps ) => {
+	const { __ } = useI18n();
 	const [ buy, sell ] = TransactionTypes;
 	const [ transactionType, setTransactionType ] = useState(
 		transaction.total >= 0

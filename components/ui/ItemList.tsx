@@ -1,8 +1,8 @@
 import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
-import { Color, GlobalStyles, Spacing } from "../../constants";
+import { GlobalStyles, Spacing } from "../../constants";
 import { Divider, Text, useTheme } from "react-native-paper";
 import React from "react";
-import { __ } from "../../localization";
+import { useI18n } from "../contexts/I18nContext";
 
 interface ItemListProps {
 	title?: string,
@@ -14,11 +14,12 @@ interface ItemListProps {
 
 export const ItemList: React.FC<ItemListProps> = ( {
 	title,
-	noItemsText = __( 'No items' ),
+	noItemsText,
 	items,
 	style,
 	contentContainerStyle,
 } ) => {
+	const { __ } = useI18n();
 	const theme = useTheme();
 
 	return (
@@ -38,7 +39,7 @@ export const ItemList: React.FC<ItemListProps> = ( {
 			<FlatList
 				data={ items }
 				ItemSeparatorComponent={ Divider }
-				ListEmptyComponent={ <PlaceholderItem value={ noItemsText } /> }
+				ListEmptyComponent={ <PlaceholderItem value={ noItemsText ?? __( 'No items' ) } /> }
 				keyExtractor={ ( _, index ) => index.toString() }
 				renderItem={ ( { item } ) => item }
 				contentContainerStyle={ [

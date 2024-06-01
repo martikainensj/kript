@@ -1,14 +1,12 @@
 import { useCallback, useMemo } from "react";
-import { useRealm, useUser } from "@realm/react"
+import { useRealm } from "@realm/react"
 
 import Realm from "realm";
 import { confirmation } from "../helpers";
-import { __ } from "../localization";
 import { useAccount } from "./useAccount";
 import { Transfer } from "../models/Transfer";
-import { useHolding } from "./useHolding";
 import { TransferTypes } from "../constants";
-import { Holding } from "../models/Holding";
+import { useI18n } from "../components/contexts/I18nContext";
 
 interface useTransferProps {
 	_id: Realm.BSON.UUID,
@@ -16,6 +14,7 @@ interface useTransferProps {
 }
 
 export const useTransfer = ( { _id, account_id }: useTransferProps ) => {
+	const { __ } = useI18n();
 	const realm = useRealm();
 	const { account, getTransferById } = useAccount( { id: account_id } );
 	const transfer = useMemo( () => {

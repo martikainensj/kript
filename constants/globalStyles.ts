@@ -1,8 +1,6 @@
 import { StyleSheet, Platform, StatusBar } from "react-native";
 import { Spacing } from "./variables";
 import { FontSize, FontWeight } from "./font";
-import { Color } from "./colors";
-import { Theme } from "./theme";
 
 export const GlobalStyles = StyleSheet.create({
 	androidSafeArea: {
