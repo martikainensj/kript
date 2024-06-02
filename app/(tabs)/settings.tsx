@@ -34,14 +34,16 @@ const Accounts: React.FC = () => {
 	 			) } />
 			<View style={ styles.contentContainer }>
 				<Select
+					label={ __( 'Color Mode' ) }
 					value={ Appearance.getColorScheme() }
 					options={ [
 						{ value: 'dark', label: __( 'Dark' ), icon: ( props ) => <Icon name={ 'moon' } { ...props } /> },
 						{ value: 'light', label: __( 'Light' ), icon: ( props ) => <Icon name={ 'sunny' } { ...props } /> }
 					] }
 					setValue={ onSetColorMode } />
-
+					
 				<Select
+					label={ __( 'Language' ) }
 					value={ currentLang }
 					options={ languages.map( language => {
 						return { label: language.name, value: language.id }
@@ -62,7 +64,7 @@ const styles = StyleSheet.create( {
 	contentContainer: {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
-		gap: Spacing.sm,
+		gap: Spacing.md,
 		paddingTop: Spacing.md
 	}
 } );

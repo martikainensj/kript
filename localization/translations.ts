@@ -348,13 +348,29 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Vaalea',
 		en_US: 'Light'
 	},
+	'color scheme': {
+		fi_FI: 'Värimaailma',
+		en_US: 'Color scheme'
+	},
+	'color mode': {
+		fi_FI: 'Väritila',
+		en_US: 'Color mode'
+	},
 	'dark': {
 		fi_FI: 'Tumma',
 		en_US: 'Dark'
 	},
+	'default': {
+		fi_FI: 'Oletus',
+		en_US: 'Default'
+	},
 	'system': {
 		fi_FI: 'Järjestelmä',
 		en_US: 'System'
+	},
+	'language': {
+		fi_FI: 'Kieli',
+		en_US: 'Language'
 	},
 
 	'are you sure?': {
