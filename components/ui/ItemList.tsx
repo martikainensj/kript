@@ -1,8 +1,9 @@
 import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { GlobalStyles, Spacing } from "../../constants";
-import { Divider, Text, useTheme } from "react-native-paper";
+import { Divider, Text } from "react-native-paper";
 import React from "react";
 import { useI18n } from "../contexts/I18nContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface ItemListProps {
 	title?: string,
@@ -20,7 +21,7 @@ export const ItemList: React.FC<ItemListProps> = ( {
 	contentContainerStyle,
 } ) => {
 	const { __ } = useI18n();
-	const theme = useTheme();
+	const { theme } = useTheme();
 
 	return (
 		<View style={ [

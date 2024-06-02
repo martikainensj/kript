@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { useRealm, useUser } from "@realm/react"
+import { useRealm } from "@realm/react"
 
 import Realm from "realm";
 import { confirmation } from "../helpers";
@@ -17,7 +17,6 @@ interface useTransactionProps {
 export const useTransaction = ( { _id, holding_id, account_id }: useTransactionProps ) => {
 	const { __ } = useI18n();
 	const realm = useRealm();
-	const user: Realm.User = useUser();
 	const {
 		holding, 
 		transactions, getTransactionById

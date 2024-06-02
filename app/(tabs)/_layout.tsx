@@ -3,11 +3,11 @@ import React from 'react';
 import { Icon } from '../../components/ui';
 import { BottomTabs } from '../../components/navigation';
 import { StyleSheet } from 'react-native';
-import { useTheme } from 'react-native-paper';
 import { useI18n } from '../../components/contexts/I18nContext';
+import { useTheme } from '../../components/contexts/ThemeContext';
 
 export default function TabsLayout() {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const { __ } = useI18n();
 	
   return (

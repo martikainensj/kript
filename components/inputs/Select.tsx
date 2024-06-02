@@ -1,8 +1,9 @@
 import React from 'react';
 import { GestureResponderEvent, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
-import { SegmentedButtons, Text, useTheme } from 'react-native-paper';
+import { SegmentedButtons, Text } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { BorderRadius, GlobalStyles, Spacing } from '../../constants';
+import { useTheme } from '../contexts/ThemeContext';
 
 export interface OptionProps {
 	value: string;
@@ -34,7 +35,7 @@ export const Select: React.FC<SelectProps> = ( {
 	options,
 	style
 } ) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const onValueChange = ( value ) => {
 		setValue( value );
 	}

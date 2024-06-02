@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
-import { Text, TouchableRipple, useTheme } from "react-native-paper";
+import { Text, TouchableRipple } from "react-native-paper";
 import { router } from 'expo-router';
 
 import { Icon } from "../ui";
@@ -8,7 +8,8 @@ import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { Account } from "../../models/Account";
 import { MenuItem, useMenu } from "../contexts/MenuContext";
 import { useAccount } from "../../hooks";
-import { useBottomSheet } from "../contexts";
+import { useBottomSheet } from "../contexts/BottomSheetContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { AccountForm } from "./AccountForm";
 import { Grid, Value } from "../ui";
 import { prettifyNumber } from "../../helpers";
@@ -19,7 +20,7 @@ interface AccountItemProps {
 }
 
 export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const { __ } = useI18n();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();

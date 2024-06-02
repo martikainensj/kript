@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GlobalStyles, Spacing } from "../../constants";
 import { Row } from "./Row";
 import { Title } from "./Title";
-import { useTheme } from "react-native-paper";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface HeaderProps {
 	title: string
@@ -23,7 +23,7 @@ export const Header: React.FC<HeaderProps> = ( {
 	showDivider = true,
 	children
 } ) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const insets = useSafeAreaInsets();
 
 	return ( <>

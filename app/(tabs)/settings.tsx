@@ -9,16 +9,13 @@ import { IconButton } from '../../components/buttons';
 import { Select } from '../../components/inputs';
 import { useStorage } from '../../hooks/useStorage';
 import { useI18n, Languages } from '../../components/contexts/I18nContext';
+import { useTheme } from '../../components/contexts/ThemeContext';
 
 const Accounts: React.FC = () => {
+	const { setColorMode } = useTheme();
 	const { setData } = useStorage();
 	const { __, currentLang, languages, setLang } = useI18n();
 	const user: Realm.User = useUser();
-	
-	const onSetColorMode = ( value: ColorSchemeName ) => {
-		Appearance.setColorScheme( value );
-		setData( '@settings/colorMode', value );
-	}
 
 	const onSetLanguage = ( value: keyof Languages ) => {
 		setLang( value );
@@ -40,7 +37,7 @@ const Accounts: React.FC = () => {
 						{ value: 'dark', label: __( 'Dark' ), icon: ( props ) => <Icon name={ 'moon' } { ...props } /> },
 						{ value: 'light', label: __( 'Light' ), icon: ( props ) => <Icon name={ 'sunny' } { ...props } /> }
 					] }
-					setValue={ onSetColorMode } />
+					setValue={ setColorMode } />
 					
 				<Select
 					label={ __( 'Language' ) }

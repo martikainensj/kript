@@ -1,21 +1,23 @@
 import React, { useCallback } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
-import { Text, TouchableRipple, useTheme } from "react-native-paper";
+import { Text, TouchableRipple } from "react-native-paper";
 import { router } from "expo-router";
 
 import { Grid, Icon, Value } from "../ui";
 import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { useHolding } from "../../hooks";
-import { MenuItem, useBottomSheet, useMenu } from "../contexts";
 import { HoldingForm } from "./HoldingForm";
 import { Holding } from "../../models/Holding";
 import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../contexts/I18nContext';
+import { useTheme } from "../contexts/ThemeContext";
+import { MenuItem, useMenu } from "../contexts/MenuContext";
+import { useBottomSheet } from "../contexts/BottomSheetContext";
 
 interface HoldingItemProps extends Holding {}
 
 export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const { __ } = useI18n();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();

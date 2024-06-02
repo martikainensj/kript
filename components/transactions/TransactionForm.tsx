@@ -76,7 +76,7 @@ export const TransactionForm = ( {
 							icon: ( { size, color } ) => {
 								return (
 									<Icon
-										name={transactionType.icon}
+										name={ transactionType.icon }
 										size={ size }
 										color={ color } />
 								)

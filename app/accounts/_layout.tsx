@@ -1,10 +1,10 @@
 import React from "react";
 import { Slot, Stack, useGlobalSearchParams } from "expo-router";
-import { FABProvider } from "../../components/contexts";
-import { useTheme } from "react-native-paper";
+import { useTheme } from "../../components/contexts/ThemeContext";
+import { FABProvider } from "../../components/contexts/FABContext";
 
 export default function AccountLayout() {
-	const theme = useTheme(); 
+	const { theme } = useTheme();
   const { name } = useGlobalSearchParams<{ id: string, name: string }>();
 
   return (

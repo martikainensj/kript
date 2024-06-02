@@ -8,7 +8,7 @@ import { AccountItem, AccountForm  } from '../../components/accounts';
 import { IconButton} from '../../components/buttons';
 import { Header, ItemList } from '../../components/ui';
 import { useAccounts } from '../../hooks';
-import { useBottomSheet } from '../../components/contexts';
+import { useBottomSheet } from '../../components/contexts/BottomSheetContext';
 import { useI18n } from '../../components/contexts/I18nContext';
 
 const Accounts: React.FC = () => {

@@ -5,7 +5,7 @@ import {
 import { TabsProvider, TabScreen, Tabs as PaperTabs } from "react-native-paper-tabs";
 
 import { GlobalStyles } from "../../constants";
-import { useTheme } from "react-native-paper";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface TabsScreenContentProps {
 	label: string,
@@ -21,7 +21,7 @@ export const Tabs: React.FC<TabsProps> = ( {
 	defaultIndex = 0,
 	screens = []
 } ) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 
   return (
 		<TabsProvider	defaultIndex={ defaultIndex }>
