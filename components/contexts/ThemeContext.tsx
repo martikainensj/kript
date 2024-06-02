@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useEffect, useLayoutEffect, useState } from "react";
 import { MD3DarkTheme, MD3LightTheme, MD3Theme, PaperProvider } from "react-native-paper";
-import { useStorage } from "../../hooks";
+import { useStorage } from "../../hooks/useStorage";
 import { Appearance, ColorSchemeName, useColorScheme } from "react-native";
 import { useMaterial3Theme } from "@pchmn/expo-material3-theme";
 
-interface ThemeProps extends MD3Theme {
+export interface ThemeProps extends MD3Theme {
 	colors: MD3Theme['colors'] & {
     success: string;
     onSuccess: string;

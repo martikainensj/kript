@@ -1,7 +1,6 @@
-import React, { useLayoutEffect } from 'react';
+import React from 'react';
 import 'react-native-get-random-values';
-import { Appearance, StyleSheet, useColorScheme } from 'react-native';
-import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
+import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'expo-dev-client';
 import { registerRootComponent } from 'expo'
@@ -10,14 +9,12 @@ import { Stack } from 'expo-router';
 import { OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from 'realm';
 import { AppProvider, UserProvider, RealmProvider } from '@realm/react';
 
-import { Color, GlobalStyles } from '../constants';
+import { GlobalStyles } from '../constants';
 import { LoginScreen } from '../components/authentication';
 import { BottomSheetProvider } from '../components/contexts/BottomSheetContext';
 import { Schemas } from '../models';
 
 import { CONFIG } from '../kript.config';
-import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
-import { useStorage } from '../hooks/useStorage';
 import { I18nProvider } from '../components/contexts/I18nContext';
 import { ThemeProvider } from '../components/contexts/ThemeContext';
 import { MenuProvider } from '../components/contexts/MenuContext';

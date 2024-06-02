@@ -5,8 +5,8 @@ import Realm from "realm";
 import { confirmation } from "../helpers";
 import { useAccount } from "./useAccount";
 import { Transfer } from "../models/Transfer";
-import { TransferTypes } from "../constants";
 import { useI18n } from "../components/contexts/I18nContext";
+import { useTypes } from "./useTypes";
 
 interface useTransferProps {
 	_id: Realm.BSON.UUID,
@@ -22,6 +22,7 @@ export const useTransfer = ( { _id, account_id }: useTransferProps ) => {
 		return transfer;
 	}, [ account ] );
 	
+	const { TransferTypes } = useTypes();
 	const [ deposit, withdrawal, dividend ] = TransferTypes;
 	const type = transfer?.isValid() && (
 		!! transfer?.holding_id

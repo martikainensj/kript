@@ -5,8 +5,8 @@ import Realm from "realm";
 import { confirmation } from "../helpers";
 import { Transaction } from "../models/Transaction";
 import { useHolding } from "./useHolding";
-import { TransactionTypes } from "../constants";
 import { useI18n } from "../components/contexts/I18nContext";
+import { useTypes } from "./useTypes";
 
 interface useTransactionProps {
 	_id: Realm.BSON.UUID,
@@ -26,6 +26,7 @@ export const useTransaction = ( { _id, holding_id, account_id }: useTransactionP
 		return transaction;
 	}, [ holding ] );
 
+	const { TransactionTypes } = useTypes();
 	const [ buy, sell ] = TransactionTypes;
 	const type = transaction?.isValid() && (
 		transaction?.total > 0

@@ -3,12 +3,13 @@ import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-nati
 
 import { IconButton } from "../buttons";
 import { DateInput, HoldingInput, Select, TextInput } from "../inputs";
-import { GlobalStyles, IconSize, TransactionTypes } from "../../constants";
+import { GlobalStyles, IconSize } from "../../constants";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
 import { Divider, Icon } from "../ui";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
 import { useI18n } from "../contexts/I18nContext";
+import { useTypes } from "../../hooks/useTypes";
 
 interface TransactionFormProps {
 	transaction: Transaction,
@@ -22,6 +23,7 @@ export const TransactionForm = ( {
 	onSubmit
 }: TransactionFormProps ) => {
 	const { __ } = useI18n();
+	const { TransactionTypes } = useTypes();
 	const [ buy, sell ] = TransactionTypes;
 	const [ transactionType, setTransactionType ] = useState(
 		transaction.total >= 0
@@ -81,7 +83,7 @@ export const TransactionForm = ( {
 										color={ color } />
 								)
 							},
-							label: transactionType.name,
+							label: __( transactionType.name ),
 							value: transactionType.id,
 							checkedColor: transactionType.color
 						}

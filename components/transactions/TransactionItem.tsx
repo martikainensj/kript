@@ -8,7 +8,7 @@ import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { useTransaction } from "../../hooks";
 import { TransactionForm } from "./TransactionForm";
 import { useI18n } from '../contexts/I18nContext';
-import { useMenu } from "../contexts/MenuContext";
+import { MenuItem, useMenu } from "../contexts/MenuContext";
 import { useBottomSheet } from "../contexts/BottomSheetContext";
 
 interface TransactionItemProps {
