@@ -83,7 +83,7 @@ export const TransactionForm = ( {
 										color={ color } />
 								)
 							},
-							label: __( transactionType.name ),
+							label: transactionType.name,
 							value: transactionType.id,
 							checkedColor: transactionType.color
 						}
