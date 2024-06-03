@@ -4,7 +4,8 @@ import { Languages } from '../components/contexts/I18nContext';
 
 
 interface storageKeys {
-  '@settings/colorMode': { type: ColorSchemeName };
+  '@settings/sourceColor': { type: string };
+  '@settings/colorScheme': { type: ColorSchemeName };
   '@settings/language': { type: keyof Languages };
 }
 

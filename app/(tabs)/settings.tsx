@@ -1,5 +1,5 @@
 import React from 'react';
-import { Appearance, ColorSchemeName, StyleSheet, View } from 'react-native';
+import { Appearance, ColorSchemeName, Platform, StyleSheet, View } from 'react-native';
 import Realm from 'realm';
 import { useUser } from '@realm/react';
 
@@ -12,7 +12,7 @@ import { useI18n, Languages } from '../../components/contexts/I18nContext';
 import { useTheme } from '../../components/contexts/ThemeContext';
 
 const Accounts: React.FC = () => {
-	const { setColorMode } = useTheme();
+	const { setColorScheme, setSourceColor, colorScheme, sourceColor, defaultSourceColor } = useTheme();
 	const { setData } = useStorage();
 	const { __, currentLang, languages, setLang } = useI18n();
 	const user: Realm.User = useUser();
@@ -31,13 +31,24 @@ const Accounts: React.FC = () => {
 	 			) } />
 			<View style={ styles.contentContainer }>
 				<Select
-					label={ __( 'Color Mode' ) }
-					value={ Appearance.getColorScheme() }
+					label={ __( 'Color Scheme' ) }
+					value={ colorScheme }
 					options={ [
 						{ value: 'dark', label: __( 'Dark' ), icon: ( props ) => <Icon name={ 'moon' } { ...props } /> },
 						{ value: 'light', label: __( 'Light' ), icon: ( props ) => <Icon name={ 'sunny' } { ...props } /> }
 					] }
-					setValue={ setColorMode } />
+					setValue={ setColorScheme } />
+
+				{ Platform.OS === 'android' && (
+					<Select
+						label={ __( 'Color' ) }
+						value={ sourceColor }
+						options={ [
+							{ value: defaultSourceColor, label: __( 'Default' ) },
+							{ value: '', label: __( 'System' ) },
+						] }
+						setValue={ setSourceColor } />
+				) }
 					
 				<Select
 					label={ __( 'Language' ) }

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useLayoutEffect, useState } from "react";
 import { MD3DarkTheme, MD3LightTheme, MD3Theme, PaperProvider } from "react-native-paper";
 import { useStorage } from "../../hooks/useStorage";
-import { Appearance, ColorSchemeName, useColorScheme } from "react-native";
+import { Appearance, ColorSchemeName, Platform, useColorScheme } from "react-native";
 import { useMaterial3Theme } from "@pchmn/expo-material3-theme";
 
 export interface ThemeProps extends MD3Theme {
@@ -13,8 +13,11 @@ export interface ThemeProps extends MD3Theme {
 
 interface ThemeContext {
 	theme: ThemeProps;
+	sourceColor: string;
+	colorScheme: ColorSchemeName;
+	defaultSourceColor: string;
 	setSourceColor: React.Dispatch<React.SetStateAction<string>>
-	setColorMode: React.Dispatch<React.SetStateAction<ColorSchemeName>>
+	setColorScheme: React.Dispatch<React.SetStateAction<ColorSchemeName>>
 }
 
 const ThemeContext = createContext<ThemeContext>( {
@@ -26,8 +29,11 @@ const ThemeContext = createContext<ThemeContext>( {
 			onSuccess: MD3LightTheme.colors.onPrimary
 		}
 	} as ThemeProps,
+	sourceColor: null,
+	colorScheme: 'light',
+	defaultSourceColor: null,
 	setSourceColor: () => {},
-	setColorMode: () => {},
+	setColorScheme: () => {},
 } );
 
 export const useTheme = () => useContext( ThemeContext );
@@ -39,19 +45,34 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ( { children, sourceColor, fallbackSourceColor = '#4963C1' } ) => {
+	const defaultSourceColor = fallbackSourceColor;
 	const [ theme, setTheme ] = useState<ThemeProps>();
-	const { theme: materialTheme, updateTheme } = useMaterial3Theme( { sourceColor, fallbackSourceColor } );
+	const [ _sourceColor, _setSourceColor ] = useState( null );
+	const { theme: materialTheme, updateTheme, resetTheme } = useMaterial3Theme( { sourceColor, fallbackSourceColor } );
 	
 	const { getData, setData } = useStorage();
 	const colorScheme = useColorScheme();
 
-	const setSourceColor = ( sourceColor: string ) => {
-		updateTheme( sourceColor );
+	const setSourceColor = ( sourceColor?: string, skipStorage = false ) => {
+		if ( sourceColor ) {
+			updateTheme( sourceColor );
+		} else {
+			resetTheme();
+		}
+		
+		_setSourceColor( sourceColor );
+		
+		if ( ! skipStorage ) {
+			setData( '@settings/sourceColor', sourceColor );
+		}
 	}
 
-	const setColorMode = ( colorMode: ColorSchemeName ) => {
-		setData( '@settings/colorMode', colorMode );
-		Appearance.setColorScheme( colorMode );
+	const setColorScheme = ( colorScheme: ColorSchemeName, skipStorage = false ) => {
+		Appearance.setColorScheme( colorScheme );
+
+		if ( ! skipStorage ) {
+			setData( '@settings/colorScheme', colorScheme );
+		}
 	}
 
 	useEffect( () => {
@@ -73,16 +94,29 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ( { children, sourceC
 	}, [ colorScheme, materialTheme ] );
 
 	useLayoutEffect( () => {
-		getData( '@settings/colorMode' ).then( colorMode => {
-			Appearance.setColorScheme( colorMode );
-		});
-	}, [ getData ] );
+		getData( '@settings/colorScheme' ).then( colorScheme => {
+			setColorScheme( colorScheme, true );
+		} );
+
+		Platform.OS === 'android' && (
+			getData( '@settings/sourceColor' ).then( sourceColor => {
+				setSourceColor( sourceColor, true );
+			} )
+		)
+	}, [] );
+
+	getData( '@settings/sourceColor' ).then( sourceColor => {
+		console.log( sourceColor );
+	} );
 
   return (
     <ThemeContext.Provider value={ {
 			theme,
+			sourceColor: _sourceColor,
+			colorScheme,
+			defaultSourceColor,
 			setSourceColor,
-			setColorMode
+			setColorScheme,
 		} }>
 			<PaperProvider theme={ theme }>
 				{ children }

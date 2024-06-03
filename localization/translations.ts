@@ -352,9 +352,9 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Värimaailma',
 		en_US: 'Color scheme'
 	},
-	'color mode': {
-		fi_FI: 'Väritila',
-		en_US: 'Color mode'
+	'color': {
+		fi_FI: 'Väri',
+		en_US: 'Color'
 	},
 	'dark': {
 		fi_FI: 'Tumma',
