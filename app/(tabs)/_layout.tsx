@@ -9,6 +9,9 @@ import { useTheme } from '../../components/contexts/ThemeContext';
 export default function TabsLayout() {
 	const { theme } = useTheme();
 	const { __ } = useI18n();
+
+	const focusedColor = theme.colors.primary;
+	const iconColor = theme.colors.secondary;
 	
   return (
     <BottomTabs
@@ -24,22 +27,28 @@ export default function TabsLayout() {
         name={ "index" }
         options={ {
           title: __( 'Home' ),
-          tabBarIcon: ( { color, focused } ) =>
-						<Icon name={ focused ? 'home' : 'home-outline' } color={ color } />
+          tabBarIcon: ( { focused } ) =>
+						<Icon
+							name={ focused ? 'home' : 'home-outline' }
+							color={ focused ? focusedColor : iconColor } />
         } } />
       <BottomTabs.Screen
         name={ "accounts" }
         options={ {
           title: __( 'Accounts' ),
-          tabBarIcon: ( { color, focused } ) =>
-						<Icon name={ focused ? 'wallet' : 'wallet-outline' } color={ color } />
+          tabBarIcon: ( { focused } ) =>
+						<Icon
+							name={ focused ? 'wallet' : 'wallet-outline' }
+							color={ focused ? focusedColor : iconColor } />
         } } />
 			<BottomTabs.Screen
 				name={ "settings" }
 				options={ {
 					title: __( 'Settings' ),
-					tabBarIcon: ( { color, focused } ) =>
-						<Icon name={ focused ? 'settings' : 'settings-outline' } color={ color } />
+					tabBarIcon: ( { focused } ) =>
+						<Icon
+							name={ focused ? 'settings' : 'settings-outline' }
+							color={ focused ? focusedColor : iconColor } />
 				} } />
     </BottomTabs>
   );

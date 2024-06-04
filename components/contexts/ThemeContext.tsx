@@ -44,7 +44,7 @@ interface ThemeProviderProps {
 	fallbackSourceColor?: string
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ( { children, sourceColor, fallbackSourceColor = '#4963C1' } ) => {
+export const ThemeProvider: React.FC<ThemeProviderProps> = ( { children, sourceColor, fallbackSourceColor = '#66B2FF' } ) => {
 	const defaultSourceColor = fallbackSourceColor;
 	const [ theme, setTheme ] = useState<ThemeProps>();
 	const [ _sourceColor, _setSourceColor ] = useState( null );
