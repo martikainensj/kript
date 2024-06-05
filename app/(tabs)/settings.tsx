@@ -1,25 +1,29 @@
-import React from 'react';
-import { Appearance, ColorSchemeName, Platform, StyleSheet, View } from 'react-native';
-import Realm from 'realm';
-import { useUser } from '@realm/react';
+import React, { useLayoutEffect } from 'react';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { GlobalStyles, Spacing } from '../../constants';
 import { Header, Icon } from '../../components/ui';
 import { IconButton } from '../../components/buttons';
 import { Select } from '../../components/inputs';
-import { useStorage } from '../../hooks/useStorage';
 import { useI18n, Languages } from '../../components/contexts/I18nContext';
 import { useTheme } from '../../components/contexts/ThemeContext';
+import { useBottomSheet } from '../../components/contexts/BottomSheetContext';
+import { UserInfo } from '../../components/user/UserInfo';
+import { useUser } from '../../hooks/useUser';
 
 const Accounts: React.FC = () => {
 	const { setColorScheme, setSourceColor, colorScheme, sourceColor, defaultSourceColor } = useTheme();
-	const { setData } = useStorage();
+	const { openBottomSheet } = useBottomSheet();
 	const { __, currentLang, languages, setLang } = useI18n();
-	const user: Realm.User = useUser();
+	const { refreshData: refreshUserData } = useUser();
 
 	const onSetLanguage = ( value: keyof Languages ) => {
 		setLang( value );
 	}
+
+	useLayoutEffect( () => {
+		refreshUserData();
+	}, [] );
 
 	return (
 		<View style={ styles.container }>
@@ -27,7 +31,13 @@ const Accounts: React.FC = () => {
 				title={ __( 'Settings' ) }
 				right={ ( 
 					<IconButton
-						icon={ 'person-outline' } />
+						icon={ 'person-outline' }
+						onPress={ () => {
+							openBottomSheet(
+								__( 'User' ),
+								<UserInfo />
+							)
+						}} />
 	 			) } />
 			<View style={ styles.contentContainer }>
 				<Select

@@ -9,8 +9,8 @@ import { ChipProps, Chips } from "./Chips";
 import { Spacing } from "../../constants";
 import Realm from "realm";
 import { TextInput } from "./TextInput";
-import { useUser } from "@realm/react";
 import { Account } from "../../models/Account";
+import { useUser } from "../../hooks/useUser";
 
 interface HoldingInputProps {
 	value: string
@@ -31,7 +31,7 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	disabled,
 	style,
 }) => {
-	const user: Realm.User = useUser();
+	const { user } = useUser();
 
 	const [ inputValue, setInputValue ] = useState( value );
 	const [ chipsValue, setChipsValue ] = useState( value );

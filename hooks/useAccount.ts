@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import Realm from "realm";
-import { useQuery, useRealm, useUser } from "@realm/react"
+import { useQuery, useRealm } from "@realm/react"
 import { router } from "expo-router";
 
 import { Account } from "../models/Account"
@@ -9,13 +9,14 @@ import { Transaction } from "../models/Transaction";
 import { Transfer } from "../models/Transfer";
 import { Holding } from "../models/Holding";
 import { useI18n } from "../components/contexts/I18nContext";
+import { useUser } from "./useUser";
 
 interface useAccountProps {
 	id: Realm.BSON.UUID
 }
 
 export const useAccount = ( { id }: useAccountProps ) => {
-	const user: Realm.User = useUser();
+	const { user } = useUser();
 	const { __ } = useI18n();
 	const realm = useRealm();
 	const account = useQuery<Account>( 'Account' )

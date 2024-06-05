@@ -372,7 +372,10 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Kieli',
 		en_US: 'Language'
 	},
-
+	'user': {
+		fi_FI: 'Käyttäjä',
+		en_US: 'User'
+	},
 	'are you sure?': {
 		fi_FI: 'Oletko varma?',
 		en_US: 'Are you sure?'

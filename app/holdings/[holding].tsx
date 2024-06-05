@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { Text } from "react-native-paper";
 import Realm from "realm";
-import { useUser } from "@realm/react";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles } from "../../constants";
@@ -19,12 +18,13 @@ import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../../components/contexts/I18nContext';
 import { FABProvider, useFAB } from "../../components/contexts/FABContext";
 import { useBottomSheet } from "../../components/contexts/BottomSheetContext";
+import { useUser } from "../../hooks/useUser";
 
 const HoldingPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ _id: string, account_id: string }>();
 	const _id = new Realm.BSON.UUID( params._id );
 	const account_id = new Realm.BSON.UUID( params.account_id );
-	const user: Realm.User = useUser();
+	const { user } = useUser();
 	const { __ } = useI18n();
 	const {
 		holding, saveHolding, removeHolding,

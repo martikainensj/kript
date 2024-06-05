@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import Realm from "realm";
-import { useUser } from "@realm/react";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles } from "../../constants";
@@ -19,11 +18,12 @@ import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../../components/contexts/I18nContext';
 import { useBottomSheet } from "../../components/contexts/BottomSheetContext";
 import { FABProvider, useFAB } from "../../components/contexts/FABContext";
+import { useUser } from "../../hooks/useUser";
 
 const AccountPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ id: string }>();
 	const accountId = new Realm.BSON.UUID( params.id );
-	const user: Realm.User = useUser();
+	const { user } = useUser();
 	const { __ } = useI18n();
 	const { account, saveAccount, removeAccount, addTransaction, addTransfer, balance, value } = useAccount( { id: accountId } );
 	const { openMenu } = useMenu();

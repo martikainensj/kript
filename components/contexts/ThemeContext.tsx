@@ -105,10 +105,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ( { children, sourceC
 		)
 	}, [] );
 
-	getData( '@settings/sourceColor' ).then( sourceColor => {
-		console.log( sourceColor );
-	} );
-
   return (
     <ThemeContext.Provider value={ {
 			theme,

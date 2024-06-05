@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Realm from 'realm';
-import { useUser } from '@realm/react';
 
 import { GlobalStyles } from '../../constants';
 import { AccountItem, AccountForm  } from '../../components/accounts';
@@ -10,9 +9,10 @@ import { Header, ItemList } from '../../components/ui';
 import { useAccounts } from '../../hooks';
 import { useBottomSheet } from '../../components/contexts/BottomSheetContext';
 import { useI18n } from '../../components/contexts/I18nContext';
+import { useUser } from '../../hooks/useUser';
 
 const Accounts: React.FC = () => {
-	const user: Realm.User = useUser();
+	const { user } = useUser();
 	const { __ } = useI18n();
 	
 	const { accounts, addAccount } = useAccounts();

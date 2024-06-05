@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { useRealm, useUser } from "@realm/react"
+import { useRealm } from "@realm/react"
 
 import Realm from "realm";
 import { confirmation } from "../helpers";
@@ -15,7 +15,6 @@ interface useHoldingProps {
 export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	const { __ } = useI18n();
 	const realm = useRealm();
-	const user: Realm.User = useUser();
 	const { account, getHoldingById, addTransaction, addTransfer } = useAccount( { id: account_id } );
 	const holding = useMemo( () => {
 		return getHoldingById( _id );
