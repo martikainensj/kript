@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import GorhomBottomSheet, {
 	BottomSheetBackdrop,
+	BottomSheetScrollView,
 	BottomSheetView
 } from "@gorhom/bottom-sheet";
 import {
@@ -133,13 +134,13 @@ const BottomSheet = () => {
 							onPress={ closeBottomSheet } /> 
 					} />
 			}>
-			<BottomSheetView
-				style={ [
+			<BottomSheetScrollView
+				contentContainerStyle={ [
 					styles.contentContainer,
 					{ paddingBottom: insets.bottom }
 				] }>
 				{ content }
-			</BottomSheetView>
+			</BottomSheetScrollView>
 		</GorhomBottomSheet>
 	)
 }
@@ -150,7 +151,5 @@ const styles = StyleSheet.create( {
   },
 	contentContainer: {
 		...GlobalStyles.gutter,
-		flex: 0,
-		minHeight: 350,
 	}
 } );

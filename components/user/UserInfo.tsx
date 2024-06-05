@@ -14,10 +14,10 @@ export const UserInfo: React.FC<UserProps> = () => {
 	const { data, logOut } = useUser();
 
 
-	return <ScrollView>
+	return <View>
 		<Text>{ JSON.stringify( data ) }</Text>
 		<DefaultButton onPress={ logOut }>
 			{ __( 'Logout' ) }
 		</DefaultButton>
-	</ScrollView>
+	</View>
 }
