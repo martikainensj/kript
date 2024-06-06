@@ -4,10 +4,10 @@ import { useI18n } from '../components/contexts/I18nContext';
 import { useTheme } from '../components/contexts/ThemeContext';
 
 interface Type {
-  id: string;
-  name: string;
-  color?: string;
-  icon?: React.ComponentProps<typeof Ionicons>['name'];
+	id: string;
+	name: string;
+	color?: string;
+	icon?: React.ComponentProps<typeof Ionicons>['name'];
 }
 
 export const useTypes = () => {

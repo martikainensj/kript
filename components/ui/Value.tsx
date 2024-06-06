@@ -4,9 +4,9 @@ import { Text } from "react-native-paper";
 import { Spacing, GlobalStyles, FontSize, Color } from "../../constants";
 
 interface ValueWrapperProps {
-  value: React.ReactNode;
-  unit: string | null;
-  isVertical: boolean;
+  value: string | number;
+  unit?: string;
+  isVertical?: boolean;
   valueContainerStyle?: ViewStyle;
   valueStyle?: TextStyle;
   unitStyle?: TextStyle;
@@ -51,8 +51,8 @@ const ValueWrapper: React.FC<ValueWrapperProps> = ( {
 };
 
 interface ValueProps {
-  label: string | null;
-  value: React.ReactNode;
+  label?: string;
+  value: string | number;
   containerStyle?: ViewStyle;
   labelContainerStyle?: ViewStyle;
   labelStyle?: TextStyle;
@@ -112,6 +112,7 @@ const styles = StyleSheet.create( {
     alignItems: "flex-start",
   },
   horizontal: {
+    alignItems: 'center',
     justifyContent: "space-between",
     flexDirection: "row",
   },

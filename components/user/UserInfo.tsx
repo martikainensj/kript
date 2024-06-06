@@ -1,23 +1,39 @@
-import { ScrollView, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { Text } from "react-native-paper";
-import { useUser } from "../../hooks/useUser";
+import { UserDataKey, UserDataValue, useUser } from "../../hooks/useUser";
 import { DefaultButton } from "../buttons";
 import { useI18n } from "../contexts/I18nContext";
-import { router } from "expo-router";
-import { confirmation } from "../../helpers";
-interface UserProps {
+import React, { useState } from "react";
+import { Value } from "../ui";
+import { Spacing } from "../../constants";
+import { EditableValue } from "../ui/EditableValue";
 
-}
+interface UserProps {}
 
 export const UserInfo: React.FC<UserProps> = () => {
 	const { __ } = useI18n();
-	const { data, logOut } = useUser();
+	const { data, logOut, setData } = useUser();
 
+	return <View style={ styles.container }>
+		<View style={ styles.dataContainer}>
+			<EditableValue 
+				label={ __( 'Name' ) }
+				value={ data.name }
+				setValue={ ( value ) => setData( 'name', value as UserDataValue<'name'> )} />
+		</View>
 
-	return <View>
-		<Text>{ JSON.stringify( data ) }</Text>
 		<DefaultButton onPress={ logOut }>
 			{ __( 'Logout' ) }
 		</DefaultButton>
 	</View>
 }
+
+const styles = StyleSheet.create( {
+	container: {
+		paddingVertical: Spacing.md,
+		gap: Spacing.lg
+	},
+	dataContainer: {
+		gap: Spacing.sm
+	},
+} );

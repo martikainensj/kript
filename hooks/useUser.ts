@@ -1,20 +1,25 @@
 import { useApp, useAuth, useUser as useRealmUser } from "@realm/react"
-import { User } from "realm"
+import { User as RealmUser } from "realm"
 
 import { confirmation } from "../helpers";
 import { useI18n } from "../components/contexts/I18nContext";
+import { useMemo } from "react";
 
-interface UserDataKeys {
-  'name': { type: string };
+export interface UserDataKeys {
+	'name': { type: string };
 }
 
-type UserDataKey = keyof UserDataKeys;
-type UserDataValue<K extends UserDataKey> = UserDataKeys[K]['type'];
+export type UserDataKey = keyof UserDataKeys;
+export type UserDataValue<K extends UserDataKey> = UserDataKeys[K]['type'];
+
+export type User = {
+  [K in keyof UserDataKeys]: UserDataValue<K>
+};
 
 export const useUser = () => {
 	const app = useApp();
 	const { logOut: authLogOut } = useAuth();
-	const user: User = useRealmUser();
+	const user: RealmUser = useRealmUser();
 	const { __ } = useI18n();
 
 	const userDataCollection = user
@@ -28,8 +33,22 @@ export const useUser = () => {
 
 	const options = { upsert: true };
 
+	const emptyData = <User>{
+		'name': ''
+	};
+
+	const data = useMemo( () => {
+    const test = Object.fromEntries(
+			Object.entries( { ...emptyData, ...user.customData } ).filter( ( [ key ] ) => {
+				return Object.keys( emptyData ).includes( key )
+			} )
+		) as User;
+		
+		return test;
+	}, [ user ] );
+
 	const setData = async <K extends UserDataKey>( key: K, value: UserDataValue<K> ) => {
-    try {
+		try {
 			const updateDoc = {
 				$set: {
 					userId: user.id,
@@ -44,20 +63,20 @@ export const useUser = () => {
 			);
 
 			return await user.refreshCustomData();
-    } catch ( error ) {
-      console.log( error );
+		} catch ( error ) {
+			console.log( error );
 			return null;
-    }
-  };
+		}
+	};
 
-  const getData = <K extends UserDataKey>( key: K ) => {
-    try {
-      return user.customData[key]
-    } catch ( error ) {
-      console.log( error );
-      return null;
-    }
-  };
+	const getData = <K extends UserDataKey>( key: K ) => {
+		try {
+			return user.customData[key]
+		} catch ( error ) {
+			console.log( error );
+			return null;
+		}
+	};
 
 	const refreshData = async () => {
 		await user.refreshCustomData();
@@ -75,8 +94,9 @@ export const useUser = () => {
 		//await app.deleteUser( user );
 	}
 
-
 	return {
 		user, removeUser, logOut,
-		data: user.customData, setData, getData, refreshData }
+		data,
+		setData, getData, refreshData
+	}
 }

@@ -18,7 +18,7 @@ export const IconButton: React.FC<IconButtonProps> = ( {
 } ) => {
 	return (
 		<PaperIconButton
-			icon={ ( { color } ) => <Icon name={ icon } color={ color } />}
+			icon={ ( { color } ) => <Icon name={ icon } size={ size - 4 } color={ color } />}
 			mode={ mode }
 			size={ size }
 			style={ [ styles.container, style ] }
@@ -31,6 +31,6 @@ export default IconButton;
 
 const styles = StyleSheet.create( {
 	container: {
-		margin: 0
+		margin: 0,
 	}
 } );
