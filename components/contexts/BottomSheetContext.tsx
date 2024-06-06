@@ -14,7 +14,6 @@ import {
 import GorhomBottomSheet, {
 	BottomSheetBackdrop,
 	BottomSheetScrollView,
-	BottomSheetView
 } from "@gorhom/bottom-sheet";
 import {
 	BottomSheetMethods
@@ -27,14 +26,13 @@ import { GlobalStyles } from "../../constants";
 import { IconButton } from "../buttons";
 import { Header } from "../ui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "react-native-paper";
+import { useTheme } from "./ThemeContext";
 
 interface BottomSheetContext {
 	title: string,
 	setTitle: React.Dispatch<React.SetStateAction<string>>
 	content: React.ReactNode | null,
 	setContent: React.Dispatch<React.SetStateAction<React.ReactNode>>;
-	visible: boolean,
 	openBottomSheet: ( title: string, content: React.ReactNode ) => void,
 	closeBottomSheet: () => void
 }
@@ -44,7 +42,6 @@ const BottomSheetContext = createContext<BottomSheetContext>( {
 	setTitle: () => {},
 	content: null,
 	setContent: () => {},
-	visible: false,
 	openBottomSheet: () => {},
 	closeBottomSheet: () => {}
 } );
@@ -52,42 +49,11 @@ const BottomSheetContext = createContext<BottomSheetContext>( {
 export const useBottomSheet = () => useContext( BottomSheetContext );
 
 export const BottomSheetProvider = ( { children } ) => {
-	const [ visible, setVisible ] = useState( false );
+	const bottomSheetRef = useRef<BottomSheetMethods>( null );
+	const { theme } = useTheme();
+	const insets = useSafeAreaInsets();
 	const [ title, setTitle ] = useState( '' );
 	const [ content, setContent ] = useState<React.ReactNode>( null );
-
-	const openBottomSheet = useCallback( ( title: string, content: React.ReactNode ) => {
-		setTitle( title );
-		setContent( content );
-		setVisible( true );
-	}, [] );
-
-	const closeBottomSheet = useCallback( () => {
-		Keyboard.dismiss();
-		setVisible( false );
-	}, [] );
-
-  return (
-    <BottomSheetContext.Provider value={ {
-			title,
-			setTitle,
-			content,
-			setContent,
-			visible,
-			openBottomSheet,
-			closeBottomSheet
-		} }>
-      { children }
-			<BottomSheet />
-    </BottomSheetContext.Provider>
-  );
-}
-
-const BottomSheet = () => {
-	const theme = useTheme();
-	const insets = useSafeAreaInsets();
-	const { title, setTitle, content, setContent, visible, closeBottomSheet } = useBottomSheet();
-	const bottomSheetRef = useRef<BottomSheetMethods>( null );
 
 	const renderBackdrop = useCallback( 
 		( props: BottomSheetDefaultBackdropProps ) => (
@@ -98,57 +64,77 @@ const BottomSheet = () => {
 		), []
 	);
 
-	const onChange = useCallback( ( index: number ) => {
-    if ( index === -1 ) {
-			setTitle( null );
-			setContent( null );
-    }
-  }, [] );
+	const openBottomSheet = useCallback( ( title: string, content: React.ReactNode ) => {
+		setTitle( title );
+		setContent( content );
+		bottomSheetRef.current.expand();
+	}, [] );
 
-	useEffect( () => {
-		visible
-			? bottomSheetRef.current?.expand()
-			: bottomSheetRef.current?.close();
-	}, [ visible ] );
+	const closeBottomSheet = useCallback( () => {
+		console.log('käsketty sulkeminen');
+		bottomSheetRef.current.close();
+	}, [] );
+
+	const onChange = useCallback( ( index: number ) => {
+		console.log( 'muuttu ->' , index );
+	}, [] );
+
+	const onClose = useCallback( () => {
+		console.log('sulkee');
+		setTitle( null );
+		setContent( null );
+	}, [] );
 
 	return (
-		<GorhomBottomSheet
-			ref={ bottomSheetRef }
-			index={ -1 }
-			backdropComponent={ renderBackdrop }
-			onClose={ closeBottomSheet }
-			enablePanDownToClose={ true }
-			style={ styles.container }
-			enableDynamicSizing={ true }
-			backgroundStyle={ { backgroundColor: theme.colors.background } }
-			keyboardBehavior={ Platform.OS === 'android' ? 'extend' : 'interactive' }
-			keyboardBlurBehavior={ 'restore' }
-			onChange={ onChange }
-			handleComponent={ () => 
-				<Header
-					title={ title }
-					isScreenHeader={ false }
-					right={
-						<IconButton
-							icon={ 'close' }
-							onPress={ closeBottomSheet } /> 
-					} />
-			}>
-			<BottomSheetScrollView
-				contentContainerStyle={ [
-					styles.contentContainer,
-					{ paddingBottom: insets.bottom }
-				] }>
-				{ content }
-			</BottomSheetScrollView>
-		</GorhomBottomSheet>
-	)
+		<BottomSheetContext.Provider value={ {
+			title,
+			setTitle,
+			content,
+			setContent,
+			openBottomSheet,
+			closeBottomSheet
+		} }>
+			{ children }
+			
+			<GorhomBottomSheet
+				ref={ bottomSheetRef }
+				index={ -1 }
+				backdropComponent={ renderBackdrop }
+				enablePanDownToClose={ true }
+				style={ styles.container }
+				enableDynamicSizing={ true }
+				backgroundStyle={ { backgroundColor: theme.colors.background } }
+				onClose={ onClose }
+				onChange={ onChange }
+				handleComponent={ () => 
+					<Header
+						title={ title }
+						isScreenHeader={ false }
+						right={
+							<IconButton
+								icon={ 'close' }
+								onPress={ closeBottomSheet } /> 
+						} />
+				}>
+				<BottomSheetScrollView
+					keyboardShouldPersistTaps={ "handled" }
+					keyboardDismissMode={ "on-drag" }
+					contentContainerStyle={ [
+						styles.contentContainer,
+						{ paddingBottom: insets.bottom }
+					] }>
+					{ content }
+				</BottomSheetScrollView>
+			</GorhomBottomSheet>
+		</BottomSheetContext.Provider>
+	);
 }
 
 const styles = StyleSheet.create( {
-  container: {
+	container: {
 		...GlobalStyles.container,
-  },
+		minHeight: 10
+	},
 	contentContainer: {
 		...GlobalStyles.gutter,
 	}
