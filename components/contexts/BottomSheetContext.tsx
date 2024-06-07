@@ -27,6 +27,7 @@ import { IconButton } from "../buttons";
 import { Header } from "../ui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "./ThemeContext";
+import { Text } from "react-native-paper";
 
 interface BottomSheetContext {
 	title: string,
@@ -77,6 +78,10 @@ export const BottomSheetProvider = ( { children } ) => {
 		Keyboard.dismiss();
 	}, [] );
 
+	const onClose = useCallback( () => {
+		setShouldOpen( false );
+	}, [] );
+
 	useEffect( () => {
 		shouldOpen && bottomSheetRef.current.expand()
 	}, [ shouldOpen ] );
@@ -91,13 +96,13 @@ export const BottomSheetProvider = ( { children } ) => {
 			closeBottomSheet
 		} }>
 			{ children }
-			
 			<GorhomBottomSheet
 				ref={ bottomSheetRef }
 				index={ -1 }
 				backdropComponent={ renderBackdrop }
 				enablePanDownToClose={ true }
 				style={ styles.container }
+				onClose={ onClose }
 				enableDynamicSizing={ true }
 				backgroundStyle={ { backgroundColor: theme.colors.background } }
 				handleComponent={ () => 
