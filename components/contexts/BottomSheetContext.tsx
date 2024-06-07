@@ -54,6 +54,7 @@ export const BottomSheetProvider = ( { children } ) => {
 	const insets = useSafeAreaInsets();
 	const [ title, setTitle ] = useState( '' );
 	const [ content, setContent ] = useState<React.ReactNode>( null );
+	const [ shouldOpen, setShouldOpen ] = useState( false );
 
 	const renderBackdrop = useCallback( 
 		( props: BottomSheetDefaultBackdropProps ) => (
@@ -67,23 +68,18 @@ export const BottomSheetProvider = ( { children } ) => {
 	const openBottomSheet = useCallback( ( title: string, content: React.ReactNode ) => {
 		setTitle( title );
 		setContent( content );
-		bottomSheetRef.current.expand();
-	}, [] );
+		setShouldOpen( true );
+	}, [ title, content ] );
 
 	const closeBottomSheet = useCallback( () => {
-		console.log('käsketty sulkeminen');
+		setShouldOpen( false );
 		bottomSheetRef.current.close();
+		Keyboard.dismiss();
 	}, [] );
 
-	const onChange = useCallback( ( index: number ) => {
-		console.log( 'muuttu ->' , index );
-	}, [] );
-
-	const onClose = useCallback( () => {
-		console.log('sulkee');
-		setTitle( null );
-		setContent( null );
-	}, [] );
+	useEffect( () => {
+		shouldOpen && bottomSheetRef.current.expand()
+	}, [ shouldOpen ] );
 
 	return (
 		<BottomSheetContext.Provider value={ {
@@ -104,8 +100,6 @@ export const BottomSheetProvider = ( { children } ) => {
 				style={ styles.container }
 				enableDynamicSizing={ true }
 				backgroundStyle={ { backgroundColor: theme.colors.background } }
-				onClose={ onClose }
-				onChange={ onChange }
 				handleComponent={ () => 
 					<Header
 						title={ title }
