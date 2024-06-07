@@ -1,10 +1,9 @@
+import React from "react";
 import { StyleSheet, View } from "react-native"
-import { Text } from "react-native-paper";
-import { UserDataKey, UserDataValue, useUser } from "../../hooks/useUser";
+
+import { UserDataValue, useUser } from "../../hooks/useUser";
 import { DefaultButton } from "../buttons";
 import { useI18n } from "../contexts/I18nContext";
-import React, { useState } from "react";
-import { Value } from "../ui";
 import { Spacing } from "../../constants";
 import { EditableValue } from "../ui/EditableValue";
 

@@ -39,6 +39,7 @@ const Accounts: React.FC = () => {
 							)
 						}} />
 	 			) } />
+				
 			<View style={ styles.contentContainer }>
 				<Select
 					label={ __( 'Color Scheme' ) }
