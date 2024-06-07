@@ -23,8 +23,8 @@ export const Tabs: React.FC<TabsProps> = ( {
 } ) => {
 	const { theme } = useTheme();
 
-  return (
-		<TabsProvider	defaultIndex={ defaultIndex }>
+	return (
+		<TabsProvider defaultIndex={ defaultIndex }>
 			<PaperTabs
 				mode="scrollable"
 				showLeadingSpace={ false }

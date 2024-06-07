@@ -24,7 +24,7 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 	const { __ } = useI18n();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { account, saveAccount, removeAccount, balance, value } = useAccount( { id } )
+	const { account, saveAccount, removeAccount, balance, value, returnValue, returnPercentage } = useAccount( { id } )
 
 	function onPress() {
 		router.navigate( {
@@ -78,6 +78,20 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 			unit={ '€' }
 			isVertical={ true }
 			isNegative={ value < 0 } />,
+		<Value
+			label={ __( 'Return' ) }
+			value={ prettifyNumber( returnValue, 0 ) }
+			unit={ '€' }
+			isVertical={ true }
+			isPositive={ returnValue > 0 }
+			isNegative={ returnValue < 0 } />,
+		<Value
+			label={ __( 'Return' ) }
+			value={ prettifyNumber( returnPercentage, 0 ) }
+			unit={ '%' }
+			isVertical={ true }
+			isPositive={ returnPercentage > 0 }
+			isNegative={ returnPercentage < 0 } />,
 	];
 
 	if ( ! account?.isValid() ) return;
@@ -119,7 +133,8 @@ const styles = StyleSheet.create( {
 	},
 	contentContainer: {
 		gap: Spacing.sm,
-		flexGrow: 1
+		flexGrow: 1,
+		flexShrink: 1
 	},
 	name: {
 		fontWeight: FontWeight.bold,

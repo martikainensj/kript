@@ -120,9 +120,9 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	const averagePrice = amount ? transactionSum / amount : 0;
 	const averageValue = averagePrice * amount;
 	const value = lastPrice * amount;
-	const returnValue = value + dividendSum - total;
+	const returnValue = value - total;
 	const returnPercentage = value
-		? ( value + dividendSum - total ) / Math.abs( total ) * 100
+		? ( value - total ) / Math.abs( total ) * 100
 		: 0;
 
 	return {

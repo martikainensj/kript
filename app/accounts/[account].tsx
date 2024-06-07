@@ -21,14 +21,14 @@ import { FABProvider, useFAB } from "../../components/contexts/FABContext";
 import { useUser } from "../../hooks/useUser";
 
 const AccountPage: React.FC = ( {} ) => {
-  const params = useLocalSearchParams<{ id: string }>();
+	const params = useLocalSearchParams<{ id: string }>();
 	const accountId = new Realm.BSON.UUID( params.id );
 	const { user } = useUser();
 	const { __ } = useI18n();
-	const { account, saveAccount, removeAccount, addTransaction, addTransfer, balance, value } = useAccount( { id: accountId } );
+	const { account, saveAccount, removeAccount, addTransaction, addTransfer, balance, value, returnValue, returnPercentage } = useAccount( { id: accountId } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
-	const { setTitle, setContent, openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -127,6 +127,20 @@ const AccountPage: React.FC = ( {} ) => {
 			unit={ '€' }
 			isVertical={ true }
 			isNegative={ value < 0 } />,
+		<Value
+			label={ __( 'Return' ) }
+			value={ prettifyNumber( returnValue, 0 ) }
+			unit={ '€' }
+			isVertical={ true }
+			isPositive={ returnValue > 0 }
+			isNegative={ returnValue < 0 } />,
+		<Value
+			label={ __( 'Return' ) }
+			value={ prettifyNumber( returnPercentage, 0 ) }
+			unit={ '%' }
+			isVertical={ true }
+			isPositive={ returnPercentage > 0 }
+			isNegative={ returnPercentage < 0 } />,
 	];
 
 	if ( ! account?.isValid() ) {
@@ -152,36 +166,37 @@ const AccountPage: React.FC = ( {} ) => {
 								items= { values } />
 					</Header>
 
-					<Tabs screens={ [
-						{
-							label: __( 'Overview' ),
-							content: (
-								<Text>Overview</Text>
-							)
-						},
-						{
-							label: __( 'Holdings' ),
-							content: (
-								<ItemList
-									noItemsText={ __( 'No Holdings' ) }
-									items={ holdings.map( holding =>
-										<HoldingItem { ...holding } />
-									) } />
-							)
-						},
-						{
-							label: __( 'Transfers' ),
-							content: (
-								<ItemList
-									noItemsText={ __( 'No Transfers' ) }
-									items={ transfers.map( transfer =>
-										<TransferItem { ...transfer } showHolding={ true } />
-									) } />
-							)
-						}
-					] }>
-					</Tabs>
-				</View>
+						<Tabs screens={ [
+							{
+								label: __( 'Overview' ),
+								content: (
+									<Text>Overview</Text>
+								)
+							},
+							{
+								label: __( 'Holdings' ),
+								content: (
+									<ItemList
+										noItemsText={ __( 'No Holdings' ) }
+										contentContainerStyle={ styles.itemListcontentContainer }
+										items={ holdings.map( holding =>
+											<HoldingItem { ...holding } />
+										) } />
+								)
+							},
+							{
+								label: __( 'Transfers' ),
+								content: (
+									<ItemList
+										noItemsText={ __( 'No Transfers' ) }
+										contentContainerStyle={ styles.itemListcontentContainer }
+										items={ transfers.map( transfer =>
+											<TransferItem { ...transfer } showHolding={ true } />
+										) } />
+								)
+							}
+						] } />
+					</View>
 			</FABProvider>
 	)
 }
@@ -196,4 +211,7 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
 	},
+	itemListcontentContainer: {
+		paddingBottom: 80
+	}
 } );

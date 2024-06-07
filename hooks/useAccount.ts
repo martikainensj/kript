@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import Realm from "realm";
 import { useQuery, useRealm } from "@realm/react"
 import { router } from "expo-router";
@@ -201,11 +201,39 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		return value;
 	}, [ holdings, balance ] );
 
+	const { totalValue, totalCost } = useMemo( () => {
+		const { totalValue, totalCost } = holdings.reduce( ( acc, holding ) => {
+			const lastTransaction = holding.transactions.sorted( 'date', true )[0];
+			const lastPrice = lastTransaction?.isValid()
+				? lastTransaction.price
+				: 0;
+			const amount = holding.transactions.reduce( ( amount, transaction ) => {
+				return amount + transaction.amount;
+			}, 0 );
+			const value = lastPrice * amount;
+			const total = holding.transactions.reduce( ( total, transaction ) => {
+				return total + transaction.total;
+			}, 0 );
+
+			return {
+				totalValue: acc.totalValue + value,
+				totalCost: acc.totalCost + total
+			};
+		}, { totalValue: 0, totalCost: 0 } );
+
+		return { totalValue, totalCost }
+	}, [ holdings ] );
+
+	const returnValue = totalValue - totalCost;
+	const returnPercentage = totalValue
+		? ( totalValue - totalCost ) / Math.abs( totalCost ) * 100
+		: 0;
+
 	return {
 		account, saveAccount, removeAccount,
 		addHolding, getHoldingById, getHoldingByName,
 		addTransaction,
 		addTransfer, getTransferById,
-		balance, value
+		balance, value, returnValue, returnPercentage
 	}
 }

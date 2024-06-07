@@ -178,47 +178,47 @@ const Translations: { [ key: string ]: Translation } = {
 	// Transaction
 
 	'transaction': {
-		fi_FI: 'Transaktio',
+		fi_FI: 'Tapahtuma',
 		en_US: "Transaction"
 	},
 	'transactions': {
-		fi_FI: 'Transaktiot',
+		fi_FI: 'Tapahtumat',
 		en_US: "Transactions"
 	},
 	'new transaction': {
-		fi_FI: 'Uusi transaktio',
+		fi_FI: 'Uusi tapahtuma',
 		en_US: 'New Transaction'
 	},
 	'edit transaction': {
-		fi_FI: 'Muokkaa transaktiota',
+		fi_FI: 'Muokkaa tapahtumaa',
 		en_US: 'Edit Transaction'
 	},
 	'add transaction': {
-		fi_FI: 'Lisää transaktio',
+		fi_FI: 'Lisää tapahtuma',
 		en_US: 'Add Transaction'
 	},
 	'update transaction': {
-		fi_FI: 'Päivitä transaktio',
+		fi_FI: 'Päivitä tapahtuma',
 		en_US: 'Update Transaction'
 	},
 	'remove transaction': {
-		fi_FI: 'Poista transaktio',
+		fi_FI: 'Poista tapahtuma',
 		en_US: 'Remove Transaction'
 	},
 	'removing existing transaction': {
-		fi_FI: 'Poistetaan olemassa oleva transaktio',
+		fi_FI: 'Poistetaan olemassa oleva tapahtuma',
 		en_US: 'Removing existing Transaction'
 	},
 	'updating existing transaction': {
-		fi_FI: 'Päivitetään olemassa oleva transaktio',
+		fi_FI: 'Päivitetään olemassa oleva tapahtuma',
 		en_US: 'Updating existing Transaction'
 	},
 	'adding a new transaction': {
-		fi_FI: 'Lisätään uutta transaktiota',
+		fi_FI: 'Lisätään uutta tapahtumaa',
 		en_US: 'Adding a new Transaction'
 	},
 	'no transactions': {
-		fi_FI: 'Ei transaktioita',
+		fi_FI: 'Ei tapahtumia',
 		en_US: 'No Transactions'
 	},
 
