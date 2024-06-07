@@ -22,7 +22,7 @@ import {
 	BottomSheetDefaultBackdropProps
 } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
 
-import { GlobalStyles } from "../../constants";
+import { GlobalStyles, Spacing } from "../../constants";
 import { IconButton } from "../buttons";
 import { Header } from "../ui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -117,11 +117,8 @@ export const BottomSheetProvider = ( { children } ) => {
 				}>
 				<BottomSheetScrollView
 					keyboardShouldPersistTaps={ "handled" }
-					keyboardDismissMode={ "on-drag" }
-					contentContainerStyle={ [
-						styles.contentContainer,
-						{ paddingBottom: insets.bottom }
-					] }>
+					keyboardDismissMode={ "interactive" }
+					contentContainerStyle={ styles.contentContainer }>
 					{ content }
 				</BottomSheetScrollView>
 			</GorhomBottomSheet>
@@ -132,9 +129,9 @@ export const BottomSheetProvider = ( { children } ) => {
 const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.container,
-		minHeight: 10
 	},
 	contentContainer: {
 		...GlobalStyles.gutter,
+		paddingBottom: Spacing.md
 	}
 } );

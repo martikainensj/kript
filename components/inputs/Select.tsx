@@ -79,14 +79,14 @@ const styles = StyleSheet.create( {
 	},
 	segmentedButtonsContainer: {
 		padding: Spacing.xs,
-		borderRadius: BorderRadius.md,
+		borderRadius: BorderRadius.lg,
 		gap: Spacing.xs
 	},
 	buttonContainer: {
-		borderTopLeftRadius: BorderRadius.sm,
-		borderTopRightRadius: BorderRadius.sm,
-		borderBottomLeftRadius: BorderRadius.sm,
-		borderBottomRightRadius: BorderRadius.sm,
+		borderTopLeftRadius: BorderRadius.lg - Spacing.xs,
+		borderTopRightRadius: BorderRadius.lg - Spacing.xs,
+		borderBottomLeftRadius: BorderRadius.lg - Spacing.xs,
+		borderBottomRightRadius: BorderRadius.lg - Spacing.xs,
 		borderTopWidth: 0,
 		borderLeftWidth: 0,
 		borderRightWidth: 0,

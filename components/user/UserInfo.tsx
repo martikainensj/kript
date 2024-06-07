@@ -11,7 +11,7 @@ interface UserProps {}
 
 export const UserInfo: React.FC<UserProps> = () => {
 	const { __ } = useI18n();
-	const { data, logOut, setData } = useUser();
+	const { data, logOut, setData, removeUser } = useUser();
 
 	return <View style={ styles.container }>
 		<View style={ styles.dataContainer}>
@@ -21,18 +21,27 @@ export const UserInfo: React.FC<UserProps> = () => {
 				setValue={ ( value ) => setData( 'name', value as UserDataValue<'name'> )} />
 		</View>
 
-		<DefaultButton onPress={ logOut }>
-			{ __( 'Logout' ) }
-		</DefaultButton>
+		<View style={ styles.buttonsContainer}>
+			<DefaultButton onPress={ logOut }>
+				{ __( 'Logout' ) }
+			</DefaultButton>
+
+			<DefaultButton onPress={ removeUser } mode={ 'text' }>
+				{ __( 'Remove' ) }
+			</DefaultButton>
+		</View>
 	</View>
 }
 
 const styles = StyleSheet.create( {
 	container: {
 		paddingVertical: Spacing.md,
-		gap: Spacing.lg
+		gap: Spacing.xl
 	},
 	dataContainer: {
 		gap: Spacing.sm
 	},
+	buttonsContainer: {
+		gap: Spacing.sm
+	}
 } );

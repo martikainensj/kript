@@ -72,28 +72,28 @@ export const EditableValue: React.FC<EditableValueProps> = ( {
 const styles = StyleSheet.create( {
 	inputWrapper: {
 		flexDirection: 'row',
-				alignItems: 'center',
-				gap: Spacing.sm
+		alignItems: 'center',
+		gap: Spacing.sm
 	},
 	inputContainer: {
 		flexGrow: 1,
-				flexShrink: 1
+		flexShrink: 1
 	},
 	valueWrapper: {
 		flexDirection: 'row',
-				alignItems: 'center',
-				gap: Spacing.sm
+		alignItems: 'center',
+		gap: Spacing.sm
 	},
 	valueContainer: {
 		flexGrow: 1,
-				flexShrink: 1
+		flexShrink: 1
 	},
-		saveButton: {
-				backgroundColor: 'transparent',
-				flexShrink: 0
-		},
-		editButton: {
-				backgroundColor: 'transparent',
-				flexShrink: 0
-		}
+	saveButton: {
+		backgroundColor: 'transparent',
+		flexShrink: 0
+	},
+	editButton: {
+		backgroundColor: 'transparent',
+		flexShrink: 0
+	}
 } )

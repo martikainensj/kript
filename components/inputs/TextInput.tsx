@@ -75,13 +75,14 @@ export const TextInput: React.FC<TextInputProps> = ( {
 	}, [inputValue] );
 
 	useEffect( () => {
-    if ( value?.toString() !== inputValue?.toString() ) {		
-      setInputValue( value ?? '' );
-    }
-  }, [value] );
+		if ( value?.toString() !== inputValue?.toString() ) {		
+			setInputValue( value ?? '' );
+		}
+	}, [value] );
 
 	return (
 		<PaperTextInput
+			{ ...rest }
 			mode={ mode }
 			value={ inputValue?.toString() }
 			onChangeText={ onChangeTextHandler }
@@ -102,17 +103,18 @@ export const TextInput: React.FC<TextInputProps> = ( {
 					icon={ () => <Icon name={ 'close' } /> }
 					onPress={ () => onChangeText( null ) } />
 			}
-			disabled={ disabled }
-			{ ...rest } />
+			disabled={ disabled } />
 	)
 }
 
 const styles = StyleSheet.create( {
 	container: {
 		fontSize: FontSize.sm,
-		borderRadius: BorderRadius.md,
-		borderTopLeftRadius: BorderRadius.md,
-		borderTopRightRadius: BorderRadius.md
+		borderTopStartRadius: BorderRadius.lg,
+		borderTopEndRadius: BorderRadius.lg,
+		borderBottomStartRadius: BorderRadius.lg,
+		borderBottomEndRadius: BorderRadius.lg,
+		flexGrow: 1
 	},
 	outline: {
 		borderBottomWidth: 0,

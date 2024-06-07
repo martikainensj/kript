@@ -91,6 +91,7 @@ export const useUser = () => {
 	}
 
 	const removeUser = async () => {
+		// TODO: clear customData and data
 		//await app.deleteUser( user );
 	}
 
