@@ -65,10 +65,29 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 	}, [ holding ] );
 
 	const values = [
-		<Value label={ __( 'Amount' ) } value={ prettifyNumber( amount ) } isVertical={ true } />,
-		<Value label={ __( 'Value' ) } value={ prettifyNumber( value ) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Return' ) } value={ prettifyNumber( returnValue ) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Return' ) } value={ prettifyNumber( returnPercentage ) } unit={ '%' } isVertical={ true } />,
+		<Value
+			label={ __( 'Amount' ) }
+			value={ prettifyNumber( amount ) }
+			isVertical={ true } />,
+		<Value
+			label={ __( 'Value' ) }
+			value={ prettifyNumber( value ) }
+			unit={ '€' }
+			isVertical={ true } />,
+		<Value
+			label={ __( 'Return' ) }
+			value={ prettifyNumber( returnValue ) }
+			unit={ '€' }
+			isVertical={ true }
+			isPositive={ returnValue > 0 }
+			isNegative={ returnValue < 0 } />,
+		<Value
+			label={ __( 'Return' ) }
+			value={ prettifyNumber( returnPercentage ) }
+			unit={ '%' }
+			isVertical={ true }
+			isPositive={ returnPercentage > 0 }
+			isNegative={ returnPercentage < 0 } />,
 	];
 
 	if ( ! holding?.isValid() ) return;

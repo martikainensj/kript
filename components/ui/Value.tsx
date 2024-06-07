@@ -1,7 +1,8 @@
 import React from "react";
 import { View, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { Text } from "react-native-paper";
-import { Spacing, GlobalStyles, FontSize, Color } from "../../constants";
+import { Spacing, GlobalStyles, FontSize, Color, FontWeight } from "../../constants";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface ValueWrapperProps {
   value: string | number;
@@ -10,6 +11,8 @@ interface ValueWrapperProps {
   valueContainerStyle?: ViewStyle;
   valueStyle?: TextStyle;
   unitStyle?: TextStyle;
+  isPositive?: boolean;
+  isNegative?: boolean;
 }
 
 const ValueWrapper: React.FC<ValueWrapperProps> = ( {
@@ -19,16 +22,28 @@ const ValueWrapper: React.FC<ValueWrapperProps> = ( {
   valueContainerStyle,
   valueStyle,
   unitStyle,
+  isPositive,
+  isNegative
 } ) => {
+  const { theme } = useTheme();
+
   if ( ! value && value !== 0 ) {
     return (
       <View style={ [styles.valueContainer, valueContainerStyle] }>
-        <Text style={ [styles.value, styles.undefined, valueStyle] }>
+        <Text style={ [
+          styles.value,
+          { color: theme.colors.onBackground },
+          valueStyle
+        ] }>
           { "-" }
         </Text>
 
         { unit && !isVertical &&
-          <Text style={ [styles.unit, styles.undefined, unitStyle] }>{ unit }</Text>
+          <Text style={ [
+            styles.unit,
+            { color: theme.colors.onBackground },
+            unitStyle
+          ] }>{ unit }</Text>
         }
       </View>
     );
@@ -36,13 +51,19 @@ const ValueWrapper: React.FC<ValueWrapperProps> = ( {
 
   return (
     <View style={ [styles.valueContainer, valueContainerStyle] }>
-      { typeof value === "string" || typeof value === "number"
-				? <Text style={ [styles.value, valueStyle] }>{ value }</Text>
-      	: <View style={ [styles.value, valueStyle] }>{ value }</View>
-      }
+			<Text style={ [
+        styles.value,
+        valueStyle,
+        isPositive && { color: theme.colors.success, fontWeight: FontWeight.bold },
+        isNegative && { color: theme.colors.error, fontWeight: FontWeight.bold },
+      ] }>{ value }</Text>
 
       { unit && ! isVertical &&
-        <Text style={ [styles.unit, { marginLeft: Spacing.xxs }, unitStyle] }>
+        <Text style={ [
+          styles.unit, { marginLeft: Spacing.xxs }, unitStyle,
+          isPositive && { color: theme.colors.success, fontWeight: FontWeight.bold },
+          isNegative && { color: theme.colors.error, fontWeight: FontWeight.bold },
+        ] }>
           { unit }
         </Text>
       }
@@ -60,7 +81,9 @@ interface ValueProps {
   valueStyle?: TextStyle;
   unitStyle?: TextStyle;
   isVertical?: boolean;
-  unit?: string | null;
+  unit?: string;
+  isPositive?: boolean;
+  isNegative?: boolean;
 }
 
 export const Value: React.FC<ValueProps> = ( {
@@ -74,6 +97,8 @@ export const Value: React.FC<ValueProps> = ( {
   unitStyle,
   isVertical = false,
   unit = null,
+  isPositive,
+  isNegative,
 } ) => {
   return (
     <View style={ [
@@ -98,6 +123,8 @@ export const Value: React.FC<ValueProps> = ( {
         valueStyle={ valueStyle }
         unitStyle={ unitStyle }
         isVertical={ isVertical }
+        isPositive={ isPositive }
+        isNegative={ isNegative }
       />
     </View>
   );
@@ -141,8 +168,5 @@ const styles = StyleSheet.create( {
   unit: {
     textAlign: "right",
     fontSize: FontSize.xs,
-  },
-  undefined: {
-    color: Color.grey,
-  },
+  }
 } );

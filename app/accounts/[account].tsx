@@ -115,8 +115,18 @@ const AccountPage: React.FC = ( {} ) => {
 	}, [ account ] );
 
 	const values = [
-		<Value label={ __( 'Balance' ) } value={ prettifyNumber( balance, 0 ) } unit={ '€' } isVertical={ true } />,
-		<Value label={ __( 'Value' ) } value={ prettifyNumber( value, 0 ) } unit={ '€' } isVertical={ true } />,
+		<Value
+			label={ __( 'Balance' ) }
+			value={ prettifyNumber( balance, 0 ) }
+			unit={ '€' }
+			isVertical={ true }
+			isNegative={ balance < 0 } />,
+		<Value
+			label={ __( 'Value' ) }
+			value={ prettifyNumber( value, 0 ) }
+			unit={ '€' }
+			isVertical={ true }
+			isNegative={ value < 0 } />,
 	];
 
 	if ( ! account?.isValid() ) {
