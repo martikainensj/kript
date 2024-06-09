@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-native";
 
 import { IconButton } from "../buttons";
-import { DateInput, HoldingInput, Select, TextInput } from "../inputs";
+import { DateInput, HoldingInput, TextInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
 import { Transfer } from "../../models/Transfer";
 import { Account } from "../../models/Account";
@@ -10,6 +10,7 @@ import { Divider, Icon } from "../ui";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
 import { useI18n } from "../contexts/I18nContext";
 import { useTypes } from "../../hooks/useTypes";
+import { Select } from "../inputs/Select";
 
 interface TransferFormProps {
 	transfer: Transfer,

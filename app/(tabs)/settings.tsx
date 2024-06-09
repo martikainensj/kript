@@ -1,15 +1,16 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 
 import { GlobalStyles, Spacing } from '../../constants';
 import { Header, Icon } from '../../components/ui';
 import { IconButton } from '../../components/buttons';
-import { Select } from '../../components/inputs';
+import { Select } from '../../components/inputs/Select';
 import { useI18n, Languages } from '../../components/contexts/I18nContext';
 import { useTheme } from '../../components/contexts/ThemeContext';
 import { useBottomSheet } from '../../components/contexts/BottomSheetContext';
 import { UserInfo } from '../../components/user/UserInfo';
 import { useUser } from '../../hooks/useUser';
+import { Toggle } from '../../components/inputs/Toggle';
 
 const Accounts: React.FC = () => {
 	const { setColorScheme, setSourceColor, colorScheme, sourceColor, defaultSourceColor } = useTheme();
@@ -20,6 +21,10 @@ const Accounts: React.FC = () => {
 	const onSetLanguage = ( value: keyof Languages ) => {
 		setLang( value );
 	}
+	
+	const colorSchemeHanlder = ( isDarkMode: boolean ) => {
+		setColorScheme( isDarkMode ? 'dark' : 'light' );
+	}
 
 	useLayoutEffect( () => {
 		refreshUserData();
@@ -29,27 +34,25 @@ const Accounts: React.FC = () => {
 		<View style={ styles.container }>
 			<Header
 				title={ __( 'Settings' ) }
-				right={ ( 
-					<IconButton
-						icon={ 'person-outline' }
-						onPress={ () => {
-							openBottomSheet(
-								__( 'User' ),
-								<UserInfo />
-							)
-						}} />
-	 			) } />
+				right={ (
+					<View style={ styles.rightContainer }>
+						<Toggle
+							value={ colorScheme === 'dark' ?? false }
+							activeIcon={ 'moon' }
+							inactiveIcon={ 'sunny' }
+							setValue={ colorSchemeHanlder} />
+						<IconButton
+							icon={ 'person-outline' }
+							onPress={ () => {
+								openBottomSheet(
+									__( 'User' ),
+									<UserInfo />
+								)
+							}} />
+					</View>
+				) } />
 				
 			<View style={ styles.contentContainer }>
-				<Select
-					label={ __( 'Color Scheme' ) }
-					value={ colorScheme }
-					options={ [
-						{ value: 'dark', label: __( 'Dark' ), icon: ( props ) => <Icon name={ 'moon' } { ...props } /> },
-						{ value: 'light', label: __( 'Light' ), icon: ( props ) => <Icon name={ 'sunny' } { ...props } /> }
-					] }
-					setValue={ setColorScheme } />
-
 				{ Platform.OS === 'android' && (
 					<Select
 						label={ __( 'Color' ) }
@@ -79,7 +82,11 @@ const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.container
 	},
-
+	rightContainer: {
+		alignItems: 'center',
+		flexDirection: 'row',
+		gap: Spacing.sm
+	},
 	contentContainer: {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
