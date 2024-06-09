@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewStyle } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GlobalStyles, Spacing } from "../../constants";
 import { Row } from "./Row";
@@ -12,7 +12,8 @@ interface HeaderProps {
 	right?: React.ReactNode
 	isScreenHeader?: boolean
 	showDivider?: boolean
-	children?: React.ReactNode
+	children?: React.ReactNode,
+	style?: ViewStyle
 }
 
 export const Header: React.FC<HeaderProps> = ( {
@@ -21,7 +22,8 @@ export const Header: React.FC<HeaderProps> = ( {
 	right,
 	isScreenHeader = true,
 	showDivider = true,
-	children
+	children,
+	style
 } ) => {
 	const { theme } = useTheme();
 	const insets = useSafeAreaInsets();
@@ -33,7 +35,8 @@ export const Header: React.FC<HeaderProps> = ( {
 			showDivider && { 
 				borderBottomWidth: StyleSheet.hairlineWidth,
 				borderColor: theme.colors.outlineVariant
-			}
+			},
+			style
 		] }>
 			<Row style={ styles.row }>
 				{ left && <View style={ styles.left } children={ left } /> }

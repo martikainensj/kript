@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
-import { Text } from "react-native-paper";
 import Realm from "realm";
 import { router, useLocalSearchParams } from "expo-router";
 
-import { GlobalStyles } from "../../constants";
+import { GlobalStyles, Spacing } from "../../constants";
 import { useHolding } from "../../hooks";
-import { Grid, Header, Icon, ItemList, Tabs, Value } from "../../components/ui";
+import { Grid, Header, Icon, ItemList, Tabs, Title, Value } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { TransactionForm } from "../../components/transactions/TransactionForm";
@@ -19,6 +18,7 @@ import { useI18n } from '../../components/contexts/I18nContext';
 import { FABProvider, useFAB } from "../../components/contexts/FABContext";
 import { useBottomSheet } from "../../components/contexts/BottomSheetContext";
 import { useUser } from "../../hooks/useUser";
+import { Card } from "../../components/ui/Card";
 
 const HoldingPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ _id: string, account_id: string }>();
@@ -175,7 +175,9 @@ const HoldingPage: React.FC = ( {} ) => {
 						{
 							label: __( 'Overview' ),
 							content: (
-								<Text>Overview</Text>
+								<Card style={ { marginTop: Spacing.md } }>
+									<Title>{ __( 'Overview' ) }</Title>
+								</Card>
 							)
 						},
 						{
@@ -186,7 +188,8 @@ const HoldingPage: React.FC = ( {} ) => {
 									items={ transactions.map( transaction =>
 										<TransactionItem { ...transaction } />
 									) } />
-							)
+							),
+							disabled: ! transactions?.length
 						},
 						{
 							label: __( 'Dividends' ),
@@ -196,7 +199,8 @@ const HoldingPage: React.FC = ( {} ) => {
 									items={ dividends.map( dividend =>
 										<TransferItem { ...dividend } />
 									) } />
-							)
+							),
+							disabled: ! dividends?.length
 						}
 					] }>
 					</Tabs>

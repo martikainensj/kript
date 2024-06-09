@@ -4,12 +4,13 @@ import {
 } from "react-native";
 import { TabsProvider, TabScreen, Tabs as PaperTabs } from "react-native-paper-tabs";
 
-import { GlobalStyles } from "../../constants";
+import { GlobalStyles, Spacing } from "../../constants";
 import { useTheme } from "../contexts/ThemeContext";
 
 interface TabsScreenContentProps {
 	label: string,
-	content: React.ReactNode
+	content: React.ReactNode,
+	disabled?: boolean
 }
 
 interface TabsProps {
@@ -27,19 +28,22 @@ export const Tabs: React.FC<TabsProps> = ( {
 		<TabsProvider defaultIndex={ defaultIndex }>
 			<PaperTabs
 				mode="scrollable"
-				showLeadingSpace={ false }
+				showLeadingSpace={ true }
 				style={ {
 					...styles.container,
 					borderColor: theme.colors.outlineVariant 
 				} }
 				tabLabelStyle={ styles.labelContainer }>
 				{ screens.map( ( screen, key ) => {
-					const {	label, content } = screen;
-					return <TabScreen key={ key } label={ label }>
-						<View style={ styles.contentContainer }>
-							{ content }
-						</View>
-					</TabScreen>
+					const {	label, content, disabled } = screen;
+
+					return (
+						<TabScreen key={ key } label={ label } disabled={ disabled }>
+							<View style={ styles.contentContainer }>
+								{ content }
+							</View>
+						</TabScreen>
+					)
 				} ) }
 			</PaperTabs>
 		</TabsProvider>

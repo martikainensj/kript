@@ -3,9 +3,9 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import Realm from "realm";
 import { router, useLocalSearchParams } from "expo-router";
 
-import { GlobalStyles } from "../../constants";
+import { GlobalStyles, Spacing } from "../../constants";
 import { useAccount } from "../../hooks";
-import { Grid, Header, Icon, ItemList, Tabs, Value } from "../../components/ui";
+import { Grid, Header, Icon, ItemList, Tabs, Title, Value } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { AccountForm } from "../../components/accounts";
@@ -19,6 +19,7 @@ import { useI18n } from '../../components/contexts/I18nContext';
 import { useBottomSheet } from "../../components/contexts/BottomSheetContext";
 import { FABProvider, useFAB } from "../../components/contexts/FABContext";
 import { useUser } from "../../hooks/useUser";
+import { Card } from "../../components/ui/Card";
 
 const AccountPage: React.FC = ( {} ) => {
 	const params = useLocalSearchParams<{ id: string }>();
@@ -170,7 +171,9 @@ const AccountPage: React.FC = ( {} ) => {
 							{
 								label: __( 'Overview' ),
 								content: (
-									<Text>Overview</Text>
+									<Card style={ { marginTop: Spacing.md } }>
+										<Title>{ __( 'Overview' ) }</Title>
+									</Card>
 								)
 							},
 							{
@@ -182,7 +185,8 @@ const AccountPage: React.FC = ( {} ) => {
 										items={ holdings.map( holding =>
 											<HoldingItem { ...holding } />
 										) } />
-								)
+								),
+								disabled: ! holdings?.length
 							},
 							{
 								label: __( 'Transfers' ),
@@ -193,7 +197,8 @@ const AccountPage: React.FC = ( {} ) => {
 										items={ transfers.map( transfer =>
 											<TransferItem { ...transfer } showHolding={ true } />
 										) } />
-								)
+								),
+								disabled: ! transfers?.length
 							}
 						] } />
 					</View>
