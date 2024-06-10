@@ -317,11 +317,11 @@ const Translations: { [ key: string ]: Translation } = {
 	},
 
 	'buy': {
-		fi_FI: 'Osta',
+		fi_FI: 'Osto',
 		en_US: 'Buy'
 	},
 	'sell': {
-		fi_FI: 'Myy',
+		fi_FI: 'Myynti',
 		en_US: 'Sell'
 	},
 	'deposit': {
@@ -404,6 +404,26 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Muistiinpanot',
 		en_US: 'Notes'
 	},
+	"stock split": {
+    fi_FI: "Osakejako",
+    en_US: "Stock Split"
+  },
+  "merger": {
+    fi_FI: "Yhdistyminen",
+    en_US: "Merger"
+  },
+  "price update": {
+    fi_FI: "Hinnan päivitys",
+    en_US: "Price Update"
+  },
+  "amount update": {
+    fi_FI: "Määrän päivitys",
+    en_US: "Amount Update"
+  },
+  "update": {
+    fi_FI: "Päivitys",
+    en_US: "Update"
+  },
 	'enter notes here': {
 		fi_FI: 'Kirjoita muistiinpanot tähän',
 		en_US: 'Enter notes here'

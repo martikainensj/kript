@@ -51,7 +51,7 @@ export const useTypes = () => {
 		}
 	];
 
-	const HoldingUpdateTypes: Type[] = [
+	const AdjustmentTypes: Type[] = [
 		{
 			id: 'stockSplit',
 			name: __( 'Stock Split' ),
@@ -63,21 +63,21 @@ export const useTypes = () => {
 			color: theme.colors.tertiary
 		},
 		{
-			id: 'priceChanged',
-			name: __( 'Price Changed' ),
+			id: 'priceUpdate',
+			name: __( 'Price Update' ),
 			color: theme.colors.tertiary
 		},
 		{
-			id: 'amountChanged',
-			name: __( 'Amount Changed' ),
+			id: 'amountUpdate',
+			name: __( 'Amount Update' ),
 			color: theme.colors.tertiary
 		},
 		{
-			id: 'adjustment',
-			name: __( 'Adjustment' ),
+			id: 'update',
+			name: __( 'Update' ),
 			color: theme.colors.tertiary
 		}
 	];
 
-	return { TransactionTypes, TransferTypes, HoldingUpdateTypes }
+	return { TransactionTypes, TransferTypes, AdjustmentTypes }
 }
