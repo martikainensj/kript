@@ -7,7 +7,7 @@ export type Transaction = {
   notes?: string;
   owner_id: string;
   price: number;
-  total: number;
+  total?: number;
 	account_id: Realm.BSON.UUID;
 	holding_name: string;
 	holding_id?: Realm.BSON.UUID;
@@ -24,7 +24,7 @@ export const TransactionSchema = {
     notes: 'string?',
     owner_id: 'string',
     price: 'double',
-    total: 'double',
+    total: 'double?',
 		account_id: 'uuid',
 		holding_name: 'string',
 		holding_id: 'uuid?',

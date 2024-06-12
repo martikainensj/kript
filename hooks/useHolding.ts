@@ -6,7 +6,6 @@ import { confirmation } from "../helpers";
 import { useAccount } from "./useAccount";
 import { Holding } from "../models/Holding";
 import { useI18n } from "../components/contexts/I18nContext";
-import { Adjustment } from "../models/Adjustment";
 
 interface useHoldingProps {
 	_id: Realm.BSON.UUID,
@@ -21,7 +20,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		return getHoldingById( _id );
 	}, [ account ] );
 
-	const { transactions, dividends, adjustments } = useMemo( () => {
+	const { transactions, dividends } = useMemo( () => {
 		return {
 			...holding,
 			dividends: account?.transfers
@@ -34,37 +33,6 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 			.filtered( '_id == $0', id )[0];
 		return transaction;
 	}, [ holding ] );
-
-	const getAdjustmentById = useCallback( ( id: Realm.BSON.UUID ) => {
-		const adjustment = adjustments
-			.filtered( '_id == $0', id )[0];
-		return adjustment;
-	}, [ holding ] );
-
-	const addAdjustment = useCallback( ( adjustment: Adjustment ) => {
-		const title = __( 'Add Adjustment' );
-		const message = `${ __( 'Adding a new adjustment' ) }\n`
-			+ __( 'Are you sure?' );
-
-		return new Promise( ( resolve, _ ) => {
-			confirmation( {
-				title: title,
-				message: message,
-				onAccept() {
-					resolve( realm.write( async () => {
-						const { _id, adjustments } = holding;
-
-						adjustments.push( {
-							...adjustment,
-							holding_id: _id
-					 	} );
-
-						return adjustments[ adjustments.length - 1 ];
-					} ) );
-				}
-			} );
-		} );
-	}, [ account ] );
 
 	const saveHolding = useCallback( ( editedHolding: Holding ) => {
 		const title = __( 'Save Holding' );
@@ -109,12 +77,13 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	// Variables
 
 	const lastTransaction = useMemo( () => {
-		return transactions.sorted( 'date', true )[0];
+		return transactions?.sorted( 'date', true )[0];
 	}, [ transactions ] );
 
 	const lastAdjustment = useMemo( () => {
-		return adjustments.sorted( 'date', true )[0];
-	}, [ adjustments ] );
+		return transactions?.sorted( 'date', true )
+			.find( transaction => transaction.total === undefined );
+	}, [ transactions ] );
 
 	const lastPrice = useMemo( () => {
 		if ( lastAdjustment?.isValid() && lastTransaction?.isValid() ) {
@@ -183,7 +152,6 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		holding, saveHolding, removeHolding,
 		account,
 		transactions, addTransaction, getTransactionById,
-		adjustments, addAdjustment, getAdjustmentById,
 		dividends, addTransfer,
 		value, amount, total, fees,
 		transactionSum, dividendSum,

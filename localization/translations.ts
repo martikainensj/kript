@@ -316,6 +316,53 @@ const Translations: { [ key: string ]: Translation } = {
 		en_US: 'No Dividends'
 	},
 
+	// Adjustments
+
+	'adjustment': {
+		fi_FI: 'Säätö',
+		en_US: 'Adjustment'
+	},
+	'adjustments': {
+		fi_FI: 'Siirrot',
+		en_US: 'Adjustments'
+	},
+	'new adjustment': {
+		fi_FI: 'Uusi säätö',
+		en_US: 'New Adjustment'
+	},
+	'edit adjustment': {
+		fi_FI: 'Muokkaa säätöä',
+		en_US: 'Edit Adjustment'
+	},
+	'add adjustment': {
+		fi_FI: 'Lisää säätö',
+		en_US: 'Add Adjustment'
+	},
+	'update adjustment': {
+		fi_FI: 'Päivitä säätö',
+		en_US: 'Update Adjustment'
+	},
+	'remove adjustment': {
+		fi_FI: 'Poista säätö',
+		en_US: 'Remove Adjustment'
+	},
+	'removing existing adjustment': {
+		fi_FI: 'Poistetaan olemassa oleva säätö',
+		en_US: 'Removing existing Adjustment'
+	},
+	'updating existing adjustment': {
+		fi_FI: 'Päivitetään olemassa oleva säätö',
+		en_US: 'Updating existing Adjustment'
+	},
+	'adding a new adjustment': {
+		fi_FI: 'Lisätään uutta säätöä',
+		en_US: 'Adding a new Adjustment'
+	},
+	'no adjustments': {
+		fi_FI: 'Ei säätöjä',
+		en_US: 'No Adjustments'
+	},
+
 	'buy': {
 		fi_FI: 'Osto',
 		en_US: 'Buy'
@@ -392,9 +439,17 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Hinta',
 		en_US: 'Price'
 	},
+	'adjusted price': {
+		fi_FI: 'Säädetty hinta',
+		en_US: 'Adjusted price'
+	},
 	'amount': {
 		fi_FI: 'Määrä',
 		en_US: 'Amount'
+	},
+	'adjusted total amount': {
+		fi_FI: 'Säädetty kokonaismäärä',
+		en_US: 'Adjusted total amount'
 	},
 	'total': {
 		fi_FI: 'Summa',

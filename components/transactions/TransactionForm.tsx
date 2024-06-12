@@ -25,11 +25,13 @@ export const TransactionForm = ( {
 }: TransactionFormProps ) => {
 	const { __ } = useI18n();
 	const { TransactionTypes } = useTypes();
-	const [ buy, sell ] = TransactionTypes;
+	const [ buy, sell, adjustment ] = TransactionTypes;
 	const [ transactionType, setTransactionType ] = useState(
-		transaction.total >= 0
-			? buy.id
-			: sell.id
+		! transaction.total == null
+			? transaction.total >= 0
+				? buy.id
+				: sell.id
+			:	buy.id
 	);
 	const [ editedTransaction, setEditedTransaction ]
 		= useState( { ...transaction } );
@@ -39,6 +41,8 @@ export const TransactionForm = ( {
 		amount: editedTransaction.amount && Math.abs( editedTransaction.amount ),
 		total: editedTransaction.total && Math.abs( editedTransaction.total ),
 	};
+
+	const isAdjustment = transactionType === 'adjustment';
 
 	const handleDismissKeyboard = ( ) => {
     Keyboard.dismiss();
@@ -105,7 +109,7 @@ export const TransactionForm = ( {
 				<Divider />
 				
 				<TextInput
-					label={ __( 'Price' ) }
+					label={ __( isAdjustment ? 'Adjusted price' : 'Price' ) }
 					value={ price }
 					placeholder={ '0' }
 					keyboardType={ 'numeric' }
@@ -115,7 +119,7 @@ export const TransactionForm = ( {
 					) } />
 
 				<TextInput
-					label={ __( 'Amount' ) }
+					label={ __( isAdjustment ? 'Adjusted Total amount' : 'Amount' ) }
 					value={ amount }
 					placeholder={ '0' }
 					keyboardType={ 'numeric' }
@@ -124,15 +128,17 @@ export const TransactionForm = ( {
 						Object.assign( { ...editedTransaction }, { amount } )
 					) } />
 
-				<TextInput
-					label={ __( 'Total' ) }
-					value={ total }
-					placeholder={ '0' }
-					keyboardType={ 'numeric' }
-					inputMode={ 'decimal' }
-					onChangeText={ total => setEditedTransaction(
-						Object.assign( { ...editedTransaction }, { total } )
-					) } />
+				{ ! isAdjustment &&
+					<TextInput
+						label={ __( 'Total' ) }
+						value={ total }
+						placeholder={ '0' }
+						keyboardType={ 'numeric' }
+						inputMode={ 'decimal' }
+						onChangeText={ total => setEditedTransaction(
+							Object.assign( { ...editedTransaction }, { total } )
+						) } />
+				}
 
 				<TextInput
 					label={ __( 'Notes' ) }
@@ -149,7 +155,7 @@ export const TransactionForm = ( {
 					icon={ 'save' }
 					size={ IconSize.xl }
 					style={ styles.submitButton }
-					disabled={ ! allSet( holding_name, price, amount, total ) }
+					disabled={ ! allSet( holding_name, price, amount, ( transactionType === 'adjustment' || total )) }
 					onPress={ onSubmitHandler } />
 			</View>
 		</TouchableWithoutFeedback>

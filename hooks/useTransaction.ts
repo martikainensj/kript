@@ -26,13 +26,25 @@ export const useTransaction = ( { _id, holding_id, account_id }: useTransactionP
 		return transaction;
 	}, [ holding ] );
 
-	const { TransactionTypes } = useTypes();
-	const [ buy, sell ] = TransactionTypes;
-	const type = transaction?.isValid() && (
-		transaction?.total > 0
-			? buy
-			: sell
-	);
+	const { TransactionTypes, AdjustmentTypes } = useTypes();
+	const [ buy, sell, adjustment ] = TransactionTypes;
+	const [ stockSplit, merger, priceUpdate, amountUpdate, update ] = AdjustmentTypes;
+
+	const type = useMemo( () => {
+		const type = transaction?.isValid() && (
+			transaction?.total
+				? transaction?.total > 0
+					? buy
+					: sell
+				: adjustment
+		);
+
+		if ( type === adjustment ) {
+			// Tähä täytyy keksii joku keino kaivaa aikasempi hinta ja määrä
+		}
+
+		return type
+	}, [] )
 
 	const saveTransaction = useCallback( ( editedTransaction: Transaction ) => {
 		const title = __( 'Save Transaction' );

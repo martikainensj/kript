@@ -6,6 +6,7 @@ import { TabsProvider, TabScreen, Tabs as PaperTabs } from "react-native-paper-t
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { useTheme } from "../contexts/ThemeContext";
+import { Mode } from "react-native-paper-tabs/lib/typescript/utils";
 
 interface TabsScreenContentProps {
 	label: string,
@@ -14,12 +15,14 @@ interface TabsScreenContentProps {
 }
 
 interface TabsProps {
-	defaultIndex?: number
-	screens: TabsScreenContentProps[]
+	screens: TabsScreenContentProps[];
+	defaultIndex?: number;
+	mode?: Mode;
 }
 
 export const Tabs: React.FC<TabsProps> = ( {
 	defaultIndex = 0,
+	mode = 'fixed',
 	screens = []
 } ) => {
 	const { theme } = useTheme();
@@ -27,7 +30,7 @@ export const Tabs: React.FC<TabsProps> = ( {
 	return (
 		<TabsProvider defaultIndex={ defaultIndex }>
 			<PaperTabs
-				mode="scrollable"
+				mode={ mode }
 				showLeadingSpace={ true }
 				style={ {
 					...styles.container,

@@ -3,7 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useI18n } from '../components/contexts/I18nContext';
 import { useTheme } from '../components/contexts/ThemeContext';
 
-interface Type {
+export interface Type {
 	id: string;
 	name: string;
 	color?: string;
@@ -26,6 +26,12 @@ export const useTypes = () => {
 			name: __( 'Sell' ),
 			color: theme.colors.error,
 			icon: 'exit-outline',
+		},
+		{
+			id: 'adjustment',
+			name: __( 'Adjustment' ),
+			color: theme.colors.tertiary,
+			icon: 'options'
 		}
 	];
 
