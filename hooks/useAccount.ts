@@ -6,7 +6,6 @@ import { router } from "expo-router";
 import { Account } from "../models/Account"
 import { confirmation } from "../helpers";
 import { Transaction } from "../models/Transaction";
-import { Transfer } from "../models/Transfer";
 import { Holding } from "../models/Holding";
 import { useI18n } from "../components/contexts/I18nContext";
 import { useUser } from "./useUser";
@@ -22,13 +21,20 @@ export const useAccount = ( { id }: useAccountProps ) => {
 	const account = useQuery<Account>( 'Account' )
 		.filtered( '_id == $0', id )[0];
 
-	const { _id, name, holdings, transfers } = account;
+	const { _id, name, holdings, transactions } = account;
 
 	const getHoldingById = useCallback( ( id: Realm.BSON.UUID ) => {
-		const holding = holdings.filtered( '_id == $0', id )[0];
+		const holding = holdings
+			.filtered( '_id == $0', id )[0];
 
 		return holding;
 	}, [ holdings ] );
+
+	const getTransactionById = useCallback( ( id: Realm.BSON.UUID ) => {
+		const transaction = transactions
+			.filtered( '_id == $0', id )[0];
+		return transaction;
+	}, [ transactions ] );
 
 	const getHoldingByName = useCallback( ( name: string ) => {
 		const holding = holdings.filtered( 'name == $0', name )[0];
@@ -45,6 +51,7 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		}
 
 		holdings.push( holding );
+
 		return holdings[ holdings.length - 1 ];
 	}, [ holdings, _id ] );
 
@@ -59,11 +66,14 @@ export const useAccount = ( { id }: useAccountProps ) => {
 				message: message,
 				onAccept() {
 					resolve( realm.write( async () => {
-						const { _id, transactions } = getHoldingByName( transaction.holding_name )
-							?? addHolding( transaction.holding_name );
+						const { _id } = transaction.holding_name && (
+							getHoldingByName( transaction.holding_name )
+								?? addHolding( transaction.holding_name )
+						);
 
 						transactions.push( {
 							...transaction,
+							_id: new Realm.BSON.UUID(),
 							holding_id: _id
 					 	} );
 
@@ -73,38 +83,6 @@ export const useAccount = ( { id }: useAccountProps ) => {
 			} );
 		} );
 	}, [ account ] );
-
-	const getTransferById = useCallback( ( id: Realm.BSON.UUID ) => {
-		const transfer = transfers.filtered( '_id == $0', id )[0];
-
-		return transfer;
-	}, [ transfers ] );
-
-	const addTransfer = useCallback( ( transfer: Transfer ) => {
-		const title = __( 'Add Transfer' );
-		const message = `${ __( 'Adding a new transfer' ) }\n`
-			+ __( 'Are you sure?' );
-
-		return new Promise( ( resolve, _ ) => {
-			confirmation( {
-				title: title,
-				message: message,
-				onAccept() {
-					resolve( realm.write( async () => {
-						const { _id } = !! transfer.holding_name
-							&& ( getHoldingByName( transfer.holding_name ) ?? addHolding( transfer.holding_name ) );
-
-						transfers.push( {
-							...transfer,
-							holding_id: _id
-					 	} );
-
-						return transfers[ transfers.length - 1 ];
-					} ) );
-				}
-			} );
-		} );
-	}, [ transfers ] );
 
 	const saveAccount = useCallback( ( editedAccount: Account ) => {
 		const title = `${ editedAccount._id
@@ -154,44 +132,47 @@ export const useAccount = ( { id }: useAccountProps ) => {
 	// Variables
 
 	const total = useMemo( () => {
-		const total = holdings.reduce( ( holdingsTotal, holding ) => {
-			const { transactions } = holding;
+		const total = transactions.reduce( ( total, transaction ) => {
+			if ( transaction.type !== 'trading' ) {
+				return total;
+			}
 
-			return holdingsTotal + transactions.reduce( ( transactionsTotal, transaction ) => {
-				const { total } = transaction;
-
-				return transactionsTotal + total;
-			}, 0 );
+			return total + transaction.total;
 		}, 0 );
 
 		return total;
 	}, [ holdings ] );
 
-	const transfersAmount = useMemo( () => {
-		const transfersAmount = transfers.reduce( ( amount, transfer ) => {
-			return amount + transfer.amount
+	const cashAmount = useMemo( () => {
+		const amount = transactions.reduce( ( amount, transaction ) => {
+			if ( transaction.type !== 'cash' ) {
+				return amount;
+			}
+
+			return amount + transaction.amount
 		}, 0 );
 
-		return transfersAmount;
-	}, [ transfers ] );
+		return amount;
+	}, [ transactions ] );
 
 	const balance = useMemo( () => {
-		const balance = transfersAmount - total;
+		const balance = cashAmount - total;
 
 		return balance;
-	}, [ transfersAmount, total ] );
+	}, [ cashAmount, total ] );
 
 	const value = useMemo( () => {
 		const value = holdings.reduce( ( value, holding ) => {
-			const { transactions } = holding;
+			const _transactions = transactions
+				.filtered( 'holding_id == $0', holding._id );
 		
-			const lastTransaction = transactions.sorted( 'date', true )[0]
+			const lastTransaction = _transactions.sorted( 'date', true )[0]
 
 			const lastPrice = lastTransaction?.isValid()
 				? lastTransaction.price
 				: 0;
 		
-			const amount = transactions.reduce( ( amount, transaction ) => {
+			const amount = _transactions.reduce( ( amount, transaction ) => {
 				return amount + transaction.amount
 			}, 0 );
 		
@@ -203,15 +184,19 @@ export const useAccount = ( { id }: useAccountProps ) => {
 
 	const { totalValue, totalCost } = useMemo( () => {
 		const { totalValue, totalCost } = holdings.reduce( ( acc, holding ) => {
-			const lastTransaction = holding.transactions.sorted( 'date', true )[0];
+
+			const _transactions = transactions
+				.filtered( 'holding_id == $0', holding._id );
+
+			const lastTransaction = _transactions.sorted( 'date', true )[0];
 			const lastPrice = lastTransaction?.isValid()
 				? lastTransaction.price
 				: 0;
-			const amount = holding.transactions.reduce( ( amount, transaction ) => {
+			const amount = _transactions.reduce( ( amount, transaction ) => {
 				return amount + transaction.amount;
 			}, 0 );
 			const value = lastPrice * amount;
-			const total = holding.transactions.reduce( ( total, transaction ) => {
+			const total = _transactions.reduce( ( total, transaction ) => {
 				return total + transaction.total;
 			}, 0 );
 
@@ -232,8 +217,7 @@ export const useAccount = ( { id }: useAccountProps ) => {
 	return {
 		account, saveAccount, removeAccount,
 		addHolding, getHoldingById, getHoldingByName,
-		addTransaction,
-		addTransfer, getTransferById,
+		addTransaction, getTransactionById, transactions,
 		balance, value, returnValue, returnPercentage
 	}
 }

@@ -42,9 +42,7 @@ export const Tabs: React.FC<TabsProps> = ( {
 
 					return (
 						<TabScreen key={ key } label={ label } disabled={ disabled }>
-							<View style={ styles.contentContainer }>
-								{ content }
-							</View>
+							{ content }
 						</TabScreen>
 					)
 				} ) }

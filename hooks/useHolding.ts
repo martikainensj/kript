@@ -6,6 +6,7 @@ import { confirmation } from "../helpers";
 import { useAccount } from "./useAccount";
 import { Holding } from "../models/Holding";
 import { useI18n } from "../components/contexts/I18nContext";
+import { Cash } from "./useTypes";
 
 interface useHoldingProps {
 	_id: Realm.BSON.UUID,
@@ -15,18 +16,24 @@ interface useHoldingProps {
 export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	const { __ } = useI18n();
 	const realm = useRealm();
-	const { account, getHoldingById, addTransaction, addTransfer } = useAccount( { id: account_id } );
+	const { account, getHoldingById, addTransaction } = useAccount( { id: account_id } );
 	const holding = useMemo( () => {
 		return getHoldingById( _id );
 	}, [ account ] );
 
-	const { transactions, dividends } = useMemo( () => {
+	const { transactions, } = useMemo( () => {
 		return {
-			...holding,
-			dividends: account?.transfers
+			transactions: account?.transactions
 				.filtered( 'holding_id == $0', holding?._id )
 		}
 	}, [ account, holding ] );
+
+	const dividends = useMemo( () => {
+		const dividends = transactions && transactions
+			.filtered( 'sub_type == $0', 'dividend' as Cash['id'] );
+
+		return dividends;
+	}, [ transactions ] );
 
 	const getTransactionById = useCallback( ( id: Realm.BSON.UUID ) => {
 		const transaction = transactions
@@ -66,9 +73,9 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 						const index = account.holdings.findIndex( holding => {
 							return holding._id.equals( _id );
 						} );
-						
+
 						account.holdings.remove( index );
-					} ) );
+						// TODO handle holdings transactio nremove
 				}
 			} );
 		} );
@@ -152,7 +159,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		holding, saveHolding, removeHolding,
 		account,
 		transactions, addTransaction, getTransactionById,
-		dividends, addTransfer,
+		dividends,
 		value, amount, total, fees,
 		transactionSum, dividendSum,
 		lastTransaction, lastAdjustment, lastPrice,

@@ -1,6 +1,6 @@
 import Realm from 'realm';
 import { Holding } from './Holding';
-import { Transfer } from './Transfer';
+import { Transaction } from './Transaction';
 
 export type Account = {
   _id: Realm.BSON.UUID;
@@ -8,7 +8,7 @@ export type Account = {
   notes?: string;
   owner_id: string;
   holdings?: Realm.List<Holding>;
-  transfers?: Realm.List<Transfer>;
+  transactions?: Realm.List<Transaction>;
 	isValid?: () => boolean;
 };
 
@@ -20,7 +20,7 @@ export const AccountSchema = {
     notes: 'string?',
     owner_id: 'string',
     holdings: 'Holding[]',
-		transfers: 'Transfer[]',
+		transactions: 'Transaction[]',
   },
   primaryKey: '_id',
 };

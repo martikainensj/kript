@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
-import Realm from "realm";
+import Realm, { BSON } from "realm";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
@@ -30,7 +30,7 @@ const HoldingPage: React.FC = ( {} ) => {
 		holding, saveHolding, removeHolding,
 		account,
 		addTransaction,
-		dividends, addTransfer,
+		dividends, transactions,
 		value, amount, returnValue, returnPercentage
 	}	= useHolding( { _id, account_id } );
 	const { openMenu } = useMenu();
@@ -79,14 +79,15 @@ const HoldingPage: React.FC = ( {} ) => {
 						__( 'New Transaction' ),
 						<TransactionForm
 							transaction={ {
-								_id: new Realm.BSON.UUID(),
 								owner_id: user.id,
 								date: Date.now(),
 								price: null,
 								amount: null,
 								total: null,
 								holding_name: holding.name,
-								account_id: account._id
+								account_id: account._id,
+								type: 'trading',
+								sub_type: 'buy'
 							} }
 							account={ account }
 							onSubmit={ ( transaction ) => {
@@ -95,30 +96,6 @@ const HoldingPage: React.FC = ( {} ) => {
 					);
 				}
 			},
-			{
-				icon: ( props ) => { return (
-					<Icon name={ 'swap-horizontal-outline' } { ...props } />
-				) },
-				label: __( 'Add Dividend' ),
-				onPress: () => {
-					openBottomSheet(
-						__( 'New Dividend' ),
-						<TransferForm
-							transfer={ {
-								_id: new Realm.BSON.UUID(),
-								account_id: account._id,
-								owner_id: user.id,
-								date: Date.now(),
-								amount: null,
-								holding_name: holding.name
-							} }
-							account={ account }
-							onSubmit={ ( transfer ) => {
-								addTransfer( transfer ).then( closeBottomSheet );
-							}	} />
-					);
-				}
-			}
 		])
 	}, [ holding, account ] );
 
@@ -153,7 +130,7 @@ const HoldingPage: React.FC = ( {} ) => {
 		return;
 	}
 
-	const { name, transactions } = holding;
+	const { name } = holding;
 	
 	return (
 			<FABProvider>
@@ -175,30 +152,36 @@ const HoldingPage: React.FC = ( {} ) => {
 						{
 							label: __( 'Overview' ),
 							content: (
-								<Card style={ { marginTop: Spacing.md } }>
-									<Title>{ __( 'Overview' ) }</Title>
-								</Card>
+								<View style={ styles.contentContainer }>
+									<Card style={ { marginTop: Spacing.md } }>
+										<Title>{ __( 'Overview' ) }</Title>
+									</Card>
+								</View>
 							)
 						},
 						{
 							label: __( 'Transactions' ),
 							content: (
-								<ItemList
-									noItemsText={ __( 'No Transactions' ) }
-									items={ transactions.map( transaction =>
-										<TransactionItem { ...transaction } />
-									) } />
+								<View style={ styles.contentContainer }>
+									<ItemList
+										noItemsText={ __( 'No Transactions' ) }
+										items={ transactions.map( transaction =>
+											<TransactionItem { ...transaction } />
+										) } />
+								</View>
 							),
 							disabled: ! transactions?.length
 						},
 						{
 							label: __( 'Dividends' ),
 							content: (
-								<ItemList
-									noItemsText={ __( 'No Dividends' ) }
-									items={ dividends.map( dividend =>
-										<TransferItem { ...dividend } />
-									) } />
+								<View style={ styles.contentContainer }>
+									<ItemList
+										noItemsText={ __( 'No Dividends' ) }
+										items={ dividends.map( dividend =>
+											<TransferItem { ...dividend } />
+										) } />
+								</View>
 							),
 							disabled: ! dividends?.length
 						}
@@ -214,5 +197,9 @@ export default HoldingPage;
 const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.container,
+	},
+	contentContainer: {
+		...GlobalStyles.container,
+		...GlobalStyles.gutter,
 	},
 } );

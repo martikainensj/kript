@@ -24,8 +24,8 @@ export const TransferForm = ( {
 	onSubmit
 }: TransferFormProps ) => {
 	const { __ } = useI18n();
-	const { TransferTypes } = useTypes();
-	const [ deposit, withdraw, dividend ] = TransferTypes;
+	const { CashTypes } = useTypes();
+	const [ deposit, withdraw, dividend ] = CashTypes;
 	const [ transferType, setTransferType ]	= useState(
 		!! transfer.holding_name 
 			? dividend.id 
@@ -82,7 +82,7 @@ export const TransferForm = ( {
 					<Select
 						value={ transferType }
 						setValue={ setTransferType }
-						options={ TransferTypes.map( transferType => {
+						options={ CashTypes.map( transferType => {
 							return {
 								icon: ( { size, color } ) => {
 									return (

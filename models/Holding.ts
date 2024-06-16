@@ -7,7 +7,6 @@ export type Holding = {
   notes?: string;
   owner_id: string;
 	account_id: Realm.BSON.UUID;
-  transactions?: Realm.List<Transaction>;
 	isValid?: () => boolean;
 };
 
@@ -20,6 +19,5 @@ export const HoldingSchema = {
     notes: 'string?',
     owner_id: 'string',
 		account_id: 'uuid',
-    transactions: 'Transaction[]',
   }
 };

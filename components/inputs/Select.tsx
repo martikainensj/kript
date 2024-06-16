@@ -26,6 +26,7 @@ interface SelectProps {
 	setValue: React.Dispatch<React.SetStateAction<any>>;
 	options: OptionProps[];
 	style?: StyleProp<ViewStyle>;
+	disabled?: boolean;
 }
 
 export const Select: React.FC<SelectProps> = ( {
@@ -33,7 +34,8 @@ export const Select: React.FC<SelectProps> = ( {
 	value,
 	setValue,
 	options,
-	style
+	style,
+	disabled,
 } ) => {
 	const { theme } = useTheme();
 	const onValueChange = ( value ) => {
@@ -56,6 +58,7 @@ export const Select: React.FC<SelectProps> = ( {
 					return {
 						...option,
 						showSelectedCheck: true,
+						disabled: disabled || option.disabled,
 						style: [
 							styles.buttonContainer,
 							option.value === value && {

@@ -7,43 +7,39 @@ import { Transaction } from "../models/Transaction";
 import { useHolding } from "./useHolding";
 import { useI18n } from "../components/contexts/I18nContext";
 import { useTypes } from "./useTypes";
+import { useAccount } from "./useAccount";
 
 interface useTransactionProps {
 	_id: Realm.BSON.UUID,
-	holding_id: Realm.BSON.UUID,
 	account_id: Realm.BSON.UUID
 }
 
-export const useTransaction = ( { _id, holding_id, account_id }: useTransactionProps ) => {
+export const useTransaction = ( { _id, account_id }: useTransactionProps ) => {
 	const { __ } = useI18n();
 	const realm = useRealm();
-	const {
-		holding, 
-		transactions, getTransactionById
-	} = useHolding( { _id: holding_id, account_id: account_id } );
+	const { getHoldingById, getTransactionById, account, transactions } = useAccount( { id: account_id } );
+	
 	const transaction = useMemo( () => {
 		const transaction = getTransactionById( _id );
 		return transaction;
-	}, [ holding ] );
+	}, [ account ] );
 
-	const { TransactionTypes, AdjustmentTypes } = useTypes();
-	const [ buy, sell, adjustment ] = TransactionTypes;
-	const [ stockSplit, merger, priceUpdate, amountUpdate, update ] = AdjustmentTypes;
+	const holding = useMemo( () => {
+		const holding = getTransactionById( transaction.holding_id );
+		return holding;
+	}, [ transaction ] );
+
+	const { TradingTypes, CashTypes, AdjustmentTypes } = useTypes();
 
 	const type = useMemo( () => {
-		const type = transaction?.isValid() && (
-			transaction?.total
-				? transaction?.total > 0
-					? buy
-					: sell
-				: adjustment
-		);
-
-		if ( type === adjustment ) {
-			// Tähä täytyy keksii joku keino kaivaa aikasempi hinta ja määrä
+		switch ( transaction.type) {
+			case 'trading':
+				return TradingTypes.find(type => type.id === transaction.sub_type )
+			case 'cash':
+				return CashTypes.find(type => type.id === transaction.sub_type )
+			case 'adjustment':
+				return AdjustmentTypes.find(type => type.id === transaction.sub_type )
 		}
-
-		return type
 	}, [] )
 
 	const saveTransaction = useCallback( ( editedTransaction: Transaction ) => {
@@ -61,7 +57,7 @@ export const useTransaction = ( { _id, holding_id, account_id }: useTransactionP
 				}
 			} );
 		} );
-	}, [ transaction, holding ] );
+	}, [ transaction, account ] );
 
 	const removeTransaction = useCallback( () => {
 		const title = __( 'Remove Transaction' );

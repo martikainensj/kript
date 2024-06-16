@@ -319,47 +319,47 @@ const Translations: { [ key: string ]: Translation } = {
 	// Adjustments
 
 	'adjustment': {
-		fi_FI: 'Säätö',
+		fi_FI: 'Korjaus',
 		en_US: 'Adjustment'
 	},
 	'adjustments': {
-		fi_FI: 'Siirrot',
+		fi_FI: 'Korjaukset',
 		en_US: 'Adjustments'
 	},
 	'new adjustment': {
-		fi_FI: 'Uusi säätö',
+		fi_FI: 'Uusi korjaus',
 		en_US: 'New Adjustment'
 	},
 	'edit adjustment': {
-		fi_FI: 'Muokkaa säätöä',
+		fi_FI: 'Muokkaa korjausta',
 		en_US: 'Edit Adjustment'
 	},
 	'add adjustment': {
-		fi_FI: 'Lisää säätö',
+		fi_FI: 'Lisää korjaus',
 		en_US: 'Add Adjustment'
 	},
 	'update adjustment': {
-		fi_FI: 'Päivitä säätö',
+		fi_FI: 'Päivitä korjaus',
 		en_US: 'Update Adjustment'
 	},
 	'remove adjustment': {
-		fi_FI: 'Poista säätö',
+		fi_FI: 'Poista korjaus',
 		en_US: 'Remove Adjustment'
 	},
 	'removing existing adjustment': {
-		fi_FI: 'Poistetaan olemassa oleva säätö',
+		fi_FI: 'Poistetaan olemassa oleva korjaus',
 		en_US: 'Removing existing Adjustment'
 	},
 	'updating existing adjustment': {
-		fi_FI: 'Päivitetään olemassa oleva säätö',
+		fi_FI: 'Päivitetään olemassa oleva korjaus',
 		en_US: 'Updating existing Adjustment'
 	},
 	'adding a new adjustment': {
-		fi_FI: 'Lisätään uutta säätöä',
+		fi_FI: 'Lisätään uutta korjausta',
 		en_US: 'Adding a new Adjustment'
 	},
 	'no adjustments': {
-		fi_FI: 'Ei säätöjä',
+		fi_FI: 'Ei korjauksia',
 		en_US: 'No Adjustments'
 	},
 
@@ -486,6 +486,14 @@ const Translations: { [ key: string ]: Translation } = {
 	'investment account': {
 		fi_FI: 'Arvo-osuustili',
 		en_US: 'Investment Account'
+	},
+	'trading': {
+		fi_FI: 'Kauppa',
+		en_US: 'Trading'
+	},
+	'cash': {
+		fi_FI: 'Kassa',
+		en_US: 'Cash'
 	}
 }
 

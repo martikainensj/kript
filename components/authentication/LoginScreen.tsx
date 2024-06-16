@@ -10,6 +10,7 @@ import { GlobalStyles, Spacing, IconSize } from '../../constants';
 import { Header, Icon } from '../ui';
 import { useI18n } from '../../components/contexts/I18nContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { ActivityIndicator } from 'react-native-paper';
 
 export const LoginScreen = () => {
 	const { theme } = useTheme();
@@ -33,6 +34,10 @@ export const LoginScreen = () => {
 		}
 	}, [result, logInWithEmailPassword, email, password] );
 
+	if ( ! theme ) {
+		return <ActivityIndicator />
+	}
+	
 	return (
     <TouchableWithoutFeedback onPress={ handleDismissKeyboard }>
 			<View style={ [ styles.container, { backgroundColor: theme.colors.background } ] }>

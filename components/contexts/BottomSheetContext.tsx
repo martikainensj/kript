@@ -9,7 +9,8 @@ import React, {
 import {
 	Keyboard,
 	Platform,
-	StyleSheet
+	StyleSheet,
+	useWindowDimensions
 } from "react-native";
 import GorhomBottomSheet, {
 	BottomSheetBackdrop,
@@ -52,10 +53,15 @@ export const useBottomSheet = () => useContext( BottomSheetContext );
 export const BottomSheetProvider = ( { children } ) => {
 	const bottomSheetRef = useRef<BottomSheetMethods>( null );
 	const { theme } = useTheme();
-	const insets = useSafeAreaInsets();
 	const [ title, setTitle ] = useState( '' );
 	const [ content, setContent ] = useState<React.ReactNode>( null );
 	const [ shouldOpen, setShouldOpen ] = useState( false );
+
+	const insets = useSafeAreaInsets();
+	const dimensions = useWindowDimensions();
+	const snapPoints = [
+		dimensions.height - insets.top
+	];
 
 	const renderBackdrop = useCallback( 
 		( props: BottomSheetDefaultBackdropProps ) => (
@@ -83,7 +89,10 @@ export const BottomSheetProvider = ( { children } ) => {
 	}, [] );
 
 	useEffect( () => {
-		shouldOpen && bottomSheetRef.current.expand()
+		if ( shouldOpen ) {
+			bottomSheetRef.current.snapToIndex( 0 );
+			setShouldOpen( false );
+		}
 	}, [ shouldOpen ] );
 
 	return (
@@ -103,6 +112,7 @@ export const BottomSheetProvider = ( { children } ) => {
 				enablePanDownToClose={ true }
 				style={ styles.container }
 				onClose={ onClose }
+				snapPoints={ snapPoints }
 				enableDynamicSizing={ true }
 				backgroundStyle={ { backgroundColor: theme.colors.background } }
 				handleComponent={ () => 

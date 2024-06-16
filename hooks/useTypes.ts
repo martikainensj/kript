@@ -10,11 +10,48 @@ export interface Type {
 	icon?: React.ComponentProps<typeof Ionicons>['name'];
 }
 
+export interface Transaction extends Type {
+	id: 'trading' | 'cash' | 'adjustment'
+}
+
+export interface Trading extends Type {
+	id: 'buy' | 'sell'
+}
+
+export interface Cash extends Type {
+	id: 'deposit' | 'withdrawal' | 'dividend'
+}
+
+export interface Adjustment extends Type {
+	id: 'stockSplit' | 'merger' | 'priceUpdate' | 'amountUpdate' | 'update'
+}
+
 export const useTypes = () => {
 	const { theme } = useTheme();
 	const { __ } = useI18n();
 
-	const TransactionTypes: Type[] = [
+	const TransactionTypes: Transaction[] = [
+		{
+			id: 'trading',
+			name: __( 'Trading' ),
+			color: theme.colors.primary,
+			icon: 'ticket-outline'
+		},
+		{
+			id: 'cash',
+			name: __( 'Cash' ),
+			color: theme.colors.primary,
+			icon: 'cash-outline'
+		},
+		{
+			id: 'adjustment',
+			name: __( 'Adjustment' ),
+			color: theme.colors.primary,
+			icon: 'options'
+		}
+	];
+
+	const TradingTypes: Trading[] = [
 		{
 			id: 'buy',
 			name: __( 'Buy' ),
@@ -27,16 +64,9 @@ export const useTypes = () => {
 			color: theme.colors.error,
 			icon: 'exit-outline',
 		},
-		{
-			id: 'adjustment',
-			name: __( 'Adjustment' ),
-			color: theme.colors.tertiary,
-			icon: 'options'
-		}
 	];
 
-
-	const TransferTypes: Type[] = [
+	const CashTypes: Cash[] = [
 		{
 			id: 'deposit',
 			name: __( 'Deposit' ),
@@ -57,7 +87,7 @@ export const useTypes = () => {
 		}
 	];
 
-	const AdjustmentTypes: Type[] = [
+	const AdjustmentTypes: Adjustment[] = [
 		{
 			id: 'stockSplit',
 			name: __( 'Stock Split' ),
@@ -85,5 +115,5 @@ export const useTypes = () => {
 		}
 	];
 
-	return { TransactionTypes, TransferTypes, AdjustmentTypes }
+	return { TransactionTypes, TradingTypes, CashTypes, AdjustmentTypes }
 }

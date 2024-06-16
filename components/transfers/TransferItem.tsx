@@ -5,8 +5,8 @@ import Realm from "realm";
 
 import { Grid, Icon, Value } from "../ui";
 import { FontWeight, GlobalStyles, Spacing } from "../../constants";
-import { useTransfer } from "../../hooks";
-import { TransferForm } from "./TransferForm";
+import { useTransaction } from "../../hooks";
+import { TransactionForm } from "../transactions/TransactionForm";
 import { useI18n } from '../contexts/I18nContext';
 import { useTheme } from "../contexts/ThemeContext";
 import { MenuItem, useMenu } from "../contexts/MenuContext";
@@ -23,7 +23,7 @@ export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, sh
 	const { __ } = useI18n();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { transfer, saveTransfer, removeTransfer, type, account } = useTransfer( { _id, account_id } );
+	const { transaction, saveTransaction, removeTransaction, type } = useTransaction( { _id, account_id } );
 
 	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -34,12 +34,11 @@ export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, sh
 					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
 					openBottomSheet(
-						__( 'Edit Transfer' ),
-						<TransferForm
-							account={ account }
-							transfer={ transfer }
-							onSubmit={ transfer => {
-								saveTransfer( transfer ).then( closeBottomSheet ) }
+						__( 'Edit Transaction' ),
+						<TransactionForm
+							transaction={ transaction }
+							onSubmit={ transaction => {
+								saveTransaction( transaction ).then( closeBottomSheet ) }
 							} />
 					);
 				}
@@ -48,18 +47,18 @@ export const TransferItem: React.FC<TransferItemProps> = ( { _id, account_id, sh
 				title: __( 'Remove' ),
 				leadingIcon: ( { color } ) => 
 					<Icon name={ 'trash' } color={ color } />,
-				onPress: removeTransfer
+				onPress: removeTransaction
 			}
 		];
 
 		openMenu( anchor, menuItems );
-	}, [ transfer ] );
+	}, [ transaction ] );
 
-	if ( ! transfer?.isValid() ) return;
+	if ( ! transaction?.isValid() ) return;
 
 	const { amount, date, holding_name } = {
-		...transfer,
-		amount: Math.abs( transfer?.amount ),
+		...transaction,
+		amount: Math.abs( transaction?.amount ),
 	};
 	
 	const meta = [

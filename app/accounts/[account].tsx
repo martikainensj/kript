@@ -26,7 +26,7 @@ const AccountPage: React.FC = ( {} ) => {
 	const accountId = new Realm.BSON.UUID( params.id );
 	const { user } = useUser();
 	const { __ } = useI18n();
-	const { account, saveAccount, removeAccount, addTransaction, addTransfer, balance, value, returnValue, returnPercentage } = useAccount( { id: accountId } );
+	const { account, saveAccount, removeAccount, addTransaction, balance, value, returnValue, returnPercentage } = useAccount( { id: accountId } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
@@ -72,42 +72,19 @@ const AccountPage: React.FC = ( {} ) => {
 						__( 'New Transaction' ),
 						<TransactionForm
 							transaction={ {
-								_id: new Realm.BSON.UUID(),
 								owner_id: user.id,
 								date: Date.now(),
 								price: null,
 								amount: null,
 								total: null,
 								holding_name: '',
-								account_id: account._id
+								account_id: account._id,
+								type: 'trading',
+								sub_type: 'buy'
 							} }
 							account={ account }
 							onSubmit={ ( transaction ) => {
 								addTransaction( transaction ).then( closeBottomSheet );
-							}	} />
-					);
-				}
-			},
-			{
-				icon: ( { color, size } ) => { return (
-					<Icon name={ 'swap-horizontal-outline' } size={ size } color={ color } />
-				) },
-				label: __( 'Add Transfer' ),
-				onPress: () => {
-					openBottomSheet(
-						__( 'New Transfer' ),
-						<TransferForm
-							transfer={ {
-								_id: new Realm.BSON.UUID(),
-								account_id: account._id,
-								owner_id: user.id,
-								date: Date.now(),
-								amount: null,
-								holding_name: ''
-							} }
-							account={ account }
-							onSubmit={ ( transfer ) => {
-								addTransfer( transfer ).then( closeBottomSheet );
 							}	} />
 					);
 				}
@@ -149,7 +126,7 @@ const AccountPage: React.FC = ( {} ) => {
 		return;
 	}
 
-	const { _id, name, notes, holdings, transfers } = account;
+	const { _id, name, notes, holdings } = account;
 
 	return (
 			<FABProvider>
@@ -171,35 +148,27 @@ const AccountPage: React.FC = ( {} ) => {
 							{
 								label: __( 'Overview' ),
 								content: (
-									<Card style={ { marginTop: Spacing.md } }>
-										<Title>{ __( 'Overview' ) }</Title>
-									</Card>
+									<View style={ styles.contentContainer }>
+										<Card style={ { marginTop: Spacing.md } }>
+											<Title>{ __( 'Overview' ) }</Title>
+										</Card>
+									</View>
 								)
 							},
 							{
 								label: __( 'Holdings' ),
 								content: (
-									<ItemList
-										noItemsText={ __( 'No Holdings' ) }
-										contentContainerStyle={ styles.itemListcontentContainer }
-										items={ holdings.map( holding =>
-											<HoldingItem { ...holding } />
-										) } />
+									<View style={ styles.contentContainer }>
+										<ItemList
+											noItemsText={ __( 'No Holdings' ) }
+											contentContainerStyle={ styles.itemListcontentContainer }
+											items={ holdings.map( holding =>
+												<HoldingItem { ...holding } />
+											) } />
+									</View>
 								),
 								disabled: ! holdings?.length
 							},
-							{
-								label: __( 'Transfers' ),
-								content: (
-									<ItemList
-										noItemsText={ __( 'No Transfers' ) }
-										contentContainerStyle={ styles.itemListcontentContainer }
-										items={ transfers.map( transfer =>
-											<TransferItem { ...transfer } showHolding={ true } />
-										) } />
-								),
-								disabled: ! transfers?.length
-							}
 						] } />
 					</View>
 			</FABProvider>
