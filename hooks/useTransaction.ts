@@ -17,7 +17,7 @@ interface useTransactionProps {
 export const useTransaction = ( { _id, account_id }: useTransactionProps ) => {
 	const { __ } = useI18n();
 	const realm = useRealm();
-	const { getHoldingById, getTransactionById, account, transactions } = useAccount( { id: account_id } );
+	const { getTransactionById, account, transactions } = useAccount( { id: account_id } );
 	
 	const transaction = useMemo( () => {
 		const transaction = getTransactionById( _id );
@@ -25,14 +25,14 @@ export const useTransaction = ( { _id, account_id }: useTransactionProps ) => {
 	}, [ account ] );
 
 	const holding = useMemo( () => {
-		const holding = getTransactionById( transaction.holding_id );
+		const holding = transaction && getTransactionById( transaction.holding_id );
 		return holding;
 	}, [ transaction ] );
 
 	const { TradingTypes, CashTypes, AdjustmentTypes } = useTypes();
 
 	const type = useMemo( () => {
-		switch ( transaction.type) {
+		switch ( transaction?.type) {
 			case 'trading':
 				return TradingTypes.find(type => type.id === transaction.sub_type )
 			case 'cash':
@@ -40,7 +40,7 @@ export const useTransaction = ( { _id, account_id }: useTransactionProps ) => {
 			case 'adjustment':
 				return AdjustmentTypes.find(type => type.id === transaction.sub_type )
 		}
-	}, [] )
+	}, [ transaction ] )
 
 	const saveTransaction = useCallback( ( editedTransaction: Transaction ) => {
 		const title = __( 'Save Transaction' );

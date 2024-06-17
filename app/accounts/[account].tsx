@@ -20,6 +20,7 @@ import { useBottomSheet } from "../../components/contexts/BottomSheetContext";
 import { FABProvider, useFAB } from "../../components/contexts/FABContext";
 import { useUser } from "../../hooks/useUser";
 import { Card } from "../../components/ui/Card";
+import TransactionItem from "../../components/transactions/TransactionItem";
 
 const AccountPage: React.FC = ( {} ) => {
 	const params = useLocalSearchParams<{ id: string }>();
@@ -126,7 +127,7 @@ const AccountPage: React.FC = ( {} ) => {
 		return;
 	}
 
-	const { _id, name, notes, holdings } = account;
+	const { _id, name, notes, holdings, transactions } = account;
 
 	return (
 			<FABProvider>
@@ -164,6 +165,20 @@ const AccountPage: React.FC = ( {} ) => {
 											contentContainerStyle={ styles.itemListcontentContainer }
 											items={ holdings.map( holding =>
 												<HoldingItem { ...holding } />
+											) } />
+									</View>
+								),
+								disabled: ! holdings?.length
+							},
+							{
+								label: __( 'Transactions' ),
+								content: (
+									<View style={ styles.contentContainer }>
+										<ItemList
+											noItemsText={ __( 'No Transactions' ) }
+											contentContainerStyle={ styles.itemListcontentContainer }
+											items={ transactions.map( transaction =>
+												<TransactionItem { ...transaction } showHolding={ true } />
 											) } />
 									</View>
 								),

@@ -13,11 +13,11 @@ import { useBottomSheet } from "../contexts/BottomSheetContext";
 
 interface TransactionItemProps {
 	_id: Realm.BSON.UUID,
-	holding_id?: Realm.BSON.UUID,
-	account_id: Realm.BSON.UUID
+	account_id: Realm.BSON.UUID,
+	showHolding?: boolean
 }
 
-export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, holding_id, account_id } ) => {
+export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, account_id, showHolding } ) => {
 	const theme = useTheme();
 	const { __ } = useI18n();
 	const { openMenu } = useMenu();
@@ -55,22 +55,35 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, holding_
 
 	if ( ! transaction?.isValid() ) return;
 
-	const { amount, date, price, total } = {
+	const { amount, date, price, total, holding_name } = {
 		...transaction,
 		amount: Math.abs( transaction.amount ),
 		total: Math.abs( transaction.total ),
 	};
 	
 	const meta = [
-		<Text style={ [ styles.date, { color: theme.colors.primary } ] }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>,
+		<View style={ styles.header }>
+			<Text style={ [ styles.date, { color: theme.colors.primary } ] }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>
+			{ ( showHolding && holding_name )
+				&& <Text numberOfLines={ 1 } style={ styles.holding }>{ holding_name }</Text>
+			}
+		</View>,
 		<Text style={ [ styles.type, { color: type.color } ] }>{ type.name }</Text>
 	];
 
-	const values = [
-		<Value label={ __( 'Amount' ) } value={ amount } isVertical={ true } />,
-		<Value label={ __( 'Price' ) } value={ price } isVertical={ true } unit={ '€' } />,
-		<Value label={ __( 'Total' ) } value={ total } isVertical={ true } unit={ '€' } />
-	];
+	const values = [];
+
+	if ( amount ) {
+		values.push( <Value label={ __( 'Amount' ) } value={ amount } isVertical={ true } /> );
+	}
+
+	if ( price ) {
+		values.push( <Value label={ __( 'Price' ) } value={ price } isVertical={ true } unit={ '€' } /> );
+	}
+
+	if ( total ) {
+		values.push( <Value label={ __( 'Total' ) } value={ total } isVertical={ true } unit={ '€' } /> );
+	}
 
 	return (
 		<TouchableRipple
@@ -95,6 +108,12 @@ const styles = StyleSheet.create( {
 		paddingVertical: Spacing.md,
 		gap: Spacing.sm
 	},
+	header: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		flex: 1,
+		gap: Spacing.sm
+	},
 	date: {
 		fontWeight: FontWeight.bold,
 	},
@@ -102,4 +121,7 @@ const styles = StyleSheet.create( {
 		fontWeight: FontWeight.bold,
 		textAlign: 'right'
 	},
+	holding: {
+		fontWeight: FontWeight.bold
+	}
 } );

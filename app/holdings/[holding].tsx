@@ -172,19 +172,6 @@ const HoldingPage: React.FC = ( {} ) => {
 							),
 							disabled: ! transactions?.length
 						},
-						{
-							label: __( 'Dividends' ),
-							content: (
-								<View style={ styles.contentContainer }>
-									<ItemList
-										noItemsText={ __( 'No Dividends' ) }
-										items={ dividends.map( dividend =>
-											<TransferItem { ...dividend } />
-										) } />
-								</View>
-							),
-							disabled: ! dividends?.length
-						}
 					] }>
 					</Tabs>
 				</View>

@@ -77,9 +77,11 @@ export const TransactionForm = ( {
 	}, [ transaction ] );
 
 	useEffect( () => {
-		subTypes && setEditedTransaction(
-			Object.assign( { ...editedTransaction }, { sub_type: subTypes[0].id } )
-		);
+		if ( ! transaction.sub_type ) {
+			subTypes && setEditedTransaction(
+				Object.assign( { ...editedTransaction }, { sub_type: subTypes[0].id } )
+			);
+		}
 	}, [ subTypes ] );
 
 	return (

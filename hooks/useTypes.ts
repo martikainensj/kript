@@ -35,7 +35,7 @@ export const useTypes = () => {
 			id: 'trading',
 			name: __( 'Trading' ),
 			color: theme.colors.primary,
-			icon: 'ticket-outline'
+			icon: 'pricetag-outline'
 		},
 		{
 			id: 'cash',
