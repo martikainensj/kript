@@ -11,8 +11,6 @@ import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { AccountForm } from "../../components/accounts";
 import { TransactionForm } from "../../components/transactions/TransactionForm";
 import HoldingItem from "../../components/holdings/HoldingItem";
-import { TransferForm } from "../../components/transfers/TransferForm";
-import TransferItem from "../../components/transfers/TransferItem";
 import { Text } from "react-native-paper";
 import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../../components/contexts/I18nContext';
@@ -21,6 +19,7 @@ import { FABProvider, useFAB } from "../../components/contexts/FABContext";
 import { useUser } from "../../hooks/useUser";
 import { Card } from "../../components/ui/Card";
 import TransactionItem from "../../components/transactions/TransactionItem";
+import { useTypes } from "../../hooks/useTypes";
 
 const AccountPage: React.FC = ( {} ) => {
 	const params = useLocalSearchParams<{ id: string }>();
@@ -31,6 +30,7 @@ const AccountPage: React.FC = ( {} ) => {
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { SortingTypes } = useTypes();
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -163,9 +163,7 @@ const AccountPage: React.FC = ( {} ) => {
 										<ItemList
 											noItemsText={ __( 'No Holdings' ) }
 											contentContainerStyle={ styles.itemListcontentContainer }
-											items={ holdings.map( holding =>
-												<HoldingItem { ...holding } />
-											) } />
+											data={ [ ...holdings ] } />
 									</View>
 								),
 								disabled: ! holdings?.length
@@ -177,9 +175,12 @@ const AccountPage: React.FC = ( {} ) => {
 										<ItemList
 											noItemsText={ __( 'No Transactions' ) }
 											contentContainerStyle={ styles.itemListcontentContainer }
-											items={ transactions.map( transaction =>
-												<TransactionItem { ...transaction } showHolding={ true } />
-											) } />
+											data={ [ ...transactions ] }
+											showHolding
+											sortingOptions={ [
+												SortingTypes.sortNewestFirst,
+												SortingTypes.sortOldestFirst
+											] } />
 									</View>
 								),
 								disabled: ! holdings?.length

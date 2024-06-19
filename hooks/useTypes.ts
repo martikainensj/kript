@@ -3,27 +3,32 @@ import { Ionicons } from '@expo/vector-icons';
 import { useI18n } from '../components/contexts/I18nContext';
 import { useTheme } from '../components/contexts/ThemeContext';
 
-export interface Type {
+export interface TransactionType {
 	id: string;
 	name: string;
 	color?: string;
 	icon?: React.ComponentProps<typeof Ionicons>['name'];
 }
 
-export interface Transaction extends Type {
+export interface Transaction extends TransactionType {
 	id: 'trading' | 'cash' | 'adjustment'
 }
 
-export interface Trading extends Type {
+export interface Trading extends TransactionType {
 	id: 'buy' | 'sell'
 }
 
-export interface Cash extends Type {
+export interface Cash extends TransactionType {
 	id: 'deposit' | 'withdrawal' | 'dividend'
 }
 
-export interface Adjustment extends Type {
+export interface Adjustment extends TransactionType {
 	id: 'stockSplit' | 'merger' | 'priceUpdate' | 'amountUpdate' | 'update'
+}
+
+export interface SortingType {
+	name: string,
+	function: ( a: any, b: any ) => number
 }
 
 export const useTypes = () => {
@@ -115,5 +120,38 @@ export const useTypes = () => {
 		}
 	];
 
-	return { TransactionTypes, TradingTypes, CashTypes, AdjustmentTypes }
+	const SortingTypes = {
+		sortNewestFirst: {
+			name: __( 'Newest first' ),
+			function: (a, b) => a.date - b.date
+		},	
+		sortOldestFirst: {
+			name: __( 'Oldest first' ),
+			function: (a, b) => b.date - a.date
+		},
+		sortName: {
+			name: __( 'Name (A-Z)' ),
+			function: (a, b) => b.name - a.name
+		},
+		sortHighestReturn: {
+			name: __( 'Highest return' ),
+			function: (a, b) => a.returnValue - b.returnValue
+		},
+		sortLowestReturn: {
+			name: __( 'Lowest return' ),
+			function: (a, b) => b.returnValue - a.returnValue
+		},
+		sortHighestValue: {
+			name: __( 'Highest value' ),
+			function: (a, b) => a.value - b.value
+		}
+	}
+
+	return {
+		TransactionTypes,
+		TradingTypes,
+		CashTypes,
+		AdjustmentTypes,
+		SortingTypes
+	}
 }

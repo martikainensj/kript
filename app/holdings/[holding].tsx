@@ -9,10 +9,8 @@ import { Grid, Header, Icon, ItemList, Tabs, Title, Value } from "../../componen
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { TransactionForm } from "../../components/transactions/TransactionForm";
-import { TransferForm } from "../../components/transfers/TransferForm";
 import { HoldingForm } from "../../components/holdings/HoldingForm";
 import TransactionItem from "../../components/transactions/TransactionItem";
-import TransferItem from "../../components/transfers/TransferItem";
 import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../../components/contexts/I18nContext';
 import { FABProvider, useFAB } from "../../components/contexts/FABContext";
@@ -165,9 +163,7 @@ const HoldingPage: React.FC = ( {} ) => {
 								<View style={ styles.contentContainer }>
 									<ItemList
 										noItemsText={ __( 'No Transactions' ) }
-										items={ transactions.map( transaction =>
-											<TransactionItem { ...transaction } />
-										) } />
+										data={ [ ...transactions ] } />
 								</View>
 							),
 							disabled: ! transactions?.length

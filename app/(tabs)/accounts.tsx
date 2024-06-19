@@ -46,9 +46,7 @@ const Accounts: React.FC = () => {
 				<ItemList 
 					title={ __( 'Accounts' ) }
 					noItemsText={ __( 'No accounts' ) }
-					items={ accounts.map( account => {
-						return <AccountItem id={ account._id }/>
-					} ) } />
+					data={ [ ...accounts ] } />
 			</View>
 		</View>
 	);

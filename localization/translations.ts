@@ -222,53 +222,6 @@ const Translations: { [ key: string ]: Translation } = {
 		en_US: 'No Transactions'
 	},
 
-	// Transfers
-
-	'transfer': {
-		fi_FI: 'Siirto',
-		en_US: 'Transfer'
-	},
-	'transfers': {
-		fi_FI: 'Siirrot',
-		en_US: 'Transfers'
-	},
-	'new transfer': {
-		fi_FI: 'Uusi siirto',
-		en_US: 'New Transfer'
-	},
-	'edit transfer': {
-		fi_FI: 'Muokkaa siirtoa',
-		en_US: 'Edit Transfer'
-	},
-	'add transfer': {
-		fi_FI: 'Lisää siirto',
-		en_US: 'Add Transfer'
-	},
-	'update transfer': {
-		fi_FI: 'Päivitä siirto',
-		en_US: 'Update Transfer'
-	},
-	'remove transfer': {
-		fi_FI: 'Poista siirto',
-		en_US: 'Remove Transfer'
-	},
-	'removing existing transfer': {
-		fi_FI: 'Poistetaan olemassa oleva siirto',
-		en_US: 'Removing existing Transfer'
-	},
-	'updating existing transfer': {
-		fi_FI: 'Päivitetään olemassa oleva siirto',
-		en_US: 'Updating existing Transfer'
-	},
-	'adding a new transfer': {
-		fi_FI: 'Lisätään uutta siirtoa',
-		en_US: 'Adding a new Transfer'
-	},
-	'no transfers': {
-		fi_FI: 'Ei siirtoja',
-		en_US: 'No Transfers'
-	},
-
 	// Dividends
 
 	'dividend': {
@@ -494,7 +447,31 @@ const Translations: { [ key: string ]: Translation } = {
 	'cash': {
 		fi_FI: 'Kassa',
 		en_US: 'Cash'
-	}
+	},
+	'newest first': {
+		fi_FI: 'Uusimmat ensin',
+		en_US: 'Newest first'
+	},
+	'oldest first': {
+		fi_FI: 'Vanhimmat ensin',
+		en_US: 'Oldest first'
+	},
+	'name (a-z)': {
+		fi_FI: 'Nimi (A-Ö)',
+		en_US: 'Name (A-Z)'
+	},
+	'highest return': {
+		fi_FI: 'Korkein tuotto',
+		en_US: 'Highest return'
+	},
+	'lowest return': {
+		fi_FI: 'Alhaisin tuotto',
+		en_US: 'Lowest return'
+	},
+	'highest value': {
+		fi_FI: 'Korkein arvo',
+		en_US: 'Highest value'
+	},
 }
 
 export default Translations;
