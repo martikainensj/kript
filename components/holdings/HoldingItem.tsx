@@ -3,7 +3,6 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import { router } from "expo-router";
 
-import { Grid, Icon, Value } from "../ui";
 import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { useHolding } from "../../hooks";
 import { HoldingForm } from "./HoldingForm";
@@ -13,6 +12,9 @@ import { useI18n } from '../contexts/I18nContext';
 import { useTheme } from "../contexts/ThemeContext";
 import { MenuItem, useMenu } from "../contexts/MenuContext";
 import { useBottomSheet } from "../contexts/BottomSheetContext";
+import { Icon } from "../ui/Icon";
+import { Value } from "../ui/Value";
+import { Grid } from "../ui/Grid";
 
 interface HoldingItemProps extends Holding {}
 

@@ -3,7 +3,6 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import { router } from 'expo-router';
 
-import { Icon } from "../ui";
 import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { Account } from "../../models/Account";
 import { MenuItem, useMenu } from "../contexts/MenuContext";
@@ -11,9 +10,11 @@ import { useAccount } from "../../hooks";
 import { useBottomSheet } from "../contexts/BottomSheetContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { AccountForm } from "./AccountForm";
-import { Grid, Value } from "../ui";
 import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../../components/contexts/I18nContext';
+import { Icon } from "../ui/Icon";
+import { Value } from "../ui/Value";
+import { Grid } from "../ui/Grid";
 
 interface AccountItemProps {
 	id: Account['_id']

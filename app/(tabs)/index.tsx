@@ -5,8 +5,8 @@ import { StyleSheet, View } from 'react-native';
 import { GlobalStyles } from '../../constants';
 import { IconButton } from '../../components/buttons';
 import { confirmation } from '../../helpers';
-import { Header } from '../../components/ui';
 import { useI18n } from '../../components/contexts/I18nContext';
+import { Header } from '../../components/ui/Header';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();

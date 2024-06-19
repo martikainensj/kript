@@ -6,11 +6,12 @@ import { DateInput, HoldingInput, TextInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
-import { Divider, Icon } from "../ui";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
 import { useI18n } from "../contexts/I18nContext";
 import { useTypes } from "../../hooks/useTypes";
 import { Select } from "../inputs/Select";
+import { Divider } from "../ui/Divider";
+import { Icon } from "../ui/Icon";
 
 interface TransactionFormProps {
 	transaction: Transaction,

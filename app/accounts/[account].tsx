@@ -5,21 +5,24 @@ import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { useAccount } from "../../hooks";
-import { Grid, Header, Icon, ItemList, Tabs, Title, Value } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { AccountForm } from "../../components/accounts";
 import { TransactionForm } from "../../components/transactions/TransactionForm";
-import HoldingItem from "../../components/holdings/HoldingItem";
-import { Text } from "react-native-paper";
 import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../../components/contexts/I18nContext';
 import { useBottomSheet } from "../../components/contexts/BottomSheetContext";
 import { FABProvider, useFAB } from "../../components/contexts/FABContext";
 import { useUser } from "../../hooks/useUser";
 import { Card } from "../../components/ui/Card";
-import TransactionItem from "../../components/transactions/TransactionItem";
 import { useTypes } from "../../hooks/useTypes";
+import { Tabs } from "../../components/ui/Tabs";
+import { Icon } from "../../components/ui/Icon";
+import { Value } from "../../components/ui/Value";
+import { Header } from "../../components/ui/Header";
+import { Grid } from "../../components/ui/Grid";
+import { Title } from "../../components/ui/Title";
+import { ItemList } from "../../components/ui/ItemList";
 
 const AccountPage: React.FC = ( {} ) => {
 	const params = useLocalSearchParams<{ id: string }>();
@@ -145,48 +148,51 @@ const AccountPage: React.FC = ( {} ) => {
 								items= { values } />
 					</Header>
 
-						<Tabs screens={ [
-							{
-								label: __( 'Overview' ),
-								content: (
-									<View style={ styles.contentContainer }>
-										<Card style={ { marginTop: Spacing.md } }>
-											<Title>{ __( 'Overview' ) }</Title>
-										</Card>
-									</View>
-								)
-							},
-							{
-								label: __( 'Holdings' ),
-								content: (
-									<View style={ styles.contentContainer }>
-										<ItemList
-											noItemsText={ __( 'No Holdings' ) }
-											contentContainerStyle={ styles.itemListcontentContainer }
-											data={ [ ...holdings ] } />
-									</View>
-								),
-								disabled: ! holdings?.length
-							},
-							{
-								label: __( 'Transactions' ),
-								content: (
-									<View style={ styles.contentContainer }>
-										<ItemList
-											noItemsText={ __( 'No Transactions' ) }
-											contentContainerStyle={ styles.itemListcontentContainer }
-											data={ [ ...transactions ] }
-											showHolding
-											sortingOptions={ [
-												SortingTypes.sortNewestFirst,
-												SortingTypes.sortOldestFirst
-											] } />
-									</View>
-								),
-								disabled: ! holdings?.length
-							},
-						] } />
-					</View>
+					<Tabs screens={ [
+						{
+							label: __( 'Overview' ),
+							content: (
+								<View style={ styles.contentContainer }>
+									<Card style={ { marginTop: Spacing.md } }>
+										<Title>{ __( 'Overview' ) }</Title>
+									</Card>
+								</View>
+							)
+						},
+						{
+							label: __( 'Holdings' ),
+							content: (
+								<View style={ styles.contentContainer }>
+									<ItemList
+										noItemsText={ __( 'No Holdings' ) }
+										contentContainerStyle={ styles.itemListcontentContainer }
+										data={ [ ...holdings ] }
+										sortingOptions={ [
+											SortingTypes.sortName,
+										] } />
+								</View>
+							),
+							disabled: ! holdings?.length
+						},
+						{
+							label: __( 'Transactions' ),
+							content: (
+								<View style={ styles.contentContainer }>
+									<ItemList
+										noItemsText={ __( 'No Transactions' ) }
+										contentContainerStyle={ styles.itemListcontentContainer }
+										data={ [ ...transactions ] }
+										showHolding
+										sortingOptions={ [
+											SortingTypes.sortNewestFirst,
+											SortingTypes.sortOldestFirst
+										] } />
+								</View>
+							),
+							disabled: ! holdings?.length
+						},
+					] } />
+				</View>
 			</FABProvider>
 	)
 }

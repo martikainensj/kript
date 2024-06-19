@@ -5,11 +5,12 @@ import Realm from 'realm';
 import { GlobalStyles } from '../../constants';
 import { AccountItem, AccountForm  } from '../../components/accounts';
 import { IconButton} from '../../components/buttons';
-import { Header, ItemList } from '../../components/ui';
 import { useAccounts } from '../../hooks';
 import { useBottomSheet } from '../../components/contexts/BottomSheetContext';
 import { useI18n } from '../../components/contexts/I18nContext';
 import { useUser } from '../../hooks/useUser';
+import { Header } from '../../components/ui/Header';
+import { ItemList } from '../../components/ui/ItemList';
 
 const Accounts: React.FC = () => {
 	const { user } = useUser();
@@ -43,7 +44,7 @@ const Accounts: React.FC = () => {
 						icon={ 'add' } />
 	 			) } />
 			<View style={ styles.contentContainer }>
-				<ItemList 
+				<ItemList
 					title={ __( 'Accounts' ) }
 					noItemsText={ __( 'No accounts' ) }
 					data={ [ ...accounts ] } />

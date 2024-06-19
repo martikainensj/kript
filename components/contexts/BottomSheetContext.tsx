@@ -25,10 +25,10 @@ import {
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { IconButton } from "../buttons";
-import { Header } from "../ui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "./ThemeContext";
 import { Text } from "react-native-paper";
+import { Header } from "../ui/Header";
 
 interface BottomSheetContext {
 	title: string,

@@ -1,8 +1,8 @@
 import { TextInput as PaperTextInput, TextInputProps as PaperTextInputProps } from 'react-native-paper';
 import { BorderRadius, FontSize } from "../../constants";
 import { StyleSheet } from "react-native";
-import { Icon } from "../ui";
 import { useEffect, useState } from 'react';
+import { Icon } from '../ui/Icon';
 
 interface TextInputProps extends Omit<PaperTextInputProps, 'value' | 'onChangeText'> {
 	value: string | number,

@@ -123,11 +123,11 @@ export const useTypes = () => {
 	const SortingTypes = {
 		sortNewestFirst: {
 			name: __( 'Newest first' ),
-			function: (a, b) => a.date - b.date
+			function: (a, b) => b.date - a.date
 		},	
 		sortOldestFirst: {
 			name: __( 'Oldest first' ),
-			function: (a, b) => b.date - a.date
+			function: (a, b) => a.date - b.date
 		},
 		sortName: {
 			name: __( 'Name (A-Z)' ),

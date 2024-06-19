@@ -1,14 +1,9 @@
 import React, {
-	useState,
 	createContext,
 	useContext,
-	useCallback,
-	useLayoutEffect
 } from "react";
-import { useStorage } from "../../hooks/useStorage";
-import Translations from "../../localization/translations";
 import { CONFIG } from "../../kript.config";
-import { AppProvider, UserProvider, RealmProvider, useApp, useRealm } from "@realm/react";
+import { AppProvider, UserProvider, RealmProvider } from "@realm/react";
 import { LoginScreen } from "../authentication";
 import { Schemas } from "../../models";
 import Realm, { ClientResetMode, OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from "realm";

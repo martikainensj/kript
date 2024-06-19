@@ -5,7 +5,6 @@ import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { useHolding } from "../../hooks";
-import { Grid, Header, Icon, ItemList, Tabs, Title, Value } from "../../components/ui";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../components/contexts/MenuContext";
 import { TransactionForm } from "../../components/transactions/TransactionForm";
@@ -17,6 +16,14 @@ import { FABProvider, useFAB } from "../../components/contexts/FABContext";
 import { useBottomSheet } from "../../components/contexts/BottomSheetContext";
 import { useUser } from "../../hooks/useUser";
 import { Card } from "../../components/ui/Card";
+import { Tabs } from "../../components/ui/Tabs";
+import { Icon } from "../../components/ui/Icon";
+import { Value } from "../../components/ui/Value";
+import { Header } from "../../components/ui/Header";
+import { Grid } from "../../components/ui/Grid";
+import { Title } from "../../components/ui/Title";
+import { ItemList } from "../../components/ui/ItemList";
+import { useTypes } from "../../hooks/useTypes";
 
 const HoldingPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ _id: string, account_id: string }>();
@@ -34,6 +41,7 @@ const HoldingPage: React.FC = ( {} ) => {
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { SortingTypes } = useTypes();
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -163,7 +171,11 @@ const HoldingPage: React.FC = ( {} ) => {
 								<View style={ styles.contentContainer }>
 									<ItemList
 										noItemsText={ __( 'No Transactions' ) }
-										data={ [ ...transactions ] } />
+										data={ [ ...transactions ] }
+										sortingOptions={ [
+											SortingTypes.sortNewestFirst,
+											SortingTypes.sortOldestFirst
+										] }  />
 								</View>
 							),
 							disabled: ! transactions?.length

@@ -4,10 +4,10 @@ import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-nati
 import { IconButton } from "../buttons";
 import { TextInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
-import { Divider } from "../ui";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
 import { Holding } from "../../models/Holding";
 import { useI18n } from "../contexts/I18nContext";
+import { Divider } from "../ui/Divider";
 
 interface HoldingFormProps {
 	holding: Holding,

@@ -13,7 +13,7 @@ import {
 	BorderRadius,
 	IconSize
 } from "../../constants";
-import { Icon } from "../ui";
+import { Icon } from "../ui/Icon";
 
 interface FABContext {
 	actions: FABGroupProps["actions"]

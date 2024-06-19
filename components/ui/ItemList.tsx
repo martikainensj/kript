@@ -1,7 +1,7 @@
 import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { GlobalStyles, Spacing } from "../../constants";
 import { Divider, Menu, Text } from "react-native-paper";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useI18n } from "../contexts/I18nContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { SortingType } from "../../hooks/useTypes";
@@ -11,8 +11,8 @@ import { Transaction } from "../../models/Transaction";
 import { AccountItem } from "../accounts";
 import TransactionItem from "../transactions/TransactionItem";
 import HoldingItem from "../holdings/HoldingItem";
-import { Select } from "../inputs/Select";
 import { IconButton } from "../buttons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface ItemListProps {
 	title?: string;
@@ -35,19 +35,38 @@ export const ItemList: React.FC<ItemListProps> = ( {
 } ) => {
 	const { __ } = useI18n();
 	const { theme } = useTheme();
-	const [ sorting, setSorting ] = useState<SortingType['name']>();
-	const [ sortedData, setSortedData ] = useState( data );
+	const [ sorting, setSorting ] = useState<SortingType['name']>( sortingOptions && sortingOptions[0].name );
 	const [ showSortingOptions, setShowSortingOptions ] = useState( false );
+	const insets = useSafeAreaInsets();
 
-	useEffect( () => {
+	/**
+	 * TODO: 
+	 * - Mieti miten käytät returnValue ja value sortingissa, koska noi arvot tulee custom hookin kautta
+	 * - Tallenna tieto jotenkin local storageen
+	 */
+	const sortedData = useMemo( () => {
 		const sortingFunction = sorting && sortingOptions?.find( option => option.name === sorting ).function;
-		
+
 		if ( sortingFunction ) {
-			const sortedData = data.sort( sortingFunction );
-			console.log( sorting );
-			setSortedData( sortedData );
+			return data.sort( sortingFunction );
 		}
-	}, [ sorting ] );
+
+		return data;
+	}, [ data, sorting ] );
+
+	interface renderItemProps {
+		item: Account | Holding | Transaction
+	}
+
+	const RenderItem: React.FC<renderItemProps> = ( { item } ) => {
+		if ( ! item.account_id ) {
+			return <AccountItem id={ item._id } />
+		} else if ( item.account_id && item.name ) {
+			return <HoldingItem { ...item as Holding } />
+		} else {
+			return <TransactionItem { ...item as Transaction } showHolding={ showHolding } />
+		}
+	}
 
 	return (
 		<View style={ [
@@ -63,10 +82,24 @@ export const ItemList: React.FC<ItemListProps> = ( {
 				</View>
 			}
 
+			<FlatList
+				data={ sortedData }
+				ItemSeparatorComponent={ Divider }
+				ListEmptyComponent={ <PlaceholderItem value={ noItemsText ?? __( 'No items' ) } /> }
+				keyExtractor={ ( item ) => item._id.toString() }
+				renderItem={ ( { item } ) => <RenderItem item={ item } /> }
+				contentContainerStyle={ [
+					styles.contentContainer,
+					contentContainerStyle
+				] } />
+
 			{ sortingOptions &&
 				<Menu 
 					anchor={
-						<View style={ styles.sortingContainer }>
+						<View style={ [
+							styles.sortingContainer,
+							{ bottom: insets.bottom }
+						] }>
 							<IconButton
 								icon={ 'funnel' }
 								onPress={ () => setShowSortingOptions( true ) } />
@@ -78,7 +111,8 @@ export const ItemList: React.FC<ItemListProps> = ( {
 						</View>
 					}
 					visible={ showSortingOptions }
-					onDismiss={ () => setShowSortingOptions( false ) }>
+					onDismiss={ () => setShowSortingOptions( false ) }
+					style={ { padding: Spacing.sm } }>
 					{ sortingOptions.map( ( option, key ) => {
 						return (
 							<Menu.Item
@@ -92,21 +126,6 @@ export const ItemList: React.FC<ItemListProps> = ( {
 					} ) }
 				</Menu>
 			}
-
-			<FlatList
-				data={ sortedData }
-				ItemSeparatorComponent={ Divider }
-				ListEmptyComponent={ <PlaceholderItem value={ noItemsText ?? __( 'No items' ) } /> }
-				keyExtractor={ ( item ) => item._id.toString() }
-				renderItem={ ( { item } ) => { return ( <>
-					{ ! item.account_id && <AccountItem id={ item._id } /> }
-					{ ( item.account_id && item.name ) && <HoldingItem { ...item as Holding } /> }
-					{ ( item.account_id && item.holding_id ) && <TransactionItem { ...item as Transaction } showHolding={ showHolding } /> }
-				</> ) } }
-				contentContainerStyle={ [
-					styles.contentContainer,
-					contentContainerStyle
-				] } />
 		</View>
 	)
 }
@@ -144,6 +163,8 @@ const styles = StyleSheet.create( {
 	},
 
 	sortingContainer: {
+		left: Spacing.md,
+		marginBottom: Spacing.md,
 		flexDirection: 'row',
 		alignItems: 'center',
 		gap: Spacing.sm

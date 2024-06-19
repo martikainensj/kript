@@ -2,7 +2,6 @@ import React, { useLayoutEffect, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 
 import { GlobalStyles, Spacing } from '../../constants';
-import { Header, Icon } from '../../components/ui';
 import { IconButton } from '../../components/buttons';
 import { Select } from '../../components/inputs/Select';
 import { useI18n, Languages } from '../../components/contexts/I18nContext';
@@ -11,6 +10,7 @@ import { useBottomSheet } from '../../components/contexts/BottomSheetContext';
 import { UserInfo } from '../../components/user/UserInfo';
 import { useUser } from '../../hooks/useUser';
 import { Toggle } from '../../components/inputs/Toggle';
+import { Header } from '../../components/ui/Header';
 
 const Accounts: React.FC = () => {
 	const { setColorScheme, setSourceColor, colorScheme, sourceColor, defaultSourceColor } = useTheme();

@@ -3,13 +3,15 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import Realm from "realm";
 
-import { Grid, Icon, Value } from "../ui";
 import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { useTransaction } from "../../hooks";
 import { TransactionForm } from "./TransactionForm";
 import { useI18n } from '../contexts/I18nContext';
 import { MenuItem, useMenu } from "../contexts/MenuContext";
 import { useBottomSheet } from "../contexts/BottomSheetContext";
+import { Icon } from "../ui/Icon";
+import { Value } from "../ui/Value";
+import { Grid } from "../ui/Grid";
 
 interface TransactionItemProps {
 	_id: Realm.BSON.UUID,

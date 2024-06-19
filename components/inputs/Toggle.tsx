@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, View } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import { Spacing } from '../../constants';
-import { Icon } from '../ui';
+import { Icon } from '../ui/Icon';
 
 interface ToggleProps {
 	value: boolean;
