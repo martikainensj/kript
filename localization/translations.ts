@@ -449,11 +449,11 @@ const Translations: { [ key: string ]: Translation } = {
 		en_US: 'Cash'
 	},
 	'newest first': {
-		fi_FI: 'Uusimmat ensin',
+		fi_FI: 'Uusin ensin',
 		en_US: 'Newest first'
 	},
 	'oldest first': {
-		fi_FI: 'Vanhimmat ensin',
+		fi_FI: 'Vanhin ensin',
 		en_US: 'Oldest first'
 	},
 	'name (a-z)': {
@@ -465,7 +465,7 @@ const Translations: { [ key: string ]: Translation } = {
 		en_US: 'Highest return'
 	},
 	'lowest return': {
-		fi_FI: 'Alhaisin tuotto',
+		fi_FI: 'Alin tuotto',
 		en_US: 'Lowest return'
 	},
 	'highest value': {

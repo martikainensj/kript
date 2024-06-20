@@ -43,6 +43,8 @@ export const prettifyNumber = (
 	fractionDigits: number = 2,
 	locales: Intl.LocalesArgument = 'fi-FI'
 ): string => {
+	if ( ! value && value !== 0 ) return null;
+
   const parts = value.toFixed( fractionDigits ).split('.');
   const integerPart = parseInt( parts[0] ).toLocaleString( locales );
   const decimalPart = parts[1];

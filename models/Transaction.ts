@@ -17,6 +17,9 @@ export type Transaction = {
 	isValid?: () => boolean;
 };
 
+export type TransactionKey = keyof Transaction;
+export type TransactionValue<K extends TransactionKey> = Transaction[K];
+
 export const TransactionSchema = {
   name: 'Transaction',
 	embedded: true,

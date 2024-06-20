@@ -11,6 +11,8 @@ import { useI18n } from '../../components/contexts/I18nContext';
 import { useUser } from '../../hooks/useUser';
 import { Header } from '../../components/ui/Header';
 import { ItemList } from '../../components/ui/ItemList';
+import { useTypes } from '../../hooks/useTypes';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Accounts: React.FC = () => {
 	const { user } = useUser();
@@ -18,6 +20,7 @@ const Accounts: React.FC = () => {
 	
 	const { accounts, addAccount } = useAccounts();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { SortingTypes } = useTypes();
 
 	const onPressAdd = () => {
 		openBottomSheet(
@@ -47,7 +50,20 @@ const Accounts: React.FC = () => {
 				<ItemList
 					title={ __( 'Accounts' ) }
 					noItemsText={ __( 'No accounts' ) }
-					data={ [ ...accounts ] } />
+					data={ accounts.map( account => {
+						if ( ! account.isValid() ) return;
+
+						return {
+							item: account,
+							renderItem: <AccountItem { ...account } />
+						}
+					}) }
+					sortingOptions={ [
+						SortingTypes.name,
+						SortingTypes.highestReturn,
+						SortingTypes.lowestReturn,
+						SortingTypes.highestValue
+					] } />
 			</View>
 		</View>
 	);

@@ -17,15 +17,15 @@ import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
 
 interface AccountItemProps {
-	id: Account['_id']
+	_id: Account['_id']
 }
 
-export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
+export const AccountItem: React.FC<AccountItemProps> = ( { _id } ) => {
 	const { theme } = useTheme();
 	const { __ } = useI18n();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { account, saveAccount, removeAccount, balance, value, returnValue, returnPercentage } = useAccount( { id } )
+	const { account, saveAccount, removeAccount } = useAccount( { _id } )
 
 	function onPress() {
 		router.navigate( {
@@ -66,6 +66,15 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 		openMenu( anchor, menuItems );
 	}, [ account ] );
 
+	if ( ! account?.isValid() ) return;
+
+	const {
+		balance,
+		value,
+		returnValue,
+		returnPercentage
+	} = account;
+
 	const values = [
 		<Value
 			label={ __( 'Balance' ) }
@@ -94,8 +103,6 @@ export const AccountItem: React.FC<AccountItemProps> = ( { id } ) => {
 			isPositive={ returnPercentage > 0 }
 			isNegative={ returnPercentage < 0 } />,
 	];
-
-	if ( ! account?.isValid() ) return;
 
 	const meta = [
 		<Text style={ [ styles.name, { color: theme.colors.primary} ] }>{ account.name }</Text>

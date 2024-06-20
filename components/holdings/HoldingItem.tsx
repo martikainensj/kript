@@ -27,7 +27,6 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 		holding, saveHolding, removeHolding,
 		transactions,
 		dividends,
-		value, amount, returnValue, returnPercentage
 	} = useHolding( { _id, account_id } );
 
 	const onPress = useCallback( () => {
@@ -66,6 +65,10 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 		openMenu( anchor, menuItems );
 	}, [ holding ] );
 
+	if ( ! holding?.isValid() ) return;
+	
+	const { name, amount, value, returnValue, returnPercentage } = holding;
+
 	const values = [
 		<Value
 			label={ __( 'Amount' ) }
@@ -92,10 +95,8 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 			isNegative={ returnPercentage < 0 } />,
 	];
 
-	if ( ! holding?.isValid() ) return;
-
 	const meta = [
-		<Text style={ [ styles.name, { color: theme.colors.primary } ] }>{ holding?.name }</Text>
+		<Text style={ [ styles.name, { color: theme.colors.primary } ] }>{ name }</Text>
 	]
 	
 	return (

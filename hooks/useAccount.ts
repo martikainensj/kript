@@ -1,9 +1,9 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import Realm from "realm";
 import { useQuery, useRealm } from "@realm/react"
 import { router } from "expo-router";
 
-import { Account } from "../models/Account"
+import { Account, AccountKey, AccountValue } from "../models/Account"
 import { confirmation } from "../helpers";
 import { Transaction } from "../models/Transaction";
 import { Holding } from "../models/Holding";
@@ -11,49 +11,47 @@ import { useI18n } from "../components/contexts/I18nContext";
 import { useUser } from "./useUser";
 
 interface useAccountProps {
-	id: Realm.BSON.UUID
+	_id: Realm.BSON.UUID
 }
 
-export const useAccount = ( { id }: useAccountProps ) => {
+export const useAccount = ( { _id }: useAccountProps ) => {
 	const { user } = useUser();
 	const { __ } = useI18n();
 	const realm = useRealm();
 	const account = useQuery<Account>( 'Account' )
-		.filtered( '_id == $0', id )[0];
-
-	const { _id, name, holdings, transactions } = account;
+		.filtered( '_id == $0', _id )[0];
 
 	const getHoldingById = useCallback( ( id: Realm.BSON.UUID ) => {
-		const holding = holdings
+		const holding = account?.holdings
 			.filtered( '_id == $0', id )[0];
 
 		return holding;
-	}, [ holdings ] );
+	}, [ account ] );
 
 	const getTransactionById = useCallback( ( id: Realm.BSON.UUID ) => {
-		const transaction = transactions
+		const transaction = account?.transactions
 			.filtered( '_id == $0', id )[0];
 		return transaction;
-	}, [ transactions ] );
+	}, [ account ] );
 
 	const getHoldingByName = useCallback( ( name: string ) => {
-		const holding = holdings.filtered( 'name == $0', name )[0];
+		const holding = account?.holdings.filtered( 'name == $0', name )[0];
 
 		return holding;
-	}, [ holdings ] );
+	}, [ account ] );
 
 	const addHolding = useCallback( ( name: string ) => {
 		const holding: Holding = {
 			_id: new Realm.BSON.UUID,
 			name,
 			owner_id: user.id,
-			account_id: _id
+			account_id: account._id
 		}
 
-		holdings.push( holding );
+		account.holdings.push( holding );
 
-		return holdings[ holdings.length - 1 ];
-	}, [ holdings, _id ] );
+		return account.holdings[ account.holdings.length - 1 ];
+	}, [ account ] );
 
 	const addTransaction = useCallback( ( transaction: Transaction ) => {
 		const title = __( 'Add Transaction' );
@@ -71,13 +69,13 @@ export const useAccount = ( { id }: useAccountProps ) => {
 								?? addHolding( transaction.holding_name )
 						);
 
-						transactions.push( {
+						account.transactions.push( {
 							...transaction,
 							_id: new Realm.BSON.UUID(),
 							holding_id: _id
 					 	} );
 
-						return transactions[ transactions.length - 1 ];
+						return account.transactions[ account.transactions.length - 1 ];
 					} ) );
 				}
 			} );
@@ -129,10 +127,24 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		} );
 	}, [ account ] );
 
+	const updateVariables = useCallback( ( variables: Partial<Record<AccountKey, AccountValue<AccountKey>>> ) => {
+			const hasChanges = Object.keys( variables )
+				.some( key => account[ key ] !== variables[ key ] );
+				
+			if ( ! hasChanges ) return;
+
+			realm.write( () => {
+				Object.entries( variables ).forEach( ( [ key, value ] ) => {
+					account[ key ] = value;
+				} );
+			} );
+		}, [ realm, account ]
+	);
+
 	// Variables
 
 	const total = useMemo( () => {
-		const total = transactions.reduce( ( total, transaction ) => {
+		const total = account.transactions.reduce( ( total, transaction ) => {
 			if ( transaction.type !== 'trading' ) {
 				return total;
 			}
@@ -141,10 +153,10 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		}, 0 );
 
 		return total;
-	}, [ holdings ] );
+	}, [ account ] );
 
 	const cashAmount = useMemo( () => {
-		const amount = transactions.reduce( ( amount, transaction ) => {
+		const amount = account.transactions.reduce( ( amount, transaction ) => {
 			if ( transaction.type !== 'cash' ) {
 				return amount;
 			}
@@ -153,17 +165,13 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		}, 0 );
 
 		return amount;
-	}, [ transactions ] );
+	}, [ account ] );
 
-	const balance = useMemo( () => {
-		const balance = cashAmount - total;
-
-		return balance;
-	}, [ cashAmount, total ] );
+	const balance = cashAmount - total;
 
 	const value = useMemo( () => {
-		const value = holdings.reduce( ( value, holding ) => {
-			const _transactions = transactions
+		const value = account.holdings.reduce( ( value, holding ) => {
+			const _transactions = account.transactions
 				.filtered( 'holding_id == $0', holding._id );
 		
 			const lastTransaction = _transactions.sorted( 'date', true )[0]
@@ -180,12 +188,12 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		}, balance ); 
 
 		return value;
-	}, [ holdings, balance ] );
+	}, [ account ] );
 
 	const { totalValue, totalCost } = useMemo( () => {
-		const { totalValue, totalCost } = holdings.reduce( ( acc, holding ) => {
+		const { totalValue, totalCost } = account.holdings.reduce( ( acc, holding ) => {
 
-			const _transactions = transactions
+			const _transactions = account.transactions
 				.filtered( 'holding_id == $0', holding._id );
 
 			const lastTransaction = _transactions.sorted( 'date', true )[0];
@@ -207,17 +215,29 @@ export const useAccount = ( { id }: useAccountProps ) => {
 		}, { totalValue: 0, totalCost: 0 } );
 
 		return { totalValue, totalCost }
-	}, [ holdings ] );
+	}, [ account ] );
 
 	const returnValue = totalValue - totalCost;
 	const returnPercentage = totalValue
 		? ( totalValue - totalCost ) / Math.abs( totalCost ) * 100
 		: 0;
 
+	useEffect( () => {
+		updateVariables( {
+			total,
+			cashAmount,
+			balance,
+			value,
+			totalValue,
+			totalCost,
+			returnValue,
+			returnPercentage
+		} );
+	}, [ account ] )
+
 	return {
 		account, saveAccount, removeAccount,
 		addHolding, getHoldingById, getHoldingByName,
-		addTransaction, getTransactionById, transactions,
-		balance, value, returnValue, returnPercentage
+		addTransaction, getTransactionById,
 	}
 }

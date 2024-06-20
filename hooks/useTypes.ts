@@ -121,29 +121,29 @@ export const useTypes = () => {
 	];
 
 	const SortingTypes = {
-		sortNewestFirst: {
+		newestFirst: {
 			name: __( 'Newest first' ),
-			function: (a, b) => b.date - a.date
+			function: ( a: any, b: any ) => b.date - a.date
 		},	
-		sortOldestFirst: {
+		oldestFirst: {
 			name: __( 'Oldest first' ),
-			function: (a, b) => a.date - b.date
+			function: ( a: any, b: any ) => a.date - b.date
 		},
-		sortName: {
+		name: {
 			name: __( 'Name (A-Z)' ),
-			function: (a, b) => b.name - a.name
+			function: ( a: any, b: any ) => a.name.localeCompare( b.name )
 		},
-		sortHighestReturn: {
+		highestReturn: {
 			name: __( 'Highest return' ),
-			function: (a, b) => a.returnValue - b.returnValue
+			function: ( a: any, b: any ) => b.returnValue - a.returnValue
 		},
-		sortLowestReturn: {
+		lowestReturn: {
 			name: __( 'Lowest return' ),
-			function: (a, b) => b.returnValue - a.returnValue
+			function: ( a: any, b: any ) => a.returnValue - b.returnValue
 		},
-		sortHighestValue: {
+		highestValue: {
 			name: __( 'Highest value' ),
-			function: (a, b) => a.value - b.value
+			function: ( a: any, b: any ) => b.value - a.value
 		}
 	}
 

@@ -1,10 +1,10 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useRealm } from "@realm/react"
 
 import Realm from "realm";
 import { confirmation } from "../helpers";
 import { useAccount } from "./useAccount";
-import { Holding } from "../models/Holding";
+import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
 import { useI18n } from "../components/contexts/I18nContext";
 import { Cash } from "./useTypes";
 
@@ -16,7 +16,7 @@ interface useHoldingProps {
 export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	const { __ } = useI18n();
 	const realm = useRealm();
-	const { account, getHoldingById, addTransaction } = useAccount( { id: account_id } );
+	const { account, getHoldingById, addTransaction } = useAccount( { _id: account_id } );
 	const holding = useMemo( () => {
 		return getHoldingById( _id );
 	}, [ account ] );
@@ -59,6 +59,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		} );
 	}, [ holding, account ] );
 
+
 	const removeHolding = useCallback( () => {
 		const title = __( 'Remove Holding' );
 		const message = `${ __( 'Removing existing holding' ) }: ${ holding.name }`
@@ -81,6 +82,20 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 			} );
 		} );
 	}, [ holding, account ] );
+
+	const updateVariables = useCallback( ( variables: Partial<Record<HoldingKey, HoldingValue<HoldingKey>>> ) => {
+			const hasChanges = variables && Object.keys( variables )
+				.some( key => holding[ key ] !== variables[ key ] );
+				
+			if ( ! hasChanges ) return;
+
+			realm.write( () => {
+				Object.entries( variables ).forEach( ( [ key, value ] ) => {
+					holding[ key ] = value;
+				} );
+			} );
+		}, [ realm, holding ]
+	);
 
 	// Variables
 
@@ -139,14 +154,6 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		return total;
 	}, [ transactions ])
 
-	const dividendSum = useMemo( () => {
-		const sum = dividends.reduce( ( sum, dividend ) => {
-			return sum + dividend.amount
-		}, 0 );
-
-		return sum
-	}, [ dividends ] );
-
 	const fees = total - transactionSum;
 	const averagePrice = amount ? transactionSum / amount : 0;
 	const averageValue = averagePrice * amount;
@@ -156,15 +163,40 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		? ( value - total ) / Math.abs( total ) * 100
 		: 0;
 
+	const dividendSum = useMemo( () => {
+		const sum = dividends.reduce( ( sum, dividend ) => {
+			return sum + dividend.amount
+		}, 0 );
+
+		return sum;
+	}, [ dividends ] );
+
+	useEffect( () => {
+		updateVariables( {
+			lastPrice,
+			amount,
+			transactionSum,
+			total,
+			fees,
+			averagePrice,
+			averageValue,
+			value,
+			returnValue,
+			returnPercentage
+		} );
+	}, [ transactions, lastAdjustment, lastTransaction ] );
+
+	useEffect( () => {
+		updateVariables( {
+			dividendSum
+		} );
+	}, [ dividends ] );
+
 	return {
 		holding, saveHolding, removeHolding,
 		account,
 		transactions, addTransaction, getTransactionById,
 		dividends,
-		value, amount, total, fees,
-		transactionSum, dividendSum,
-		lastTransaction, lastAdjustment, lastPrice,
-		averagePrice, averageValue,
-		returnValue, returnPercentage
+		lastTransaction, lastAdjustment
 	}
 }

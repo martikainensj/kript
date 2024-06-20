@@ -23,17 +23,21 @@ import { Header } from "../../components/ui/Header";
 import { Grid } from "../../components/ui/Grid";
 import { Title } from "../../components/ui/Title";
 import { ItemList } from "../../components/ui/ItemList";
+import HoldingItem from "../../components/holdings/HoldingItem";
+import TransactionItem from "../../components/transactions/TransactionItem";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const AccountPage: React.FC = ( {} ) => {
 	const params = useLocalSearchParams<{ id: string }>();
-	const accountId = new Realm.BSON.UUID( params.id );
+	const _id = new Realm.BSON.UUID( params.id );
 	const { user } = useUser();
 	const { __ } = useI18n();
-	const { account, saveAccount, removeAccount, addTransaction, balance, value, returnValue, returnPercentage } = useAccount( { id: accountId } );
+	const { account, saveAccount, removeAccount, addTransaction } = useAccount( { _id } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { SortingTypes } = useTypes();
+	const insets = useSafeAreaInsets();
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -96,6 +100,22 @@ const AccountPage: React.FC = ( {} ) => {
 		])
 	}, [ account ] );
 
+	if ( ! account?.isValid() ) {
+		router.back();
+		return;
+	}
+
+	const {
+		name,
+		notes,
+		holdings,
+		transactions,
+		balance,
+		value,
+		returnValue,
+		returnPercentage
+	} = account;
+
 	const values = [
 		<Value
 			label={ __( 'Balance' ) }
@@ -124,13 +144,6 @@ const AccountPage: React.FC = ( {} ) => {
 			isPositive={ returnPercentage > 0 }
 			isNegative={ returnPercentage < 0 } />,
 	];
-
-	if ( ! account?.isValid() ) {
-		router.back();
-		return;
-	}
-
-	const { _id, name, notes, holdings, transactions } = account;
 
 	return (
 			<FABProvider>
@@ -165,14 +178,21 @@ const AccountPage: React.FC = ( {} ) => {
 								<View style={ styles.contentContainer }>
 									<ItemList
 										noItemsText={ __( 'No Holdings' ) }
-										contentContainerStyle={ styles.itemListcontentContainer }
-										data={ [ ...holdings ] }
+										data={ holdings.map( holding => {
+											return {
+												item: holding,
+												renderItem: <HoldingItem { ...holding} />
+											}
+										}) }
+										sortingContainerStyle={ { marginBottom: insets.bottom } }
 										sortingOptions={ [
-											SortingTypes.sortName,
+											SortingTypes.name,
+											SortingTypes.highestReturn,
+											SortingTypes.lowestReturn,
+											SortingTypes.highestValue
 										] } />
 								</View>
-							),
-							disabled: ! holdings?.length
+							)
 						},
 						{
 							label: __( 'Transactions' ),
@@ -180,16 +200,19 @@ const AccountPage: React.FC = ( {} ) => {
 								<View style={ styles.contentContainer }>
 									<ItemList
 										noItemsText={ __( 'No Transactions' ) }
-										contentContainerStyle={ styles.itemListcontentContainer }
-										data={ [ ...transactions ] }
-										showHolding
+										data={ transactions.map( transaction => {
+											return {
+												item: transaction,
+												renderItem: <TransactionItem { ...transaction } showHolding />
+											}
+										})}
+										sortingContainerStyle={ { marginBottom: insets.bottom } }
 										sortingOptions={ [
-											SortingTypes.sortNewestFirst,
-											SortingTypes.sortOldestFirst
+											SortingTypes.newestFirst,
+											SortingTypes.oldestFirst
 										] } />
 								</View>
-							),
-							disabled: ! holdings?.length
+							)
 						},
 					] } />
 				</View>
@@ -207,7 +230,4 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
 	},
-	itemListcontentContainer: {
-		paddingBottom: 80
-	}
 } );

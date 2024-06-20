@@ -10,7 +10,18 @@ export type Account = {
   holdings?: Realm.List<Holding>;
   transactions?: Realm.List<Transaction>;
 	isValid?: () => boolean;
+	total?: number;
+	cashAmount?: number;
+	balance?: number;
+	value?: number;
+	totalValue?: number;
+	totalCost?: number;
+	returnValue?: number;
+	returnPercentage?: number;
 };
+
+export type AccountKey = keyof Account;
+export type AccountValue<K extends AccountKey> = Account[K];
 
 export const AccountSchema = {
   name: 'Account',
@@ -21,6 +32,14 @@ export const AccountSchema = {
     owner_id: 'string',
     holdings: 'Holding[]',
 		transactions: 'Transaction[]',
+		total: 'double?',
+		cashAmount: 'double?',
+		balance: 'double?',
+		value: 'double?',
+		totalValue: 'double?',
+		totalCost: 'double?',
+		returnValue: 'double?',
+		returnPercentage: 'double?',
   },
   primaryKey: '_id',
 };

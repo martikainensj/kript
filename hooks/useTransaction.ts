@@ -4,7 +4,6 @@ import { useRealm } from "@realm/react"
 import Realm from "realm";
 import { confirmation } from "../helpers";
 import { Transaction } from "../models/Transaction";
-import { useHolding } from "./useHolding";
 import { useI18n } from "../components/contexts/I18nContext";
 import { useTypes } from "./useTypes";
 import { useAccount } from "./useAccount";
@@ -17,7 +16,7 @@ interface useTransactionProps {
 export const useTransaction = ( { _id, account_id }: useTransactionProps ) => {
 	const { __ } = useI18n();
 	const realm = useRealm();
-	const { getTransactionById, account, transactions } = useAccount( { id: account_id } );
+	const { getTransactionById, account } = useAccount( { _id: account_id } );
 	
 	const transaction = useMemo( () => {
 		const transaction = getTransactionById( _id );
@@ -69,16 +68,16 @@ export const useTransaction = ( { _id, account_id }: useTransactionProps ) => {
 				message,
 				onAccept() {
 					resolve( realm.write( () => {
-						const index = transactions.findIndex( transaction => {
+						const index = account.transactions.findIndex( transaction => {
 							return transaction._id.equals( _id );
 						} );
 						
-						transactions.remove( index );
+						account.transactions.remove( index );
 					} ) );
 				}
 			} );
 		} );
-	}, [ transaction, transactions ] );
+	}, [ transaction, account ] );
 
 	return {
 		transaction, saveTransaction, removeTransaction,

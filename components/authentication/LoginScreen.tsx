@@ -50,7 +50,7 @@ export const LoginScreen = () => {
 						<TextInput
 							label={ __( 'Email' ) }
 							value={ email }
-							onChangeText={ setEmail }
+							onChangeText={ ( value ) => setEmail( value.toString() ) }
 							autoComplete={ 'email' }
 							textContentType={ 'emailAddress' }
 							autoCapitalize={ 'none' }
@@ -60,7 +60,7 @@ export const LoginScreen = () => {
 						<TextInput
 							label={ __( 'Password' ) }
 							value={ password }
-							onChangeText={ setPassword }
+							onChangeText={ ( value ) => setPassword( value.toString() ) }
 							secureTextEntry
 							autoComplete={ 'password' }
 							textContentType={ 'password' }

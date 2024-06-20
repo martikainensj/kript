@@ -8,20 +8,19 @@ import { SortingType } from "../../hooks/useTypes";
 import { Account } from "../../models/Account";
 import { Holding } from "../../models/Holding";
 import { Transaction } from "../../models/Transaction";
-import { AccountItem } from "../accounts";
-import TransactionItem from "../transactions/TransactionItem";
-import HoldingItem from "../holdings/HoldingItem";
 import { IconButton } from "../buttons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface ItemListProps {
 	title?: string;
 	noItemsText?: string;
-	data: (Account | Holding | Transaction)[];
+	data: {
+		item: Account | Holding | Transaction;
+		renderItem: React.JSX.Element;
+	}[];
 	style?: StyleProp<ViewStyle>;
 	contentContainerStyle?: StyleProp<ViewStyle>;
+	sortingContainerStyle?: StyleProp<ViewStyle>;
 	sortingOptions?: SortingType[];
-	showHolding?: boolean;
 }
 
 export const ItemList: React.FC<ItemListProps> = ( {
@@ -30,43 +29,23 @@ export const ItemList: React.FC<ItemListProps> = ( {
 	data,
 	style,
 	contentContainerStyle,
-	sortingOptions,
-	showHolding
+	sortingContainerStyle,
+	sortingOptions
 } ) => {
 	const { __ } = useI18n();
 	const { theme } = useTheme();
 	const [ sorting, setSorting ] = useState<SortingType['name']>( sortingOptions && sortingOptions[0].name );
 	const [ showSortingOptions, setShowSortingOptions ] = useState( false );
-	const insets = useSafeAreaInsets();
 
-	/**
-	 * TODO: 
-	 * - Mieti miten käytät returnValue ja value sortingissa, koska noi arvot tulee custom hookin kautta
-	 * - Tallenna tieto jotenkin local storageen
-	 */
 	const sortedData = useMemo( () => {
-		const sortingFunction = sorting && sortingOptions?.find( option => option.name === sorting ).function;
+		const sortingFunction = sorting && sortingOptions?.find( option => option.name === sorting )?.function;
 
 		if ( sortingFunction ) {
-			return data.sort( sortingFunction );
+			return data.sort( ( a, b ) => sortingFunction( a.item, b.item ) );
 		}
 
 		return data;
 	}, [ data, sorting ] );
-
-	interface renderItemProps {
-		item: Account | Holding | Transaction
-	}
-
-	const RenderItem: React.FC<renderItemProps> = ( { item } ) => {
-		if ( ! item.account_id ) {
-			return <AccountItem id={ item._id } />
-		} else if ( item.account_id && item.name ) {
-			return <HoldingItem { ...item as Holding } />
-		} else {
-			return <TransactionItem { ...item as Transaction } showHolding={ showHolding } />
-		}
-	}
 
 	return (
 		<View style={ [
@@ -86,8 +65,8 @@ export const ItemList: React.FC<ItemListProps> = ( {
 				data={ sortedData }
 				ItemSeparatorComponent={ Divider }
 				ListEmptyComponent={ <PlaceholderItem value={ noItemsText ?? __( 'No items' ) } /> }
-				keyExtractor={ ( item ) => item._id.toString() }
-				renderItem={ ( { item } ) => <RenderItem item={ item } /> }
+				keyExtractor={ ( { item } ) => item._id.toString() }
+				renderItem={ ( { item } ) => item.renderItem }
 				contentContainerStyle={ [
 					styles.contentContainer,
 					contentContainerStyle
@@ -98,10 +77,10 @@ export const ItemList: React.FC<ItemListProps> = ( {
 					anchor={
 						<View style={ [
 							styles.sortingContainer,
-							{ bottom: insets.bottom }
+							sortingContainerStyle
 						] }>
 							<IconButton
-								icon={ 'funnel' }
+								icon={ 'funnel-outline' }
 								onPress={ () => setShowSortingOptions( true ) } />
 							{ sorting &&
 								<Text style={ styles.sortingText }>
@@ -112,7 +91,7 @@ export const ItemList: React.FC<ItemListProps> = ( {
 					}
 					visible={ showSortingOptions }
 					onDismiss={ () => setShowSortingOptions( false ) }
-					style={ { padding: Spacing.sm } }>
+					style={ styles.menuContainer }>
 					{ sortingOptions.map( ( option, key ) => {
 						return (
 							<Menu.Item
@@ -162,12 +141,17 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.label
 	},
 
+	menuContainer: {
+		left: 0,
+		padding: Spacing.md
+	},
+
 	sortingContainer: {
-		left: Spacing.md,
-		marginBottom: Spacing.md,
+		position: 'relative',
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: Spacing.sm
+		gap: Spacing.sm,
+		padding: Spacing.md
 	},
 
 	sortingText: {

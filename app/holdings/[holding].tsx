@@ -24,6 +24,7 @@ import { Grid } from "../../components/ui/Grid";
 import { Title } from "../../components/ui/Title";
 import { ItemList } from "../../components/ui/ItemList";
 import { useTypes } from "../../hooks/useTypes";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const HoldingPage: React.FC = ( {} ) => {
   const params = useLocalSearchParams<{ _id: string, account_id: string }>();
@@ -35,13 +36,13 @@ const HoldingPage: React.FC = ( {} ) => {
 		holding, saveHolding, removeHolding,
 		account,
 		addTransaction,
-		dividends, transactions,
-		value, amount, returnValue, returnPercentage
+		dividends, transactions
 	}	= useHolding( { _id, account_id } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { SortingTypes } = useTypes();
+	const insets = useSafeAreaInsets();
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -105,6 +106,13 @@ const HoldingPage: React.FC = ( {} ) => {
 		])
 	}, [ holding, account ] );
 
+	if ( ! holding?.isValid() ) {
+		router.back();
+		return;
+	}
+
+	const { name, amount, value, returnValue, returnPercentage } = holding;
+
 	const values = [
 		<Value
 			label={ __( 'Amount' ) }
@@ -130,13 +138,6 @@ const HoldingPage: React.FC = ( {} ) => {
 			isPositive={ returnPercentage > 0 }
 			isNegative={ returnPercentage < 0 } />,
 	];
-
-	if ( ! holding?.isValid() ) {
-		router.back();
-		return;
-	}
-
-	const { name } = holding;
 	
 	return (
 			<FABProvider>
@@ -171,14 +172,19 @@ const HoldingPage: React.FC = ( {} ) => {
 								<View style={ styles.contentContainer }>
 									<ItemList
 										noItemsText={ __( 'No Transactions' ) }
-										data={ [ ...transactions ] }
+										data={ transactions.map( transaction => {
+											return {
+												item: transaction,
+												renderItem: <TransactionItem { ...transaction} />
+											}
+										}) }
+										sortingContainerStyle={ { marginBottom: insets.bottom } }
 										sortingOptions={ [
-											SortingTypes.sortNewestFirst,
-											SortingTypes.sortOldestFirst
+											SortingTypes.newestFirst,
+											SortingTypes.oldestFirst
 										] }  />
 								</View>
-							),
-							disabled: ! transactions?.length
+							)
 						},
 					] }>
 					</Tabs>
