@@ -107,7 +107,7 @@ export const useAccount = ( { _id }: useAccountProps ) => {
 
 	const removeAccount = useCallback( () => {
 		const title = __( 'Remove Account' );
-		const message = `${ __( 'Removing existing account' ) }: ${ name }`
+		const message = `${ __( 'Removing existing account' ) }: ${ account.name }`
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise( ( resolve, _ ) => {
