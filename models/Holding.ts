@@ -1,4 +1,5 @@
 import Realm from "realm";
+import { Transaction } from "./Transaction";
 
 export type Holding = {
 	_id: Realm.BSON.UUID;
@@ -6,6 +7,7 @@ export type Holding = {
   notes?: string;
   owner_id: string;
 	account_id: Realm.BSON.UUID;
+  transactions?: Realm.List<Transaction>;
 	isValid?: () => boolean;
 	lastPrice?: number;
 	amount?: number;
@@ -32,6 +34,7 @@ export const HoldingSchema = {
     notes: 'string?',
     owner_id: 'string',
 		account_id: 'uuid',
+		transactions: 'Transaction[]',
     lastPrice: 'double?',
     amount: 'double?',
     transactionSum: 'double?',

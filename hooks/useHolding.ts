@@ -79,6 +79,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 
 						account.holdings.remove( index );
 						// TODO handle holdings transactio nremove
+						// Tää korjautuu sillä ku siirretään trading transactionit holdignin alle
 					} ) )
 				}
 			} );
