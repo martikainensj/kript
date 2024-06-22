@@ -23,14 +23,14 @@ export const useAccount = ( { _id }: useAccountProps ) => {
 
 	const getTransactionBy = useCallback( <K extends TransactionKey>( key: K, value: TransactionValue<K> ) => {
 		const transaction = account?.transactions
-			.filtered( `${key} == $0`, key )[0];
+			.filtered( `${key} == $0`, value )[0];
 
 		return transaction;
 	}, [ account ] );
 
 	const getHoldingBy = useCallback( <K extends HoldingKey>( key: K, value: HoldingValue<K> ) => {
 		const holding = account?.holdings
-			.filtered( `${key} == $0`, key )[0];
+			.filtered( `${key} == $0`, value )[0];
 
 		return holding;
 	}, [ account ] );
@@ -139,24 +139,16 @@ export const useAccount = ( { _id }: useAccountProps ) => {
 	// Variables
 
 	const total = useMemo( () => {
-		const total = account.transactions.reduce( ( total, transaction ) => {
-			if ( transaction.type !== 'trading' ) {
-				return total;
-			}
-
-			return total + transaction.total;
+		const total = account.holdings.reduce( ( total, holding ) => {
+			return total + holding.total;
 		}, 0 );
 
 		return total;
 	}, [ account ] );
 
 	const cashAmount = useMemo( () => {
-		const amount = account.transactions.reduce( ( amount, transaction ) => {
-			if ( transaction.type !== 'cash' ) {
-				return amount;
-			}
-
-			return amount + transaction.amount
+		const amount = account.holdings.reduce( ( amount, holding ) => {
+			return amount + holding.amount
 		}, 0 );
 
 		return amount;
@@ -166,28 +158,17 @@ export const useAccount = ( { _id }: useAccountProps ) => {
 
 	const value = useMemo( () => {
 		const value = account.holdings.reduce( ( value, holding ) => {
-			const _transactions = account.transactions
-				.filtered( 'holding_id == $0', holding._id );
-		
-			const lastTransaction = _transactions.sorted( 'date', true )[0]
-
-			const lastPrice = lastTransaction?.isValid()
-				? lastTransaction.price
-				: 0;
-		
-			const amount = _transactions.reduce( ( amount, transaction ) => {
-				return amount + transaction.amount
-			}, 0 );
-		
-			return value + ( lastPrice * amount );
+			return value + holding.value;
 		}, balance ); 
 
 		return value;
 	}, [ account ] );
 
+
+	// TODO Mieti nää accountin variablet uusiks ku holdingeista saa suoraan
+	// nykyään tietoo
 	const { totalValue, totalCost } = useMemo( () => {
 		const { totalValue, totalCost } = account.holdings.reduce( ( acc, holding ) => {
-
 			const _transactions = account.transactions
 				.filtered( 'holding_id == $0', holding._id );
 
@@ -212,9 +193,9 @@ export const useAccount = ( { _id }: useAccountProps ) => {
 		return { totalValue, totalCost }
 	}, [ account ] );
 
-	const returnValue = totalValue - totalCost;
-	const returnPercentage = totalValue
-		? ( totalValue - totalCost ) / Math.abs( totalCost ) * 100
+	const returnValue = value - total;
+	const returnPercentage = value
+		? ( value - total ) / Math.abs( total ) * 100
 		: 0;
 
 	useEffect( () => {
