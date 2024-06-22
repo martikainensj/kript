@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput } from "./TextInput";
 import { addTimeToDateTimestamp } from "../../helpers";
-import { __ } from "../../localization";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { TouchableRipple } from "react-native-paper";
+import { useTheme } from "../contexts/ThemeContext";
 
 interface DateInputProps {
 	label: string
@@ -17,6 +17,7 @@ export const DateInput: React.FC<DateInputProps> = ( {
 	value,
 	setValue
 } ) => {
+	const { colorScheme } = useTheme();
 	const [ inputValue, setInputValue ] = useState<string>( new Date( value ).toLocaleDateString() );
 	const [ isDatePickerVisible, setDatePickerVisibility ] = useState(false);
 
@@ -55,6 +56,7 @@ export const DateInput: React.FC<DateInputProps> = ( {
 					editable={ false }
 					pointerEvents={ 'none' } />
 				<DateTimePicker
+					isDarkModeEnabled={ colorScheme === 'dark' }
 					isVisible={ isDatePickerVisible }
 					mode={ 'date' }
 					date={ new Date( value ) }
