@@ -16,15 +16,15 @@ interface useTransactionProps {
 export const useTransaction = ( { _id, account_id }: useTransactionProps ) => {
 	const { __ } = useI18n();
 	const realm = useRealm();
-	const { getTransactionById, account } = useAccount( { _id: account_id } );
+	const { getTransactionBy, getHoldingBy, account } = useAccount( { _id: account_id } );
 	
 	const transaction = useMemo( () => {
-		const transaction = getTransactionById( _id );
+		const transaction = getTransactionBy( '_id', _id );
 		return transaction;
 	}, [ account ] );
 
 	const holding = useMemo( () => {
-		const holding = transaction && getTransactionById( transaction.holding_id );
+		const holding = transaction && getHoldingBy( '_id', transaction.holding_id );
 		return holding;
 	}, [ transaction ] );
 

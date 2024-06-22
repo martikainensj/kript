@@ -5,8 +5,8 @@ import { router } from "expo-router";
 
 import { Account, AccountKey, AccountValue } from "../models/Account"
 import { confirmation } from "../helpers";
-import { Transaction } from "../models/Transaction";
-import { Holding } from "../models/Holding";
+import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
+import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
 import { useI18n } from "../components/contexts/I18nContext";
 import { useUser } from "./useUser";
 
@@ -21,21 +21,16 @@ export const useAccount = ( { _id }: useAccountProps ) => {
 	const account = useQuery<Account>( 'Account' )
 		.filtered( '_id == $0', _id )[0];
 
-	const getHoldingById = useCallback( ( id: Realm.BSON.UUID ) => {
-		const holding = account?.holdings
-			.filtered( '_id == $0', id )[0];
-
-		return holding;
-	}, [ account ] );
-
-	const getTransactionById = useCallback( ( id: Realm.BSON.UUID ) => {
+	const getTransactionBy = useCallback( <K extends TransactionKey>( key: K, value: TransactionValue<K> ) => {
 		const transaction = account?.transactions
-			.filtered( '_id == $0', id )[0];
+			.filtered( `${key} == $0`, key )[0];
+
 		return transaction;
 	}, [ account ] );
 
-	const getHoldingByName = useCallback( ( name: string ) => {
-		const holding = account?.holdings.filtered( 'name == $0', name )[0];
+	const getHoldingBy = useCallback( <K extends HoldingKey>( key: K, value: HoldingValue<K> ) => {
+		const holding = account?.holdings
+			.filtered( `${key} == $0`, key )[0];
 
 		return holding;
 	}, [ account ] );
@@ -65,7 +60,7 @@ export const useAccount = ( { _id }: useAccountProps ) => {
 				onAccept() {
 					resolve( realm.write( async () => {
 						const { _id } = transaction.holding_name && (
-							getHoldingByName( transaction.holding_name )
+							getHoldingBy( 'name', transaction.holding_name )
 								?? addHolding( transaction.holding_name )
 						);
 
@@ -237,7 +232,7 @@ export const useAccount = ( { _id }: useAccountProps ) => {
 
 	return {
 		account, saveAccount, removeAccount,
-		addHolding, getHoldingById, getHoldingByName,
-		addTransaction, getTransactionById,
+		addHolding, getHoldingBy,
+		addTransaction, getTransactionBy,
 	}
 }

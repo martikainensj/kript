@@ -7,6 +7,7 @@ import { useAccount } from "./useAccount";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
 import { useI18n } from "../components/contexts/I18nContext";
 import { Cash } from "./useTypes";
+import { TransactionKey, TransactionValue } from "../models/Transaction";
 
 interface useHoldingProps {
 	_id: Realm.BSON.UUID,
@@ -16,9 +17,9 @@ interface useHoldingProps {
 export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	const { __ } = useI18n();
 	const realm = useRealm();
-	const { account, getHoldingById, addTransaction } = useAccount( { _id: account_id } );
+	const { account, getHoldingBy, addTransaction } = useAccount( { _id: account_id } );
 	const holding = useMemo( () => {
-		return getHoldingById( _id );
+		return getHoldingBy( '_id', _id );
 	}, [ account ] );
 
 	const { transactions, } = useMemo( () => {
@@ -35,11 +36,12 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 		return dividends;
 	}, [ transactions ] );
 
-	const getTransactionById = useCallback( ( id: Realm.BSON.UUID ) => {
-		const transaction = transactions
-			.filtered( '_id == $0', id )[0];
+	const getTransactionBy = useCallback( <K extends TransactionKey>( key: K, value: TransactionValue<K> ) => {
+		const transaction = account?.transactions
+			.filtered( `${key} == $0`, key )[0];
+
 		return transaction;
-	}, [ holding ] );
+	}, [ account ] );
 
 	const saveHolding = useCallback( ( editedHolding: Holding ) => {
 		const title = __( 'Save Holding' );
@@ -195,7 +197,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	return {
 		holding, saveHolding, removeHolding,
 		account,
-		transactions, addTransaction, getTransactionById,
+		transactions, addTransaction, getTransactionBy,
 		dividends,
 		lastTransaction, lastAdjustment
 	}
