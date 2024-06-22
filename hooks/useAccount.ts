@@ -147,11 +147,15 @@ export const useAccount = ( { _id }: useAccountProps ) => {
 	}, [ account ] );
 
 	const cashAmount = useMemo( () => {
-		const amount = account.holdings.reduce( ( amount, holding ) => {
-			return amount + holding.amount
+		const cashAmount = account.transactions.reduce( ( cashAmount, transaction ) => {
+			if ( transaction.type !== 'cash' ) {
+				return cashAmount;
+			}
+
+			return cashAmount + transaction.amount
 		}, 0 );
 
-		return amount;
+		return cashAmount;
 	}, [ account ] );
 
 	const balance = cashAmount - total;
@@ -159,43 +163,14 @@ export const useAccount = ( { _id }: useAccountProps ) => {
 	const value = useMemo( () => {
 		const value = account.holdings.reduce( ( value, holding ) => {
 			return value + holding.value;
-		}, balance ); 
+		}, balance );
 
 		return value;
 	}, [ account ] );
 
-
-	// TODO Mieti nää accountin variablet uusiks ku holdingeista saa suoraan
-	// nykyään tietoo
-	const { totalValue, totalCost } = useMemo( () => {
-		const { totalValue, totalCost } = account.holdings.reduce( ( acc, holding ) => {
-			const _transactions = account.transactions
-				.filtered( 'holding_id == $0', holding._id );
-
-			const lastTransaction = _transactions.sorted( 'date', true )[0];
-			const lastPrice = lastTransaction?.isValid()
-				? lastTransaction.price
-				: 0;
-			const amount = _transactions.reduce( ( amount, transaction ) => {
-				return amount + transaction.amount;
-			}, 0 );
-			const value = lastPrice * amount;
-			const total = _transactions.reduce( ( total, transaction ) => {
-				return total + transaction.total;
-			}, 0 );
-
-			return {
-				totalValue: acc.totalValue + value,
-				totalCost: acc.totalCost + total
-			};
-		}, { totalValue: 0, totalCost: 0 } );
-
-		return { totalValue, totalCost }
-	}, [ account ] );
-
-	const returnValue = value - total;
+	const returnValue = value - balance - total;
 	const returnPercentage = value
-		? ( value - total ) / Math.abs( total ) * 100
+		? ( value - balance - total ) / Math.abs( total ) * 100
 		: 0;
 
 	useEffect( () => {
@@ -204,8 +179,6 @@ export const useAccount = ( { _id }: useAccountProps ) => {
 			cashAmount,
 			balance,
 			value,
-			totalValue,
-			totalCost,
 			returnValue,
 			returnPercentage
 		} );
