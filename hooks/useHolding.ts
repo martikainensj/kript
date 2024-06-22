@@ -6,7 +6,7 @@ import { confirmation } from "../helpers";
 import { useAccount } from "./useAccount";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
 import { useI18n } from "../components/contexts/I18nContext";
-import { Cash } from "./useTypes";
+import { Cash, Transaction } from "./useTypes";
 import { TransactionKey, TransactionValue } from "../models/Transaction";
 
 interface useHoldingProps {
@@ -38,7 +38,7 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 
 	const getTransactionBy = useCallback( <K extends TransactionKey>( key: K, value: TransactionValue<K> ) => {
 		const transaction = account?.transactions
-			.filtered( `${key} == $0`, key )[0];
+			.filtered( `${key} == $0`, value )[0];
 
 		return transaction;
 	}, [ account ] );
@@ -102,12 +102,13 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 	// Variables
 
 	const lastTransaction = useMemo( () => {
-		return transactions?.sorted( 'date', true )[0];
+		return transactions?.filtered( 'type == $0', 'trading' as Transaction['id'] )
+			.sorted( 'date', true )[0];
 	}, [ transactions ] );
 
 	const lastAdjustment = useMemo( () => {
-		return transactions?.sorted( 'date', true )
-			.find( transaction => transaction.total === undefined );
+		return transactions?.filtered( 'type == $0', 'adjustment' as Transaction['id'] )
+			.sorted( 'date', true )[0];
 	}, [ transactions ] );
 
 	const lastPrice = useMemo( () => {
@@ -130,8 +131,12 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 
 	const amount = useMemo( () => {
 		const amount = transactions.reduce( ( amount, transaction ) => {
-			if ( lastAdjustment?.isValid() && transaction.date <= lastAdjustment.date ) {
+			if ( transaction.type === 'cash' ) {
 				return amount;
+			}
+
+			if ( lastAdjustment?.isValid() && transaction.date <= lastAdjustment.date ) {
+				return lastAdjustment.amount;
 			}
 
 			return amount + transaction.amount;
@@ -142,6 +147,10 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 
 	const transactionSum = useMemo( () => {
 		const sum = transactions.reduce( ( sum, transaction ) => {
+			if ( transaction.type !== 'trading' ) {
+				return sum;
+			}
+			
 			return sum + transaction.price * transaction.amount;
 		}, 0 );
 
@@ -150,6 +159,10 @@ export const useHolding = ( { _id, account_id }: useHoldingProps ) => {
 
 	const total = useMemo( () => {
 		const total = transactions.reduce( ( total, transaction ) => {
+			if ( transaction.type !== 'trading' ) {
+				return total;
+			}
+			
 			return total + transaction.total;
 		}, 0 );
 
