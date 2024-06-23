@@ -3,7 +3,7 @@ import { StyleSheet, ViewStyle } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
 import { BorderRadius, Spacing } from "../../constants";
-import { useTheme } from "../contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface CardProps {
 	children: React.ReactNode;

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ColorSchemeName } from 'react-native';
-import { Languages } from '../components/contexts/I18nContext';
+import { Languages } from '../contexts/I18nContext';
 
 
 interface storageKeys {

@@ -2,8 +2,8 @@ import React from 'react';
 
 import { BottomTabs } from '../../components/navigation';
 import { StyleSheet } from 'react-native';
-import { useI18n } from '../../components/contexts/I18nContext';
-import { useTheme } from '../../components/contexts/ThemeContext';
+import { useI18n } from '../../contexts/I18nContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { Icon } from '../../components/ui/Icon';
 
 export default function TabsLayout() {

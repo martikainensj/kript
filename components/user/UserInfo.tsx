@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native"
 
 import { UserDataValue, useUser } from "../../hooks/useUser";
 import { DefaultButton } from "../buttons";
-import { useI18n } from "../contexts/I18nContext";
+import { useI18n } from "../../contexts/I18nContext";
 import { Spacing } from "../../constants";
 import { EditableValue } from "../ui/EditableValue";
 

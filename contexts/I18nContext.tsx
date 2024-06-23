@@ -5,8 +5,8 @@ import React, {
 	useCallback,
 	useLayoutEffect
 } from "react";
-import { useStorage } from "../../hooks/useStorage";
-import Translations from "../../localization/translations";
+import { useStorage } from "../hooks/useStorage";
+import Translations from "../localization/translations";
 
 export interface Languages {
   fi_FI: string;

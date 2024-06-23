@@ -3,7 +3,7 @@ import { GestureResponderEvent, StyleProp, StyleSheet, TextStyle, View, ViewStyl
 import { SegmentedButtons, Text } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { BorderRadius, GlobalStyles, Spacing } from '../../constants';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export interface OptionProps {
 	value: string;

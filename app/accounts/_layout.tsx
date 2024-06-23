@@ -1,7 +1,7 @@
 import React from "react";
 import { Slot, Stack, useGlobalSearchParams } from "expo-router";
-import { useTheme } from "../../components/contexts/ThemeContext";
-import { FABProvider } from "../../components/contexts/FABContext";
+import { useTheme } from "../../contexts/ThemeContext";
+import { FABProvider } from "../../contexts/FABContext";
 
 export default function AccountLayout() {
 	const { theme } = useTheme();

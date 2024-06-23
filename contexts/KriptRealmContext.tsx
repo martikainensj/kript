@@ -2,10 +2,10 @@ import React, {
 	createContext,
 	useContext,
 } from "react";
-import { CONFIG } from "../../kript.config";
+import { CONFIG } from "../kript.config";
 import { AppProvider, UserProvider, RealmProvider } from "@realm/react";
-import { LoginScreen } from "../authentication";
-import { Schemas } from "../../models";
+import { LoginScreen } from "../components/authentication";
+import { Schemas } from "../models";
 import Realm, { ClientResetMode, OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from "realm";
 
 interface KriptRealmContext {}

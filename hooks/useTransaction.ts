@@ -4,7 +4,7 @@ import { useRealm } from "@realm/react"
 import Realm from "realm";
 import { confirmation } from "../helpers";
 import { Transaction } from "../models/Transaction";
-import { useI18n } from "../components/contexts/I18nContext";
+import { useI18n } from "../contexts/I18nContext";
 import { useTypes } from "./useTypes";
 import { useAccount } from "./useAccount";
 

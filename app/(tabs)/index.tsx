@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { GlobalStyles } from '../../constants';
 import { IconButton } from '../../components/buttons';
 import { confirmation } from '../../helpers';
-import { useI18n } from '../../components/contexts/I18nContext';
+import { useI18n } from '../../contexts/I18nContext';
 import { Header } from '../../components/ui/Header';
 
 const Home: React.FC = () => {

@@ -8,12 +8,12 @@ import { StatusBar } from 'expo-status-bar';
 import { Stack } from 'expo-router';
 
 import { GlobalStyles } from '../constants';
-import { BottomSheetProvider } from '../components/contexts/BottomSheetContext';
+import { BottomSheetProvider } from '../contexts/BottomSheetContext';
 
-import { I18nProvider } from '../components/contexts/I18nContext';
-import { ThemeProvider } from '../components/contexts/ThemeContext';
-import { MenuProvider } from '../components/contexts/MenuContext';
-import { KriptRealmProvider } from '../components/contexts/KriptRealmContext';
+import { I18nProvider } from '../contexts/I18nContext';
+import { ThemeProvider } from '../contexts/ThemeContext';
+import { MenuProvider } from '../contexts/MenuContext';
+import { KriptRealmProvider } from '../contexts/KriptRealmContext';
 
 const App: React.FC = () => {
 	return (

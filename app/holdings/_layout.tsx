@@ -1,7 +1,7 @@
 import React from "react";
 import { Slot, Stack, useGlobalSearchParams } from "expo-router";
-import { FABProvider } from "../../components/contexts/FABContext";
-import { useTheme } from "../../components/contexts/ThemeContext";
+import { FABProvider } from "../../contexts/FABContext";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export default function HoldingLayout() {
 	const { theme } = useTheme();

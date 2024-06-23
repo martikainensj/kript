@@ -5,7 +5,7 @@ import {
 import { TabsProvider, TabScreen, Tabs as PaperTabs } from "react-native-paper-tabs";
 
 import { GlobalStyles, Spacing } from "../../constants";
-import { useTheme } from "../contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 import { Mode } from "react-native-paper-tabs/lib/typescript/utils";
 
 interface TabsScreenContentProps {

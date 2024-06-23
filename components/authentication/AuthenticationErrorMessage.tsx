@@ -3,7 +3,7 @@ import { AuthOperationName } from '@realm/react';
 import { StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import { Color, FontSize } from '../../constants';
-import { useI18n } from '../../components/contexts/I18nContext';
+import { useI18n } from '../../contexts/I18nContext';
 
 interface ErrorMessageProps {
 	operationError: AuthOperationName

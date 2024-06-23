@@ -12,8 +12,8 @@ import { FAB as PaperFAB, FABGroupProps } from 'react-native-paper';
 import {
 	BorderRadius,
 	IconSize
-} from "../../constants";
-import { Icon } from "../ui/Icon";
+} from "../constants";
+import { Icon } from "../components/ui/Icon";
 
 interface FABContext {
 	actions: FABGroupProps["actions"]

@@ -5,7 +5,7 @@ import Realm from "realm";
 import { confirmation } from "../helpers";
 import { useAccount } from "./useAccount";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
-import { useI18n } from "../components/contexts/I18nContext";
+import { useI18n } from "../contexts/I18nContext";
 import { Cash, Transaction } from "./useTypes";
 import { TransactionKey, TransactionValue } from "../models/Transaction";
 

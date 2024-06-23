@@ -7,7 +7,7 @@ import { Account, AccountKey, AccountValue } from "../models/Account"
 import { confirmation } from "../helpers";
 import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
-import { useI18n } from "../components/contexts/I18nContext";
+import { useI18n } from "../contexts/I18nContext";
 import { useUser } from "./useUser";
 
 interface useAccountProps {

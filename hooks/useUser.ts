@@ -2,7 +2,7 @@ import { useApp, useAuth, useUser as useRealmUser } from "@realm/react"
 import { User as RealmUser } from "realm"
 
 import { confirmation } from "../helpers";
-import { useI18n } from "../components/contexts/I18nContext";
+import { useI18n } from "../contexts/I18nContext";
 import { useMemo } from "react";
 
 export interface UserDataKeys {

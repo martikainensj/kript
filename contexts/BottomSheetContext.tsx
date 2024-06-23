@@ -23,12 +23,12 @@ import {
 	BottomSheetDefaultBackdropProps
 } from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackdrop/types";
 
-import { GlobalStyles, Spacing } from "../../constants";
-import { IconButton } from "../buttons";
+import { GlobalStyles, Spacing } from "../constants";
+import { IconButton } from "../components/buttons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "./ThemeContext";
 import { Text } from "react-native-paper";
-import { Header } from "../ui/Header";
+import { Header } from "../components/ui/Header";
 
 interface BottomSheetContext {
 	title: string,

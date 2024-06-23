@@ -4,7 +4,7 @@ import { TextInput } from "./TextInput";
 import { addTimeToDateTimestamp } from "../../helpers";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { TouchableRipple } from "react-native-paper";
-import { useTheme } from "../contexts/ThemeContext";
+import { useTheme } from "../../contexts/ThemeContext";
 
 interface DateInputProps {
 	label: string
