@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import {
 	Keyboard,
-	Platform,
 	StyleSheet,
 	useWindowDimensions
 } from "react-native";
@@ -27,7 +26,6 @@ import { GlobalStyles, Spacing } from "../constants";
 import { IconButton } from "../components/buttons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "./ThemeContext";
-import { Text } from "react-native-paper";
 import { Header } from "../components/ui/Header";
 
 interface BottomSheetContext {

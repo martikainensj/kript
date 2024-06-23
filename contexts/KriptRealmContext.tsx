@@ -6,7 +6,7 @@ import { CONFIG } from "../kript.config";
 import { AppProvider, UserProvider, RealmProvider } from "@realm/react";
 import { LoginScreen } from "../components/authentication";
 import { Schemas } from "../models";
-import Realm, { ClientResetMode, OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from "realm";
+import { ClientResetMode, OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from "realm";
 
 interface KriptRealmContext {}
 
