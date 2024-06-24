@@ -1,69 +1,30 @@
 import React, { useCallback } from "react";
-import { GestureResponderEvent, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import { router } from "expo-router";
 
 import { FontWeight, GlobalStyles, Spacing } from "../../constants";
-import { useHolding } from "../../hooks";
-import { HoldingForm } from "./HoldingForm";
 import { Holding } from "../../models/Holding";
 import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../../contexts/I18nContext';
 import { useTheme } from "../../contexts/ThemeContext";
-import { MenuItem, useMenu } from "../../contexts/MenuContext";
-import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
+import { useAccount } from "../../contexts/AccountContext";
 
-interface HoldingItemProps extends Holding {}
+interface HoldingItemProps {
+	holding: Holding
+}
 
-export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) => {
+export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
 	const { theme } = useTheme();
 	const { __ } = useI18n();
-	const { openMenu } = useMenu();
-	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { holding, saveHolding, removeHolding, account }
-		= useHolding( { _id, account_id } );
+	const { account } = useAccount();
 
 	const onPress = useCallback( () => {
-		router.navigate( {
-			pathname: `accounts/[account]/holdings/[holding]`,
-			params: {
-				id: holding._id.toString(),
-				name: holding.name
-			}
-		} );
-	}, [ holding ] );
-
-	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
-		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
-		const menuItems: MenuItem[] = [
-			{
-				title: __( 'Edit' ),
-				leadingIcon: ( props ) => 
-					<Icon name={ 'create' } { ...props } />,
-				onPress: () => {
-					openBottomSheet(
-						__( 'Edit Holding' ),
-						<HoldingForm
-							holding={ holding }
-							onSubmit={ holding => {
-								saveHolding( holding ).then( closeBottomSheet ) }
-							} />
-					);
-				}
-			},
-			{
-				title: __( 'Remove' ),
-				leadingIcon: ( props ) => 
-					<Icon name={ 'trash' } { ...props } />,
-				onPress: removeHolding
-			}
-		];
-
-		openMenu( anchor, menuItems );
-	}, [ holding ] );
+		router.push( `accounts/${ account._id.toString() }/${ holding._id.toString() }` );
+	}, [ holding, account ] );
 
 	if ( ! holding?.isValid() ) return;
 	
@@ -100,9 +61,7 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 	]
 	
 	return (
-		<TouchableRipple
-			onPress={ onPress }
-			onLongPress={ onLongPress }>
+		<TouchableRipple onPress={ onPress }>
 			<View style={ styles.container }>
 				<View style={ styles.contentContainer }>
 					<Grid

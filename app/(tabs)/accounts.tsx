@@ -55,7 +55,7 @@ const Accounts: React.FC = () => {
 
 						return {
 							item: account,
-							renderItem: <AccountItem { ...account } />
+							renderItem: <AccountItem account={ account } />
 						}
 					}) }
 					sortingOptions={ [

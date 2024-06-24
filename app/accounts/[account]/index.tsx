@@ -35,6 +35,7 @@ const AccountPage: React.FC = ( {} ) => {
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { SortingTypes } = useTypes();
 	const insets = useSafeAreaInsets();
+	console.log( account );
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -177,7 +178,7 @@ const AccountPage: React.FC = ( {} ) => {
 								data={ holdings.map( holding => {
 									return {
 										item: holding,
-										renderItem: <HoldingItem { ...holding} />
+										renderItem: <HoldingItem holding={ holding } />
 									}
 								}) }
 								sortingContainerStyle={ { marginBottom: insets.bottom } }

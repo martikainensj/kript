@@ -1,15 +1,11 @@
-import React, { useCallback } from "react";
-import { GestureResponderEvent, StyleSheet, View } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import { router } from 'expo-router';
 
 import { FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { Account } from "../../models/Account";
-import { MenuItem, useMenu } from "../../contexts/MenuContext";
-import { useAccount } from "../../hooks";
-import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { useTheme } from "../../contexts/ThemeContext";
-import { AccountForm } from "./AccountForm";
 import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../../contexts/I18nContext';
 import { Icon } from "../ui/Icon";
@@ -17,15 +13,12 @@ import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
 
 interface AccountItemProps {
-	_id: Account['_id']
+	account: Account
 }
 
-export const AccountItem: React.FC<AccountItemProps> = ( { _id } ) => {
+export const AccountItem: React.FC<AccountItemProps> = ( { account } ) => {
 	const { theme } = useTheme();
 	const { __ } = useI18n();
-	const { openMenu } = useMenu();
-	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { account, saveAccount, removeAccount } = useAccount( { _id } )
 
 	function onPress() {
 		router.navigate( {
@@ -36,35 +29,6 @@ export const AccountItem: React.FC<AccountItemProps> = ( { _id } ) => {
 			}
 		} );
 	}
-
-	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
-		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
-		const menuItems: MenuItem[] = [
-			{
-				title: __( 'Edit' ),
-				leadingIcon: ( { color } ) => 
-					<Icon name={ 'create' } color={ color } />,
-				onPress: () => {
-					openBottomSheet(
-						__( 'Edit Account' ),
-						<AccountForm
-							account={ account }
-							onSubmit={ ( editedAccount ) => {
-								saveAccount( editedAccount ).then( closeBottomSheet );
-							}	} />
-					);
-				}
-			},
-			{
-				title: __( 'Remove' ),
-				leadingIcon: ( { color } ) => 
-					<Icon name={ 'trash' } color={ color } />,
-				onPress: removeAccount
-			}
-		];
-
-		openMenu( anchor, menuItems );
-	}, [ account ] );
 
 	if ( ! account?.isValid() ) return;
 
@@ -109,9 +73,7 @@ export const AccountItem: React.FC<AccountItemProps> = ( { _id } ) => {
 	];
 
 	return (
-		<TouchableRipple
-			onPress={ onPress }
-			onLongPress={ onLongPress }>
+		<TouchableRipple onPress={ onPress }>
 			<View style={ styles.container }>
 				<View style={ styles.contentContainer }>
 					<Grid

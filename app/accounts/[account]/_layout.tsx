@@ -20,10 +20,7 @@ export default function AccountLayout() {
 					animation: 'fade_from_bottom',
 					contentStyle: { backgroundColor: theme.colors.background },
 					headerShown: false
-				} }>
-					<Stack.Screen name="index" />
-					<Stack.Screen name="holdings" />
-				</Stack>
+				} }/>
 			</FABProvider>
 		</AccountProvider>
 	);

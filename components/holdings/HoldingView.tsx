@@ -28,9 +28,6 @@ import { useHolding } from "../../contexts/HoldingContext";
 import { useAccount } from "../../contexts/AccountContext";
 
 const HoldingView: React.FC = ( {} ) => {
-  const params = useLocalSearchParams<{ _id: string, account_id: string }>();
-	const _id = new Realm.BSON.UUID( params._id );
-	const account_id = new Realm.BSON.UUID( params.account_id );
 	const { user } = useUser();
 	const { __ } = useI18n();
 	const { 
@@ -143,56 +140,54 @@ const HoldingView: React.FC = ( {} ) => {
 	];
 	
 	return (
-			<FABProvider>
-				<View style={ styles.container }>
-					<Header
-						title={ name }
-						left={ <BackButton /> }
-						right={ <IconButton
-							icon={ 'ellipsis-vertical' }
-							onPress={ onPressOptions } />
-						}
-						showDivider={ false }>
-							<Grid
-								columns={ 4 }
-								items= { values } />
-					</Header>
+		<View style={ styles.container }>
+			<Header
+				title={ name }
+				left={ <BackButton /> }
+				right={ <IconButton
+					icon={ 'ellipsis-vertical' }
+					onPress={ onPressOptions } />
+				}
+				showDivider={ false }>
+					<Grid
+						columns={ 4 }
+						items= { values } />
+			</Header>
 
-					<Tabs screens={ [
-						{
-							label: __( 'Overview' ),
-							content: (
-								<View style={ styles.contentContainer }>
-									<Card style={ { marginTop: Spacing.md } }>
-										<Title>{ __( 'Overview' ) }</Title>
-									</Card>
-								</View>
-							)
-						},
-						{
-							label: __( 'Transactions' ),
-							content: (
-								<View style={ styles.contentContainer }>
-									<ItemList
-										noItemsText={ __( 'No Transactions' ) }
-										data={ transactions.map( transaction => {
-											return {
-												item: transaction,
-												renderItem: <TransactionItem { ...transaction} />
-											}
-										}) }
-										sortingContainerStyle={ { marginBottom: insets.bottom } }
-										sortingOptions={ [
-											SortingTypes.newestFirst,
-											SortingTypes.oldestFirst
-										] }  />
-								</View>
-							)
-						},
-					] }>
-					</Tabs>
-				</View>
-			</FABProvider>
+			<Tabs screens={ [
+				{
+					label: __( 'Overview' ),
+					content: (
+						<View style={ styles.contentContainer }>
+							<Card style={ { marginTop: Spacing.md } }>
+								<Title>{ __( 'Overview' ) }</Title>
+							</Card>
+						</View>
+					)
+				},
+				{
+					label: __( 'Transactions' ),
+					content: (
+						<View style={ styles.contentContainer }>
+							<ItemList
+								noItemsText={ __( 'No Transactions' ) }
+								data={ transactions.map( transaction => {
+									return {
+										item: transaction,
+										renderItem: <TransactionItem { ...transaction} />
+									}
+								}) }
+								sortingContainerStyle={ { marginBottom: insets.bottom } }
+								sortingOptions={ [
+									SortingTypes.newestFirst,
+									SortingTypes.oldestFirst
+								] }  />
+						</View>
+					)
+				},
+			] }>
+			</Tabs>
+		</View>
 	)
 }
 

@@ -28,10 +28,7 @@ export default function AppLayout() {
 									animationDuration: 200,
 									animation: 'fade_from_bottom',
 									headerShown: false
-								} }>
-									<Stack.Screen name="(tabs)" />
-									<Stack.Screen name="accounts"  />
-								</Stack>
+								} } />
 							</BottomSheetProvider>
 						</MenuProvider>
 					</KriptRealmProvider>
