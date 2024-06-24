@@ -67,8 +67,8 @@ export const HoldingProvider = ( { _id, children } ) => {
 	const holding = useMemo( () => {
 		return getHoldingBy( '_id', _id );
 	}, [ account ] );
+	console.log(account);
 
-	console.log( account );
 	const { transactions, } = useMemo( () => {
 		return {
 			transactions: account?.transactions
@@ -136,18 +136,19 @@ export const HoldingProvider = ( { _id, children } ) => {
 	}, [ holding, account ] );
 
 	const updateVariables = useCallback( ( variables: Partial<Record<HoldingKey, HoldingValue<HoldingKey>>> ) => {
-			const hasChanges = variables && Object.keys( variables )
-				.some( key => holding[ key ] !== variables[ key ] );
-				
-			if ( ! hasChanges ) return;
+		if ( ! holding?.isValid ) return;
 
-			realm.write( () => {
-				Object.entries( variables ).forEach( ( [ key, value ] ) => {
-					holding[ key ] = value;
-				} );
+		const hasChanges = variables && Object.keys( variables )
+			.some( key => holding[ key ] !== variables[ key ] );
+			
+		if ( ! hasChanges ) return;
+
+		realm.write( () => {
+			Object.entries( variables ).forEach( ( [ key, value ] ) => {
+				holding[ key ] = value;
 			} );
-		}, [ realm, holding ]
-	);
+		} );
+	}, [ realm, holding ] );
 
 	// Variables
 

@@ -15,7 +15,7 @@ import { ThemeProvider } from '../contexts/ThemeContext';
 import { MenuProvider } from '../contexts/MenuContext';
 import { KriptRealmProvider } from '../contexts/KriptRealmContext';
 
-const App: React.FC = () => {
+export default function AppLayout() {
 	return (
 		<GestureHandlerRootView style={ styles.container }>
 			<ThemeProvider>
@@ -24,22 +24,13 @@ const App: React.FC = () => {
 						<MenuProvider>
 							<BottomSheetProvider>
 								<StatusBar />
-								<Stack>
-									<Stack.Screen
-										name="(tabs)"
-										options={ {
-											headerShown: false
-										} } />
-									<Stack.Screen
-										name="accounts"
-										options={ {
-											headerShown: false
-										} } />
-									<Stack.Screen
-										name="holdings"
-										options={ {
-											headerShown: false
-										} } />
+								<Stack screenOptions={ {
+									animationDuration: 200,
+									animation: 'fade_from_bottom',
+									headerShown: false
+								} }>
+									<Stack.Screen name="(tabs)" />
+									<Stack.Screen name="accounts"  />
 								</Stack>
 							</BottomSheetProvider>
 						</MenuProvider>
@@ -50,8 +41,7 @@ const App: React.FC = () => {
 	);
 };
 
-export default App;
-registerRootComponent( App );
+registerRootComponent( AppLayout );
 
 const styles = StyleSheet.create( {
 	container: {

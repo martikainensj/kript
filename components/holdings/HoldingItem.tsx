@@ -23,16 +23,16 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { _id, account_id } ) =
 	const { __ } = useI18n();
 	const { openMenu } = useMenu();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const {
-		holding, saveHolding, removeHolding,
-		transactions,
-		dividends,
-	} = useHolding( { _id, account_id } );
+	const { holding, saveHolding, removeHolding, account }
+		= useHolding( { _id, account_id } );
 
 	const onPress = useCallback( () => {
 		router.navigate( {
-			pathname: 'holdings/[holding]',
-			params: { ...holding }
+			pathname: `accounts/[account]/holdings/[holding]`,
+			params: {
+				id: holding._id.toString(),
+				name: holding.name
+			}
 		} );
 	}, [ holding ] );
 

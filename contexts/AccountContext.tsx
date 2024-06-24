@@ -56,8 +56,9 @@ export const AccountProvider = ( { _id, children } ) => {
 	const { user } = useUser();
 	const { __ } = useI18n();
 	const realm = useRealm();
+
 	const account = useQuery<Account>( 'Account' )
-		.filtered( '_id == $0', _id )[0];
+		.filtered( '_id == $0',  _id )[0];
 
 	const getTransactionBy = useCallback( <K extends TransactionKey>( key: K, value: TransactionValue<K> ) => {
 		const transaction = account?.transactions
@@ -161,23 +162,24 @@ export const AccountProvider = ( { _id, children } ) => {
 	}, [ account ] );
 
 	const updateVariables = useCallback( ( variables: Partial<Record<AccountKey, AccountValue<AccountKey>>> ) => {
-			const hasChanges = Object.keys( variables )
-				.some( key => account[ key ] !== variables[ key ] );
-				
-			if ( ! hasChanges ) return;
+		if ( ! account?.isValid() ) return;
 
-			realm.write( () => {
-				Object.entries( variables ).forEach( ( [ key, value ] ) => {
-					account[ key ] = value;
-				} );
+		const hasChanges = Object.keys( variables )
+			.some( key => account[ key ] !== variables[ key ] );
+			
+		if ( ! hasChanges ) return;
+
+		realm.write( () => {
+			Object.entries( variables ).forEach( ( [ key, value ] ) => {
+				account[ key ] = value;
 			} );
-		}, [ realm, account ]
-	);
+		} );
+	}, [ realm, account ] );
 
 	// Variables
 
 	const total = useMemo( () => {
-		const total = account.holdings.reduce( ( total, holding ) => {
+		const total = account?.holdings.reduce( ( total, holding ) => {
 			return total + holding.total;
 		}, 0 );
 
@@ -185,7 +187,7 @@ export const AccountProvider = ( { _id, children } ) => {
 	}, [ account ] );
 
 	const cashAmount = useMemo( () => {
-		const cashAmount = account.transactions.reduce( ( cashAmount, transaction ) => {
+		const cashAmount = account?.transactions.reduce( ( cashAmount, transaction ) => {
 			if ( transaction.type !== 'cash' ) {
 				return cashAmount;
 			}
@@ -199,7 +201,7 @@ export const AccountProvider = ( { _id, children } ) => {
 	const balance = cashAmount - total;
 
 	const value = useMemo( () => {
-		const value = account.holdings.reduce( ( value, holding ) => {
+		const value = account?.holdings.reduce( ( value, holding ) => {
 			return value + holding.value;
 		}, balance );
 
