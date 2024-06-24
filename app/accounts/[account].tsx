@@ -4,7 +4,6 @@ import Realm from "realm";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
-import { useAccount } from "../../hooks";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../contexts/MenuContext";
 import { AccountForm } from "../../components/accounts";
@@ -26,208 +25,21 @@ import { ItemList } from "../../components/ui/ItemList";
 import HoldingItem from "../../components/holdings/HoldingItem";
 import TransactionItem from "../../components/transactions/TransactionItem";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AccountProvider } from "../../contexts/AccountContext";
+import AccountView from "../../components/accounts/AccountView";
 
 const AccountPage: React.FC = ( {} ) => {
 	const params = useLocalSearchParams<{ id: string }>();
 	const _id = new Realm.BSON.UUID( params.id );
-	const { user } = useUser();
-	const { __ } = useI18n();
-	const { account, saveAccount, removeAccount, addTransaction } = useAccount( { _id } );
-	const { openMenu } = useMenu();
-	const { setActions } = useFAB();
-	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { SortingTypes } = useTypes();
-	const insets = useSafeAreaInsets();
-
-	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
-		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
-		const menuItems: MenuItem[] = [
-			{
-				title: __( 'Edit' ),
-				leadingIcon: ( { color } ) => 
-					<Icon name={ 'create' } color={ color } />,
-				onPress: () => {
-					openBottomSheet(
-						__( 'Edit Account' ),
-						<AccountForm
-							account={ account }
-							onSubmit={ ( editedAccount ) => {
-								saveAccount( editedAccount ).then( closeBottomSheet );
-							}	} />
-					);
-				},
-			},
-			{
-				title: __( 'Remove' ),
-				leadingIcon: ( props ) => 
-					<Icon name={ 'trash' } { ...props } />,
-				onPress: removeAccount,
-			},
-		];
-
-		openMenu( anchor, menuItems );
-	}, [ account ] );
-
-	useEffect( () => {
-		setActions( [
-			{
-				icon: ( { color, size } ) => { return (
-					<Icon name={ 'pricetag' } size={ size } color={ color } />
-				) },
-				label: __( 'Add Transaction' ),
-				onPress: () => {
-					openBottomSheet(
-						__( 'New Transaction' ),
-						<TransactionForm
-							transaction={ {
-								owner_id: user.id,
-								date: Date.now(),
-								price: null,
-								amount: null,
-								total: null,
-								holding_name: '',
-								account_id: account._id,
-								type: 'trading',
-								sub_type: 'buy'
-							} }
-							account={ account }
-							onSubmit={ ( transaction ) => {
-								addTransaction( transaction ).then( closeBottomSheet );
-							}	} />
-					);
-				}
-			}
-		])
-	}, [ account ] );
-
-	if ( ! account?.isValid() ) {
-		router.back();
-		return;
-	}
-
-	const {
-		name,
-		notes,
-		holdings,
-		transactions,
-		balance,
-		value,
-		returnValue,
-		returnPercentage
-	} = account;
-
-	const values = [
-		<Value
-			label={ __( 'Balance' ) }
-			value={ prettifyNumber( balance, 0 ) }
-			unit={ '€' }
-			isVertical={ true }
-			isNegative={ balance < 0 } />,
-		<Value
-			label={ __( 'Value' ) }
-			value={ prettifyNumber( value, 0 ) }
-			unit={ '€' }
-			isVertical={ true }
-			isNegative={ value < 0 } />,
-		<Value
-			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnValue, 0 ) }
-			unit={ '€' }
-			isVertical={ true }
-			isPositive={ returnValue > 0 }
-			isNegative={ returnValue < 0 } />,
-		<Value
-			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnPercentage, 0 ) }
-			unit={ '%' }
-			isVertical={ true }
-			isPositive={ returnPercentage > 0 }
-			isNegative={ returnPercentage < 0 } />,
-	];
 
 	return (
-			<FABProvider>
-				<View style={ styles.container }>
-					<Header
-						title={ name }
-						left={ <BackButton /> }
-						right={ <IconButton
-							icon={ 'ellipsis-vertical' }
-							onPress={ onPressOptions } />
-						}
-						showDivider={ false }>
-							<Grid
-								columns={ 4 }
-								items= { values } />
-					</Header>
-
-					<Tabs screens={ [
-						{
-							label: __( 'Overview' ),
-							content: (
-								<View style={ styles.contentContainer }>
-									<Card style={ { marginTop: Spacing.md } }>
-										<Title>{ __( 'Overview' ) }</Title>
-									</Card>
-								</View>
-							)
-						},
-						{
-							label: __( 'Holdings' ),
-							content: (
-								<View style={ styles.contentContainer }>
-									<ItemList
-										noItemsText={ __( 'No Holdings' ) }
-										data={ holdings.map( holding => {
-											return {
-												item: holding,
-												renderItem: <HoldingItem { ...holding} />
-											}
-										}) }
-										sortingContainerStyle={ { marginBottom: insets.bottom } }
-										sortingOptions={ [
-											SortingTypes.name,
-											SortingTypes.highestReturn,
-											SortingTypes.lowestReturn,
-											SortingTypes.highestValue
-										] } />
-								</View>
-							)
-						},
-						{
-							label: __( 'Transactions' ),
-							content: (
-								<View style={ styles.contentContainer }>
-									<ItemList
-										noItemsText={ __( 'No Transactions' ) }
-										data={ transactions.map( transaction => {
-											return {
-												item: transaction,
-												renderItem: <TransactionItem { ...transaction } showHolding />
-											}
-										})}
-										sortingContainerStyle={ { marginBottom: insets.bottom } }
-										sortingOptions={ [
-											SortingTypes.newestFirst,
-											SortingTypes.oldestFirst
-										] } />
-								</View>
-							)
-						},
-					] } />
-				</View>
-			</FABProvider>
+		<AccountProvider _id={ _id }>
+			<AccountView />
+		</AccountProvider>
 	)
 }
 
 export default AccountPage;
 
 const styles = StyleSheet.create( {
-	container: {
-		...GlobalStyles.container,
-	},
-	contentContainer: {
-		...GlobalStyles.container,
-		...GlobalStyles.gutter,
-	},
 } );

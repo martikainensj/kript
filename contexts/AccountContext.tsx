@@ -3,6 +3,8 @@ import React, {
 	createContext,
 	useContext,
 	useCallback,
+	useMemo,
+	useEffect,
 } from "react";
 import { useUser } from "../hooks/useUser";
 import { useI18n } from "./I18nContext";
@@ -21,7 +23,14 @@ interface AccountContext {
 	getTransactionBy: <K extends TransactionKey>( key: K, value: TransactionValue<K> ) => Transaction;
 	saveAccount: ( account: Account ) => Promise<Account>;
 	removeAccount: () => Promise<boolean>;
-	updateVariables: ( variables: Partial<Record<AccountKey, AccountValue<AccountKey>>> ) => void
+	updateVariables: ( variables: Partial<Record<AccountKey, AccountValue<AccountKey>>> ) => void;
+	account: Account;
+	total: number;
+	cashAmount: number;
+	balance: number;
+	value: number;
+	returnValue: number;
+	returnPercentage: number;
 }
 
 const AccountContext = createContext<AccountContext>( {
@@ -31,7 +40,14 @@ const AccountContext = createContext<AccountContext>( {
 	getTransactionBy: (): Transaction => { return },
 	saveAccount: (): Promise<Account> => { return },
 	removeAccount: (): Promise<boolean> => { return },
-	updateVariables: () => {}
+	updateVariables: () => {},
+	account: null,
+	balance: null,
+	cashAmount: null,
+	returnPercentage: null,
+	returnValue: null,
+	total: null,
+	value: null
 } );
 
 export const useAccount = () => useContext( AccountContext );
@@ -158,7 +174,53 @@ export const AccountProvider = ( { _id, children } ) => {
 		}, [ realm, account ]
 	);
 
-	// TODO: variables
+	// Variables
+
+	const total = useMemo( () => {
+		const total = account.holdings.reduce( ( total, holding ) => {
+			return total + holding.total;
+		}, 0 );
+
+		return total;
+	}, [ account ] );
+
+	const cashAmount = useMemo( () => {
+		const cashAmount = account.transactions.reduce( ( cashAmount, transaction ) => {
+			if ( transaction.type !== 'cash' ) {
+				return cashAmount;
+			}
+
+			return cashAmount + transaction.amount
+		}, 0 );
+
+		return cashAmount;
+	}, [ account ] );
+
+	const balance = cashAmount - total;
+
+	const value = useMemo( () => {
+		const value = account.holdings.reduce( ( value, holding ) => {
+			return value + holding.value;
+		}, balance );
+
+		return value;
+	}, [ account ] );
+
+	const returnValue = value - balance - total;
+	const returnPercentage = value
+		? ( value - balance - total ) / Math.abs( total ) * 100
+		: 0;
+
+	useEffect( () => {
+		updateVariables( {
+			total,
+			cashAmount,
+			balance,
+			value,
+			returnValue,
+			returnPercentage
+		} );
+	}, [ account ] )
 
   return (
     <AccountContext.Provider value={ {
@@ -168,7 +230,14 @@ export const AccountProvider = ( { _id, children } ) => {
 			getTransactionBy,
 			removeAccount,
 			saveAccount,
-			updateVariables
+			updateVariables,
+			account,
+			balance,
+			cashAmount,
+			returnPercentage,
+			returnValue,
+			total,
+			value
 		} }>
       { children }
     </AccountContext.Provider>
