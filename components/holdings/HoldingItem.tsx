@@ -23,8 +23,15 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
 	const { account } = useAccount();
 
 	const onPress = useCallback( () => {
-		router.push( `accounts/${ account._id.toString() }/${ holding._id.toString() }` );
-	}, [ holding, account ] );
+		router.navigate( {
+			pathname: `accounts/[account]/[holding]`,
+			params: {
+				accountId: account._id.toString(),
+				holdingId: holding._id.toString(),
+				name: holding.name
+			}
+		} );
+	}, [ holding ] );
 
 	if ( ! holding?.isValid() ) return;
 	

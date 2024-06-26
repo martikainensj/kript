@@ -52,13 +52,16 @@ const AccountContext = createContext<AccountContext>( {
 
 export const useAccount = () => useContext( AccountContext );
 
-export const AccountProvider = ( { _id, children } ) => {
+interface AccountProviderProps {
+	_id: Realm.BSON.UUID;
+	children: React.ReactNode
+}
+export const AccountProvider: React.FC<AccountProviderProps> = ( { _id, children } ) => {
 	const { user } = useUser();
 	const { __ } = useI18n();
 	const realm = useRealm();
-
 	const account = useQuery<Account>( 'Account' )
-		.filtered( '_id == $0',  _id )[0];
+	.filtered( '_id == $0',  _id )[0];
 
 	const getTransactionBy = useCallback( <K extends TransactionKey>( key: K, value: TransactionValue<K> ) => {
 		const transaction = account?.transactions
@@ -222,8 +225,9 @@ export const AccountProvider = ( { _id, children } ) => {
 			returnValue,
 			returnPercentage
 		} );
-	}, [ account ] )
+	}, [ account ] );
 
+	console.log('haetiin account');
   return (
     <AccountContext.Provider value={ {
 			addHolding,

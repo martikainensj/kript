@@ -67,7 +67,6 @@ export const HoldingProvider = ( { _id, children } ) => {
 	const holding = useMemo( () => {
 		return getHoldingBy( '_id', _id );
 	}, [ account ] );
-	console.log(account);
 
 	const { transactions, } = useMemo( () => {
 		return {
@@ -237,7 +236,8 @@ export const HoldingProvider = ( { _id, children } ) => {
 		return sum;
 	}, [ dividends ] );
 
-	// TODO: Korjaa puuttuavt transactions ja dividends 
+	// TODO: transactionSum -> hankinta-arvo (mikä lie enkuks)
+	// value -> markkina-arvo ( mikä lie enkuks)
 	useEffect( () => {
 		updateVariables( {
 			lastPrice,

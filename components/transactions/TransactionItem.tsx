@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import Realm from "realm";
@@ -12,48 +12,19 @@ import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
+import { Transaction } from "../../models/Transaction";
+import { useTypes } from "../../hooks/useTypes";
 
 interface TransactionItemProps {
-	_id: Realm.BSON.UUID,
-	account_id: Realm.BSON.UUID,
-	showHolding?: boolean
+	transaction: Transaction;
+	showHolding?: boolean;
+	onLongPress?: () => void;
 }
 
-export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, account_id, showHolding } ) => {
+export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, showHolding, onLongPress } ) => {
 	const theme = useTheme();
 	const { __ } = useI18n();
-	const { openMenu } = useMenu();
-	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { transaction, saveTransaction, removeTransaction, type } = useTransaction( { _id, account_id } );
-
-	const onLongPress = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
-		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
-		const menuItems: MenuItem[] = [
-			{
-				title: __( 'Edit' ),
-				leadingIcon: ( { color } ) => 
-					<Icon name={ 'create' } color={ color } />,
-				onPress: () => {
-					openBottomSheet(
-						__( 'Edit Transaction' ),
-						<TransactionForm
-							transaction={ transaction }
-							onSubmit={ transaction => {
-								saveTransaction( transaction ).then( closeBottomSheet ) }
-							} />
-					);
-				}
-			},
-			{
-				title: __( 'Remove' ),
-				leadingIcon: ( { color } ) => 
-					<Icon name={ 'trash' } color={ color } />,
-				onPress: removeTransaction
-			}
-		];
-
-		openMenu( anchor, menuItems );
-	}, [ transaction ] );
+	const { TradingTypes, CashTypes, AdjustmentTypes } = useTypes();
 
 	if ( ! transaction?.isValid() ) return;
 
@@ -62,6 +33,17 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, account_
 		amount: Math.abs( transaction.amount ),
 		total: Math.abs( transaction.total ),
 	};
+
+	const type = useMemo( () => {
+		switch ( transaction?.type) {
+			case 'trading':
+				return TradingTypes.find(type => type.id === transaction.sub_type )
+			case 'cash':
+				return CashTypes.find(type => type.id === transaction.sub_type )
+			case 'adjustment':
+				return AdjustmentTypes.find(type => type.id === transaction.sub_type )
+		}
+	}, [ transaction ] )
 	
 	const meta = [
 		<View style={ styles.header }>
@@ -88,8 +70,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { _id, account_
 	}
 
 	return (
-		<TouchableRipple
-			onLongPress={ onLongPress }>
+		<TouchableRipple onLongPress={ onLongPress }>
 			<View style={ styles.container}>
 				<Grid
 					columns={ 2 }

@@ -174,7 +174,7 @@ const HoldingView: React.FC = ( {} ) => {
 								data={ transactions.map( transaction => {
 									return {
 										item: transaction,
-										renderItem: <TransactionItem { ...transaction} />
+										renderItem: <TransactionItem transaction={ transaction } />
 									}
 								}) }
 								sortingContainerStyle={ { marginBottom: insets.bottom } }

@@ -1,32 +1,19 @@
 import React from "react";
 import Realm from "realm";
 import { useLocalSearchParams } from "expo-router";
+import { HoldingProvider } from "../../../contexts/HoldingContext";
+import { FABProvider } from "../../../contexts/FABContext";
+import HoldingView from "../../../components/holdings/HoldingView";
 
-import { Text } from "react-native-paper";
-import { useAccount } from "../../../contexts/AccountContext";
-import { useUser } from "@realm/react";
-import { useI18n } from "../../../contexts/I18nContext";
-import { useMenu } from "../../../contexts/MenuContext";
-import { useFAB } from "../../../contexts/FABContext";
-import { useBottomSheet } from "../../../contexts/BottomSheetContext";
-import { useTypes } from "../../../hooks/useTypes";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+export default function HoldingLayout() {
+  const { holdingId } = useLocalSearchParams<{ holdingId: string, name: string }>();
+	const _id = new Realm.BSON.UUID( holdingId );
 
-const HoldingPage: React.FC = ( {} ) => {
-	const { user } = useUser();
-	const { __ } = useI18n();
-	const { account, saveAccount, removeAccount, addTransaction } = useAccount();
-	const { openMenu } = useMenu();
-	const { setActions } = useFAB();
-	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { SortingTypes } = useTypes();
-	const insets = useSafeAreaInsets();
-
-	// TODO: Selvitä mihi helvettiin account tippuu
-	console.log( account );
   return ( 
-		<Text>{'Test'}</Text>
+		<HoldingProvider _id={ _id }>
+			<FABProvider>
+				<HoldingView />
+			</FABProvider>
+		</HoldingProvider>
 	);
 }
-
-export default HoldingPage;

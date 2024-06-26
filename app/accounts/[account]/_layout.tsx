@@ -7,8 +7,8 @@ import { FABProvider } from "../../../contexts/FABContext";
 
 export default function AccountLayout() {
 	const { theme } = useTheme();
-  const { id, name } = useGlobalSearchParams<{ id: string, name: string }>();
-	const _id = new Realm.BSON.UUID( id );
+  const { accountId, name } = useGlobalSearchParams<{ accountId: string, name: string }>();
+	const _id = new Realm.BSON.UUID( accountId );
 
   return ( 
 		<AccountProvider _id={ _id }>

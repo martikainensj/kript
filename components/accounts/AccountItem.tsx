@@ -24,7 +24,7 @@ export const AccountItem: React.FC<AccountItemProps> = ( { account } ) => {
 		router.navigate( {
 			pathname: 'accounts/[account]',
 			params: {
-				id: account._id.toString(),
+				accountId: account._id.toString(),
 				name: account.name
 			}
 		} );
