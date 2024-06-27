@@ -4,7 +4,6 @@ import { Text, TouchableRipple, useTheme } from "react-native-paper";
 import Realm from "realm";
 
 import { FontWeight, GlobalStyles, Spacing } from "../../constants";
-import { useTransaction } from "../../hooks";
 import { TransactionForm } from "./TransactionForm";
 import { useI18n } from '../../contexts/I18nContext';
 import { MenuItem, useMenu } from "../../contexts/MenuContext";

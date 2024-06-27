@@ -5,20 +5,20 @@ import Realm from 'realm';
 import { GlobalStyles } from '../../constants';
 import { AccountItem, AccountForm  } from '../../components/accounts';
 import { IconButton} from '../../components/buttons';
-import { useAccounts } from '../../hooks';
 import { useBottomSheet } from '../../contexts/BottomSheetContext';
 import { useI18n } from '../../contexts/I18nContext';
 import { useUser } from '../../hooks/useUser';
 import { Header } from '../../components/ui/Header';
 import { ItemList } from '../../components/ui/ItemList';
 import { useTypes } from '../../hooks/useTypes';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useData } from '../../contexts/DataContext';
 
 const Accounts: React.FC = () => {
+	const { getAccounts, addAccount } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
 	
-	const { accounts, addAccount } = useAccounts();
+	const accounts = getAccounts();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { SortingTypes } = useTypes();
 

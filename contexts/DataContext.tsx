@@ -1,23 +1,15 @@
-import React, {
-	useState,
-	createContext,
-	useContext,
-	useCallback,
-	useMemo,
-	useEffect,
-} from "react";
-import { useUser } from "../hooks/useUser";
-import { useI18n } from "./I18nContext";
+import React, { createContext, useContext, useCallback } from "react";
 import Realm, { UpdateMode } from "realm";
 import { useQuery, useRealm } from "@realm/react";
+import { router } from "expo-router";
+
+import { useI18n } from "./I18nContext";
+import { useUser } from "../hooks/useUser";
+import { confirmation } from "../helpers";
 import { Account, AccountKey, AccountValue } from "../models/Account";
 import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
-import { confirmation } from "../helpers";
-import { router } from "expo-router";
 
-// TODO: saveHolding, saveTransaction, updateAccountVariables, updateHoldingVariables, updateTransactionVariables
-// Kato saisko noi variabletUpdatet yhdistettyy jollai <K> hommelil
 interface DataContext {
 	addAccount: ( account: Account ) => Promise<Account>;
 	addHolding: ( holding: Holding ) => Promise<Holding>;
@@ -29,9 +21,12 @@ interface DataContext {
 	getHoldingBy: <K extends HoldingKey>( key: K, value: HoldingValue<K>, options: { accountId: Realm.BSON.UUID } ) => Holding;
 	getTransactionBy: <K extends TransactionKey>( key: K, value: TransactionValue<K>, options: { accountId?: Realm.BSON.UUID, holdingId?: Realm.BSON.UUID }) => Transaction;
 	saveAccount: ( account: Account ) => Promise<Account>;
+	saveHolding: ( holding: Holding ) => Promise<Holding>;
+	saveTransaction: ( transaction: Transaction ) => Promise<Transaction>;
 	removeAccount: ( account: Account ) => Promise<boolean>;
 	removeHolding: ( holding: Holding ) => Promise<boolean>;
 	removeTransaction: ( transaction: Transaction ) => Promise<boolean>;
+	updateVariables: <T extends Account | Holding | Transaction>( object: T, variables: Partial<T> ) => void;
 }
 
 const DataContext = createContext<DataContext>( {
@@ -45,17 +40,20 @@ const DataContext = createContext<DataContext>( {
 	getHoldingBy: (): Holding => { return },
 	getTransactionBy: (): Transaction => { return },
 	saveAccount: (): Promise<Account> => { return },
+	saveHolding: (): Promise<Holding> => { return },
+	saveTransaction: (): Promise<Transaction> => { return },	
 	removeAccount: (): Promise<boolean> => { return },
 	removeHolding: (): Promise<boolean> => { return },
 	removeTransaction: (): Promise<boolean> => { return },
+	updateVariables: () => {}
 } );
 
 export const useData = () => useContext( DataContext );
 
 interface DataProviderProps {
-	_id: Realm.BSON.UUID;
 	children: React.ReactNode
 }
+
 export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 	const { user } = useUser();
 	const { __ } = useI18n();
@@ -218,10 +216,10 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		});
 	}, []);
 
-	const saveAccount = useCallback(( account: Account ): Promise<Account> => {
+	const saveAccount = useCallback(( editedAccount: Account ): Promise<Account> => {
 		const title = __( 'Update Account' );
 		const message = __( 'Updating existing account' )
-			+ `: ${ account.name }`
+			+ `: ${ editedAccount.name }`
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise(( resolve, _ ) => {
@@ -229,12 +227,62 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 				title: title,
 				message: message,
 				onAccept() {
-					resolve( realm.write(() => {
-						return realm.create( 'Account', account, Realm.UpdateMode.Modified );
-					}));
+					const account = getAccountBy(
+						'_id',
+						editedAccount._id
+					);
+					
+					resolve( updateVariables( account, editedAccount ) );
 				}
 			});
 		})
+	}, []);
+
+	const saveHolding = useCallback(( editedHolding: Holding ): Promise<Holding> => {
+		const title = __( 'Save Holding' );
+		const message = `${ __( 'Saving existing holding' ) }: ${ editedHolding.name }`
+			+ "\n" + __( 'Are you sure?' );
+
+		return new Promise(( resolve, _ ) => {
+			confirmation({
+				title,
+				message,
+				onAccept() {
+					const holding = getHoldingBy(
+						'_id',
+						editedHolding._id,
+						{ accountId: editedHolding.account_id }
+					);
+
+					resolve( updateVariables( holding, editedHolding ) );
+				}
+			});
+		});
+	}, []);
+
+	const saveTransaction = useCallback(( editedTransaction: Transaction ): Promise<Transaction> => {
+		const title = __( 'Save Transaction' );
+		const message = __( 'Saving existing transaction' )
+			+ "\n" + __( 'Are you sure?' );
+
+		return new Promise(( resolve, _ ) => {
+			confirmation({
+				title,
+				message,
+				onAccept() {
+					const transaction = getTransactionBy(
+						'_id',
+						editedTransaction._id,
+						{
+							holdingId: editedTransaction.holding_id,
+							accountId: editedTransaction.account_id
+						}
+					);
+
+					resolve( updateVariables( transaction, editedTransaction ) );
+				}
+			});
+		});
 	}, []);
 
 	const removeAccount = useCallback(( account: Account ): Promise<boolean> => {
@@ -317,6 +365,30 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		});
 	}, []);
 
+	// TODO: updateVariables täytyy ottaa käyttöön 
+	// - poistin ajatuksissani useHolding custom hookin jossa vois olla kaikki 
+	//   variablesit joita sit päivitetään useVariables kanssa
+	
+	const updateVariables = <T extends Account | Holding | Transaction> (
+		object: T,
+		variables: Partial<T>
+	) => {
+		if ( ! object?.isValid() ) return;
+	
+		const hasChanges = Object.keys( variables )
+			.some( key => object[ key as keyof T ] !== variables[ key as keyof T ] );
+	
+		if ( ! hasChanges ) return object;
+	
+		return realm.write(() => {
+			Object.entries( variables ).forEach(([ key, value ]) => {
+				object[ key as keyof T ] = value as T[ keyof T ];
+			});
+
+			return object;
+		});
+	};
+
   return (
     <DataContext.Provider value={ {
 			getAccounts,
@@ -332,6 +404,9 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			removeHolding,
 			removeTransaction,
 			saveAccount,
+			saveHolding,
+			saveTransaction,
+			updateVariables
 		} }>
       { children }
     </DataContext.Provider>

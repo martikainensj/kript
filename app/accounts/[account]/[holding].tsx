@@ -1,19 +1,24 @@
 import React from "react";
 import Realm from "realm";
 import { useLocalSearchParams } from "expo-router";
-import { HoldingProvider } from "../../../contexts/HoldingContext";
+
 import { FABProvider } from "../../../contexts/FABContext";
 import HoldingView from "../../../components/holdings/HoldingView";
+import { Text } from "react-native-paper";
+import { useData } from "../../../contexts/DataContext";
 
 export default function HoldingLayout() {
-  const { holdingId } = useLocalSearchParams<{ holdingId: string, name: string }>();
-	const _id = new Realm.BSON.UUID( holdingId );
+	const { getHoldingBy } = useData();
+  const { holdingId, accountId } = useLocalSearchParams<{ holdingId: string, accountId: string, name: string }>();
+	const holding = getHoldingBy(
+		'_id',
+		new Realm.BSON.UUID( holdingId ),
+		{ accountId: new Realm.BSON.UUID( accountId ) }
+	);
 
   return ( 
-		<HoldingProvider _id={ _id }>
-			<FABProvider>
-				<HoldingView />
-			</FABProvider>
-		</HoldingProvider>
+		<FABProvider>
+			<HoldingView holding={ holding } />
+		</FABProvider>
 	);
 }

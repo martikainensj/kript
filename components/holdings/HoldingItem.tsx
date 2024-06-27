@@ -11,16 +11,17 @@ import { useTheme } from "../../contexts/ThemeContext";
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
-import { useAccount } from "../../contexts/AccountContext";
+import { useData } from "../../contexts/DataContext";
 
 interface HoldingItemProps {
 	holding: Holding
 }
 
 export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
+	const { getAccountBy } = useData();
 	const { theme } = useTheme();
 	const { __ } = useI18n();
-	const { account } = useAccount();
+	const account = getAccountBy( '_id', holding.account_id );
 
 	const onPress = useCallback( () => {
 		router.navigate( {

@@ -7,6 +7,7 @@ import { AppProvider, UserProvider, RealmProvider } from "@realm/react";
 import { LoginScreen } from "../components/authentication";
 import { Schemas } from "../models";
 import { ClientResetMode, OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from "realm";
+import { DataProvider } from "./DataContext";
 
 interface KriptRealmContext {}
 
@@ -38,7 +39,9 @@ export const KriptRealmProvider: React.FC<KriptRealmProviderProps> = ( { childre
 								mode: ClientResetMode.DiscardUnsyncedChanges,
 							}
 						} }>
-						{ children }
+						<DataProvider>
+							{ children }
+						</DataProvider>
 					</RealmProvider>
 				</UserProvider>
 			</AppProvider>

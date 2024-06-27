@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from "react";
+import Realm from "realm";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
-import { router } from "expo-router";
+import { router, useGlobalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../../constants";
 import { BackButton, IconButton } from "../../../components/buttons";
@@ -10,7 +11,7 @@ import { TransactionForm } from "../../../components/transactions/TransactionFor
 import { prettifyNumber } from "../../../helpers";
 import { useI18n } from '../../../contexts/I18nContext';
 import { useBottomSheet } from "../../../contexts/BottomSheetContext";
-import { FABProvider, useFAB } from "../../../contexts/FABContext";
+import { useFAB } from "../../../contexts/FABContext";
 import { useUser } from "../../../hooks/useUser";
 import { Card } from "../../../components/ui/Card";
 import { useTypes } from "../../../hooks/useTypes";
@@ -24,12 +25,14 @@ import { ItemList } from "../../../components/ui/ItemList";
 import HoldingItem from "../../../components/holdings/HoldingItem";
 import TransactionItem from "../../../components/transactions/TransactionItem";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useAccount } from "../../../contexts/AccountContext";
+import { useData } from "../../../contexts/DataContext";
 
 const AccountPage: React.FC = ( {} ) => {
+	const { getAccountBy, saveAccount, removeAccount, addTransaction } = useData();
+  const params = useGlobalSearchParams<{ accountId: string, name: string }>();
+	const account = getAccountBy( '_id', new Realm.BSON.UUID( params.accountId ) );
 	const { user } = useUser();
 	const { __ } = useI18n();
-	const { account, saveAccount, removeAccount, addTransaction } = useAccount();
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
@@ -58,7 +61,7 @@ const AccountPage: React.FC = ( {} ) => {
 				title: __( 'Remove' ),
 				leadingIcon: ( props ) => 
 					<Icon name={ 'trash' } { ...props } />,
-				onPress: removeAccount,
+				onPress: removeAccount.bind( this, account ),
 			},
 		];
 
