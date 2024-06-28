@@ -25,13 +25,16 @@ import { useTypes } from "../../hooks/useTypes";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useData } from "../../contexts/DataContext";
 import { Holding } from "../../models/Holding";
+import { useHolding } from "../../hooks/useHolding";
 
 interface HoldingViewProps {
 	holding: Holding;
 }
 
 const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
-	const { getAccountBy, saveHolding, removeHolding, addTransaction, getTransactions } = useData();
+	useHolding( { holding } );
+
+	const { getAccountBy, saveHolding, removeObjects, addTransaction, getTransactions } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
 	const account = getAccountBy( '_id', holding.account_id );
@@ -65,7 +68,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 				leadingIcon: ( props ) => 
 					<Icon name={ 'trash' } { ...props } />,
 				onPress: () => {
-					removeHolding( holding ).then( router.back	)
+					removeObjects( 'Holding', [ holding ] ).then( router.back )
 				}
 			},
 		];

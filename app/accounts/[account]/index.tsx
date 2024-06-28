@@ -25,11 +25,16 @@ import { ItemList } from "../../../components/ui/ItemList";
 import HoldingItem from "../../../components/holdings/HoldingItem";
 import TransactionItem from "../../../components/transactions/TransactionItem";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useData } from "../../../contexts/DataContext";
+import { DataIdentifier, DataObject, useData } from "../../../contexts/DataContext";
+import { useSelector, SelectableType, SelectableObject } from "../../../hooks/useSelector";
+import { Transaction } from "../../../models/Transaction";
+import { Holding } from "../../../models/Holding";
+import { Account } from "../../../models/Account";
+import { useAccount } from "../../../hooks";
 
 const AccountPage: React.FC = ( {} ) => {
-	const { getAccountBy, saveAccount, removeAccount, addTransaction } = useData();
-  const params = useGlobalSearchParams<{ accountId: string, name: string }>();
+	const { getAccountBy, saveAccount, removeObjects, addTransaction } = useData();
+	const params = useGlobalSearchParams<{ accountId: string, name: string }>();
 	const account = getAccountBy( '_id', new Realm.BSON.UUID( params.accountId ) );
 	const { user } = useUser();
 	const { __ } = useI18n();
@@ -38,6 +43,9 @@ const AccountPage: React.FC = ( {} ) => {
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { SortingTypes } = useTypes();
 	const insets = useSafeAreaInsets();
+	const { isSelecting, selectedType, selectedObjects, select, deselect, canSelect, hasObject, validate } = useSelector();
+
+	useAccount({ account });
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -61,12 +69,22 @@ const AccountPage: React.FC = ( {} ) => {
 				title: __( 'Remove' ),
 				leadingIcon: ( props ) => 
 					<Icon name={ 'trash' } { ...props } />,
-				onPress: removeAccount.bind( this, account ),
+				onPress: () => removeObjects( 'Account', [ account ] ).then(() => router.navigate( '/accounts' )) ,
 			},
 		];
 
 		openMenu( anchor, menuItems );
 	}, [ account ] );
+
+	const onLongPressTransaction = useCallback(( transaction: Transaction ) => {
+		! isSelecting && select( 'Transaction', transaction );	
+	}, []);
+
+	const onPressSelectTransaction = useCallback(( transaction: Transaction ) => {
+		hasObject( transaction )
+			? deselect( transaction )
+			: select( 'Transaction', transaction );
+	}, [ selectedObjects ]);
 
 	useEffect( () => {
 		setActions( [
@@ -151,8 +169,16 @@ const AccountPage: React.FC = ( {} ) => {
 				title={ name }
 				left={ <BackButton /> }
 				right={ <IconButton
-					icon={ 'ellipsis-vertical' }
-					onPress={ onPressOptions } />
+					icon={
+						isSelecting
+						? 'trash'
+						: 'ellipsis-vertical'
+					}
+					onPress={
+						isSelecting
+						?	() => { removeObjects( selectedType, selectedObjects ).then( validate )}
+						: onPressOptions
+					} />
 				}
 				showDivider={ false }>
 					<Grid
@@ -202,7 +228,15 @@ const AccountPage: React.FC = ( {} ) => {
 								data={ transactions.map( transaction => {
 									return {
 										item: transaction,
-										renderItem: <TransactionItem transaction={ transaction } showHolding />
+										renderItem: (
+											<TransactionItem
+												transaction={ transaction }
+												onPressSelect={ onPressSelectTransaction }
+												onLongPress={ onLongPressTransaction }
+												isSelectable={ canSelect( 'Transaction' ) && isSelecting }
+												isSelected={ hasObject( transaction ) }
+												showHolding />
+										)
 									}
 								})}
 								sortingContainerStyle={ { marginBottom: insets.bottom } }

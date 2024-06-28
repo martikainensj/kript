@@ -13,19 +13,33 @@ import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
 import { Transaction } from "../../models/Transaction";
 import { useTypes } from "../../hooks/useTypes";
+import { Checkbox } from "../inputs/Checkbox";
 
 interface TransactionItemProps {
 	transaction: Transaction;
 	showHolding?: boolean;
-	onLongPress?: () => void;
+	isSelectable?: boolean;
+	isSelected?: boolean;
+	onPressSelect?: ( transaction: Transaction ) => void;
+	onLongPress?: ( transaction: Transaction ) => void;
 }
 
-export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, showHolding, onLongPress } ) => {
+export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, showHolding, isSelectable, isSelected, onPressSelect, onLongPress } ) => {
 	const theme = useTheme();
 	const { __ } = useI18n();
 	const { TradingTypes, CashTypes, AdjustmentTypes } = useTypes();
 
 	if ( ! transaction?.isValid() ) return;
+
+	const onLongPressHandler = useCallback( () => {
+		onLongPress && onLongPress( transaction );
+	}, [ transaction ]);
+
+	const onPressHandler = useCallback( () => {
+		if ( isSelectable && onPressSelect ) {
+			onPressSelect( transaction );
+		}
+	}, [ transaction ] );
 
 	const { amount, date, price, total, holding_name } = {
 		...transaction,
@@ -46,12 +60,13 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 	
 	const meta = [
 		<View style={ styles.header }>
+			{ isSelectable && <Checkbox value={ isSelected } /> }
 			<Text style={ [ styles.date, { color: theme.colors.primary } ] }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>
 			{ ( showHolding && holding_name )
 				&& <Text numberOfLines={ 1 } style={ styles.holding }>{ holding_name }</Text>
 			}
 		</View>,
-		<Text style={ [ styles.type, { color: type.color } ] }>{ type.name }</Text>
+		<Text style={ [ styles.type, { color: type?.color } ] }>{ type?.name }</Text>
 	];
 
 	const values = [];
@@ -69,7 +84,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 	}
 
 	return (
-		<TouchableRipple onLongPress={ onLongPress }>
+		<TouchableRipple onPress={ onPressHandler } onLongPress={ onLongPressHandler }>
 			<View style={ styles.container}>
 				<Grid
 					columns={ 2 }

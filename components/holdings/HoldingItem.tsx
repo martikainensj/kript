@@ -12,12 +12,15 @@ import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
 import { useData } from "../../contexts/DataContext";
+import { useHolding } from "../../hooks/useHolding";
 
 interface HoldingItemProps {
 	holding: Holding
 }
 
 export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
+	useHolding( { holding } );
+	
 	const { getAccountBy } = useData();
 	const { theme } = useTheme();
 	const { __ } = useI18n();

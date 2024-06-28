@@ -11,6 +11,7 @@ import { useI18n } from '../../contexts/I18nContext';
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
+import { useAccount } from "../../hooks";
 
 interface AccountItemProps {
 	account: Account
@@ -19,6 +20,8 @@ interface AccountItemProps {
 export const AccountItem: React.FC<AccountItemProps> = ( { account } ) => {
 	const { theme } = useTheme();
 	const { __ } = useI18n();
+
+	useAccount({ account });
 
 	function onPress() {
 		router.navigate( {

@@ -3,12 +3,12 @@ import { Adjustment, Cash, Trading, Transaction as TransactionProps } from '../h
 
 export type Transaction = {
 	_id: Realm.BSON.UUID;
-  amount?: number;
-  date: number;
-  notes?: string;
-  owner_id: string;
-  price?: number;
-  total?: number;
+	amount?: number;
+	date: number;
+	notes?: string;
+	owner_id: string;
+	price?: number;
+	total?: number;
 	account_id: Realm.BSON.UUID;
 	holding_name?: string;
 	holding_id?: Realm.BSON.UUID;
@@ -21,20 +21,20 @@ export type TransactionKey = keyof Transaction;
 export type TransactionValue<K extends TransactionKey> = Transaction[K];
 
 export const TransactionSchema = {
-  name: 'Transaction',
+	name: 'Transaction',
 	embedded: true,
-  properties: {
+	properties: {
 		_id: 'uuid',
-    amount: 'double?',
-    date: 'double',
-    notes: 'string?',
-    owner_id: 'string',
-    price: 'double?',
-    total: 'double?',
+		amount: 'double?',
+		date: 'double',
+		notes: 'string?',
+		owner_id: 'string',
+		price: 'double?',
+		total: 'double?',
 		account_id: 'uuid',
 		holding_name: 'string?',
 		holding_id: 'uuid?',
 		type: 'string',
 		sub_type: 'string'
-  }
+	}
 };

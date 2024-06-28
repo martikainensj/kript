@@ -3,12 +3,12 @@ import { Holding } from './Holding';
 import { Transaction } from './Transaction';
 
 export type Account = {
-  _id: Realm.BSON.UUID;
-  name: string;
-  notes?: string;
-  owner_id: string;
-  holdings?: Realm.List<Holding>;
-  transactions?: Realm.List<Transaction>;
+	_id: Realm.BSON.UUID;
+	name: string;
+	notes?: string;
+	owner_id: string;
+	holdings?: Realm.List<Holding>;
+	transactions?: Realm.List<Transaction>;
 	isValid?: () => boolean;
 	total?: number;
 	cashAmount?: number;
@@ -24,13 +24,13 @@ export type AccountKey = keyof Account;
 export type AccountValue<K extends AccountKey> = Account[K];
 
 export const AccountSchema = {
-  name: 'Account',
-  properties: {
-    _id: 'uuid',
-    name: 'string',
-    notes: 'string?',
-    owner_id: 'string',
-    holdings: 'Holding[]',
+	name: 'Account',
+	properties: {
+		_id: 'uuid',
+		name: 'string',
+		notes: 'string?',
+		owner_id: 'string',
+		holdings: 'Holding[]',
 		transactions: 'Transaction[]',
 		total: 'double?',
 		cashAmount: 'double?',
@@ -40,6 +40,6 @@ export const AccountSchema = {
 		totalCost: 'double?',
 		returnValue: 'double?',
 		returnPercentage: 'double?',
-  },
-  primaryKey: '_id',
+	},
+	primaryKey: '_id',
 };

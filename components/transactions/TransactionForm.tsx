@@ -152,7 +152,7 @@ export const TransactionForm = ( {
 							) }
 							disabled={ !! transaction._id } />
 					) }
-							
+					
 					<TextInput
 						label={ __( 'Price' ) }
 						value={ price }
@@ -245,6 +245,18 @@ export const TransactionForm = ( {
 				</> }
 
 				{ type === 'adjustment' && <>
+					{ account && (
+						<HoldingInput
+							label={ __( 'Holding' ) }
+							value={ holding_name }
+							account={ account }
+							placeholder={ `${ __( 'Example' ) }: Apple Inc` }
+							setValue={ holding_name => setEditedTransaction(
+								Object.assign( { ...editedTransaction }, { holding_name } )
+							) }
+							disabled={ !! transaction._id } />
+					) }
+					
 					<TextInput
 						label={ __( 'Adjusted Price' ) }
 						value={ price }

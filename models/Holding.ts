@@ -3,11 +3,11 @@ import { Transaction } from "./Transaction";
 
 export type Holding = {
 	_id: Realm.BSON.UUID;
-  name: string;
-  notes?: string;
-  owner_id: string;
+	name: string;
+	notes?: string;
+	owner_id: string;
 	account_id: Realm.BSON.UUID;
-  transactions?: Realm.List<Transaction>;
+	transactions?: Realm.List<Transaction>;
 	isValid?: () => boolean;
 	lastPrice?: number;
 	amount?: number;
@@ -26,25 +26,25 @@ export type HoldingKey = keyof Holding;
 export type HoldingValue<K extends HoldingKey> = Holding[K];
 
 export const HoldingSchema = {
-  name: 'Holding',
+	name: 'Holding',
 	embedded: true,
-  properties: {
+	properties: {
 		_id: 'uuid',
-    name: 'string',
-    notes: 'string?',
-    owner_id: 'string',
+		name: 'string',
+		notes: 'string?',
+		owner_id: 'string',
 		account_id: 'uuid',
 		transactions: 'Transaction[]',
-    lastPrice: 'double?',
-    amount: 'double?',
-    transactionSum: 'double?',
-    total: 'double?',
-    dividendSum: 'double?',
-    fees: 'double?',
-    averagePrice: 'double?',
-    averageValue: 'double?',
-    value: 'double?',
-    returnValue: 'double?',
-    returnPercentage: 'double?',
-  }
+		lastPrice: 'double?',
+		amount: 'double?',
+		transactionSum: 'double?',
+		total: 'double?',
+		dividendSum: 'double?',
+		fees: 'double?',
+		averagePrice: 'double?',
+		averageValue: 'double?',
+		value: 'double?',
+		returnValue: 'double?',
+		returnPercentage: 'double?',
+	}
 };

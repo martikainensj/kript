@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useCallback } from "react";
+import React, { createContext, useContext, useCallback, useEffect } from "react";
 import Realm, { UpdateMode } from "realm";
 import { useQuery, useRealm } from "@realm/react";
-import { router } from "expo-router";
 
 import { useI18n } from "./I18nContext";
 import { useUser } from "../hooks/useUser";
@@ -10,9 +9,15 @@ import { Account, AccountKey, AccountValue } from "../models/Account";
 import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
 
+export type DataIdentifier = 'Account' | 'Holding' | 'Transaction';
+export type DataObject = {
+	'Account': Account;
+	'Holding': Holding;
+	'Transaction': Transaction;
+};
+
 interface DataContext {
 	addAccount: ( account: Account ) => Promise<Account>;
-	addHolding: ( holding: Holding ) => Promise<Holding>;
 	addTransaction: ( transaction: Transaction ) => Promise<Transaction>;
 	getAccounts: () => Realm.Results<Account & Realm.Object<Account, never>>;
 	getHoldings: ( options: { accountId: Realm.BSON.UUID } ) => Realm.List<Holding>;
@@ -23,15 +28,12 @@ interface DataContext {
 	saveAccount: ( account: Account ) => Promise<Account>;
 	saveHolding: ( holding: Holding ) => Promise<Holding>;
 	saveTransaction: ( transaction: Transaction ) => Promise<Transaction>;
-	removeAccount: ( account: Account ) => Promise<boolean>;
-	removeHolding: ( holding: Holding ) => Promise<boolean>;
-	removeTransaction: ( transaction: Transaction ) => Promise<boolean>;
+	removeObjects: <T extends DataIdentifier>( type: T, objects: DataObject[T][] ) => Promise<boolean>;
 	updateVariables: <T extends Account | Holding | Transaction>( object: T, variables: Partial<T> ) => void;
 }
 
 const DataContext = createContext<DataContext>( {
 	addAccount: (): Promise<Account> => { return },
-	addHolding: (): Promise<Holding> => { return },
 	addTransaction: (): Promise<Transaction> => { return },
 	getAccounts: (): Realm.Results<Account & Realm.Object<Account, never>> => { return },
 	getHoldings: (): Realm.List<Holding> => { return },
@@ -42,9 +44,7 @@ const DataContext = createContext<DataContext>( {
 	saveAccount: (): Promise<Account> => { return },
 	saveHolding: (): Promise<Holding> => { return },
 	saveTransaction: (): Promise<Transaction> => { return },	
-	removeAccount: (): Promise<boolean> => { return },
-	removeHolding: (): Promise<boolean> => { return },
-	removeTransaction: (): Promise<boolean> => { return },
+	removeObjects: (): Promise<boolean> => { return },
 	updateVariables: () => {}
 } );
 
@@ -163,19 +163,17 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		});
 	}, []);
 
-	const addHolding = useCallback(( holding: Holding ) => {
-		return realm.write( async () => {
-			const account = getAccountBy( '_id', holding.account_id );
-			account.holdings.push( holding );
-
-			return account.holdings[ account.holdings.length - 1 ];
-		});
-	}, []);
-
 	const addTransaction = useCallback(( transaction: Transaction ): Promise<Transaction> => {
 		const title = __( 'Add Transaction' );
 		const message = `${ __( 'Adding a new transaction' ) }\n`
 			+ __( 'Are you sure?' );
+
+		const addHolding = ( holding: Holding ) => {
+			const account = getAccountBy( '_id', holding.account_id );
+			account.holdings.push( holding );
+
+			return account.holdings[ account.holdings.length - 1 ];
+		};
 
 		return new Promise(( resolve, _ ) => {
 			confirmation({
@@ -187,22 +185,23 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 						_id: new Realm.BSON.UUID
 					};
 
-					const holding = transaction.holding_name && (
-						getHoldingBy(
-							'name',
-							transaction.holding_name,
-							{ accountId: transaction.account_id }
-						) ?? await addHolding({
-								_id: new Realm.BSON.UUID,
-								account_id: transaction.account_id,
-								name: transaction.holding_name,
-								owner_id: user.id
-							})
-					);
+					realm.write( () => {
+						const holding = transaction.holding_name && (
+							getHoldingBy(
+								'name',
+								transaction.holding_name,
+								{ accountId: transaction.account_id }
+							) ?? addHolding({
+									_id: new Realm.BSON.UUID,
+									account_id: transaction.account_id,
+									name: transaction.holding_name,
+									owner_id: user.id
+								})
+						);
 
-					resolve( realm.write( async () => {
-						if ( newTransaction.holding_id ) {
-							holding.transactions.push( newTransaction )
+						if ( holding ) {
+							holding.transactions.push( newTransaction );
+
 							return holding.transactions[ holding.transactions.length - 1 ];
 						}
 
@@ -210,7 +209,9 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 						account.transactions.push( newTransaction );
 
 						return account.transactions[ account.transactions.length - 1 ];
-					}));
+					});
+
+					resolve( newTransaction );
 				}
 			});
 		});
@@ -285,38 +286,28 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		});
 	}, []);
 
-	const removeAccount = useCallback(( account: Account ): Promise<boolean> => {
-		const title = __( 'Remove Account' );
-		const message = `${ __( 'Removing existing account' ) }: ${ account.name }`
-			+ "\n" + __( 'Are you sure?' );
-
-		return new Promise(( resolve, _ ) => {
-			confirmation({
-				title,
-				message,
-				onAccept() {
-					router.navigate( 'accounts/' );
+	const removeAccounts = useCallback(( accounts: Account[] ): Promise<boolean> => {
+		return new Promise( ( resolve, reject ) => {
+			try {
+				accounts.forEach( account => {
+					if ( ! account?.isValid() ) return;
 
 					realm.write(() => {
 						realm.delete( account );
 					});
+				});
 
-					resolve( true );
-				}
-			});
+				resolve( true );
+			} catch (error) {
+				reject( false );
+			}
 		});
 	}, []);
 
-	const removeHolding = useCallback(( holding: Holding ): Promise<boolean> => {
-		const title = __( 'Remove Holding' );
-		const message = `${ __( 'Removing existing holding' ) }: ${ holding.name }`
-			+ "\n" + __( 'Are you sure?' );
-
-		return new Promise(( resolve, _ ) => {
-			confirmation({
-				title,
-				message,
-				onAccept() {
+	const removeHoldings = useCallback(( holdings: Holding[] ): Promise<boolean> => {
+		return new Promise( ( resolve, reject ) => {
+			try {
+				holdings.forEach( holding => {
 					const { _id, account_id } = holding;
 					const account = getAccountBy( '_id', account_id );
 					const index = account.holdings.findIndex( holding => {
@@ -326,22 +317,19 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 					realm.write(() => {
 						account.holdings.remove( index );
 					});
+				});
 
-					resolve( true );
-				}
-			});
+				resolve( true );
+			} catch (error) {
+				reject( false );
+			}
 		});
 	}, []);
 
-	const removeTransaction = useCallback(( transaction: Transaction ): Promise<boolean> => {
-		const title = __( 'Remove Transaction' );
-		const message = __( 'Are you sure?' );
-
-		return new Promise(( resolve, _ ) => {
-			confirmation({
-				title,
-				message,
-				onAccept() {
+	const removeTransactions = useCallback(( transactions: Transaction[] ): Promise<boolean> => {
+		return new Promise( ( resolve, reject ) => {
+			try {
+				transactions.forEach( transaction => {
 					const { _id, holding_id, account_id } = transaction;
 					const holding = getHoldingBy( '_id', holding_id, { accountId: account_id });
 					const account = getAccountBy( '_id', account_id );
@@ -358,12 +346,37 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 							: account
 						).transactions.remove( index );
 					});
+				});
 
-					resolve( true );
+				resolve( true );
+			} catch (error) {
+				reject( false );
+			}
+		});
+	}, []);
+
+	const removeObjects = <T extends DataIdentifier>( type: T, objects: DataObject[T][] ): Promise<boolean> => {
+		const title = __( `Remove selected ${ type }s` );
+		const message = __( 'Are you sure?' );
+
+		return new Promise(( resolve, reject ) => {
+			confirmation({
+				title,
+				message,
+				onAccept: async () => {
+					try {
+						type === 'Account' && await removeAccounts( objects as Account[] );
+						type === 'Holding' && await removeHoldings( objects as Holding[] );
+						type === 'Transaction' && await removeTransactions( objects as Transaction[] );
+						
+						resolve( true );
+					} catch ( error ) {
+						reject( error );
+					}
 				}
 			});
 		});
-	}, []);
+	};
 
 	// TODO: updateVariables täytyy ottaa käyttöön 
 	// - poistin ajatuksissani useHolding custom hookin jossa vois olla kaikki 
@@ -389,8 +402,16 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		});
 	};
 
-  return (
-    <DataContext.Provider value={ {
+	useEffect( () => {
+		//realm.deleteAll();
+		realm.subscriptions.update( mutableSubs => {
+			//mutableSubs.removeAll();
+			mutableSubs.add( accounts );
+		} );
+	}, [ accounts ] );
+
+	return (
+		<DataContext.Provider value={ {
 			getAccounts,
 			getHoldings,
 			getTransactions,
@@ -398,17 +419,14 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			getHoldingBy,
 			getTransactionBy,
 			addAccount,
-			addHolding,
 			addTransaction,
-			removeAccount,
-			removeHolding,
-			removeTransaction,
+			removeObjects,
 			saveAccount,
 			saveHolding,
 			saveTransaction,
 			updateVariables
 		} }>
-      { children }
-    </DataContext.Provider>
-  );
+			{ children }
+		</DataContext.Provider>
+	);
 }
