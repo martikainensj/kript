@@ -26,6 +26,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useData } from "../../contexts/DataContext";
 import { Holding } from "../../models/Holding";
 import { useHolding } from "../../hooks/useHolding";
+import { useSelector } from "../../hooks/useSelector";
+import { Transaction } from "../../models/Transaction";
 
 interface HoldingViewProps {
 	holding: Holding;
@@ -44,6 +46,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { SortingTypes } = useTypes();
 	const insets = useSafeAreaInsets();
+	const { isSelecting, select, deselect, selectedType, selectedObjects, validate, hasObject, canSelect } = useSelector();
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -75,6 +78,17 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 
 		openMenu( anchor, menuItems );
 	}, [ holding ] );
+
+	const onLongPressTransaction = useCallback(( transaction: Transaction ) => {
+		! isSelecting && select( 'Transaction', transaction );	
+	}, []);
+
+	const onPressSelectTransaction = useCallback(( transaction: Transaction ) => {
+		hasObject( transaction )
+			? deselect( transaction )
+			: select( 'Transaction', transaction );
+	}, [ selectedObjects ]);
+
 	useEffect( () => {
 		setActions( [
 			{
@@ -146,8 +160,16 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 				title={ name }
 				left={ <BackButton /> }
 				right={ <IconButton
-					icon={ 'ellipsis-vertical' }
-					onPress={ onPressOptions } />
+					icon={
+						isSelecting
+						? 'trash'
+						: 'ellipsis-vertical'
+					}
+					onPress={
+						isSelecting
+						?	() => { removeObjects( selectedType, selectedObjects ).then( validate )}
+						: onPressOptions
+					} />
 				}
 				showDivider={ false }>
 					<Grid
@@ -175,7 +197,14 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 								data={ transactions.map( transaction => {
 									return {
 										item: transaction,
-										renderItem: <TransactionItem transaction={ transaction } />
+										renderItem: (
+											<TransactionItem
+												transaction={ transaction }
+												onPressSelect={ onPressSelectTransaction }
+												onLongPress={ onLongPressTransaction }
+												isSelectable={ canSelect( 'Transaction' ) && isSelecting }
+												isSelected={ hasObject( transaction ) } />
+										)
 									}
 								}) }
 								sortingContainerStyle={ { marginBottom: insets.bottom } }
