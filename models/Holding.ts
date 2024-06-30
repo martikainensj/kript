@@ -20,6 +20,7 @@ export type Holding = {
 	value?: number;
 	returnValue?: number;
 	returnPercentage?: number;
+	checksum?: string;
 };
 
 export type HoldingKey = keyof Holding;
@@ -46,5 +47,6 @@ export const HoldingSchema = {
 		value: 'double?',
 		returnValue: 'double?',
 		returnPercentage: 'double?',
+		checksum: 'string?',
 	}
 };

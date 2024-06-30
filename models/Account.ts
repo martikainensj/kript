@@ -18,6 +18,7 @@ export type Account = {
 	totalCost?: number;
 	returnValue?: number;
 	returnPercentage?: number;
+	checksum?: string;
 };
 
 export type AccountKey = keyof Account;
@@ -40,6 +41,7 @@ export const AccountSchema = {
 		totalCost: 'double?',
 		returnValue: 'double?',
 		returnPercentage: 'double?',
+		checksum: 'string?',
 	},
 	primaryKey: '_id',
 };

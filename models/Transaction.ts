@@ -15,6 +15,7 @@ export type Transaction = {
 	type: TransactionProps['id'];
 	sub_type: Trading['id'] | Cash['id'] | Adjustment['id'];
 	isValid?: () => boolean;
+	checksum?: string;
 };
 
 export type TransactionKey = keyof Transaction;
@@ -35,6 +36,7 @@ export const TransactionSchema = {
 		holding_name: 'string?',
 		holding_id: 'uuid?',
 		type: 'string',
-		sub_type: 'string'
+		sub_type: 'string',
+		checksum: 'string?',
 	}
 };
