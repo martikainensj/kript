@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 
 import { Account } from "../models/Account"
 import { useData } from "../contexts/DataContext";
+import { generateChecksum } from "../helpers";
 
 interface useAccountProps {
 	account: Account
@@ -13,53 +14,41 @@ export const useAccount = ( { account }: useAccountProps ) => {
 	if ( ! account?.isValid() ) return;
 
 	const { transactions, holdings } = account;
+	const checksum = generateChecksum( JSON.stringify( account ));
 
-	// Variables
+	useEffect(() => {
+		const holdingsInitial = {
+			total: 0,
+			dividendSum: 0,
+			value: 0
+		};
 
-	const total = useMemo( () => {
-		const total = holdings.reduce( ( total, holding ) => {
-			return total + holding.total;
-		}, 0 );
+		const holdingsResult = holdings.reduce((acc, holding) => {
+			acc.total += holding.total;
+			acc.dividendSum += holding.dividendSum;
+			acc.value += holding.value;
+			return acc;
+		}, holdingsInitial);
 
-		return total;
-	}, [ holdings ] );
+		const transactionsInitial = {
+			cashAmount: 0
+		};
 
-	const dividendSum = useMemo( () => {
-		const dividendSum = holdings.reduce( ( dividendSum, holding ) => {
-			return dividendSum + holding.dividendSum;
-		}, 0 );
-
-		return dividendSum;
-	}, [ holdings ]);
-
-	const cashAmount = useMemo( () => {
-		const cashAmount = transactions.reduce( ( cashAmount, transaction ) => {
-			if ( transaction.type !== 'cash' ) {
-				return cashAmount;
+		const transactionsResult = transactions.reduce((acc, transaction) => {
+			if (transaction.type === 'cash') {
+				acc.cashAmount += transaction.amount;
 			}
+			return acc;
+		}, transactionsInitial);
 
-			return cashAmount + transaction.amount
-		}, dividendSum );
+		const total = holdingsResult.total;
+		const dividendSum = holdingsResult.dividendSum;
+		const cashAmount = transactionsResult.cashAmount + dividendSum;
+		const balance = cashAmount - total;
+		const value = holdingsResult.value + balance;
+		const returnValue = value - balance - total;
+		const returnPercentage = value ? (returnValue / Math.abs(total)) * 100 : 0;
 
-		return cashAmount;
-	}, [ transactions, dividendSum ] );
-
-	const balance = cashAmount - total;
-
-	const value = useMemo( () => {
-		const value = holdings.reduce( ( value, holding ) => {
-			return value + holding.value;
-		}, balance );
-
-		return value;
-	}, [ holdings ] );
-
-	const returnValue = value - balance - total;
-	const returnPercentage = value
-		? ( value - balance - total ) / Math.abs( total ) * 100
-		: 0;
-
-	useEffect( () => {
 		updateVariables( account, {
 			total,
 			cashAmount,
@@ -68,5 +57,5 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			returnValue,
 			returnPercentage
 		} );
-	}, [ account ] );
+	}, [ checksum ]);
 }

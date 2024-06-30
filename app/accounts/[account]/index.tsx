@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import Realm from "realm";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
-import { router, useGlobalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../../constants";
 import { BackButton, IconButton } from "../../../components/buttons";
@@ -34,7 +34,7 @@ import { useAccount } from "../../../hooks";
 
 const AccountPage: React.FC = ( {} ) => {
 	const { getAccountBy, saveAccount, removeObjects, addTransaction } = useData();
-	const params = useGlobalSearchParams<{ accountId: string, name: string }>();
+	const params = useLocalSearchParams<{ accountId: string, name: string }>();
 	const account = getAccountBy( '_id', new Realm.BSON.UUID( params.accountId ) );
 	const { user } = useUser();
 	const { __ } = useI18n();

@@ -15,7 +15,7 @@ export type DataObject = {
 	'Holding': Holding;
 	'Transaction': Transaction;
 };
-
+// TODO: Check flow for bugs
 interface DataContext {
 	addAccount: ( account: Account ) => Promise<Account>;
 	addTransaction: ( transaction: Transaction ) => Promise<Transaction>;
@@ -45,7 +45,7 @@ const DataContext = createContext<DataContext>( {
 	saveHolding: (): Promise<Holding> => { return },
 	saveTransaction: (): Promise<Transaction> => { return },	
 	removeObjects: (): Promise<boolean> => { return },
-	updateVariables: () => {}
+	updateVariables: () => {},
 } );
 
 export const useData = () => useContext( DataContext );
@@ -200,6 +200,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 						);
 
 						if ( holding ) {
+							newTransaction.holding_id = holding._id;
 							holding.transactions.push( newTransaction );
 
 							return holding.transactions[ holding.transactions.length - 1 ];
@@ -249,13 +250,14 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 				title,
 				message,
 				onAccept() {
+					const account = getAccountBy( '_id', editedHolding.account_id );
 					const holding = getHoldingBy(
 						'_id',
 						editedHolding._id,
 						{ accountId: editedHolding.account_id }
 					);
-
-					resolve( updateVariables( holding, editedHolding ) );
+					
+					resolve( updateVariables( holding, editedHolding ));
 				}
 			});
 		});
@@ -271,6 +273,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 				title,
 				message,
 				onAccept() {
+					const account = getAccountBy( '_id', editedTransaction.account_id );
 					const transaction = getTransactionBy(
 						'_id',
 						editedTransaction._id,
@@ -280,7 +283,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 						}
 					);
 
-					resolve( updateVariables( transaction, editedTransaction ) );
+					resolve( updateVariables( transaction, editedTransaction ));
 				}
 			});
 		});
@@ -378,13 +381,9 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		});
 	};
 
-	// TODO: updateVariables täytyy ottaa käyttöön 
-	// - poistin ajatuksissani useHolding custom hookin jossa vois olla kaikki 
-	//   variablesit joita sit päivitetään useVariables kanssa
-	
 	const updateVariables = <T extends Account | Holding | Transaction> (
 		object: T,
-		variables: Partial<T>
+		variables: Partial<T>,
 	) => {
 		if ( ! object?.isValid() ) return;
 	
@@ -424,7 +423,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			saveAccount,
 			saveHolding,
 			saveTransaction,
-			updateVariables
+			updateVariables,
 		} }>
 			{ children }
 		</DataContext.Provider>

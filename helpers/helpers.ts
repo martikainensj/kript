@@ -56,3 +56,9 @@ export const prettifyNumber = (
 		? `${ integerPart }.${ trimmedDecimalPart }`
 		: integerPart;
 }
+
+export const generateChecksum = ( objectString: string ) => {
+	return objectString.split( '' ).reduce(( checksum, char ) => {
+    return ( checksum + char.charCodeAt( 0 )) % 65535;
+  }, 0 ).toString( 16 );
+};
