@@ -46,7 +46,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 		const cashAmount = transactionsResult.cashAmount + dividendSum;
 		const balance = cashAmount - total;
 		const value = holdingsResult.value + balance;
-		const returnValue = value - balance - total;
+		const returnValue = value + dividendSum - balance - total;
 		const returnPercentage = value ? (returnValue / Math.abs(total)) * 100 : 0;
 
 		updateVariables( account, {
