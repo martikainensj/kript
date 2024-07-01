@@ -226,6 +226,7 @@ const AccountPage: React.FC = ( {} ) => {
 							<ItemList
 								noItemsText={ __( 'No Transactions' ) }
 								data={[
+									// TODO: fix removing those dividends from here
 									...transactions,
 									...holdings.flatMap( holding => {
 										return holding.transactions.filter( transaction => {
