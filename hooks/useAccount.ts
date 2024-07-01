@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useLayoutEffect } from "react";
 
 import { Account } from "../models/Account"
 import { useData } from "../contexts/DataContext";
@@ -16,7 +16,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 	const { transactions, holdings } = account;
 	const checksum = generateChecksum( JSON.stringify( account ));
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const holdingsInitial = {
 			total: 0,
 			dividendSum: 0,

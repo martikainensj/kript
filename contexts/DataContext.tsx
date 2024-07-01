@@ -156,7 +156,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 				message: message,
 				onAccept() {
 					resolve( realm.write(() => {
-						 return realm.create( 'Account', account, UpdateMode.Never );
+						return realm.create( 'Account', account, UpdateMode.Never );
 					}));
 				}
 			});
@@ -185,7 +185,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 						_id: new Realm.BSON.UUID
 					};
 
-					realm.write( () => {
+					realm.write(() => {
 						const holding = transaction.holding_name && (
 							getHoldingBy(
 								'name',

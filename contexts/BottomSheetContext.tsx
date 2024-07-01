@@ -70,11 +70,11 @@ export const BottomSheetProvider = ( { children } ) => {
 		), []
 	);
 
-	const openBottomSheet = useCallback( ( title: string, content: React.ReactNode ) => {
+	const openBottomSheet = ( title: string, content: React.ReactNode ) => {
 		setTitle( title );
 		setContent( content );
 		setShouldOpen( true );
-	}, [ title, content ] );
+	};
 
 	const closeBottomSheet = useCallback( () => {
 		setShouldOpen( false );

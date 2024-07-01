@@ -8,8 +8,8 @@ import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
 import { useI18n } from "../../contexts/I18nContext";
-import { useTypes } from "../../hooks/useTypes";
-import { Select } from "../inputs/Select";
+import { Cash, Trading, useTypes } from "../../hooks/useTypes";
+import { OptionProps, Select } from "../inputs/Select";
 import { Divider } from "../ui/Divider";
 import { Icon } from "../ui/Icon";
 
@@ -78,11 +78,9 @@ export const TransactionForm = ( {
 	}, [ transaction ] );
 
 	useEffect( () => {
-		if ( ! transaction.sub_type ) {
-			subTypes && setEditedTransaction(
-				Object.assign( { ...editedTransaction }, { sub_type: subTypes[0].id } )
-			);
-		}
+		subTypes && setEditedTransaction(
+			Object.assign( { ...editedTransaction }, { sub_type: subTypes[0].id } )
+		);
 	}, [ subTypes ] );
 
 	return (
@@ -122,7 +120,7 @@ export const TransactionForm = ( {
 					setValue={ sub_type => setEditedTransaction(
 						Object.assign( { ...editedTransaction }, { sub_type } )
 					) }
-					options={ subTypes.map( subType => {
+					options={ subTypes.map( ( subType: Trading | Cash ) => {
 						return {
 							icon: ( { size, color } ) => {
 								return (
@@ -134,9 +132,11 @@ export const TransactionForm = ( {
 							},
 							label: subType.name,
 							value: subType.id,
-							checkedColor: subType.color
-						}
-					} ) } /> }
+							checkedColor: subType.color,
+							disabled: !! transaction._id && subType.id === 'dividend'
+						} as OptionProps
+					} ) }
+					disabled={ !! transaction.holding_id && !! transaction._id } /> }
 
 				<Divider />
 				

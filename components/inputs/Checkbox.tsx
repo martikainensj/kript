@@ -52,7 +52,7 @@ export const Checkbox: React.FC<CheckboxProps> = ( {
 					styles.iconWrapper,
 					{ opacity }
 				]}>
-					<Icon name={ 'checkmark' } size={ 16 } />
+					<Icon name={ 'checkmark' } size={ 14 } />
 				</Animated.View>
 			</Animated.View>
 		</TouchableRipple>
@@ -61,7 +61,7 @@ export const Checkbox: React.FC<CheckboxProps> = ( {
 
 const styles = StyleSheet.create( {
 	container: {
-		height: 18,
+		height: 16,
 		aspectRatio: 1,
 		borderRadius: BorderRadius.xs,
 		alignItems: 'center',

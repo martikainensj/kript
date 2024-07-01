@@ -14,6 +14,7 @@ import { Grid } from "../ui/Grid";
 import { Transaction } from "../../models/Transaction";
 import { useTypes } from "../../hooks/useTypes";
 import { Checkbox } from "../inputs/Checkbox";
+import { useData } from "../../contexts/DataContext";
 
 interface TransactionItemProps {
 	transaction: Transaction;
@@ -27,6 +28,8 @@ interface TransactionItemProps {
 export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, showHolding, isSelectable, isSelected, onPressSelect, onLongPress } ) => {
 	const theme = useTheme();
 	const { __ } = useI18n();
+	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { getAccountBy, saveTransaction } = useData();
 	const { TradingTypes, CashTypes, AdjustmentTypes } = useTypes();
 
 	if ( ! transaction?.isValid() ) return;
@@ -37,8 +40,16 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 
 	const onPressHandler = useCallback( () => {
 		if ( isSelectable && onPressSelect ) {
-			onPressSelect( transaction );
+			return onPressSelect( transaction );
 		}
+
+		openBottomSheet(
+			__( 'Edit Transaction' ),
+			<TransactionForm
+				transaction={ transaction }
+				account={ getAccountBy( '_id', transaction.account_id ) }
+				onSubmit={ transaction => saveTransaction( transaction ).then( closeBottomSheet ) } />
+		)
 	}, [ transaction ] );
 
 	const { amount, date, price, total, holding_name } = {

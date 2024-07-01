@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput } from "./TextInput";
 import { addTimeToDateTimestamp } from "../../helpers";
@@ -18,34 +18,37 @@ export const DateInput: React.FC<DateInputProps> = ( {
 	setValue
 } ) => {
 	const { colorScheme } = useTheme();
-	const [ inputValue, setInputValue ] = useState<string>( new Date( value ).toLocaleDateString() );
+	const [ inputValue, setInputValue ] = useState<string>();
 	const [ isDatePickerVisible, setDatePickerVisibility ] = useState(false);
 
 	const onPress = () => {
-    setDatePickerVisibility( true );
+		setDatePickerVisibility( true );
 	}
 
 	const onCandel = () => {
-    setDatePickerVisibility( false );
+		setDatePickerVisibility( false );
 	}
 
-  const onConfirm = ( date: Date ) => {
+	const onConfirm = ( date: Date ) => {
 		const timestamp = addTimeToDateTimestamp( date.getTime() );
 
 		setValue( timestamp );
 		setInputValue( date.toLocaleDateString() );
-    setDatePickerVisibility( false );
-  };
+		setDatePickerVisibility( false );
+	};
 
 	useEffect( () => {
 		if ( ! value ) {
 			const currentTimestamp = Date.now();
-
-			setInputValue( new Date( currentTimestamp ).toLocaleDateString() );
+			setInputValue( new Date( currentTimestamp ).toLocaleDateString( 'fi' ) );
 			setValue( currentTimestamp );
 		}
 	}, [] );
-	
+
+	useLayoutEffect(() => {
+		setInputValue( new Date( value ).toLocaleDateString( 'fi' ) );
+	}, [ value ]);
+
 	return (
 		<TouchableRipple onPress={ onPress }>
 			<View style={ styles.container }>

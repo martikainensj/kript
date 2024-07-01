@@ -95,5 +95,6 @@ const styles = StyleSheet.create( {
 		borderRightWidth: 0,
 		borderBottomWidth: 0,
 		overflow: 'hidden',
+		borderColor: 'transparent'
 	}
 } );

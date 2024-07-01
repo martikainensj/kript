@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useLayoutEffect } from "react";
 
 import { Holding } from "../models/Holding";
 import { Transaction } from "./useTypes";
@@ -17,7 +17,7 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 		const { transactions } = holding;
 		const checksum = generateChecksum( JSON.stringify( holding ));
 
-		useEffect(() => {
+		useLayoutEffect(() => {
 			const lastTransaction = transactions
 				?.filtered('type == $0', 'trading' as Transaction['id'])
 				.sorted('date', true)[0];
