@@ -225,7 +225,14 @@ const AccountPage: React.FC = ( {} ) => {
 						<View style={ styles.contentContainer }>
 							<ItemList
 								noItemsText={ __( 'No Transactions' ) }
-								data={ transactions.map( transaction => {
+								data={[
+									...transactions,
+									...holdings.flatMap( holding => {
+										return holding.transactions.filter( transaction => {
+											return transaction.sub_type === 'dividend'
+										})
+									})
+								].map( transaction => {
 									return {
 										item: transaction,
 										renderItem: (
