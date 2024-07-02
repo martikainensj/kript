@@ -12,6 +12,7 @@ import { Header } from '../../components/ui/Header';
 import { ItemList } from '../../components/ui/ItemList';
 import { useTypes } from '../../hooks/useTypes';
 import { useData } from '../../contexts/DataContext';
+import { router } from 'expo-router';
 
 const Accounts: React.FC = () => {
 	const { getAccounts, addAccount } = useData();
@@ -32,7 +33,17 @@ const Accounts: React.FC = () => {
 					name: '',
 				}	}
 				onSubmit={ ( account ) => {
-					addAccount( account ).then( closeBottomSheet );
+					addAccount( account ).then( () => {
+						router.navigate( {
+							pathname: 'accounts/[account]',
+							params: {
+								accountId: account._id.toString(),
+								name: account.name
+							}
+						} );
+						
+						closeBottomSheet();
+					} );
 				}	} />
 		);
 	}
