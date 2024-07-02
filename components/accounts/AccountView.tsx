@@ -1,19 +1,20 @@
 import React, { useCallback, useEffect } from "react";
+import Realm from "realm";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { BackButton, IconButton } from "../../components/buttons";
 import { MenuItem, useMenu } from "../../contexts/MenuContext";
+import { AccountForm } from "../../components/accounts";
 import { TransactionForm } from "../../components/transactions/TransactionForm";
-import { HoldingForm } from "../../components/holdings/HoldingForm";
-import TransactionItem from "../../components/transactions/TransactionItem";
 import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../../contexts/I18nContext';
-import { useFAB } from "../../contexts/FABContext";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
+import { useFAB } from "../../contexts/FABContext";
 import { useUser } from "../../hooks/useUser";
 import { Card } from "../../components/ui/Card";
+import { useTypes } from "../../hooks/useTypes";
 import { Tabs } from "../../components/ui/Tabs";
 import { Icon } from "../../components/ui/Icon";
 import { Value } from "../../components/ui/Value";
@@ -21,63 +22,60 @@ import { Header } from "../../components/ui/Header";
 import { Grid } from "../../components/ui/Grid";
 import { Title } from "../../components/ui/Title";
 import { ItemList } from "../../components/ui/ItemList";
-import { useTypes } from "../../hooks/useTypes";
+import HoldingItem from "../../components/holdings/HoldingItem";
+import TransactionItem from "../../components/transactions/TransactionItem";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useData } from "../../contexts/DataContext";
-import { Holding } from "../../models/Holding";
-import { useHolding } from "../../hooks/useHolding";
-import { useSelector } from "../../hooks/useSelector";
+import { DataIdentifier, DataObject, useData } from "../../contexts/DataContext";
+import { useSelector, SelectableType, SelectableObject } from "../../hooks/useSelector";
 import { Transaction } from "../../models/Transaction";
+import { Holding } from "../../models/Holding";
+import { Account } from "../../models/Account";
+import { useAccount } from "../../hooks";
 
-interface HoldingViewProps {
-	holding: Holding;
+interface AccountViewProps {
+	account: Account;
 }
-
-const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
-	const { getAccountBy, saveHolding, removeObjects, addTransaction, getTransactions } = useData();
+const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
+	const { saveAccount, removeObjects, addTransaction } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
-	const account = getAccountBy( '_id', holding.account_id );
-	const transactions = getTransactions( { accountId: holding.account_id, holdingId: holding._id } );
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { SortingTypes } = useTypes();
 	const insets = useSafeAreaInsets();
-	const { isSelecting, select, deselect, selectedType, selectedObjects, validate, hasObject, canSelect } = useSelector();
+	const { isSelecting, selectedType, selectedObjects, select, deselect, canSelect, hasObject, validate } = useSelector();
 
-	useHolding( { holding } );
-	
+	useAccount({ account });
+
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
 		const menuItems: MenuItem[] = [
 			{
 				title: __( 'Edit' ),
-				leadingIcon: ( props ) => 
-					<Icon name={ 'create' } { ...props }/>,
+				leadingIcon: ( { color } ) => 
+					<Icon name={ 'create' } color={ color } />,
 				onPress: () => {
 					openBottomSheet(
-						__( 'Edit Holding' ),
-						<HoldingForm
-							holding={ holding }
-							onSubmit={ holding => {
-								saveHolding( holding ).then( closeBottomSheet ) }
-							} />
+						__( 'Edit Account' ),
+						<AccountForm
+							account={ account }
+							onSubmit={ ( editedAccount ) => {
+								saveAccount( editedAccount ).then( closeBottomSheet );
+							}	} />
 					);
-				}
+				},
 			},
 			{
 				title: __( 'Remove' ),
 				leadingIcon: ( props ) => 
 					<Icon name={ 'trash' } { ...props } />,
-				onPress: () => {
-					removeObjects( 'Holding', [ holding ] ).then( router.back )
-				}
+				onPress: () => removeObjects( 'Account', [ account ] ).then(() => router.navigate( '/accounts' )) ,
 			},
 		];
 
 		openMenu( anchor, menuItems );
-	}, [ holding ] );
+	}, [ account ] );
 
 	const onLongPressTransaction = useCallback(( transaction: Transaction ) => {
 		! isSelecting && select( 'Transaction', transaction );	
@@ -92,8 +90,8 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 	useEffect( () => {
 		setActions( [
 			{
-				icon: ( props ) => { return (
-					<Icon name={ 'pricetag' } { ...props } />
+				icon: ( { color, size } ) => { return (
+					<Icon name={ 'pricetag' } size={ size } color={ color } />
 				) },
 				label: __( 'Add Transaction' ),
 				onPress: () => {
@@ -106,7 +104,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 								price: null,
 								amount: null,
 								total: null,
-								holding_name: holding.name,
+								holding_name: '',
 								account_id: account._id,
 								type: 'trading',
 								sub_type: 'buy'
@@ -117,43 +115,55 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 							}	} />
 					);
 				}
-			},
+			}
 		])
-	}, [ holding, account ] );
+	}, [ account ] );
 
-	if ( ! holding?.isValid() ) {
+	if ( ! account?.isValid() ) {
 		router.back();
 		return;
 	}
 
-	const { name, amount, value, returnValue, returnPercentage } = holding;
+	const {
+		name,
+		notes,
+		holdings,
+		transactions,
+		balance,
+		value,
+		returnValue,
+		returnPercentage
+	} = account;
 
 	const values = [
 		<Value
-			label={ __( 'Amount' ) }
-			value={ prettifyNumber( amount ) }
-			isVertical={ true } />,
+			label={ __( 'Balance' ) }
+			value={ prettifyNumber( balance, 0 ) }
+			unit={ '€' }
+			isVertical={ true }
+			isNegative={ balance < 0 } />,
 		<Value
 			label={ __( 'Value' ) }
-			value={ prettifyNumber( value ) }
+			value={ prettifyNumber( value, 0 ) }
 			unit={ '€' }
-			isVertical={ true } />,
+			isVertical={ true }
+			isNegative={ value < 0 } />,
 		<Value
 			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnValue ) }
+			value={ prettifyNumber( returnValue, 0 ) }
 			unit={ '€' }
 			isVertical={ true }
 			isPositive={ returnValue > 0 }
 			isNegative={ returnValue < 0 } />,
 		<Value
 			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnPercentage ) }
+			value={ prettifyNumber( returnPercentage, 0 ) }
 			unit={ '%' }
 			isVertical={ true }
 			isPositive={ returnPercentage > 0 }
 			isNegative={ returnPercentage < 0 } />,
 	];
-	
+
 	return (
 		<View style={ styles.container }>
 			<Header
@@ -189,12 +199,39 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 					)
 				},
 				{
+					label: __( 'Holdings' ),
+					content: (
+						<View style={ styles.contentContainer }>
+							<ItemList
+								noItemsText={ __( 'No Holdings' ) }
+								data={ holdings.map( holding => {
+									return {
+										item: holding,
+										renderItem: <HoldingItem holding={ holding } />
+									}
+								}) }
+								sortingContainerStyle={ { marginBottom: insets.bottom } }
+								sortingOptions={ [
+									SortingTypes.name,
+									SortingTypes.highestReturn,
+									SortingTypes.lowestReturn,
+									SortingTypes.highestValue
+								] } />
+						</View>
+					)
+				},
+				{
 					label: __( 'Transactions' ),
 					content: (
 						<View style={ styles.contentContainer }>
 							<ItemList
 								noItemsText={ __( 'No Transactions' ) }
-								data={ transactions.map( transaction => {
+								data={[
+									...transactions,
+									...holdings.flatMap( holding => {
+										return [ ...holding.transactions ]
+									})
+								].map( transaction => {
 									return {
 										item: transaction,
 										renderItem: (
@@ -203,25 +240,25 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 												onPressSelect={ onPressSelectTransaction }
 												onLongPress={ onLongPressTransaction }
 												isSelectable={ canSelect( 'Transaction' ) && isSelecting }
-												isSelected={ hasObject( transaction ) } />
+												isSelected={ hasObject( transaction ) }
+												showHolding />
 										)
 									}
-								}) }
+								})}
 								sortingContainerStyle={ { marginBottom: insets.bottom } }
 								sortingOptions={ [
 									SortingTypes.newestFirst,
 									SortingTypes.oldestFirst
-								] }  />
+								] } />
 						</View>
 					)
 				},
-			] }>
-			</Tabs>
+			] } />
 		</View>
 	)
 }
 
-export default HoldingView;
+export default AccountView;
 
 const styles = StyleSheet.create( {
 	container: {

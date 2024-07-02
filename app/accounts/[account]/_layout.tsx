@@ -2,7 +2,6 @@ import React from "react";
 import Realm from "realm";
 import { Stack, router, useGlobalSearchParams } from "expo-router";
 import { useTheme } from "../../../contexts/ThemeContext";
-import { FABProvider } from "../../../contexts/FABContext";
 import { useData } from "../../../contexts/DataContext";
 
 export default function AccountLayout() {
@@ -17,19 +16,13 @@ export default function AccountLayout() {
 		return;
 	}
 
-	// TODO: Siirrä FABProvider index.tsx:ään ja luo AccountView
-	// joka asetetaan index.tsx FABProviderin sisään
-	// ja joka rendaa accountin tiedot 
 	return (
-		<FABProvider>
-			<Stack screenOptions={ {
-				headerBackTitleVisible: false,
-				title: account.name,
-				animationDuration: 200,
-				animation: 'fade_from_bottom',
-				contentStyle: { backgroundColor: theme.colors.background },
-				headerShown: false
-			} }/>
-		</FABProvider>
+		<Stack screenOptions={ {
+			headerBackTitleVisible: false,
+			animationDuration: 200,
+			animation: 'fade_from_bottom',
+			contentStyle: { backgroundColor: theme.colors.background },
+			headerShown: false
+		} }/>
 	);
 }

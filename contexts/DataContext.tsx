@@ -332,22 +332,21 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 	const removeTransactions = useCallback(( transactions: Transaction[] ): Promise<boolean> => {
 		return new Promise( ( resolve, reject ) => {
 			try {
-				transactions.forEach( transaction => {
-					const { _id, holding_id, account_id } = transaction;
-					const holding = getHoldingBy( '_id', holding_id, { accountId: account_id });
-					const account = getAccountBy( '_id', account_id );
-					const index = ( !! holding_id
-						? holding
-						: account
-					)?.transactions.findIndex( transaction => {
-						return transaction._id.equals( _id );
-					});
 
-					realm.write(() => {
-						( !! holding_id
+				realm.write(() => {	
+					transactions.forEach( transaction => {
+						const { _id, holding_id, account_id } = transaction;
+						const holding = getHoldingBy( '_id', holding_id, { accountId: account_id });
+						const account = getAccountBy( '_id', account_id );
+						const index = ( !! holding_id
 							? holding
 							: account
-						).transactions.remove( index );
+						)?.transactions.findIndex( transaction => {
+							return transaction._id.equals( _id );
+						});
+						
+						(!! holding_id ? holding : account)
+							.transactions.remove( index );
 					});
 				});
 
