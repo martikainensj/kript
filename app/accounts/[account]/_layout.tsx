@@ -17,6 +17,9 @@ export default function AccountLayout() {
 		return;
 	}
 
+	// TODO: Siirrä FABProvider index.tsx:ään ja luo AccountView
+	// joka asetetaan index.tsx FABProviderin sisään
+	// ja joka rendaa accountin tiedot 
 	return (
 		<FABProvider>
 			<Stack screenOptions={ {

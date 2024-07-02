@@ -84,6 +84,8 @@ export const BottomSheetProvider = ( { children } ) => {
 
 	const onClose = useCallback( () => {
 		setShouldOpen( false );
+		setTitle( '' );
+		setContent( null );
 	}, [] );
 
 	useEffect( () => {
