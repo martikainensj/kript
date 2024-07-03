@@ -22,3 +22,9 @@ export const IconSize = {
 	lg: 24,
 	xl: 32
 }
+
+export const Duration = {
+	fast: 150,
+	normal: 250,
+	slow: 500
+}

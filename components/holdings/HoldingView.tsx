@@ -28,6 +28,7 @@ import { Holding } from "../../models/Holding";
 import { useHolding } from "../../hooks/useHolding";
 import { useSelector } from "../../hooks/useSelector";
 import { Transaction } from "../../models/Transaction";
+import Switcher from "../ui/Switcher";
 
 interface HoldingViewProps {
 	holding: Holding;
@@ -47,7 +48,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 	const { isSelecting, select, deselect, selectedType, selectedObjects, validate, hasObject, canSelect } = useSelector();
 
 	useHolding( { holding } );
-	
+
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
 		const menuItems: MenuItem[] = [
@@ -159,17 +160,16 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 			<Header
 				title={ name }
 				left={ <BackButton /> }
-				right={ <IconButton
-					icon={
-						isSelecting
-						? 'trash'
-						: 'ellipsis-vertical'
-					}
-					onPress={
-						isSelecting
-						?	() => { removeObjects( selectedType, selectedObjects ).then( validate )}
-						: onPressOptions
-					} />
+				right={ <Switcher
+					components={[
+						<IconButton
+							icon={ 'trash' }
+							onPress={ () => { removeObjects( selectedType, selectedObjects ).then( validate )}} />,
+						<IconButton
+							icon={ 'ellipsis-vertical' }
+							onPress={ onPressOptions } />
+					]}
+					activeIndex={ isSelecting ? 0 : 1 } />
 				}
 				showDivider={ false }>
 					<Grid

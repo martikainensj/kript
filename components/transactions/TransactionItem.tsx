@@ -15,6 +15,8 @@ import { Transaction } from "../../models/Transaction";
 import { useTypes } from "../../hooks/useTypes";
 import { Checkbox } from "../inputs/Checkbox";
 import { useData } from "../../contexts/DataContext";
+import Switcher from "../ui/Switcher";
+import ConditionalView from "../ui/ConditionalView";
 
 interface TransactionItemProps {
 	transaction: Transaction;
@@ -71,7 +73,13 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 	
 	const meta = [
 		<View style={ styles.header }>
-			{ isSelectable && <Checkbox value={ isSelected } /> }
+			<ConditionalView condition={ isSelectable } initialValues={{
+				width: 0.1
+			}} targetValues={{
+				width: 16
+			}}>
+				<Checkbox value={ isSelected } />
+			</ConditionalView>
 			<Text style={ [ styles.date, { color: theme.colors.primary } ] }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>
 			{ ( showHolding && holding_name )
 				&& <Text numberOfLines={ 1 } style={ styles.holding }>{ holding_name }</Text>

@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, View } from 'react-native';
 import { useTheme } from '../../contexts/ThemeContext';
-import { Spacing } from '../../constants';
+import { Duration, Spacing } from '../../constants';
 import { Icon } from '../ui/Icon';
 
 interface ToggleProps {
@@ -31,9 +31,9 @@ export const Toggle: React.FC<ToggleProps> = ( {
 	useEffect( () => {
     Animated.timing( translateX, {
       toValue: value ? thumbSize : 0,
-      duration: 200,
+      duration: Duration.normal,
       useNativeDriver: true,
-			easing: Easing.out( Easing.circle )
+			easing: Easing.out( Easing.cubic )
     } ).start();
   }, [ value ] );
 

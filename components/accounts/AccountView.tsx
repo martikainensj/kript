@@ -31,6 +31,7 @@ import { Transaction } from "../../models/Transaction";
 import { Holding } from "../../models/Holding";
 import { Account } from "../../models/Account";
 import { useAccount } from "../../hooks";
+import Switcher from "../ui/Switcher";
 
 interface AccountViewProps {
 	account: Account;
@@ -169,17 +170,16 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			<Header
 				title={ name }
 				left={ <BackButton /> }
-				right={ <IconButton
-					icon={
-						isSelecting
-						? 'trash'
-						: 'ellipsis-vertical'
-					}
-					onPress={
-						isSelecting
-						?	() => { removeObjects( selectedType, selectedObjects ).then( validate )}
-						: onPressOptions
-					} />
+				right={ <Switcher
+					components={[
+						<IconButton
+							icon={ 'trash' }
+							onPress={ () => { removeObjects( selectedType, selectedObjects ).then( validate )}} />,
+						<IconButton
+							icon={ 'ellipsis-vertical' }
+							onPress={ onPressOptions } />
+					]}
+					activeIndex={ isSelecting ? 0 : 1 } />
 				}
 				showDivider={ false }>
 					<Grid
