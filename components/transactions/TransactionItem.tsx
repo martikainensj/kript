@@ -1,22 +1,19 @@
-import React, { useCallback, useMemo } from "react";
-import { GestureResponderEvent, StyleSheet, View } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Animated, Easing, StyleSheet, View } from "react-native";
 import { Text, TouchableRipple, useTheme } from "react-native-paper";
-import Realm from "realm";
 
-import { FontWeight, GlobalStyles, Spacing } from "../../constants";
+import { Duration, FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { TransactionForm } from "./TransactionForm";
 import { useI18n } from '../../contexts/I18nContext';
-import { MenuItem, useMenu } from "../../contexts/MenuContext";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
-import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
 import { Transaction } from "../../models/Transaction";
 import { useTypes } from "../../hooks/useTypes";
 import { Checkbox } from "../inputs/Checkbox";
 import { useData } from "../../contexts/DataContext";
-import Switcher from "../ui/Switcher";
 import ConditionalView from "../ui/ConditionalView";
+import { ProgressBar } from "../ui/ProgressBar";
 
 interface TransactionItemProps {
 	transaction: Transaction;
@@ -33,14 +30,22 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { getAccountBy, saveTransaction } = useData();
 	const { TradingTypes, CashTypes, AdjustmentTypes } = useTypes();
+	const [ longPressProgress, setLongPressProgress ] = useState( 0 );
+
+  const progressAnim = useRef( new Animated.Value( 0 )).current;
+  const opacityAnim = useRef( new Animated.Value( 1 )).current;
 
 	if ( ! transaction?.isValid() ) return;
 
-	const onLongPressHandler = useCallback( () => {
+	const onLongPressHandler = () => {
 		onLongPress && onLongPress( transaction );
-	}, [ transaction ]);
+	};
 
-	const onPressHandler = useCallback( () => {
+	const onPressHandler = () => {
+		if ( longPressProgress > 0.1 ) {
+			return;
+		}
+
 		if ( isSelectable && onPressSelect ) {
 			return onPressSelect( transaction );
 		}
@@ -52,7 +57,39 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 				account={ getAccountBy( '_id', transaction.account_id ) }
 				onSubmit={ transaction => saveTransaction( transaction ).then( closeBottomSheet ) } />
 		)
-	}, [ transaction ] );
+	};
+
+	const onPressIn = () => {
+		if ( isSelectable ) {
+			return;
+		}
+
+		Animated.timing( progressAnim, {
+			toValue: 1,
+			duration: Duration.slow,
+			useNativeDriver: true,
+			easing: Easing.out( Easing.cubic ),
+			delay: Duration.normal
+		}).start(() => {
+			Animated.timing( opacityAnim, {
+				toValue: 0,
+				duration: Duration.fast,
+				useNativeDriver: true,
+				easing: Easing.out( Easing.cubic )
+			}).start();
+		});
+	};
+
+	const onPressOut = () => {
+		Animated.timing( progressAnim, {
+			toValue: 0,
+			duration: Duration.normal,
+			useNativeDriver: true,
+			easing: Easing.out( Easing.cubic ),
+		}).start(() => {
+			opacityAnim.setValue(1);
+		});
+	};
 
 	const { amount, date, price, total, holding_name } = {
 		...transaction,
@@ -70,14 +107,19 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 				return AdjustmentTypes.find(type => type.id === transaction.sub_type )
 		}
 	}, [ transaction ] )
-	
+
 	const meta = [
 		<View style={ styles.header }>
-			<ConditionalView condition={ isSelectable } initialValues={{
-				width: 0.1
-			}} targetValues={{
-				width: 16
-			}}>
+			<ConditionalView
+				condition={ isSelectable }
+				initialValues={{
+					width: Number.MIN_VALUE,
+					scaleX: 0.5,
+					scaleY: 0.5
+				}}
+				targetValues={{
+					width: 16 + Spacing.sm
+				}}>
 				<Checkbox value={ isSelected } />
 			</ConditionalView>
 			<Text style={ [ styles.date, { color: theme.colors.primary } ] }>{ new Date( date ).toLocaleDateString( 'fi' ) }</Text>
@@ -102,15 +144,34 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 		values.push( <Value label={ __( 'Total' ) } value={ total } isVertical={ true } unit={ '€' } /> );
 	}
 
+	progressAnim.addListener(( state ) => {
+		setLongPressProgress( state.value );
+	});
+
+	useEffect(() => {
+		if ( longPressProgress === 1 ) {
+			onLongPressHandler();
+		}
+	}, [ longPressProgress ]);
+
 	return (
-		<TouchableRipple onPress={ onPressHandler } onLongPress={ onLongPressHandler }>
-			<View style={ styles.container}>
+		<TouchableRipple
+			onPress={ onPressHandler }
+			onPressIn={ onPressIn }
+			onPressOut={ onPressOut }
+		>
+			<View style={ styles.container }>
 				<Grid
 					columns={ 2 }
 					items={ meta } />
 				<Grid
 					columns={ 4 }
 					items= { values } />
+				<View style={ styles.progressBarWrapper }>
+					<ProgressBar
+						progress={ progressAnim }
+						opacity={ opacityAnim } />
+				</View>
 			</View>
 		</TouchableRipple>
 	)
@@ -121,6 +182,7 @@ export default TransactionItem;
 const styles = StyleSheet.create( {
 	container: {
 		...GlobalStyles.gutter,
+		position: 'relative',
 		paddingVertical: Spacing.md,
 		gap: Spacing.sm
 	},
@@ -128,10 +190,10 @@ const styles = StyleSheet.create( {
 		flexDirection: 'row',
 		alignItems: 'center',
 		flex: 1,
-		gap: Spacing.sm
 	},
 	date: {
 		fontWeight: FontWeight.bold,
+		marginRight: Spacing.sm
 	},
 	type: {
 		fontWeight: FontWeight.bold,
@@ -139,5 +201,11 @@ const styles = StyleSheet.create( {
 	},
 	holding: {
 		fontWeight: FontWeight.bold
+	},
+	progressBarWrapper: {
+		position: 'absolute',
+		left: 0,
+		right: 0,
+		bottom: 0,
 	}
 } );
