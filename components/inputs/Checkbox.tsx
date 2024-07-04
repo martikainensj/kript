@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, Pressable, StyleSheet } from 'react-native';
+import { Animated, Easing, StyleSheet } from 'react-native';
 import { useTheme } from '../../contexts/ThemeContext';
-import { BorderRadius, Spacing } from '../../constants';
+import { BorderRadius, Duration } from '../../constants';
 import { Icon } from '../ui/Icon';
 import { TouchableRipple } from 'react-native-paper';
 
@@ -28,9 +28,9 @@ export const Checkbox: React.FC<CheckboxProps> = ( {
 	useEffect( () => {
 		Animated.timing( opacity, {
 			toValue: value ? 1 : 0,
-			duration: 200,
+			duration: Duration.normal,
 			useNativeDriver: true,
-			easing: Easing.out( Easing.exp )
+			easing: Easing.out( Easing.cubic )
 		} ).start();
 	}, [ value ] );
 
