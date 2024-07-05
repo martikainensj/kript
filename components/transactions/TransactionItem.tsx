@@ -33,7 +33,10 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 	const [ longPressProgress, setLongPressProgress ] = useState( 0 );
 
   const progressAnim = useRef( new Animated.Value( 0 )).current;
-  const opacityAnim = useRef( new Animated.Value( 1 )).current;
+	const opacity = progressAnim.interpolate({
+		inputRange: [ 0, 1 ],
+		outputRange: [ 0, 1 ],
+	});
 
 	if ( ! transaction?.isValid() ) return;
 
@@ -70,14 +73,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 			useNativeDriver: true,
 			easing: Easing.out( Easing.cubic ),
 			delay: Duration.normal
-		}).start(() => {
-			Animated.timing( opacityAnim, {
-				toValue: 0,
-				duration: Duration.fast,
-				useNativeDriver: true,
-				easing: Easing.out( Easing.cubic )
-			}).start();
-		});
+		}).start();
 	};
 
 	const onPressOut = () => {
@@ -85,10 +81,8 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 			toValue: 0,
 			duration: Duration.normal,
 			useNativeDriver: true,
-			easing: Easing.out( Easing.cubic ),
-		}).start(() => {
-			opacityAnim.setValue(1);
-		});
+			easing: Easing.out( Easing.cubic )
+		}).start();
 	};
 
 	const { amount, date, price, total, holding_name } = {
@@ -169,8 +163,8 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 					items= { values } />
 				<View style={ styles.progressBarWrapper }>
 					<ProgressBar
-						progress={ progressAnim }
-						opacity={ opacityAnim } />
+						progress={ longPressProgress }
+						style={ { opacity } } />
 				</View>
 			</View>
 		</TouchableRipple>

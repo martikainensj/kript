@@ -1,14 +1,14 @@
 import React from "react";
-import { Animated, StyleSheet, View } from "react-native";
+import { Animated, StyleSheet, View, ViewStyle } from "react-native";
 
 import { useTheme } from "../../contexts/ThemeContext";
 
 interface Props {
-	progress: Animated.Value;
-	opacity: Animated.Value;
+	progress: number;
+	style?: ViewStyle
 }
 
-export const ProgressBar: React.FC<Props> = ({ progress, opacity }) => {
+export const ProgressBar: React.FC<Props> = ({ progress, style }) => {
 	const { theme } = useTheme();
 
 	return (
@@ -17,9 +17,9 @@ export const ProgressBar: React.FC<Props> = ({ progress, opacity }) => {
 				styles.fillContainer,
 				{
 					backgroundColor: theme.colors.primary,
-					opacity,
 					transform: [{ scaleX: progress }]
-				}
+				},
+				style
 			]} />
 		</View>
 	)
