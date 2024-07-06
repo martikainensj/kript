@@ -9,13 +9,18 @@ import { Account, AccountKey, AccountValue } from "../models/Account";
 import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
 
+export type DataPoint = {
+  date: number;
+  value: number;
+};
+
 export type DataIdentifier = 'Account' | 'Holding' | 'Transaction';
 export type DataObject = {
 	'Account': Account;
 	'Holding': Holding;
 	'Transaction': Transaction;
 };
-// TODO: Check flow for bugs
+
 interface DataContext {
 	addAccount: ( account: Account ) => Promise<Account>;
 	addTransaction: ( transaction: Transaction ) => Promise<Transaction>;
