@@ -7,11 +7,12 @@ import { useTheme } from "../../contexts/ThemeContext";
 
 interface CardProps {
 	children: React.ReactNode;
-	style?: ViewStyle
+	style?: ViewStyle;
 }
 
 export const Card: React.FC<CardProps> = ( { children, style } ) => {
 	const { theme } = useTheme();
+
 	return (
 		<LinearGradient
 			colors={ [
@@ -29,7 +30,7 @@ export const Card: React.FC<CardProps> = ( { children, style } ) => {
 
 const styles = StyleSheet.create( {
 	container: {
-		padding: Spacing.lg,
+		padding: Spacing.md,
 		borderRadius: BorderRadius.lg
 	}
 } );
