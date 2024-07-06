@@ -135,8 +135,7 @@ export const TransactionForm = ( {
 							checkedColor: subType.color,
 							disabled: !! transaction._id && subType.id === 'dividend'
 						} as OptionProps
-					} ) }
-					disabled={ !! transaction.holding_id && !! transaction._id } /> }
+					} ) } /> }
 
 				<Divider />
 				
