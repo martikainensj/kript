@@ -29,6 +29,7 @@ import { useHolding } from "../../hooks/useHolding";
 import { useSelector } from "../../hooks/useSelector";
 import { Transaction } from "../../models/Transaction";
 import Switcher from "../ui/Switcher";
+import { LineChart } from "../charts/LineChart";
 
 interface HoldingViewProps {
 	holding: Holding;
@@ -47,7 +48,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 	const insets = useSafeAreaInsets();
 	const { isSelecting, select, deselect, selectedType, selectedObjects, validate, hasObject, canSelect } = useSelector();
 
-	useHolding( { holding } );
+	const { valueDataPoints } = useHolding( { holding } );
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -182,9 +183,10 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 					label: __( 'Overview' ),
 					content: (
 						<View style={ styles.contentContainer }>
-							<Card style={ { marginTop: Spacing.md } }>
-								<Title>{ __( 'Overview' ) }</Title>
-							</Card>
+								<Card style={ { marginTop: Spacing.md } }>
+									<Title>{ __( 'Overview' ) }</Title>
+									<LineChart data={ valueDataPoints } />
+								</Card>
 						</View>
 					)
 				},
