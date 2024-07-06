@@ -1,8 +1,8 @@
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { Holding } from "../models/Holding";
 import { Transaction } from "./useTypes";
-import { useData } from "../contexts/DataContext";
+import { DataPoint, useData } from "../contexts/DataContext";
 import { generateChecksum } from "../helpers";
 
 interface useHoldingProps {
@@ -17,7 +17,10 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 		const { transactions } = holding;
 		const checksum = generateChecksum( JSON.stringify( holding ));
 
+		const [ valueDataPoints, setValueDataPoints ] = useState([] as DataPoint[]);
+
 		useLayoutEffect(() => {
+			const valueDataPoints = [] as DataPoint[];
 			const lastTransaction = transactions
 				?.filtered('type == $0', 'trading' as Transaction['id'])
 				.sorted('date', true)[0];
@@ -71,6 +74,11 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 					} else {
 						acc.amount += transaction.amount;
 					}
+
+					valueDataPoints.push({
+						date: transaction.date,
+						value: acc.amount * transaction.price
+					});
 		
 					return acc;
 				},
@@ -84,6 +92,8 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 			const returnValue = value - total;
 			const returnPercentage = value ? ((value - total) / Math.abs(total)) * 100 : 0;
 		
+			setValueDataPoints( valueDataPoints );
+
 			updateVariables(holding, {
 				lastPrice,
 				amount,
@@ -97,5 +107,7 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 				returnValue,
 				returnPercentage,
 			});
-		}, [ checksum ])
+		}, [ checksum ]);
+
+		return { valueDataPoints }
 	}
