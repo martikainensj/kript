@@ -18,15 +18,16 @@ interface Props {
 export const LineChart: React.FC<Props> = ({
 	label,
 	data,
-	height = 200,
+	height,
 	bottomPadding = Spacing.md,
 	leftPadding,
 }) => {
 	const { theme } = useTheme();
-	const [ lineChartWidth, setLineChartWidth ] = useState(0);
   const ref = useRef(null);
+	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
+	const lineChartHeight = height ?? lineChartWidth / 2;
 
-	const onLayout= ( event: LayoutChangeEvent ) => {
+	const onLayout = ( event: LayoutChangeEvent ) => {
     const { width } = event.nativeEvent.layout;
 
     setLineChartWidth( width );
@@ -47,10 +48,10 @@ export const LineChart: React.FC<Props> = ({
 			to: -Infinity,
 		});
 		
-		const y = scaleLinear().domain([ 0, max ]).range([ height, 35 ]);
+		const y = scaleLinear().domain([ 0, max ]).range([ lineChartHeight, 35 ]);
 		const x = scaleTime()
 			.domain([ from, to ])
-			.range([ 10, lineChartWidth - 10 ]);
+			.range([ 0, lineChartWidth ]);
 
 		const curvedLine = line<DataPoint>()
 			.x( d => x( d.date ))
@@ -82,32 +83,37 @@ export const LineChart: React.FC<Props> = ({
 				{ !! graphData?.length && (
 					<Svg
 						width={ lineChartWidth }
-						height={ height }
+						height={ lineChartHeight }
 						stroke={ theme.colors.primary }
 						fill="transparent">
 						<G y={-bottomPadding}>
 							<Line
 								x1={leftPadding}
-								y1={height}
+								y1={lineChartHeight}
 								x2={lineChartWidth}
-								y2={height}
+								y2={lineChartHeight}
 								stroke={ theme.colors.outlineVariant }
 								strokeWidth="1" />
+
 							<Line
 								x1={leftPadding}
-								y1={height * 0.6}
+								y1={lineChartHeight * 0.6}
 								x2={lineChartWidth}
-								y2={height * 0.6}
+								y2={lineChartHeight * 0.6}
 								stroke={ theme.colors.outlineVariant }
 								strokeWidth="1" />
+
 							<Line
 								x1={leftPadding}
-								y1={height * 0.2}
+								y1={lineChartHeight * 0.2}
 								x2={lineChartWidth}
-								y2={height * 0.2}
+								y2={lineChartHeight * 0.2}
 								stroke={ theme.colors.outlineVariant }
 								strokeWidth="1" />
-							<Path d={graphData[0].curve} strokeWidth="2" />
+								
+							<Path
+								d={graphData[0].curve}
+								strokeWidth="2" />
 						</G>
 					</Svg>
 				)}
