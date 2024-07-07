@@ -25,7 +25,7 @@ export const TransactionSchema = {
 	name: 'Transaction',
 	embedded: true,
 	properties: {
-		_id: 'uuid',
+		_id: { type: 'uuid', indexed: true },
 		amount: 'double?',
 		date: 'double',
 		notes: 'string?',

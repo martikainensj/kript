@@ -15,12 +15,18 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 		if ( ! holding?.isValid() ) return;
 
 		const { transactions } = holding;
-		const checksum = generateChecksum( JSON.stringify( holding ));
-
-		const [ valueDataPoints, setValueDataPoints ] = useState([] as DataPoint[]);
+		const checksum = generateChecksum({
+			transactions
+ 		});
 
 		useLayoutEffect(() => {
-			const valueDataPoints = [] as DataPoint[];
+			if ( holding.checksum === checksum ) {
+				return;
+			}
+
+			const valueHistoryData = [] as DataPoint[];
+			const returnHistoryData = [] as DataPoint[];
+
 			const lastTransaction = transactions
 				?.filtered('type == $0', 'trading' as Transaction['id'])
 				.sorted('date', true)[0];
@@ -75,9 +81,17 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 						acc.amount += transaction.amount;
 					}
 
-					valueDataPoints.push({
+					const value = acc.amount * transaction.price;
+					const returnValue = value - acc.total;
+					
+					valueHistoryData.push({
 						date: transaction.date,
-						value: acc.amount * transaction.price
+						value: value
+					});
+
+					returnHistoryData.push({
+						date: transaction.date,
+						value: returnValue
 					});
 		
 					return acc;
@@ -91,8 +105,6 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 			const value = lastPrice * amount;
 			const returnValue = value - total;
 			const returnPercentage = value ? ((value - total) / Math.abs(total)) * 100 : 0;
-		
-			setValueDataPoints( valueDataPoints );
 
 			updateVariables(holding, {
 				lastPrice,
@@ -106,8 +118,9 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 				value,
 				returnValue,
 				returnPercentage,
+				valueHistoryData,
+				returnHistoryData,
+				checksum
 			});
 		}, [ checksum ]);
-
-		return { valueDataPoints }
 	}

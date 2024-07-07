@@ -57,7 +57,9 @@ export const prettifyNumber = (
 		: integerPart;
 }
 
-export const generateChecksum = ( objectString: string ) => {
+export const generateChecksum = ( object: object ) => {
+	const objectString = JSON.stringify( object );
+	
 	return objectString.split( '' ).reduce(( checksum, char ) => {
     return ( checksum + char.charCodeAt( 0 )) % 65535;
   }, 0 ).toString( 16 );

@@ -14,9 +14,16 @@ export const useAccount = ( { account }: useAccountProps ) => {
 	if ( ! account?.isValid() ) return;
 
 	const { transactions, holdings } = account;
-	const checksum = generateChecksum( JSON.stringify( account ));
+	const checksum = generateChecksum({
+		transactions,
+		holdings
+ 	});
 
 	useLayoutEffect(() => {
+		if ( account.checksum === checksum ) {
+			return;
+		}
+		
 		const holdingsInitial = {
 			total: 0,
 			dividendSum: 0,
@@ -55,7 +62,8 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			balance,
 			value,
 			returnValue,
-			returnPercentage
+			returnPercentage,
+			checksum
 		} );
 	}, [ checksum ]);
 }

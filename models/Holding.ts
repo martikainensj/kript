@@ -1,5 +1,6 @@
 import Realm from "realm";
 import { Transaction } from "./Transaction";
+import { DataPoint } from "./DataPoint";
 
 export type Holding = {
 	_id: Realm.BSON.UUID;
@@ -20,6 +21,8 @@ export type Holding = {
 	value?: number;
 	returnValue?: number;
 	returnPercentage?: number;
+	valueHistoryData?: DataPoint[];
+	returnHistoryData?: DataPoint[];
 	checksum?: string;
 };
 
@@ -30,8 +33,8 @@ export const HoldingSchema = {
 	name: 'Holding',
 	embedded: true,
 	properties: {
-		_id: 'uuid',
-		name: 'string',
+		_id: { type: 'uuid', indexed: true },
+		name: { type: 'string', indexed: true },
 		notes: 'string?',
 		owner_id: 'string',
 		account_id: 'uuid',
@@ -47,6 +50,8 @@ export const HoldingSchema = {
 		value: 'double?',
 		returnValue: 'double?',
 		returnPercentage: 'double?',
+		valueHistoryData: 'DataPoint[]',
+		returnHistoryData: 'DataPoint[]',
 		checksum: 'string?',
 	}
 };

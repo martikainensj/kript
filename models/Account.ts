@@ -1,6 +1,7 @@
 import Realm from 'realm';
 import { Holding } from './Holding';
 import { Transaction } from './Transaction';
+import { DataPoint } from './DataPoint';
 
 export type Account = {
 	_id: Realm.BSON.UUID;
@@ -18,6 +19,8 @@ export type Account = {
 	totalCost?: number;
 	returnValue?: number;
 	returnPercentage?: number;
+	valueHistoryData?: DataPoint[];
+	returnHistoryData?: DataPoint[];
 	checksum?: string;
 };
 
@@ -27,8 +30,8 @@ export type AccountValue<K extends AccountKey> = Account[K];
 export const AccountSchema = {
 	name: 'Account',
 	properties: {
-		_id: 'uuid',
-		name: 'string',
+		_id: { type: 'uuid', indexed: true },
+		name: { type: 'string', indexed: true },
 		notes: 'string?',
 		owner_id: 'string',
 		holdings: 'Holding[]',
@@ -41,6 +44,8 @@ export const AccountSchema = {
 		totalCost: 'double?',
 		returnValue: 'double?',
 		returnPercentage: 'double?',
+		valueHistoryData: 'DataPoint[]',
+		returnsHistoryData: 'DataPoint[]',
 		checksum: 'string?',
 	},
 	primaryKey: '_id',

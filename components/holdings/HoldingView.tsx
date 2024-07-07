@@ -48,7 +48,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 	const insets = useSafeAreaInsets();
 	const { isSelecting, select, deselect, selectedType, selectedObjects, validate, hasObject, canSelect } = useSelector();
 
-	const { valueDataPoints } = useHolding( { holding } );
+	useHolding( { holding } );
 
 	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
@@ -128,7 +128,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 		return;
 	}
 
-	const { name, amount, value, returnValue, returnPercentage } = holding;
+	const { name, amount, value, returnValue, returnPercentage, valueHistoryData, returnHistoryData } = holding;
 
 	const values = [
 		<Value
@@ -185,7 +185,8 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 						<View style={ styles.contentContainer }>
 								<Card style={ { marginTop: Spacing.md } }>
 									<Title>{ __( 'Overview' ) }</Title>
-									<LineChart data={ valueDataPoints } />
+									<LineChart data={ valueHistoryData } />
+									<LineChart data={ returnHistoryData } />
 								</Card>
 						</View>
 					)
