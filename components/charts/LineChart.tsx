@@ -1,10 +1,9 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { curveBasis, line, scaleLinear, scaleTime } from "d3"
 import { DataPoint } from "../../contexts/DataContext";
-import { Animated, LayoutChangeEvent, SafeAreaView, StyleSheet, View } from "react-native";
+import { Animated, LayoutChangeEvent, SafeAreaView, StyleSheet } from "react-native";
 import { G, Line, Path, Svg } from 'react-native-svg';
-import { GlobalStyles } from "../../constants";
-import { allSet, generateChecksum } from "../../helpers";
+import { Spacing } from "../../constants";
 import { useTheme } from "../../contexts/ThemeContext";
 
 interface Props {
@@ -17,7 +16,7 @@ interface Props {
 export const LineChart: React.FC<Props> = ({
 	data,
 	height = 200,
-	bottomPadding,
+	bottomPadding = Spacing.md,
 	leftPadding,
 }) => {
 	const { theme } = useTheme();
