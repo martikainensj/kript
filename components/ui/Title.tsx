@@ -13,6 +13,10 @@ export const Title: React.FC<TitleProps> = ( {
 	children,
 	style
 } ) => {
+	if ( ! children ) {
+		return;
+	}
+	
 	return (
 		<Text numberOfLines={ 1 } style={ [ styles.title, style ] }>
 			{ children }

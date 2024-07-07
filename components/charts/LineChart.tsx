@@ -5,8 +5,10 @@ import { Animated, LayoutChangeEvent, SafeAreaView, StyleSheet } from "react-nat
 import { G, Line, Path, Svg } from 'react-native-svg';
 import { Spacing } from "../../constants";
 import { useTheme } from "../../contexts/ThemeContext";
+import { Title } from "../ui/Title";
 
 interface Props {
+	label?: string,
 	data: DataPoint[],
 	height?: number,
   bottomPadding?: number,
@@ -14,6 +16,7 @@ interface Props {
 }
 
 export const LineChart: React.FC<Props> = ({
+	label,
 	data,
 	height = 200,
 	bottomPadding = Spacing.md,
@@ -71,6 +74,7 @@ export const LineChart: React.FC<Props> = ({
 
 	return (
     <SafeAreaView style={styles.container}>
+			<Title>{label}</Title>
       <Animated.View
 				ref={ ref }
 				onLayout={ onLayout }
