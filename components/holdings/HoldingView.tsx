@@ -29,7 +29,9 @@ import { useHolding } from "../../hooks/useHolding";
 import { useSelector } from "../../hooks/useSelector";
 import { Transaction } from "../../models/Transaction";
 import Switcher from "../ui/Switcher";
+import { Text } from "react-native-paper";
 import { LineChart } from "../charts/LineChart";
+import { lineDataItem } from "react-native-gifted-charts";
 
 interface HoldingViewProps {
 	holding: Holding;
@@ -184,11 +186,14 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 					content: (
 						<ScrollView style={ styles.contentContainer }>
 								<Card style={ { marginTop: Spacing.md } }>
-									<LineChart label={ __( 'Holding value' ) } data={ valueHistoryData } />
-								</Card>
-
-								<Card style={ { marginTop: Spacing.md } }>
-									<LineChart label={ __( 'Holding return' ) } data={ returnHistoryData } />
+									<LineChart
+										label={ __( "Holding Return") }
+										data={ returnHistoryData.map( data => {
+											return {
+												value: data.value,
+												label: new Date( data.date ).toLocaleDateString( 'fi' )
+											} as lineDataItem
+										}) } />
 								</Card>
 						</ScrollView>
 					)

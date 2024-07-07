@@ -1,31 +1,21 @@
-import React, { useMemo, useRef, useState } from "react";
-import { curveBasis, line, scaleLinear, scaleTime } from "d3"
-import { DataPoint } from "../../contexts/DataContext";
-import { Animated, LayoutChangeEvent, SafeAreaView, StyleSheet } from "react-native";
-import { G, Line, Path, Svg } from 'react-native-svg';
-import { Spacing } from "../../constants";
+import React, { useRef, useState } from "react";
+import { LineChart as GiftedLineChart, LineChartPropsType, lineDataItem } from "react-native-gifted-charts";
 import { useTheme } from "../../contexts/ThemeContext";
+import { Animated, LayoutChangeEvent, StyleSheet, View } from "react-native";
 import { Title } from "../ui/Title";
+import { Spacing } from "../../constants";
+import { Text } from "react-native-paper";
+import { LinearGradient, Stop } from "react-native-svg";
 
 interface Props {
-	label?: string,
-	data: DataPoint[],
-	height?: number,
-  bottomPadding?: number,
-  leftPadding?: number,
+	data: LineChartPropsType['data']
+	label?: string
 }
 
-export const LineChart: React.FC<Props> = ({
-	label,
-	data,
-	height,
-	bottomPadding = Spacing.md,
-	leftPadding,
-}) => {
+export const LineChart: React.FC<Props> = ({ data, label }) => {
 	const { theme } = useTheme();
   const ref = useRef(null);
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
-	const lineChartHeight = height ?? lineChartWidth / 2;
 
 	const onLayout = ( event: LayoutChangeEvent ) => {
     const { width } = event.nativeEvent.layout;
@@ -33,99 +23,77 @@ export const LineChart: React.FC<Props> = ({
     setLineChartWidth( width );
   };
 
-	const makeGraph = ( data: DataPoint[] ) => {
-		const { min, max, from, to } = data.reduce(( acc, dataPoint ) => {
-			if ( dataPoint.value > acc.max ) acc.max = dataPoint.value;
-			if ( dataPoint.value < acc.min ) acc.min = dataPoint.value;
-			if ( dataPoint.date < acc.from ) acc.from = dataPoint.date;
-			if ( dataPoint.date > acc.to ) acc.to = dataPoint.date;
-
-			return acc;
-		}, {
-			min: Infinity,
-			max: -Infinity,
-			from: Infinity,
-			to: -Infinity,
-		});
-		
-		const y = scaleLinear().domain([ 0, max ]).range([ lineChartHeight, 35 ]);
-		const x = scaleTime()
-			.domain([ from, to ])
-			.range([ 0, lineChartWidth ]);
-
-		const curvedLine = line<DataPoint>()
-			.x( d => x( d.date ))
-			.y( d => y( d.value ))
-			.curve( curveBasis )( data );
-	
-		return {
-			max,
-			min,
-			curve: curvedLine!,
-		};
-	};
-
-	const graphData = useMemo( () => {
-		if ( ! data.length ) {
-			return;
-		}
-
-		return [ makeGraph( data ) ]
-	}, [ data, lineChartWidth, height, leftPadding, bottomPadding ]);
+	const pointerConfig = {
+		pointerStripUptoDataPoint: true,
+		pointerStripColor: 'lightgray',
+		pointerStripWidth: 2,
+		strokeDashArray: [2, 5],
+		pointerColor: 'lightgray',
+		radius: 4,
+		pointerLabelWidth: 100,
+		pointerLabelHeight: 120,
+		pointerLabelComponent: ( items: lineDataItem[] )=> {
+			return (
+				<View
+					style={{
+						height: 120,
+						width: 100,
+						backgroundColor: '#282C3E',
+						borderRadius: 4,
+						justifyContent:'center',
+						paddingLeft:16,
+					}}>
+					<Text style={{color: 'lightgray',fontSize:12}}>{2018}</Text>
+					<Text style={{color: 'white', fontWeight:'bold'}}>{items[0].value}</Text>
+				</View>
+			);
+		},
+	} as LineChartPropsType['pointerConfig'];
 
 	return (
-    <SafeAreaView style={styles.container}>
-			<Title>{label}</Title>
-      <Animated.View
-				ref={ ref }
-				onLayout={ onLayout }
-				style={styles.chartContainer}>
-				{ !! graphData?.length && (
-					<Svg
-						width={ lineChartWidth }
-						height={ lineChartHeight }
-						stroke={ theme.colors.primary }
-						fill="transparent">
-						<G y={-bottomPadding}>
-							<Line
-								x1={leftPadding}
-								y1={lineChartHeight}
-								x2={lineChartWidth}
-								y2={lineChartHeight}
-								stroke={ theme.colors.outlineVariant }
-								strokeWidth="1" />
-
-							<Line
-								x1={leftPadding}
-								y1={lineChartHeight * 0.6}
-								x2={lineChartWidth}
-								y2={lineChartHeight * 0.6}
-								stroke={ theme.colors.outlineVariant }
-								strokeWidth="1" />
-
-							<Line
-								x1={leftPadding}
-								y1={lineChartHeight * 0.2}
-								x2={lineChartWidth}
-								y2={lineChartHeight * 0.2}
-								stroke={ theme.colors.outlineVariant }
-								strokeWidth="1" />
-								
-							<Path
-								d={graphData[0].curve}
-								strokeWidth="2" />
-						</G>
-					</Svg>
-				)}
-      </Animated.View>
-    </SafeAreaView>
-  );
+		<Animated.View
+			ref={ ref }
+			onLayout={ onLayout }
+			style={ styles.container }>
+			<Title>{ label }</Title>
+			<GiftedLineChart
+				areaChart
+				curved
+				data={ data }
+				color={ theme.colors.primary }
+				width={ lineChartWidth }
+				initialSpacing={ 0 }
+				thickness={ 3 }
+				xAxisLabelTextStyle={ styles.xAxisLabelText }
+				hideYAxisText
+				hideAxesAndRules
+				hideDataPoints
+				adjustToWidth
+				pointerConfig={ pointerConfig }
+      	areaGradientId="linearGrading"
+				areaGradientComponent={() => {
+					return (
+						<LinearGradient id="linearGrading" x1="0" x2="0" y1="0" y2="1">
+							<Stop
+								offset="0"
+								stopColor={ theme.colors.primary}
+								stopOpacity={ 0.3 } />
+							<Stop
+								offset="0.8"
+								stopColor={ theme.colors.outlineVariant }
+								stopOpacity={ 0 } />
+						</LinearGradient>
+					);
+				}} />
+		</Animated.View>
+	)
 }
 
 const styles = StyleSheet.create({
 	container: {
+		gap: Spacing.sm
 	},
-	chartContainer: {
-
+	xAxisLabelText: {
+		display: 'none'
 	}
-})
+});
