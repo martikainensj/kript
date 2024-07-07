@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { GestureResponderEvent, StyleSheet, View } from "react-native"
+import { GestureResponderEvent, ScrollView, StyleSheet, View } from "react-native"
 import { router } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
@@ -182,12 +182,15 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 				{
 					label: __( 'Overview' ),
 					content: (
-						<View style={ styles.contentContainer }>
+						<ScrollView style={ styles.contentContainer }>
 								<Card style={ { marginTop: Spacing.md } }>
 									<LineChart label={ __( 'Holding value' ) } data={ valueHistoryData } />
+								</Card>
+
+								<Card style={ { marginTop: Spacing.md } }>
 									<LineChart label={ __( 'Holding return' ) } data={ returnHistoryData } />
 								</Card>
-						</View>
+						</ScrollView>
 					)
 				},
 				{
