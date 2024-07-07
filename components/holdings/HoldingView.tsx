@@ -184,8 +184,8 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 					content: (
 						<View style={ styles.contentContainer }>
 								<Card style={ { marginTop: Spacing.md } }>
-									<LineChart label={ __( 'Net asset value' ) } data={ valueHistoryData } />
-									<LineChart label={ __( 'Asset return' ) } data={ returnHistoryData } />
+									<LineChart label={ __( 'Holding value' ) } data={ valueHistoryData } />
+									<LineChart label={ __( 'Holding return' ) } data={ returnHistoryData } />
 								</Card>
 						</View>
 					)

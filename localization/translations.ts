@@ -174,6 +174,14 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Ei omistuksia',
 		en_US: 'No holdings'
 	},
+	'holding value': {
+		fi_FI: 'Omistuksen arvo',
+		en_US: 'Holding value'
+	},
+	'holding return': {
+		fi_FI: 'Omistuksen tuotto',
+		en_US: 'Holding return'
+	},
 
 	// Transaction
 
