@@ -3,7 +3,7 @@ import { LineChart as GiftedLineChart, LineChartPropsType, lineDataItem } from "
 import { useTheme } from "../../contexts/ThemeContext";
 import { Animated, LayoutChangeEvent, StyleSheet, View } from "react-native";
 import { Title } from "../ui/Title";
-import { BorderRadius, GlobalStyles, Spacing } from "../../constants";
+import { BorderRadius, FontSize, GlobalStyles, Spacing } from "../../constants";
 import { Text } from "react-native-paper";
 import { Card } from "../ui/Card";
 import { Value } from "../ui/Value";
@@ -18,8 +18,7 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 	const { theme } = useTheme();
   const ref = useRef(null);
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
-
-	const CARD_PADDING = Spacing.lg;
+	const { label: lastLabel, value: lastValue } = data && data[ data?.length - 1 ];
 
 	const onLayout = ( event: LayoutChangeEvent ) => {
     const { width } = event.nativeEvent.layout;
@@ -41,17 +40,17 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 					{ backgroundColor: theme.colors.background }
 				]}>
 					<Value
-						value={ item.value }
+						value={ item?.value }
 						unit={ unit }
-						isPositive={ item.value > 0 }
-						isNegative={ item.value < 0 } />
+						isPositive={ item?.value > 0 }
+						isNegative={ item?.value < 0 } />
 				</View>
 			</View>
 		);
 	}, []);
 
 	const pointerConfig = {
-		pointerStripHeight: lineChartWidth * 0.4,
+		pointerStripHeight: lineChartWidth * 0.38,
 		pointerStripColor: theme.colors.primary,
 		pointerStripWidth: 1,
 		strokeDashArray: [ 2, Spacing.xs ],
@@ -63,28 +62,37 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 	} as LineChartPropsType['pointerConfig'];
 
 	return (
-			<Animated.View
-				ref={ ref }
-				onLayout={ onLayout }
-				style={ styles.container }>
+		<Animated.View
+			ref={ ref }
+			onLayout={ onLayout }
+			style={ styles.container }>
 			<Card style={ { marginTop: Spacing.md, paddingHorizontal: 0, paddingBottom: 0 } }>
-				<View style={ styles.titleWrapper }>
+				<View style={ styles.headerContainer }>
 					<Title>{ label }</Title>
+					<Value
+						value={ lastValue }
+						unit={ unit }
+						isPositive={ lastValue > 0 }
+						isNegative={ lastValue < 0 }
+						valueStyle={ styles.lastValue }
+						unitStyle={ styles.lastValueUnit } />
 				</View>
 				<View style={ styles.lineChartWrapper }>
 					<GiftedLineChart
-						curved
+          	isAnimated
 						dataSet={[
-							{ data: data }
+							{ data }
 						]}
 						color={ theme.colors.primary }
 						width={ lineChartWidth }
+						height={ lineChartWidth / 2 }
 						initialSpacing={ 0 }
 						thickness={ 2 }
 						xAxisThickness={ 0 }
 						xAxisLabelsHeight={ 0 }
 						yAxisLabelWidth={ 0 }
 						yAxisExtraHeight={ Spacing.lg }
+						noOfSectionsBelowXAxis={ 0 }
 						hideYAxisText
 						hideAxesAndRules
 						hideDataPoints
@@ -93,11 +101,11 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 						areaChart
 						startFillColor={ theme.colors.primary }
 						endFillColor={ 'transparent' }
-						startOpacity={ 0.5 }
+						startOpacity={ 0.3 }
 						endOpacity={ 0 } />
 				</View>
-				</Card>
-			</Animated.View>
+			</Card>
+		</Animated.View>
 	)
 }
 
@@ -105,7 +113,10 @@ const styles = StyleSheet.create({
 	container: {
 		gap: Spacing.sm
 	},
-	titleWrapper: {
+	headerContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		gap: Spacing.md,
 		paddingHorizontal: Spacing.lg
 	},
 	lineChartWrapper: {
@@ -132,5 +143,11 @@ const styles = StyleSheet.create({
 		overflow: 'hidden',
 		width: 'auto',
 		alignItems: 'center'
+	},
+	lastValue: {
+		fontSize: FontSize.xl
+	},
+	lastValueUnit: {
+		fontSize: FontSize.lg
 	}
 });
