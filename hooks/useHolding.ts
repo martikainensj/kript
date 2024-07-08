@@ -2,8 +2,9 @@ import { useLayoutEffect, useState } from "react";
 
 import { Holding } from "../models/Holding";
 import { Transaction } from "./useTypes";
-import { DataPoint, useData } from "../contexts/DataContext";
+import { useData } from "../contexts/DataContext";
 import { generateChecksum } from "../helpers";
+import { DataPoint } from "../models/DataPoint";
 
 interface useHoldingProps {
 	holding: Holding
