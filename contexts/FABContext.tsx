@@ -59,6 +59,7 @@ const FAB = () => {
 				: <Icon name={ 'add' } size={ IconSize.lg } />
 			} }
 			actions={ actions }
+			variant={ "secondary" }
 			onStateChange={ onStateChange }
 			fabStyle={ styles.fab } />
 	)
@@ -66,6 +67,6 @@ const FAB = () => {
 
 const styles = StyleSheet.create( {
 	fab: {
-		borderRadius: BorderRadius.xl
+		borderRadius: BorderRadius.xl,
 	}
 } );
