@@ -1,21 +1,25 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { LineChart as GiftedLineChart, LineChartPropsType, lineDataItem } from "react-native-gifted-charts";
 import { useTheme } from "../../contexts/ThemeContext";
 import { Animated, LayoutChangeEvent, StyleSheet, View } from "react-native";
 import { Title } from "../ui/Title";
-import { Spacing } from "../../constants";
+import { BorderRadius, GlobalStyles, Spacing } from "../../constants";
 import { Text } from "react-native-paper";
-import { LinearGradient, Stop } from "react-native-svg";
+import { Card } from "../ui/Card";
+import { Value } from "../ui/Value";
 
 interface Props {
 	data: LineChartPropsType['data']
-	label?: string
+	label?: string,
+	unit?: string,
 }
 
-export const LineChart: React.FC<Props> = ({ data, label }) => {
+export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 	const { theme } = useTheme();
   const ref = useRef(null);
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
+
+	const CARD_PADDING = Spacing.lg;
 
 	const onLayout = ( event: LayoutChangeEvent ) => {
     const { width } = event.nativeEvent.layout;
@@ -23,69 +27,77 @@ export const LineChart: React.FC<Props> = ({ data, label }) => {
     setLineChartWidth( width );
   };
 
+	const pointerLabelComponent = useCallback(( items: lineDataItem[] ) => {
+		const item = items[0];
+		
+		return (
+			<View style={ styles.pointerLabelContainer }>	
+				<Text style={ styles.pointerLabelLabel }>
+					{item.label}
+				</Text>
+
+				<View style={[
+					styles.pointerLabelValue,
+					{ backgroundColor: theme.colors.background }
+				]}>
+					<Value
+						value={ item.value }
+						unit={ unit }
+						isPositive={ item.value > 0 }
+						isNegative={ item.value < 0 } />
+				</View>
+			</View>
+		);
+	}, []);
+
 	const pointerConfig = {
-		pointerStripUptoDataPoint: true,
-		pointerStripColor: 'lightgray',
-		pointerStripWidth: 2,
-		strokeDashArray: [2, 5],
-		pointerColor: 'lightgray',
+		pointerStripHeight: lineChartWidth * 0.4,
+		pointerStripColor: theme.colors.primary,
+		pointerStripWidth: 1,
+		strokeDashArray: [ 2, Spacing.xs ],
+		pointerColor: theme.colors.primary,
 		radius: 4,
 		pointerLabelWidth: 100,
-		pointerLabelHeight: 120,
-		pointerLabelComponent: ( items: lineDataItem[] )=> {
-			return (
-				<View
-					style={{
-						height: 120,
-						width: 100,
-						backgroundColor: '#282C3E',
-						borderRadius: 4,
-						justifyContent:'center',
-						paddingLeft:16,
-					}}>
-					<Text style={{color: 'lightgray',fontSize:12}}>{2018}</Text>
-					<Text style={{color: 'white', fontWeight:'bold'}}>{items[0].value}</Text>
-				</View>
-			);
-		},
+		pointerLabelHeight: 90,
+		pointerLabelComponent,
 	} as LineChartPropsType['pointerConfig'];
 
 	return (
-		<Animated.View
-			ref={ ref }
-			onLayout={ onLayout }
-			style={ styles.container }>
-			<Title>{ label }</Title>
-			<GiftedLineChart
-				areaChart
-				curved
-				data={ data }
-				color={ theme.colors.primary }
-				width={ lineChartWidth }
-				initialSpacing={ 0 }
-				thickness={ 3 }
-				xAxisLabelTextStyle={ styles.xAxisLabelText }
-				hideYAxisText
-				hideAxesAndRules
-				hideDataPoints
-				adjustToWidth
-				pointerConfig={ pointerConfig }
-      	areaGradientId="linearGrading"
-				areaGradientComponent={() => {
-					return (
-						<LinearGradient id="linearGrading" x1="0" x2="0" y1="0" y2="1">
-							<Stop
-								offset="0"
-								stopColor={ theme.colors.primary}
-								stopOpacity={ 0.3 } />
-							<Stop
-								offset="0.8"
-								stopColor={ theme.colors.outlineVariant }
-								stopOpacity={ 0 } />
-						</LinearGradient>
-					);
-				}} />
-		</Animated.View>
+			<Animated.View
+				ref={ ref }
+				onLayout={ onLayout }
+				style={ styles.container }>
+			<Card style={ { marginTop: Spacing.md, paddingHorizontal: 0, paddingBottom: 0 } }>
+				<View style={ styles.titleWrapper }>
+					<Title>{ label }</Title>
+				</View>
+				<View style={ styles.lineChartWrapper }>
+					<GiftedLineChart
+						curved
+						dataSet={[
+							{ data: data }
+						]}
+						color={ theme.colors.primary }
+						width={ lineChartWidth }
+						initialSpacing={ 0 }
+						thickness={ 2 }
+						xAxisThickness={ 0 }
+						xAxisLabelsHeight={ 0 }
+						yAxisLabelWidth={ 0 }
+						yAxisExtraHeight={ Spacing.lg }
+						hideYAxisText
+						hideAxesAndRules
+						hideDataPoints
+						adjustToWidth
+						pointerConfig={ pointerConfig }
+						areaChart
+						startFillColor={ theme.colors.primary }
+						endFillColor={ 'transparent' }
+						startOpacity={ 0.5 }
+						endOpacity={ 0 } />
+				</View>
+				</Card>
+			</Animated.View>
 	)
 }
 
@@ -93,7 +105,32 @@ const styles = StyleSheet.create({
 	container: {
 		gap: Spacing.sm
 	},
+	titleWrapper: {
+		paddingHorizontal: Spacing.lg
+	},
+	lineChartWrapper: {
+	},
 	xAxisLabelText: {
 		display: 'none'
+	},
+	pointerLabelContainer: {
+		height: 90,
+		width: 100,
+		justifyContent: 'center',
+		marginTop: -30,
+		marginLeft: -40,
+	},
+	pointerLabelLabel: {
+		...GlobalStyles.label,
+		marginBottom:6,
+		textAlign:'center'
+	},
+	pointerLabelValue: {
+		...GlobalStyles.label,
+		padding: Spacing.sm,
+		borderRadius: BorderRadius.lg,
+		overflow: 'hidden',
+		width: 'auto',
+		alignItems: 'center'
 	}
 });

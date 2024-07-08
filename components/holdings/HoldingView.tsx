@@ -185,16 +185,15 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 					label: __( 'Overview' ),
 					content: (
 						<ScrollView style={ styles.contentContainer }>
-								<Card style={ { marginTop: Spacing.md } }>
-									<LineChart
-										label={ __( "Holding Return") }
-										data={ returnHistoryData.map( data => {
-											return {
-												value: data.value,
-												label: new Date( data.date ).toLocaleDateString( 'fi' )
-											} as lineDataItem
-										}) } />
-								</Card>
+							<LineChart
+								label={ __( "Holding Return") }
+								unit={ "€" }
+								data={ returnHistoryData.map( data => {
+									return {
+										value: data.value,
+										label: new Date( data.date ).toLocaleDateString( 'fi' )
+									} as lineDataItem
+								}) } />
 						</ScrollView>
 					)
 				},
