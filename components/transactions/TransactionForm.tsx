@@ -78,6 +78,10 @@ export const TransactionForm = ( {
 	}, [ transaction ] );
 
 	useEffect( () => {
+		if ( !! transaction._id ) {
+			return;
+		}
+
 		subTypes && setEditedTransaction(
 			Object.assign( { ...editedTransaction }, { sub_type: subTypes[0].id } )
 		);
@@ -135,7 +139,8 @@ export const TransactionForm = ( {
 							checkedColor: subType.color,
 							disabled: !! transaction._id && subType.id === 'dividend'
 						} as OptionProps
-					} ) } /> }
+					} ) }
+					disabled={ transaction.sub_type === 'dividend' } /> }
 
 				<Divider />
 				
