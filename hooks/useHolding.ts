@@ -25,44 +25,22 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 				return;
 			}
 
+			// Transactions in ascending order by date
+			const sortedTransactions = transactions.sorted('date');
+
 			const valueHistoryData = [] as DataPoint[];
 			const returnHistoryData = [] as DataPoint[];
 
-			const lastTransaction = transactions
-				?.filtered('type == $0', 'trading' as Transaction['id'])
-				.sorted('date', true)[0];
-		
-			const lastAdjustment = transactions
-				?.filtered('type == $0', 'adjustment' as Transaction['id'])
-				.sorted('date', true)[0];
-		
-			const lastPrice = (() => {
-				if (lastAdjustment?.isValid() && lastTransaction?.isValid()) {
-					return lastAdjustment.date > lastTransaction.date
-						? lastAdjustment.price
-						: lastTransaction.price;
-				}
-		
-				if (lastAdjustment?.isValid()) {
-					return lastAdjustment.price;
-				}
-		
-				if (lastTransaction?.isValid()) {
-					return lastTransaction.price;
-				}
-		
-				return 0;
-			})();
-		
-			const initialAmount = lastAdjustment?.isValid() ? lastAdjustment.amount : 0;
-		
 			const {
+				lastPrice,
 				amount,
 				transactionSum,
 				total,
 				dividendSum
-			} = transactions.reduce(
+			} = sortedTransactions.reduce(
 				(acc, transaction) => {
+					acc.lastPrice = transaction.price ?? acc.lastPrice;
+
 					if (transaction.type === 'cash') {
 						if (transaction.sub_type === 'dividend') {
 							acc.dividendSum += transaction.amount;
@@ -71,18 +49,18 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 						return acc;
 					}
 		
-					if (transaction.type === 'trading') {
-						acc.transactionSum += transaction.price * transaction.amount;
+					if ( transaction.type === 'trading' ) {
+						acc.transactionSum += acc.lastPrice * transaction.amount;
 						acc.total += transaction.total;
 					}
 		
-					if (lastAdjustment?.isValid() && transaction.date <= lastAdjustment.date) {
-						acc.amount = lastAdjustment.amount;
+					if ( transaction.type === 'adjustment' ) {
+						acc.amount = transaction.amount;
 					} else {
 						acc.amount += transaction.amount;
 					}
 
-					const value = acc.amount * transaction.price;
+					const value = acc.amount * acc.lastPrice;
 					const returnValue = value - acc.total;
 					
 					valueHistoryData.push({
@@ -96,8 +74,13 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 					});
 		
 					return acc;
-				},
-				{ amount: initialAmount, transactionSum: 0, total: 0, dividendSum: 0 }
+				}, {
+					lastPrice: 0,
+					amount: 0,
+					transactionSum: 0,
+					total: 0,
+					dividendSum: 0
+				}
 			);
 		
 			const fees = total - transactionSum;
