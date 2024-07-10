@@ -16,7 +16,7 @@ export const addTimeToDateTimestamp = ( timestamp: number ) => {
 
 export const getTransactionEndOfDayTimestamp = ( transaction: Transaction ) => {
 	const date = new Date( transaction.date );
-	date.setHours( 23, 59, 59, 99 );
+	date.setHours( 23, 59, 59, 999 );
 	const timestamp = date.valueOf();
 
 	return timestamp;
@@ -75,10 +75,26 @@ export const generateChecksum = ( object: object ) => {
   }, 0 ).toString( 16 );
 };
 
-export const getDateMap = ( ...DataPointArrays: DataPoint[][] ) => {
+/*export const getDateMap = ( ...DataPointArrays: DataPoint[][] ) => {
 	const allDataPoints = DataPointArrays.flat();
 	const uniqueDatesSet = new Set( allDataPoints.map( dataPoint => dataPoint.date ));
 	const uniqueDatesArray = [ ...uniqueDatesSet ].sort(( a, b ) => a - b );
 
 	return uniqueDatesArray;
-}
+}*/
+
+export const getDateMap = (...DataPointArrays: DataPoint[][]) => {
+	const allDataPoints = DataPointArrays.flat();  
+  const allDates = allDataPoints.map(dataPoint => dataPoint.date);
+	const firstDate = new Date(Math.min(...allDates));
+	const lastDate = new Date(Math.max(...allDates));
+	const dateMap = [];
+
+	for (let date = new Date(firstDate); date <= lastDate; date.setDate(date.getDate() + 1)) {
+		const newDate = new Date(date.setHours(23, 59, 59, 999)).getTime();
+		dateMap.push(newDate.valueOf());
+	}
+	console.log( dateMap );
+
+	return dateMap;
+};

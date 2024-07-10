@@ -88,7 +88,8 @@ export const useAccount = ( { account }: useAccountProps ) => {
 
 		const dateMap = getDateMap( ...valueHistoryDataset );
 
-		const valueHistoryData = dateMap.reduce(( acc, date ) => {
+		let addedEarlier = undefined;
+		const valueHistoryData = dateMap.reduce(( acc: DataPoint[], date ) => {
 			let value = 0;
 
 			valueHistoryDataset.forEach( valueHistoryData => {
@@ -113,7 +114,14 @@ export const useAccount = ( { account }: useAccountProps ) => {
 				});
 			});
 
-			acc.push({ date, value });
+			const newDataPoint = {
+				date,
+				value: addedEarlier !== value ? value : undefined
+			};
+
+			addedEarlier = value;
+			
+			acc.push( newDataPoint );
 
 			return acc
 		}, [] as DataPoint[]);

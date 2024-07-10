@@ -1,6 +1,6 @@
 export type DataPoint = {
 	date: number;
-	value: number
+	value?: number
 };
 
 export type DataPointKey = keyof DataPoint;
@@ -11,6 +11,6 @@ export const DataPointSchema = {
 	embedded: true,
 	properties: {
 		date: 'double',
-		value: 'double',
+		value: 'double?',
 	}
 };

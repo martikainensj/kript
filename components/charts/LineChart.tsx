@@ -32,7 +32,7 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 	const pointerLabelComponent = useCallback(( items: lineDataItem[] ) => {
 		const item = items[0];
 
-		if ( ! item ) {
+		if ( ! item || item.hideDataPoint ) {
 			return;
 		}
 		
@@ -59,7 +59,6 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 	}, []);
 
 	const pointerConfig = {
-		pointerStripHeight: lineChartWidth * 0.38,
 		pointerStripColor: theme.colors.primary,
 		pointerStripWidth: 1,
 		strokeDashArray: [ 2, Spacing.xs ],
@@ -92,6 +91,9 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 						dataSet={[
 							{ data }
 						]}
+						dataPointsColor={ theme.colors.primary }
+						interpolateMissingValues={true}
+						showDataPointsForMissingValues={false}
 						color={ theme.colors.primary }
 						width={ lineChartWidth }
 						height={ lineChartWidth / 2 }
@@ -104,7 +106,7 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 						noOfSectionsBelowXAxis={ 0 }
 						hideYAxisText
 						hideAxesAndRules
-						hideDataPoints
+						//hideDataPoints
 						adjustToWidth
 						pointerConfig={ pointerConfig }
 						areaChart
