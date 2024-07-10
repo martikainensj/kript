@@ -18,7 +18,10 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 	const { theme } = useTheme();
   const ref = useRef(null);
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
-	const { label: lastLabel, value: lastValue } = data && data[ data?.length - 1 ];
+	const { label: lastLabel, value: lastValue } = ( data && data[ data?.length - 1 ] ) ?? {
+		label: '',
+		value: 0
+	};
 
 	const onLayout = ( event: LayoutChangeEvent ) => {
     const { width } = event.nativeEvent.layout;
@@ -28,22 +31,28 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 
 	const pointerLabelComponent = useCallback(( items: lineDataItem[] ) => {
 		const item = items[0];
+
+		if ( ! item ) {
+			return;
+		}
 		
 		return (
 			<View style={ styles.pointerLabelContainer }>	
-				<Text style={ styles.pointerLabelLabel }>
-					{item.label}
-				</Text>
+				{ item.label && (
+					<Text style={ styles.pointerLabelLabel }>
+						{ item.label }
+					</Text>
+				)}
 
 				<View style={[
 					styles.pointerLabelValue,
 					{ backgroundColor: theme.colors.background }
 				]}>
 					<Value
-						value={ item?.value }
+						value={ item.value }
 						unit={ unit }
-						isPositive={ item?.value > 0 }
-						isNegative={ item?.value < 0 } />
+						isPositive={ item.value > 0 }
+						isNegative={ item.value < 0 } />
 				</View>
 			</View>
 		);

@@ -135,6 +135,14 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Luo uusi tili painamalla "+" painiketta oikeassa yläkulmassa',
 		en_US: 'Create a new account by clicking the "+" button in the top right corner.'
 	},
+	'account value': {
+		fi_FI: 'Tilin arvo',
+		en_US: 'Account value'
+	},
+	'account return': {
+		fi_FI: 'Tilin tuotto',
+		en_US: 'Account return'
+	},
 
 	// Holding
 

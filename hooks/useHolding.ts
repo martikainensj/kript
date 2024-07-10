@@ -1,9 +1,8 @@
 import { useLayoutEffect, useState } from "react";
 
 import { Holding } from "../models/Holding";
-import { Transaction } from "./useTypes";
 import { useData } from "../contexts/DataContext";
-import { generateChecksum } from "../helpers";
+import { generateChecksum, getTransactionEndOfDayTimestamp } from "../helpers";
 import { DataPoint } from "../models/DataPoint";
 
 interface useHoldingProps {
@@ -36,18 +35,9 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 				amount,
 				transactionSum,
 				total,
-				dividendSum
 			} = sortedTransactions.reduce(
 				(acc, transaction) => {
 					acc.lastPrice = transaction.price ?? acc.lastPrice;
-
-					if (transaction.type === 'cash') {
-						if (transaction.sub_type === 'dividend') {
-							acc.dividendSum += transaction.amount;
-						}
-
-						return acc;
-					}
 		
 					if ( transaction.type === 'trading' ) {
 						acc.transactionSum += acc.lastPrice * transaction.amount;
@@ -60,16 +50,35 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 						acc.amount += transaction.amount;
 					}
 
+					const date = getTransactionEndOfDayTimestamp( transaction );
 					const value = acc.amount * acc.lastPrice;
 					const returnValue = value - acc.total;
+
+					const existingDateIndex = valueHistoryData.findIndex( dataPoint => {
+						return dataPoint.date === date;
+					});
+
+					if ( existingDateIndex !== -1 ) {
+						valueHistoryData[ existingDateIndex ] = {
+							date,
+							value,
+						};
+
+						returnHistoryData[ existingDateIndex ] = {
+							date,
+							value: returnValue
+						};
+
+						return acc;
+					}
 					
 					valueHistoryData.push({
-						date: transaction.date,
-						value: value
+						date,
+						value,
 					});
 
 					returnHistoryData.push({
-						date: transaction.date,
+						date,
 						value: returnValue
 					});
 		
@@ -79,7 +88,6 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 					amount: 0,
 					transactionSum: 0,
 					total: 0,
-					dividendSum: 0
 				}
 			);
 		
@@ -93,7 +101,6 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 			updateVariables(holding, {
 				lastPrice,
 				amount,
-				dividendSum,
 				transactionSum,
 				total,
 				fees,

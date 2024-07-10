@@ -30,6 +30,8 @@ import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
 import { useAccount } from "../../hooks";
 import Switcher from "../ui/Switcher";
+import { LineChart } from "../charts/LineChart";
+import { lineDataItem } from "react-native-gifted-charts";
 
 interface AccountViewProps {
 	account: Account;
@@ -131,7 +133,9 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 		balance,
 		value,
 		returnValue,
-		returnPercentage
+		returnPercentage,
+		valueHistoryData,
+		returnHistoryData,
 	} = account;
 
 	const values = [
@@ -190,9 +194,29 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 					label: __( 'Overview' ),
 					content: (
 						<View style={ styles.contentContainer }>
-							<Card style={ { marginTop: Spacing.md } }>
-								<Title>{ __( 'Overview' ) }</Title>
-							</Card>
+							{ valueHistoryData && (
+								<LineChart
+									label={ __( "Account Value") }
+									unit={ "€" }
+									data={ valueHistoryData.map( data => {
+										return {
+											value: data.value,
+											label: new Date( data.date ).toLocaleDateString( 'fi' )
+										} as lineDataItem
+									}) } />
+							)}
+
+							{ returnHistoryData && (
+								<LineChart
+									label={ __( "Account Return") }
+									unit={ "€" }
+									data={ returnHistoryData.map( data => {
+										return {
+											value: data.value,
+											label: new Date( data.date ).toLocaleDateString( 'fi' )
+										} as lineDataItem
+									}) } />
+							)}
 						</View>
 					)
 				},

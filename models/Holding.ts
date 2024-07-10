@@ -14,7 +14,7 @@ export type Holding = {
 	amount?: number;
 	transactionSum?: number;
 	total?: number;
-	dividendSum?: number;
+	dividendSum?: number; // TODO: remove at some point
 	fees?: number;
 	averagePrice?: number;
 	averageValue?: number;

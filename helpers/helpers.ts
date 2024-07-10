@@ -1,4 +1,6 @@
 import Realm from 'realm';
+import { Transaction } from '../models/Transaction';
+import { DataPoint } from '../models/DataPoint';
 
 export const addTimeToDateTimestamp = ( timestamp: number ) => {
 	const date = new Date( timestamp );
@@ -10,6 +12,14 @@ export const addTimeToDateTimestamp = ( timestamp: number ) => {
 	date.setMilliseconds( currentDate.getMilliseconds() );
  
 	return date.valueOf();
+}
+
+export const getTransactionEndOfDayTimestamp = ( transaction: Transaction ) => {
+	const date = new Date( transaction.date );
+	date.setHours( 23, 59, 59, 99 );
+	const timestamp = date.valueOf();
+
+	return timestamp;
 }
 
 export const stripRealmListsFromObject = <Type>( object: Type ) => {
@@ -64,3 +74,11 @@ export const generateChecksum = ( object: object ) => {
     return ( checksum + char.charCodeAt( 0 )) % 65535;
   }, 0 ).toString( 16 );
 };
+
+export const getDateMap = ( ...DataPointArrays: DataPoint[][] ) => {
+	const allDataPoints = DataPointArrays.flat();
+	const uniqueDatesSet = new Set( allDataPoints.map( dataPoint => dataPoint.date ));
+	const uniqueDatesArray = [ ...uniqueDatesSet ].sort(( a, b ) => a - b );
+
+	return uniqueDatesArray;
+}

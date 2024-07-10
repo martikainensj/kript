@@ -199,7 +199,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 								})
 						);
 
-						if ( holding ) {
+						if ( holding && transaction.sub_type !== 'dividend' ) {
 							newTransaction.holding_id = holding._id;
 							holding.transactions.push( newTransaction );
 
