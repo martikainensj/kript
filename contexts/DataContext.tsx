@@ -8,6 +8,8 @@ import { confirmation } from "../helpers";
 import { Account, AccountKey, AccountValue } from "../models/Account";
 import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
+import { DataPoint } from "../models/DataPoint";
+import { IntervalType } from "../hooks/useTypes";
 
 export type DataIdentifier = 'Account' | 'Holding' | 'Transaction';
 export type DataObject = {
@@ -30,6 +32,7 @@ interface DataContext {
 	saveTransaction: ( transaction: Transaction ) => Promise<Transaction>;
 	removeObjects: <T extends DataIdentifier>( type: T, objects: DataObject[T][] ) => Promise<boolean>;
 	updateVariables: <T extends Account | Holding | Transaction>( object: T, variables: Partial<T> ) => void;
+	filterDataByInterval: ( dataPoints: DataPoint[], interval?: IntervalType['id'], range?: number ) => DataPoint[];
 }
 
 const DataContext = createContext<DataContext>( {
@@ -46,6 +49,7 @@ const DataContext = createContext<DataContext>( {
 	saveTransaction: (): Promise<Transaction> => { return },	
 	removeObjects: (): Promise<boolean> => { return },
 	updateVariables: () => {},
+	filterDataByInterval: () => { return [] },
 } );
 
 export const useData = () => useContext( DataContext );
@@ -400,6 +404,75 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		});
 	};
 
+	const filterDataByInterval = (
+		data: DataPoint[],
+		interval: IntervalType['id'] = 'weekly',
+		range?: number
+	) => {
+		const getWeekNumber = ( date: Date ) => {
+			date = new Date( Date.UTC(
+				date.getFullYear(),
+				date.getMonth(),
+				date.getDate()
+			));
+
+			date.setUTCDate( 7 );
+			var yearStart = new Date( Date.UTC( date.getUTCFullYear(), 0, 1 ));
+			var weekNo = Math.ceil(((( date - yearStart ) / 86400000 ) + 1 ) / 7 );
+			
+			return weekNo;
+		}
+
+		const generateIntervalKey = ( dataPoint: DataPoint, interval: IntervalType['id']) => {
+			const date = new Date( dataPoint.date );
+
+			switch ( interval ) {
+				case 'daily':
+					return `${ date.getFullYear() }-${ date.getMonth() + 1 }-${ date.getDate() }`;
+				case 'weekly':
+					const week = getWeekNumber(date);
+					return `${ date.getFullYear() }-W${ week }`;
+				case 'monthly':
+					return `${ date.getFullYear() }-${ date.getMonth() + 1 }`;
+				case 'yearly':
+					return `${ date.getFullYear() }`;
+				default:
+					throw new Error( 'Unsupported interval' );
+			}
+		};
+
+		const groupByInterval = ( data: DataPoint[], interval: IntervalType['id'] ) => {
+			return data.reduce(( acc, dataPoint ) => {
+					const intervalKey = generateIntervalKey( dataPoint, interval );
+					
+					if ( ! acc[ intervalKey ] ) {
+							acc[ intervalKey ] = [];
+					}
+					
+					acc[ intervalKey ].push( dataPoint );
+
+					return acc;
+			}, {} as {[ key: string ]: DataPoint[] });
+		};
+
+		const groupedData = groupByInterval( data, interval );
+		console.log(groupedData);
+		const dataFilteredByInterval = Object.values( groupedData ).map( intervalData => {
+			return intervalData.reduce(( lastDataPoint, currentDataPoint ) => {
+				return ( !! currentDataPoint.value && currentDataPoint.date > lastDataPoint.date ) ? currentDataPoint : lastDataPoint;
+			});
+		});
+
+		// TODO: nyt palauttaa myös interpoloidut eli ei oikeita dataPointteja
+		// Täytyy muokata siten, että range ottaa datapointtien mukaan tavaraa
+		// Ensimmäinen saattaa olla valuelta undefined näin ja silloin ei chartin
+		// animointikaan toimi
+
+		return !! range
+			? dataFilteredByInterval.slice( -range )
+			: dataFilteredByInterval;
+	}
+
 	useEffect( () => {
 		//realm.deleteAll();
 		realm.subscriptions.update( mutableSubs => {
@@ -423,6 +496,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			saveHolding,
 			saveTransaction,
 			updateVariables,
+			filterDataByInterval,
 		} }>
 			{ children }
 		</DataContext.Provider>

@@ -31,6 +31,12 @@ export interface SortingType {
 	function: ( a: any, b: any ) => number
 }
 
+export interface IntervalType {
+	id: 'daily' | 'weekly' | 'monthly' | 'yearly',
+	name: string,
+	unit: string,
+}
+
 export const useTypes = () => {
 	const { theme } = useTheme();
 	const { __ } = useI18n();
@@ -147,11 +153,35 @@ export const useTypes = () => {
 		}
 	}
 
+	const IntervalTypes: IntervalType[] = [
+		{
+			id: 'daily',
+			name: __( 'Daily' ),
+			unit: 'D'
+		},
+		{
+			id: 'weekly',
+			name: __( 'Weekly' ),
+			unit: 'W'
+		},
+		{
+			id: 'monthly',
+			name: __( 'Monthly' ),
+			unit: 'M'
+		},
+		{
+			id: 'yearly',
+			name: __( 'Yearly' ),
+			unit: 'Y'
+		}
+	]
+
 	return {
 		TransactionTypes,
 		TradingTypes,
 		CashTypes,
 		AdjustmentTypes,
-		SortingTypes
+		SortingTypes,
+		IntervalTypes
 	}
 }

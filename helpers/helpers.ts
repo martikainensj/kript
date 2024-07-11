@@ -94,7 +94,6 @@ export const getDateMap = (...DataPointArrays: DataPoint[][]) => {
 		const newDate = new Date(date.setHours(23, 59, 59, 999)).getTime();
 		dateMap.push(newDate.valueOf());
 	}
-	console.log( dateMap );
 
 	return dateMap;
 };

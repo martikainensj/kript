@@ -59,6 +59,7 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 	}, []);
 
 	const pointerConfig = {
+		pointerStripHeight: lineChartWidth * 0.37,
 		pointerStripColor: theme.colors.primary,
 		pointerStripWidth: 1,
 		strokeDashArray: [ 2, Spacing.xs ],
@@ -92,8 +93,6 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 							{ data }
 						]}
 						dataPointsColor={ theme.colors.primary }
-						interpolateMissingValues={true}
-						showDataPointsForMissingValues={false}
 						color={ theme.colors.primary }
 						width={ lineChartWidth }
 						height={ lineChartWidth / 2 }

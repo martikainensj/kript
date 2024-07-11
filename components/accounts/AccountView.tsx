@@ -37,7 +37,7 @@ interface AccountViewProps {
 	account: Account;
 }
 const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
-	const { saveAccount, removeObjects, addTransaction } = useData();
+	const { saveAccount, removeObjects, addTransaction, filterDataByInterval } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
 	const { openMenu } = useMenu();
@@ -167,6 +167,9 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			isNegative={ returnPercentage < 0 } />,
 	];
 
+	const filteredValueHistoryData = filterDataByInterval( valueHistoryData, 'weekly', 10 );
+	//const filteredReturnHistoryData = filterDataByInterval( returnHistoryData );
+
 	return (
 		<View style={ styles.container }>
 			<Header
@@ -198,12 +201,12 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 								<LineChart
 									label={ __( "Account Value") }
 									unit={ "€" }
-									data={ valueHistoryData.map( data => {
+									data={ filteredValueHistoryData.map( data => {
 										return {
 											value: data.value,
 											label: new Date( data.date ).toLocaleDateString( 'fi' )
 										} as lineDataItem
-									}) } />
+									})} />
 							)}
 
 							{ returnHistoryData && (
