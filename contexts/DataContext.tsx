@@ -456,20 +456,16 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		};
 
 		const groupedData = groupByInterval( data, interval );
-		console.log(groupedData);
 		const dataFilteredByInterval = Object.values( groupedData ).map( intervalData => {
 			return intervalData.reduce(( lastDataPoint, currentDataPoint ) => {
 				return ( !! currentDataPoint.value && currentDataPoint.date > lastDataPoint.date ) ? currentDataPoint : lastDataPoint;
 			});
 		});
 
-		// TODO: nyt palauttaa myös interpoloidut eli ei oikeita dataPointteja
-		// Täytyy muokata siten, että range ottaa datapointtien mukaan tavaraa
-		// Ensimmäinen saattaa olla valuelta undefined näin ja silloin ei chartin
-		// animointikaan toimi
+		const firstDataPointWithValue = dataFilteredByInterval.findIndex( dataPoint => !! dataPoint.value );
 
 		return !! range
-			? dataFilteredByInterval.slice( -range )
+			? dataFilteredByInterval.slice(firstDataPointWithValue).slice( -range )
 			: dataFilteredByInterval;
 	}
 

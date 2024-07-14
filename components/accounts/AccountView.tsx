@@ -167,7 +167,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			isNegative={ returnPercentage < 0 } />,
 	];
 
-	const filteredValueHistoryData = filterDataByInterval( valueHistoryData, 'weekly', 10 );
+	const filteredValueHistoryData = filterDataByInterval( valueHistoryData, 'monthly', 12 );
 	//const filteredReturnHistoryData = filterDataByInterval( returnHistoryData );
 
 	return (

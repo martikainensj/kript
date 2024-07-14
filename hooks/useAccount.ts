@@ -5,6 +5,7 @@ import { useData } from "../contexts/DataContext";
 import { generateChecksum, getDateMap, getTransactionEndOfDayTimestamp } from "../helpers";
 import { DataPoint } from "../models/DataPoint";
 import { useTypes } from "./useTypes";
+import { lineDataItem } from "react-native-gifted-charts";
 
 interface useAccountProps {
 	account: Account
@@ -88,8 +89,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 
 		const dateMap = getDateMap( ...valueHistoryDataset );
 
-		let addedEarlier = undefined;
-		const valueHistoryData = dateMap.reduce(( acc: DataPoint[], date ) => {
+		const valueHistoryData = dateMap.reduce(( acc: lineDataItem[], date ) => {
 			let value = 0;
 
 			valueHistoryDataset.forEach( valueHistoryData => {
@@ -116,15 +116,13 @@ export const useAccount = ( { account }: useAccountProps ) => {
 
 			const newDataPoint = {
 				date,
-				value: addedEarlier !== value ? value : undefined
-			};
-
-			addedEarlier = value;
+				value: value,
+			} as lineDataItem;
 			
 			acc.push( newDataPoint );
 
 			return acc
-		}, [] as DataPoint[]);
+		}, [] as lineDataItem[]);
 
 		const total = holdingsResult.total;
 		const cashAmount = transactionsResult.cashAmount;

@@ -18,10 +18,12 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 	const { theme } = useTheme();
   const ref = useRef(null);
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
-	const { label: lastLabel, value: lastValue } = ( data && data[ data?.length - 1 ] ) ?? {
-		label: '',
-		value: 0
-	};
+	const { label: lastLabel, value: lastValue } = data.reduceRight(( latest, current ) => {
+		if (latest === null && current.value !== null && current.value !== undefined) {
+				return current;
+		}
+		return latest;
+}, null);
 
 	const onLayout = ( event: LayoutChangeEvent ) => {
     const { width } = event.nativeEvent.layout;
@@ -92,6 +94,7 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 						dataSet={[
 							{ data }
 						]}
+						showDataPointsForMissingValues={ true }
 						dataPointsColor={ theme.colors.primary }
 						color={ theme.colors.primary }
 						width={ lineChartWidth }
@@ -105,7 +108,7 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 						noOfSectionsBelowXAxis={ 0 }
 						hideYAxisText
 						hideAxesAndRules
-						//hideDataPoints
+						hideDataPoints
 						adjustToWidth
 						pointerConfig={ pointerConfig }
 						areaChart
