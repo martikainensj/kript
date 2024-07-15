@@ -43,7 +43,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { SortingTypes } = useTypes();
+	const { SortingTypes, TimeframeTypes } = useTypes();
 	const insets = useSafeAreaInsets();
 	const { isSelecting, selectedType, selectedObjects, select, deselect, canSelect, hasObject, validate } = useSelector();
 
@@ -167,9 +167,6 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			isNegative={ returnPercentage < 0 } />,
 	];
 
-	const filteredValueHistoryData = filterDataByInterval( valueHistoryData, 'monthly', 12 );
-	//const filteredReturnHistoryData = filterDataByInterval( returnHistoryData );
-
 	return (
 		<View style={ styles.container }>
 			<Header
@@ -199,26 +196,25 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 						<View style={ styles.contentContainer }>
 							{ valueHistoryData && (
 								<LineChart
+									id={ `${ account._id.toString() }-value-chart` }
 									label={ __( "Account Value") }
 									unit={ "€" }
-									data={ filteredValueHistoryData.map( data => {
-										return {
-											value: data.value,
-											label: new Date( data.date ).toLocaleDateString( 'fi' )
-										} as lineDataItem
-									})} />
+									data={ valueHistoryData }
+									timeframeOptions={[
+										TimeframeTypes.ytd,
+										TimeframeTypes["1year"],
+										TimeframeTypes["3year"],
+										TimeframeTypes["5year"],
+										TimeframeTypes.max
+									]} />
 							)}
 
 							{ returnHistoryData && (
 								<LineChart
+									id={ `${ account._id.toString() }-return-chart` }
 									label={ __( "Account Return") }
 									unit={ "€" }
-									data={ returnHistoryData.map( data => {
-										return {
-											value: data.value,
-											label: new Date( data.date ).toLocaleDateString( 'fi' )
-										} as lineDataItem
-									}) } />
+									data={ returnHistoryData } />
 							)}
 						</View>
 					)

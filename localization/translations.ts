@@ -488,6 +488,46 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Korkein arvo',
 		en_US: 'Highest value'
 	},
+	'day': {
+		fi_FI: 'päivä',
+		en_US: 'day'
+	},
+	'days': {
+		fi_FI: 'päivää',
+		en_US: 'days'
+	},
+	'week': {
+		fi_FI: 'viikko',
+		en_US: 'week'
+	},
+	'weeks': {
+		fi_FI: 'viikkoa',
+		en_US: 'weeks'
+	},
+	'month': {
+		fi_FI: 'kuukausi',
+		en_US: 'month'
+	},
+	'months': {
+		fi_FI: 'kuukautta',
+		en_US: 'months'
+	},
+	'year': {
+		fi_FI: 'vuosi',
+		en_US: 'year'
+	},
+	'years': {
+		fi_FI: 'vuotta',
+		en_US: 'years'
+	},
+	'ytd': {
+		fi_FI: 'vuoden alusta',
+		en_US: 'YTD'
+	},
+	'max': {
+		fi_FI: 'Max',
+		en_US: 'Max'
+	},
 }
 
 export default Translations;

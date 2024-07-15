@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { useI18n } from '../contexts/I18nContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { getYTD } from '../helpers';
 
 export interface TransactionType {
 	id: string;
@@ -31,10 +32,25 @@ export interface SortingType {
 	function: ( a: any, b: any ) => number
 }
 
-export interface IntervalType {
-	id: 'daily' | 'weekly' | 'monthly' | 'yearly',
+export type IntervalType = 'daily' | 'weekly' | 'monthly' | 'yearly';
+
+export interface TimeframeType {
+	id: keyof TimeframeTypes,
 	name: string,
-	unit: string,
+	interval: IntervalType,
+	range?: number
+}
+
+export interface TimeframeTypes {
+	'1day': TimeframeType,
+	'1week': TimeframeType,
+	'1month': TimeframeType,
+	'3month': TimeframeType,
+	'ytd': TimeframeType,
+	'1year': TimeframeType,
+	'3year': TimeframeType,
+	'5year': TimeframeType,
+	'max': TimeframeType,
 }
 
 export const useTypes = () => {
@@ -153,28 +169,61 @@ export const useTypes = () => {
 		}
 	}
 
-	const IntervalTypes: IntervalType[] = [
-		{
-			id: 'daily',
-			name: __( 'Daily' ),
-			unit: 'D'
+	const TimeframeTypes: TimeframeTypes = {
+		'1day': {
+			id: '1day',
+			name: `1 ${ __( 'day' ) }`,
+			interval: 'daily',
+			range: 1
 		},
-		{
-			id: 'weekly',
-			name: __( 'Weekly' ),
-			unit: 'W'
+		'1week': {
+			id: '1week',
+			name: `1 ${ __( 'week' ) }`,
+			interval: 'daily',
+			range: 7
 		},
-		{
-			id: 'monthly',
-			name: __( 'Monthly' ),
-			unit: 'M'
+		'1month': {
+			id: '1month',
+			name: `1 ${ __( 'month' ) }`,
+			interval: 'daily',
+			range: 30
 		},
-		{
-			id: 'yearly',
-			name: __( 'Yearly' ),
-			unit: 'Y'
-		}
-	]
+		'3month': {
+			id: '3month',
+			name: `3 ${ __( 'month' ) }`,
+			interval: 'daily',
+			range: 90
+		},
+		'ytd': {
+			id: 'ytd',
+			name: __( 'YTD' ),
+			interval: 'weekly',
+			range: getYTD() / 7
+		},
+		'1year': {
+			id: '1year',
+			name: `1 ${ __( 'year' ) }`,
+			interval: 'weekly',
+			range: 52
+		},
+		'3year': {
+			id: '3year',
+			name: `3 ${ __( 'years' ) }`,
+			interval: 'weekly',
+			range: 156
+		},
+		'5year': {
+			id: '5year',
+			name: `5 ${ __( 'years' ) }`,
+			interval: 'weekly',
+			range: 260
+		},
+		'max': {
+			id: 'max',
+			name: __( 'Max' ),
+			interval: 'monthly',
+		},
+	};
 
 	return {
 		TransactionTypes,
@@ -182,6 +231,6 @@ export const useTypes = () => {
 		CashTypes,
 		AdjustmentTypes,
 		SortingTypes,
-		IntervalTypes
+		TimeframeTypes
 	}
 }

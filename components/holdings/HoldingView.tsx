@@ -186,14 +186,10 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 					content: (
 						<ScrollView style={ styles.contentContainer }>
 							<LineChart
+								id={ `${ holding._id.toString() }-return-chart` }
 								label={ __( "Holding Return") }
 								unit={ "€" }
-								data={ returnHistoryData.map( data => {
-									return {
-										value: data.value,
-										label: new Date( data.date ).toLocaleDateString( 'fi' )
-									} as lineDataItem
-								}) } />
+								data={ returnHistoryData } />
 						</ScrollView>
 					)
 				},

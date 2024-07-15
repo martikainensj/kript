@@ -4,7 +4,7 @@ import { useQuery, useRealm } from "@realm/react";
 
 import { useI18n } from "./I18nContext";
 import { useUser } from "../hooks/useUser";
-import { confirmation } from "../helpers";
+import { confirmation, getWeekNumber } from "../helpers";
 import { Account, AccountKey, AccountValue } from "../models/Account";
 import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
@@ -32,7 +32,7 @@ interface DataContext {
 	saveTransaction: ( transaction: Transaction ) => Promise<Transaction>;
 	removeObjects: <T extends DataIdentifier>( type: T, objects: DataObject[T][] ) => Promise<boolean>;
 	updateVariables: <T extends Account | Holding | Transaction>( object: T, variables: Partial<T> ) => void;
-	filterDataByInterval: ( dataPoints: DataPoint[], interval?: IntervalType['id'], range?: number ) => DataPoint[];
+	filterDataByInterval: ( dataPoints: DataPoint[], interval?: IntervalType, range?: number ) => DataPoint[];
 }
 
 const DataContext = createContext<DataContext>( {
@@ -406,26 +406,12 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 
 	const filterDataByInterval = (
 		data: DataPoint[],
-		interval: IntervalType['id'] = 'weekly',
+		interval: IntervalType = 'weekly',
 		range?: number
 	) => {
-		const getWeekNumber = ( date: Date ) => {
-			date = new Date( Date.UTC(
-				date.getFullYear(),
-				date.getMonth(),
-				date.getDate()
-			));
-
-			date.setUTCDate( 7 );
-			var yearStart = new Date( Date.UTC( date.getUTCFullYear(), 0, 1 ));
-			var weekNo = Math.ceil(((( date - yearStart ) / 86400000 ) + 1 ) / 7 );
-			
-			return weekNo;
-		}
-
-		const generateIntervalKey = ( dataPoint: DataPoint, interval: IntervalType['id']) => {
+		const generateIntervalKey = ( dataPoint: DataPoint, interval: IntervalType ) => {
 			const date = new Date( dataPoint.date );
-
+			
 			switch ( interval ) {
 				case 'daily':
 					return `${ date.getFullYear() }-${ date.getMonth() + 1 }-${ date.getDate() }`;
@@ -441,31 +427,26 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			}
 		};
 
-		const groupByInterval = ( data: DataPoint[], interval: IntervalType['id'] ) => {
-			return data.reduce(( acc, dataPoint ) => {
-					const intervalKey = generateIntervalKey( dataPoint, interval );
-					
-					if ( ! acc[ intervalKey ] ) {
-							acc[ intervalKey ] = [];
-					}
-					
-					acc[ intervalKey ].push( dataPoint );
+		const groupedData = data.reduce(( acc, dataPoint ) => {
+			const intervalKey = generateIntervalKey( dataPoint, interval );
+			
+			if ( ! acc[ intervalKey ] ) {
+					acc[ intervalKey ] = [];
+			}
+			
+			acc[ intervalKey ].push( dataPoint );
 
-					return acc;
-			}, {} as {[ key: string ]: DataPoint[] });
-		};
+			return acc;
+		}, {} as {[ key: string ]: DataPoint[]});
 
-		const groupedData = groupByInterval( data, interval );
 		const dataFilteredByInterval = Object.values( groupedData ).map( intervalData => {
 			return intervalData.reduce(( lastDataPoint, currentDataPoint ) => {
 				return ( !! currentDataPoint.value && currentDataPoint.date > lastDataPoint.date ) ? currentDataPoint : lastDataPoint;
 			});
 		});
 
-		const firstDataPointWithValue = dataFilteredByInterval.findIndex( dataPoint => !! dataPoint.value );
-
 		return !! range
-			? dataFilteredByInterval.slice(firstDataPointWithValue).slice( -range )
+			? dataFilteredByInterval.slice( -range )
 			: dataFilteredByInterval;
 	}
 

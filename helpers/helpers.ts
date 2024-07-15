@@ -59,7 +59,7 @@ export const prettifyNumber = (
   const integerPart = parseInt( parts[0] ).toLocaleString( locales );
   const decimalPart = parts[1];
   const trimmedDecimalPart = decimalPart
-		? decimalPart.replace( /0+$/, '' )
+		? decimalPart?.replace( /0+$/, '' )
 		: '';
 
   return trimmedDecimalPart
@@ -96,4 +96,28 @@ export const getDateMap = (...DataPointArrays: DataPoint[][]) => {
 	}
 
 	return dateMap;
+};
+
+export const getWeekNumber = (date: Date) => {
+  // Create a copy of the date object at UTC midnight
+  date = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  
+  // Set the date to the nearest Thursday (current date + 4 - current day number)
+  date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+
+  // Get the first day of the year
+  const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+
+  // Calculate the week number
+  const weekNo = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+
+  return weekNo;
+}
+export const getYTD = () => {
+	const today = new Date();
+	const startOfYear = new Date( today.getFullYear(), 0, 1 );
+	const diffInMs = today - startOfYear;
+	const diffInDays = Math.floor( diffInMs / ( 1000 * 60 * 60 * 24 ) );
+	
+	return diffInDays + 1;
 };

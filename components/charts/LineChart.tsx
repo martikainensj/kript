@@ -1,35 +1,88 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { LineChart as GiftedLineChart, LineChartPropsType, lineDataItem } from "react-native-gifted-charts";
 import { useTheme } from "../../contexts/ThemeContext";
-import { Animated, LayoutChangeEvent, StyleSheet, View } from "react-native";
+import { Animated, LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { Title } from "../ui/Title";
 import { BorderRadius, FontSize, GlobalStyles, Spacing } from "../../constants";
-import { Text } from "react-native-paper";
+import { Menu, Text } from "react-native-paper";
 import { Card } from "../ui/Card";
 import { Value } from "../ui/Value";
+import { TimeframeType } from "../../hooks/useTypes";
+import { IconButton } from "../buttons";
+import { useData } from "../../contexts/DataContext";
+import { DataPoint } from "../../models/DataPoint";
+import { useStorage } from "../../hooks/useStorage";
+import { useI18n } from "../../contexts/I18nContext";
 
 interface Props {
-	data: LineChartPropsType['data']
+	id: string,
+	data: DataPoint[]
 	label?: string,
 	unit?: string,
+	timeframeContainerStyle?: StyleProp<ViewStyle>;
+	timeframeOptions?: TimeframeType[];
 }
 
-export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
+export const LineChart: React.FC<Props> = ({
+	id,
+	data,
+	label,
+	unit,
+	timeframeContainerStyle,
+	timeframeOptions,
+}) => {
+	const { __ } = useI18n();
 	const { theme } = useTheme();
-  const ref = useRef(null);
+	const { filterDataByInterval } = useData();
+	const { getData, setData } = useStorage();
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
-	const { label: lastLabel, value: lastValue } = data.reduceRight(( latest, current ) => {
-		if (latest === null && current.value !== null && current.value !== undefined) {
+	const { value: lastValue } = data.reduceRight(( latest, current ) => {
+		if ( latest === null && current.value !== null && current.value !== undefined ) {
 				return current;
 		}
+
 		return latest;
-}, null);
+	}, null );
+	const [ timeframe, setTimeframe ] = useState<TimeframeType>({
+		id: 'max',
+		interval: 'weekly',
+		name: __( 'Max' )
+	});
+	const [ showTimeframeOptions, setShowTimeframeOptions ] = useState( false );
+
+	const timeframedData = useMemo(() => {
+		const filteredData = filterDataByInterval( data, timeframe?.interval ?? 'weekly', timeframe?.range );
+		const lineDataItems = filteredData.map( data => {
+			return {
+				label: new Date( data.date ).toLocaleDateString( 'fi' ),
+				value: data.value
+			}
+		});
+		return lineDataItems as lineDataItem[];
+	}, [ data, timeframe ]);
 
 	const onLayout = ( event: LayoutChangeEvent ) => {
     const { width } = event.nativeEvent.layout;
 
     setLineChartWidth( width );
   };
+
+	const onPressTimeframeOption = ( option: TimeframeType ) => {
+		setShowTimeframeOptions( false );
+		setTimeframe( option );
+
+		getData( '@filters/timeframe' ).then( filtersTimeframe => {
+			const newFiltersTimeframe = {};
+
+			if ( !! filtersTimeframe ) {
+				Object.assign( newFiltersTimeframe, filtersTimeframe );
+			}
+
+			newFiltersTimeframe[id] = { id: option.id };
+
+			setData( '@filters/timeframe', newFiltersTimeframe )
+		});
+	}
 
 	const pointerLabelComponent = useCallback(( items: lineDataItem[] ) => {
 		const item = items[0];
@@ -72,9 +125,22 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 		pointerLabelComponent,
 	} as LineChartPropsType['pointerConfig'];
 
+	useLayoutEffect(() => {
+		getData( '@filters/timeframe' ).then( filtersTimeframe => {
+			const timeframeId = ( !! filtersTimeframe && filtersTimeframe[ id ])
+				? filtersTimeframe[ id ].id
+				: null;
+
+			if ( !! timeframeId ) {
+				setTimeframe( timeframeOptions.find( option => option.id === timeframeId ));
+			} else if ( !! timeframeOptions?.length ) {
+				setTimeframe( timeframeOptions[ 0 ]);
+			}
+		})
+	}, []);
+
 	return (
 		<Animated.View
-			ref={ ref }
 			onLayout={ onLayout }
 			style={ styles.container }>
 			<Card style={ { marginTop: Spacing.md, paddingHorizontal: 0, paddingBottom: 0 } }>
@@ -92,7 +158,7 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 					<GiftedLineChart
           	isAnimated
 						dataSet={[
-							{ data }
+							{ data: timeframedData }
 						]}
 						showDataPointsForMissingValues={ true }
 						dataPointsColor={ theme.colors.primary }
@@ -117,6 +183,36 @@ export const LineChart: React.FC<Props> = ({ data, label, unit }) => {
 						startOpacity={ 0.3 }
 						endOpacity={ 0 } />
 				</View>
+				{ timeframeOptions &&
+					<Menu
+						anchor={
+							<View style={ [
+								styles.sortingContainer,
+								timeframeContainerStyle
+							] }>
+								{ timeframe &&
+									<Text style={ styles.sortingText }>
+										{ timeframe.name }
+									</Text>
+								}
+								<IconButton
+									icon={ 'time-outline' }
+									onPress={ () => setShowTimeframeOptions( true ) } />
+							</View>
+						}
+						visible={ showTimeframeOptions }
+						onDismiss={ () => setShowTimeframeOptions( false ) }
+						style={ styles.menuContainer }>
+						{ timeframeOptions.map( ( option, key ) => {
+							return (
+								<Menu.Item
+									key={ key }
+									title={ option.name }
+									onPress={ onPressTimeframeOption.bind( this, option ) } />
+							)
+						} ) }
+					</Menu>
+				}
 			</Card>
 		</Animated.View>
 	)
@@ -133,6 +229,8 @@ const styles = StyleSheet.create({
 		paddingHorizontal: Spacing.lg
 	},
 	lineChartWrapper: {
+		alignItems: 'flex-end',
+		justifyContent: 'flex-end',
 	},
 	xAxisLabelText: {
 		display: 'none'
@@ -162,5 +260,20 @@ const styles = StyleSheet.create({
 	},
 	lastValueUnit: {
 		fontSize: FontSize.lg
-	}
+	},
+	menuContainer: {
+		left: 'auto',
+		right: 0,
+		padding: Spacing.md
+	},
+	sortingContainer: {
+		alignSelf: 'flex-end',
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: Spacing.sm,
+		padding: Spacing.md
+	},
+	sortingText: {
+		...GlobalStyles.label
+	},
 });
