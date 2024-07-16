@@ -45,7 +45,7 @@ export const AccountSchema = {
 		returnValue: 'double?',
 		returnPercentage: 'double?',
 		valueHistoryData: 'DataPoint[]',
-		returnsHistoryData: 'DataPoint[]',
+		returnHistoryData: 'DataPoint[]',
 		checksum: 'string?',
 	},
 	primaryKey: '_id',

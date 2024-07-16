@@ -13,6 +13,7 @@ import { useData } from "../../contexts/DataContext";
 import { DataPoint } from "../../models/DataPoint";
 import { useStorage } from "../../hooks/useStorage";
 import { useI18n } from "../../contexts/I18nContext";
+import { prettifyNumber } from "../../helpers";
 
 interface Props {
 	id: string,
@@ -36,13 +37,7 @@ export const LineChart: React.FC<Props> = ({
 	const { filterDataByInterval } = useData();
 	const { getData, setData } = useStorage();
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
-	const { value: lastValue } = data.reduceRight(( latest, current ) => {
-		if ( latest === null && current.value !== null && current.value !== undefined ) {
-				return current;
-		}
 
-		return latest;
-	}, null );
 	const [ timeframe, setTimeframe ] = useState<TimeframeType>({
 		id: 'max',
 		interval: 'weekly',
@@ -55,17 +50,43 @@ export const LineChart: React.FC<Props> = ({
 		const lineDataItems = filteredData.map( data => {
 			return {
 				label: new Date( data.date ).toLocaleDateString( 'fi' ),
-				value: data.value
-			}
+				value: data.value,
+			} as lineDataItem
 		});
+
 		return lineDataItems as lineDataItem[];
 	}, [ data, timeframe ]);
 
-	const onLayout = ( event: LayoutChangeEvent ) => {
-    const { width } = event.nativeEvent.layout;
 
-    setLineChartWidth( width );
-  };
+	const { lastValue, maxValue, minValue } = timeframedData.reduceRight(( result, current ) => {
+		if ( result.lastValue === 0 && current.value !== null && current.value !== undefined ) {
+			result.lastValue = current.value;
+		}
+
+		if ( current.value !== null && current.value !== undefined ) {
+				if ( current.value > result.maxValue ) {
+						result.maxValue = current.value;
+				}
+
+				if ( current.value < result.minValue ) {
+						result.minValue = current.value;
+				}
+		}
+
+		return result;
+	}, { lastValue: 0, maxValue: 0, minValue: 0 });
+
+	const absoluteMaxValue = Math.abs(Math.max(maxValue, Math.abs(minValue)));
+	const stepValue = absoluteMaxValue / 10;
+	const chartColor = lastValue >= 0
+		? theme.colors.success
+		: theme.colors.error;
+
+	const onLayout = ( event: LayoutChangeEvent ) => {
+		const { width } = event.nativeEvent.layout;
+
+		setLineChartWidth( width );
+	};
 
 	const onPressTimeframeOption = ( option: TimeframeType ) => {
 		setShowTimeframeOptions( false );
@@ -104,7 +125,7 @@ export const LineChart: React.FC<Props> = ({
 					{ backgroundColor: theme.colors.background }
 				]}>
 					<Value
-						value={ item.value }
+						value={ prettifyNumber( item.value, 0 )}
 						unit={ unit }
 						isPositive={ item.value > 0 }
 						isNegative={ item.value < 0 } />
@@ -114,11 +135,12 @@ export const LineChart: React.FC<Props> = ({
 	}, []);
 
 	const pointerConfig = {
-		pointerStripHeight: lineChartWidth * 0.37,
-		pointerStripColor: theme.colors.primary,
+		//pointerStripHeight: lineChartWidth * 0.37,
+		autoAdjustPointerLabelPosition: true,
+		pointerStripColor: chartColor,
 		pointerStripWidth: 1,
 		strokeDashArray: [ 2, Spacing.xs ],
-		pointerColor: theme.colors.primary,
+		pointerColor: chartColor,
 		radius: 4,
 		pointerLabelWidth: 100,
 		pointerLabelHeight: 90,
@@ -147,7 +169,7 @@ export const LineChart: React.FC<Props> = ({
 				<View style={ styles.headerContainer }>
 					<Title>{ label }</Title>
 					<Value
-						value={ lastValue }
+						value={ prettifyNumber( lastValue, 0 )}
 						unit={ unit }
 						isPositive={ lastValue > 0 }
 						isNegative={ lastValue < 0 }
@@ -156,32 +178,31 @@ export const LineChart: React.FC<Props> = ({
 				</View>
 				<View style={ styles.lineChartWrapper }>
 					<GiftedLineChart
-          	isAnimated
+						isAnimated
 						dataSet={[
 							{ data: timeframedData }
 						]}
 						showDataPointsForMissingValues={ true }
-						dataPointsColor={ theme.colors.primary }
-						color={ theme.colors.primary }
 						width={ lineChartWidth }
 						height={ lineChartWidth / 2 }
 						initialSpacing={ 0 }
 						thickness={ 2 }
 						xAxisThickness={ 0 }
+						yAxisThickness={ 0 }
 						xAxisLabelsHeight={ 0 }
 						yAxisLabelWidth={ 0 }
-						yAxisExtraHeight={ Spacing.lg }
-						noOfSectionsBelowXAxis={ 0 }
 						hideYAxisText
-						hideAxesAndRules
 						hideDataPoints
 						adjustToWidth
 						pointerConfig={ pointerConfig }
+						maxValue={ absoluteMaxValue }
+						stepValue={ stepValue }
 						areaChart
-						startFillColor={ theme.colors.primary }
-						endFillColor={ 'transparent' }
-						startOpacity={ 0.3 }
-						endOpacity={ 0 } />
+						color={ chartColor }
+						startFillColor={ lastValue > 0 ? chartColor : 'transparent' }
+						endFillColor={ lastValue > 0 ? 'transparent' : chartColor }
+						startOpacity={ lastValue > 0 ? 0.3 : 0 }
+						endOpacity={ lastValue > 0 ? 0 : 0.3  } />
 				</View>
 				{ timeframeOptions &&
 					<Menu
@@ -236,16 +257,14 @@ const styles = StyleSheet.create({
 		display: 'none'
 	},
 	pointerLabelContainer: {
-		height: 90,
-		width: 100,
 		justifyContent: 'center',
-		marginTop: -30,
-		marginLeft: -40,
+		marginBottom: 0,
+		paddingBottom: 0
 	},
 	pointerLabelLabel: {
 		...GlobalStyles.label,
 		marginBottom:6,
-		textAlign:'center'
+		textAlign:'center',
 	},
 	pointerLabelValue: {
 		...GlobalStyles.label,
@@ -253,7 +272,7 @@ const styles = StyleSheet.create({
 		borderRadius: BorderRadius.lg,
 		overflow: 'hidden',
 		width: 'auto',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 	lastValue: {
 		fontSize: FontSize.xl

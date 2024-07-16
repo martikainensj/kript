@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { GestureResponderEvent, StyleSheet, View } from "react-native"
+import { GestureResponderEvent, ScrollView, StyleSheet, View } from "react-native"
 import { router } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
@@ -12,14 +12,12 @@ import { useI18n } from '../../contexts/I18nContext';
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { useFAB } from "../../contexts/FABContext";
 import { useUser } from "../../hooks/useUser";
-import { Card } from "../ui/Card";
 import { useTypes } from "../../hooks/useTypes";
 import { Tabs } from "../ui/Tabs";
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Header } from "../ui/Header";
 import { Grid } from "../ui/Grid";
-import { Title } from "../ui/Title";
 import { ItemList } from "../ui/ItemList";
 import HoldingItem from "../holdings/HoldingItem";
 import TransactionItem from "../transactions/TransactionItem";
@@ -31,13 +29,12 @@ import { Account } from "../../models/Account";
 import { useAccount } from "../../hooks";
 import Switcher from "../ui/Switcher";
 import { LineChart } from "../charts/LineChart";
-import { lineDataItem } from "react-native-gifted-charts";
 
 interface AccountViewProps {
 	account: Account;
 }
 const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
-	const { saveAccount, removeObjects, addTransaction, filterDataByInterval } = useData();
+	const { saveAccount, removeObjects, addTransaction } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
 	const { openMenu } = useMenu();
@@ -193,7 +190,9 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 				{
 					label: __( 'Overview' ),
 					content: (
-						<View style={ styles.contentContainer }>
+						<ScrollView
+							style={ styles.contentContainer }
+							contentContainerStyle={ styles.scrollViewContentContainer }>
 							{ valueHistoryData && (
 								<LineChart
 									id={ `${ account._id.toString() }-value-chart` }
@@ -214,9 +213,16 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 									id={ `${ account._id.toString() }-return-chart` }
 									label={ __( "Account Return") }
 									unit={ "€" }
-									data={ returnHistoryData } />
+									data={ returnHistoryData }
+									timeframeOptions={[
+										TimeframeTypes.ytd,
+										TimeframeTypes["1year"],
+										TimeframeTypes["3year"],
+										TimeframeTypes["5year"],
+										TimeframeTypes.max
+									]} />
 							)}
-						</View>
+						</ScrollView>
 					)
 				},
 				{
@@ -289,4 +295,7 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
 	},
+	scrollViewContentContainer: {
+		paddingBottom: Spacing.xl * 3.5
+	}
 } );
