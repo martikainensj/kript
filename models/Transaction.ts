@@ -1,5 +1,5 @@
 import Realm from 'realm';
-import { Adjustment, Cash, Trading, Transaction as TransactionProps } from '../hooks/useTypes';
+import { Adjustment, Cash, Loan, Trading, Transaction as TransactionProps } from '../hooks/useTypes';
 
 export type Transaction = {
 	_id: Realm.BSON.UUID;
@@ -13,7 +13,7 @@ export type Transaction = {
 	holding_name?: string;
 	holding_id?: Realm.BSON.UUID;
 	type: TransactionProps['id'];
-	sub_type: Trading['id'] | Cash['id'] | Adjustment['id'];
+	sub_type: Trading['id'] | Cash['id'] | Adjustment['id'] | Loan['id'];
 	isValid?: () => boolean;
 	checksum?: string;
 };

@@ -12,7 +12,7 @@ export interface TransactionType {
 }
 
 export interface Transaction extends TransactionType {
-	id: 'trading' | 'cash' | 'adjustment'
+	id: 'trading' | 'cash' | 'adjustment' | 'loan'
 }
 
 export interface Trading extends TransactionType {
@@ -25,6 +25,10 @@ export interface Cash extends TransactionType {
 
 export interface Adjustment extends TransactionType {
 	id: 'stockSplit' | 'merger' | 'priceUpdate' | 'amountUpdate' | 'update'
+}
+
+export interface Loan extends TransactionType {
+	id: 'disbursement' | 'repayment'
 }
 
 export interface SortingType {
@@ -62,19 +66,25 @@ export const useTypes = () => {
 			id: 'trading',
 			name: __( 'Trading' ),
 			color: theme.colors.primary,
-			icon: 'pricetag-outline'
+			icon: 'swap-horizontal-outline'
 		},
 		{
 			id: 'cash',
 			name: __( 'Cash' ),
 			color: theme.colors.primary,
-			icon: 'cash-outline'
+			icon: 'swap-vertical-outline'
 		},
 		{
 			id: 'adjustment',
 			name: __( 'Adjustment' ),
 			color: theme.colors.primary,
 			icon: 'options'
+		},
+		{
+			id: 'loan',
+			name: __( 'Loan' ),
+			color: theme.colors.primary,
+			icon: 'cash-outline'
 		}
 	];
 
@@ -139,6 +149,21 @@ export const useTypes = () => {
 			id: 'update',
 			name: __( 'Update' ),
 			color: theme.colors.tertiary
+		}
+	];
+
+	const LoanTypes: Loan[] = [
+		{
+			id: 'repayment',
+			name: __( 'Repayment' ),
+			color: theme.colors.success,
+			icon: 'push-outline',
+		},
+		{
+			id: 'disbursement',
+			name: __( 'Disbursement' ),
+			color: theme.colors.error,
+			icon: 'download-outline',
 		}
 	];
 
@@ -230,6 +255,7 @@ export const useTypes = () => {
 		TradingTypes,
 		CashTypes,
 		AdjustmentTypes,
+		LoanTypes,
 		SortingTypes,
 		TimeframeTypes
 	}

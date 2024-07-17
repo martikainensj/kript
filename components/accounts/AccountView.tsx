@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { GestureResponderEvent, ScrollView, StyleSheet, View } from "react-native"
+import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { router } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
@@ -13,7 +13,7 @@ import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { useFAB } from "../../contexts/FABContext";
 import { useUser } from "../../hooks/useUser";
 import { useTypes } from "../../hooks/useTypes";
-import { Tabs } from "../ui/Tabs";
+import { Tabs, TabsScreenContentProps } from "../ui/Tabs";
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Header } from "../ui/Header";
@@ -29,6 +29,7 @@ import { Account } from "../../models/Account";
 import { useAccount } from "../../hooks";
 import Switcher from "../ui/Switcher";
 import { LineChart } from "../charts/LineChart";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface AccountViewProps {
 	account: Account;
@@ -89,7 +90,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 		setActions( [
 			{
 				icon: ( { color, size } ) => { return (
-					<Icon name={ 'pricetag' } size={ size } color={ color } />
+					<Icon name={ 'receipt' } size={ size } color={ color } />
 				) },
 				label: __( 'Add Transaction' ),
 				onPress: () => {
@@ -130,6 +131,8 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 		balance,
 		value,
 		returnValue,
+		loanAmount,
+		loanHistoryData,
 		returnPercentage,
 		valueHistoryData,
 		returnHistoryData,
@@ -164,6 +167,134 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			isNegative={ returnPercentage < 0 } />,
 	];
 
+	const tabs = [
+		{
+			label: __( 'Overview' ),
+			content: (
+				<ScrollView
+					style={ styles.contentContainer }
+					contentContainerStyle={ styles.scrollViewContentContainer }>
+					{ valueHistoryData && (
+						<LineChart
+							id={ `${ account._id.toString() }-value-chart` }
+							label={ __( "Value") }
+							unit={ "€" }
+							data={ valueHistoryData }
+							timeframeOptions={[
+								TimeframeTypes.ytd,
+								TimeframeTypes["1year"],
+								TimeframeTypes["3year"],
+								TimeframeTypes["5year"],
+								TimeframeTypes.max
+							]} />
+					)}
+
+					{ returnHistoryData && (
+						<LineChart
+							id={ `${ account._id.toString() }-return-chart` }
+							label={ __( "Return") }
+							unit={ "€" }
+							data={ returnHistoryData }
+							timeframeOptions={[
+								TimeframeTypes.ytd,
+								TimeframeTypes["1year"],
+								TimeframeTypes["3year"],
+								TimeframeTypes["5year"],
+								TimeframeTypes.max
+							]} />
+					)}
+				</ScrollView>
+			)
+		},
+		{
+			label: __( 'Holdings' ),
+			content: (
+				<View style={ styles.contentContainer }>
+					<ItemList
+						noItemsText={ __( 'No Holdings' ) }
+						data={ holdings.map( holding => {
+							return {
+								item: holding,
+								renderItem: <HoldingItem holding={ holding } />
+							}
+						}) }
+						sortingContainerStyle={ { marginBottom: insets.bottom } }
+						sortingOptions={ [
+							SortingTypes.name,
+							SortingTypes.highestReturn,
+							SortingTypes.lowestReturn,
+							SortingTypes.highestValue
+						] } />
+				</View>
+			)
+		},
+		{
+			label: __( 'Transactions' ),
+			content: (
+				<View style={ styles.contentContainer }>
+					<ItemList
+						noItemsText={ __( 'No Transactions' ) }
+						data={[
+							...transactions,
+							...holdings.flatMap( holding => {
+								return [ ...holding.transactions ]
+							})
+						].map( transaction => {
+							return {
+								item: transaction,
+								renderItem: (
+									<TransactionItem
+										transaction={ transaction }
+										onPressSelect={ onPressSelectTransaction }
+										onLongPress={ onLongPressTransaction }
+										isSelectable={ canSelect( 'Transaction' ) && isSelecting }
+										isSelected={ hasObject( transaction ) }
+										showHolding />
+								)
+							}
+						})}
+						sortingContainerStyle={ { marginBottom: insets.bottom } }
+						sortingOptions={ [
+							SortingTypes.newestFirst,
+							SortingTypes.oldestFirst
+						] } />
+				</View>
+			)
+		}
+	] as TabsScreenContentProps[]
+
+	if ( !! loanAmount ) {
+		tabs.push({
+			label: __( 'Loan' ),
+			content: (
+				
+				<ScrollView
+					style={ styles.contentContainer }
+					contentContainerStyle={ styles.scrollViewContentContainer }>
+					<Value
+						label={ __( "Loan" ) }
+						value={ loanAmount }
+						unit={ "€" } />
+
+					{ loanHistoryData && (
+						<LineChart
+							id={ `${ account._id.toString() }-loan-chart` }
+							label={ __( "Loan") }
+							unit={ "€" }
+							data={ loanHistoryData }
+							timeframeOptions={[
+								TimeframeTypes.ytd,
+								TimeframeTypes["1year"],
+								TimeframeTypes["3year"],
+								TimeframeTypes["5year"],
+								TimeframeTypes.max
+							]} />
+					)}
+				</ScrollView>
+			)
+		})
+	}
+
 	return (
 		<View style={ styles.container }>
 			<Header
@@ -186,101 +317,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 						items= { values } />
 			</Header>
 
-			<Tabs screens={ [
-				{
-					label: __( 'Overview' ),
-					content: (
-						<ScrollView
-							style={ styles.contentContainer }
-							contentContainerStyle={ styles.scrollViewContentContainer }>
-							{ valueHistoryData && (
-								<LineChart
-									id={ `${ account._id.toString() }-value-chart` }
-									label={ __( "Value") }
-									unit={ "€" }
-									data={ valueHistoryData }
-									timeframeOptions={[
-										TimeframeTypes.ytd,
-										TimeframeTypes["1year"],
-										TimeframeTypes["3year"],
-										TimeframeTypes["5year"],
-										TimeframeTypes.max
-									]} />
-							)}
-
-							{ returnHistoryData && (
-								<LineChart
-									id={ `${ account._id.toString() }-return-chart` }
-									label={ __( "Return") }
-									unit={ "€" }
-									data={ returnHistoryData }
-									timeframeOptions={[
-										TimeframeTypes.ytd,
-										TimeframeTypes["1year"],
-										TimeframeTypes["3year"],
-										TimeframeTypes["5year"],
-										TimeframeTypes.max
-									]} />
-							)}
-						</ScrollView>
-					)
-				},
-				{
-					label: __( 'Holdings' ),
-					content: (
-						<View style={ styles.contentContainer }>
-							<ItemList
-								noItemsText={ __( 'No Holdings' ) }
-								data={ holdings.map( holding => {
-									return {
-										item: holding,
-										renderItem: <HoldingItem holding={ holding } />
-									}
-								}) }
-								sortingContainerStyle={ { marginBottom: insets.bottom } }
-								sortingOptions={ [
-									SortingTypes.name,
-									SortingTypes.highestReturn,
-									SortingTypes.lowestReturn,
-									SortingTypes.highestValue
-								] } />
-						</View>
-					)
-				},
-				{
-					label: __( 'Transactions' ),
-					content: (
-						<View style={ styles.contentContainer }>
-							<ItemList
-								noItemsText={ __( 'No Transactions' ) }
-								data={[
-									...transactions,
-									...holdings.flatMap( holding => {
-										return [ ...holding.transactions ]
-									})
-								].map( transaction => {
-									return {
-										item: transaction,
-										renderItem: (
-											<TransactionItem
-												transaction={ transaction }
-												onPressSelect={ onPressSelectTransaction }
-												onLongPress={ onLongPressTransaction }
-												isSelectable={ canSelect( 'Transaction' ) && isSelecting }
-												isSelected={ hasObject( transaction ) }
-												showHolding />
-										)
-									}
-								})}
-								sortingContainerStyle={ { marginBottom: insets.bottom } }
-								sortingOptions={ [
-									SortingTypes.newestFirst,
-									SortingTypes.oldestFirst
-								] } />
-						</View>
-					)
-				},
-			] } />
+			<Tabs screens={ tabs } />
 		</View>
 	)
 }

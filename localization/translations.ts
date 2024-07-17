@@ -144,6 +144,57 @@ const Translations: { [ key: string ]: Translation } = {
 		en_US: 'Account return'
 	},
 
+	// Loan
+
+	'loan': {
+		fi_FI: 'Laina',
+		en_US: "Loan"
+	},
+	'loans': {
+		fi_FI: 'Lainat',
+		en_US: "Loans"
+	},
+	'new loan': {
+		fi_FI: 'Uusi laina',
+		en_US: 'New Loan'
+	},
+	'edit loan': {
+		fi_FI: 'Muokkaa lainaa',
+		en_US: 'Edit Loan'
+	},
+	'add loan': {
+		fi_FI: 'Lisää laina',
+		en_US: 'Add Loan'
+	},
+	'update loan': {
+		fi_FI: 'Päivitä laina',
+		en_US: 'Update Loan'
+	},
+	'remove loan': {
+		fi_FI: 'Poista laina',
+		en_US: 'Remove Loan'
+	},
+	'removing existing loan': {
+		fi_FI: 'Poistetaan olemassa oleva laina',
+		en_US: 'Removing existing loan'
+	},
+	'updating existing loan': {
+		fi_FI: 'Päivitetään olemassa oleva laina',
+		en_US: 'Updating existing loan'
+	},
+	'adding a new loan': {
+		fi_FI: 'Lisätään uutta lainaa',
+		en_US: 'Adding a new loan'
+	},
+	'no loans': {
+		fi_FI: 'Ei lainoja',
+		en_US: 'No Loans'
+	},
+	'create a new loan by clicking the "+" button in the top right corner.': {
+		fi_FI: 'Luo uusi laina painamalla "+" painiketta oikeassa yläkulmassa',
+		en_US: 'Create a new loan by clicking the "+" button in the top right corner.'
+	},
+
 	// Holding
 
 	'holding': {
@@ -416,9 +467,9 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Määrä',
 		en_US: 'Amount'
 	},
-	'adjusted total amount': {
-		fi_FI: 'Säädetty kokonaismäärä',
-		en_US: 'Adjusted total amount'
+	'adjusted amount': {
+		fi_FI: 'Säädetty määrä',
+		en_US: 'Adjusted amount'
 	},
 	'total': {
 		fi_FI: 'Summa',
@@ -463,6 +514,22 @@ const Translations: { [ key: string ]: Translation } = {
 	'cash': {
 		fi_FI: 'Kassa',
 		en_US: 'Cash'
+	},
+	'repayment': {
+		fi_FI: 'Lainanlyhennys',
+		en_US: 'Repayment'
+	},
+	'repayment amount': {
+		fi_FI: 'Lyhennys määrä',
+		en_US: 'Repayment amount'
+	},
+	'loan amount': {
+		fi_FI: 'Lainan määrä',
+		en_US: 'Loan amount'
+	},
+	'disbursement': {
+		fi_FI: 'Lainan nostaminen',
+		en_US: 'Disbursement'
 	},
 	'newest first': {
 		fi_FI: 'Uusin ensin',

@@ -8,7 +8,7 @@ import { GlobalStyles, Spacing } from "../../constants";
 import { useTheme } from "../../contexts/ThemeContext";
 import { Mode } from "react-native-paper-tabs/lib/typescript/utils";
 
-interface TabsScreenContentProps {
+export interface TabsScreenContentProps {
 	label: string,
 	content: React.ReactNode,
 	disabled?: boolean
@@ -22,7 +22,7 @@ interface TabsProps {
 
 export const Tabs: React.FC<TabsProps> = ( {
 	defaultIndex = 0,
-	mode = 'fixed',
+	mode = 'scrollable',
 	screens = []
 } ) => {
 	const { theme } = useTheme();
@@ -32,7 +32,7 @@ export const Tabs: React.FC<TabsProps> = ( {
 			<PaperTabs
 				mode={ mode }
 				disableSwipe
-				showLeadingSpace={ true }
+				showLeadingSpace={ false }
 				style={ {
 					...styles.container,
 					borderColor: theme.colors.outlineVariant 

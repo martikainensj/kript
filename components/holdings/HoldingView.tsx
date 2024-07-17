@@ -97,7 +97,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 		setActions( [
 			{
 				icon: ( props ) => { return (
-					<Icon name={ 'pricetag' } { ...props } />
+					<Icon name={ 'receipt' } { ...props } />
 				) },
 				label: __( 'Add Transaction' ),
 				onPress: () => {

@@ -57,7 +57,6 @@ export const LineChart: React.FC<Props> = ({
 		return lineDataItems as lineDataItem[];
 	}, [ data, timeframe ]);
 
-
 	const { lastValue, maxValue, minValue } = useMemo(() => {
 		const values = timeframedData.reduceRight(( result, current ) => {
 			if ( result.lastValue === 0 && current.value !== null && current.value !== undefined ) {
@@ -185,7 +184,8 @@ export const LineChart: React.FC<Props> = ({
 		rulesType: 'dashed'
 	} as Partial<LineChartPropsType>
 
-	console.log('tomii');
+	const showChart = timeframedData?.length > 1;
+	const showTimeframe = showChart && !! timeframeOptions?.length;
 
 	return (
 		<Animated.View
@@ -203,7 +203,7 @@ export const LineChart: React.FC<Props> = ({
 						unitStyle={ styles.lastValueUnit } />
 				</View>
 				<View style={ styles.lineChartWrapper }>
-					{( !! timeframedData?.length ) &&
+					{ showChart &&
 						<GiftedLineChart
 							isAnimated
 							data={ timeframedData }
@@ -227,7 +227,7 @@ export const LineChart: React.FC<Props> = ({
 							endOpacity={ 0 } />
 					}
 				</View>
-				{ !! timeframeOptions?.length &&
+				{ showTimeframe &&
 					<Menu
 						anchor={
 							<View style={ [

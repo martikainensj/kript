@@ -33,18 +33,45 @@ export const useAccount = ( { account }: useAccountProps ) => {
 
 		const transactionsInitial = {
 			cashAmount: 0,
+			loanAmount: 0,
 			dividendAmount: 0,
 			valueHistoryData: [] as DataPoint[],
 			returnHistoryData: [] as DataPoint[],
+			loanHistoryData: [] as DataPoint[],
 		};
 
 		const transactionsResult = sortedTransactions.reduce(( acc, transaction ) => {
 			const date = getTransactionEndOfDayTimestamp( transaction );
-			const { amount, sub_type } = transaction;
+			const { amount, total, type, sub_type } = transaction;
 	
-			acc.cashAmount += amount;
+			if ( type === 'loan' ) {
+				if ( sub_type === 'repayment' ) {
+					acc.cashAmount -= total;
+					acc.loanAmount -= amount;
+				} else if ( sub_type === 'disbursement' ) {
+					acc.cashAmount += amount;
+					acc.loanAmount += amount;
+				}
+
+				const existingDateIndex = acc.loanHistoryData.findIndex( dataPoint => {
+					return dataPoint.date === date;
+				});
+
+				const dataPoint = {
+					date,
+					value: acc.loanAmount,
+				}
+
+				if ( existingDateIndex !== -1 ) {
+					acc.loanHistoryData[ existingDateIndex ] = dataPoint;
+				} else {
+					acc.loanHistoryData.push( dataPoint );
+				}
+			} else {
+				acc.cashAmount += amount;
+			}
 	
-			if ( sub_type === 'dividend') {
+			if ( sub_type === 'dividend' ) {
 				acc.dividendAmount += amount;
 
 				const existingDateIndex = acc.returnHistoryData.findIndex( dataPoint => {
@@ -58,7 +85,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 
 				if ( existingDateIndex !== -1 ) {
 					acc.returnHistoryData[ existingDateIndex ] = dataPoint;
-				} else  {
+				} else {
 					acc.returnHistoryData.push( dataPoint );
 				}
 			}
@@ -69,7 +96,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 
 			const dataPoint = {
 				date,
-				value: acc.cashAmount,
+				value: acc.cashAmount - acc.loanAmount,
 			}
 
 			if ( existingDateIndex !== -1 ) {
@@ -180,22 +207,26 @@ export const useAccount = ( { account }: useAccountProps ) => {
 
 		const total = holdingsResult.total;
 		const cashAmount = transactionsResult.cashAmount;
+		const loanAmount = transactionsResult.loanAmount;
 		const balance = cashAmount - total;
-		const value = holdingsResult.value + balance;
-		const returnValue = value + transactionsResult.dividendAmount - balance - total;
+		const value = holdingsResult.value + balance - loanAmount;
+		const returnValue = value + transactionsResult.dividendAmount - balance + loanAmount - total;
 		const returnPercentage = total ? (returnValue / Math.abs(total)) * 100 : 0;
 		const sortedValueHistoryData = valueHistoryData.sort( SortingTypes.oldestFirst.function );
 		const sortedReturnHistoryData = returnHistoryData.sort( SortingTypes.oldestFirst.function );
+		const sortedLoanHistoryData = transactionsResult.loanHistoryData.sort( SortingTypes.oldestFirst.function );
 
 		updateVariables( account, {
 			total,
 			cashAmount,
+			loanAmount,
 			balance,
 			value,
 			returnValue,
 			returnPercentage,
 			valueHistoryData: sortedValueHistoryData,
 			returnHistoryData: sortedReturnHistoryData,
+			loanHistoryData: sortedLoanHistoryData,
 			checksum
 		} );
 	}, [ checksum ]);

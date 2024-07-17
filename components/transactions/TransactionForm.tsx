@@ -25,10 +25,11 @@ export const TransactionForm = ( {
 	onSubmit
 }: TransactionFormProps ) => {
 	const { __ } = useI18n();
-	const { TransactionTypes, TradingTypes, CashTypes } = useTypes();
+	const { TransactionTypes, TradingTypes, CashTypes, LoanTypes } = useTypes();
 	const [ trading, cash, adjustment ] = TransactionTypes;
 	const [ buy, sell ] = TradingTypes;
 	const [ deposit, withdrawal, dividend ] = CashTypes;
+	const [ repayment, disbursement ] = LoanTypes;
 
 	const [ editedTransaction, setEditedTransaction ]
 		= useState( { ...transaction } );
@@ -46,6 +47,9 @@ export const TransactionForm = ( {
 				
 			case 'cash':
 				return CashTypes;
+
+			case 'loan':
+				return LoanTypes;
 			
 			default:
 				return null; 
@@ -272,7 +276,7 @@ export const TransactionForm = ( {
 						) } />
 		
 					<TextInput
-						label={ __( 'Adjusted Total Amount' ) }
+						label={ __( 'Adjusted Amount' ) }
 						value={ amount }
 						placeholder={ '0' }
 						keyboardType={ 'numeric' }
@@ -297,6 +301,42 @@ export const TransactionForm = ( {
 						size={ IconSize.xl }
 						style={ styles.submitButton }
 						disabled={ ! allSet( amount || price ) }
+						onPress={ onSubmitHandler } />
+				</> }
+
+				{ type === 'loan' && <>
+					<TextInput
+						label={ sub_type === 'repayment' 
+							? __( 'Repayment amount' )
+							: __( 'Loan amount' )
+						}
+						value={ amount }
+						placeholder={ '0' }
+						keyboardType={ 'numeric' }
+						inputMode={ 'decimal' }
+						onChangeText={ amount => setEditedTransaction(
+							Object.assign( { ...editedTransaction }, { amount } )
+						) } />
+		
+					{ sub_type === 'repayment' && (
+						<TextInput
+							label={ __( 'Total' ) }
+							value={ total }
+							placeholder={ '0' }
+							keyboardType={ 'numeric' }
+							inputMode={ 'decimal' }
+							onChangeText={ total => setEditedTransaction(
+								Object.assign( { ...editedTransaction }, { total } )
+							) } />
+					)}
+
+					<Divider />
+
+					<IconButton
+						icon={ 'save' }
+						size={ IconSize.xl }
+						style={ styles.submitButton }
+						disabled={ ! allSet( amount || ( sub_type !== disbursement.id || !! total ) ) }
 						onPress={ onSubmitHandler } />
 				</> }
 			</View>

@@ -54,7 +54,7 @@ export const Select: React.FC<SelectProps> = ( {
 				value={ value }
 				onValueChange={ onValueChange }
 				theme={ { roundness: 0 } }
-				buttons={ options?.filter( option => option.label ).map( option => {
+				buttons={ options?.filter( option => option?.label ).map( option => {
 					return {
 						...option,
 						showSelectedCheck: true,

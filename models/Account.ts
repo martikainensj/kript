@@ -13,6 +13,7 @@ export type Account = {
 	isValid?: () => boolean;
 	total?: number;
 	cashAmount?: number;
+	loanAmount?: number;
 	balance?: number;
 	value?: number;
 	totalValue?: number;
@@ -21,6 +22,7 @@ export type Account = {
 	returnPercentage?: number;
 	valueHistoryData?: DataPoint[];
 	returnHistoryData?: DataPoint[];
+	loanHistoryData?: DataPoint[];
 	checksum?: string;
 };
 
@@ -38,6 +40,7 @@ export const AccountSchema = {
 		transactions: 'Transaction[]',
 		total: 'double?',
 		cashAmount: 'double?',
+		loanAmount: 'double?',
 		balance: 'double?',
 		value: 'double?',
 		totalValue: 'double?',
@@ -46,6 +49,7 @@ export const AccountSchema = {
 		returnPercentage: 'double?',
 		valueHistoryData: 'DataPoint[]',
 		returnHistoryData: 'DataPoint[]',
+		loanHistoryData: 'DataPoint[]',
 		checksum: 'string?',
 	},
 	primaryKey: '_id',
