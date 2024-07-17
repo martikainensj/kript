@@ -46,7 +46,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { SortingTypes } = useTypes();
+	const { SortingTypes, TimeframeTypes } = useTypes();
 	const insets = useSafeAreaInsets();
 	const { isSelecting, select, deselect, selectedType, selectedObjects, validate, hasObject, canSelect } = useSelector();
 
@@ -187,9 +187,16 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 						<ScrollView style={ styles.contentContainer }>
 							<LineChart
 								id={ `${ holding._id.toString() }-return-chart` }
-								label={ __( "Holding Return") }
+								label={ __( "Return") }
 								unit={ "€" }
-								data={ returnHistoryData } />
+								data={ returnHistoryData }
+								timeframeOptions={[
+									TimeframeTypes.ytd,
+									TimeframeTypes["1year"],
+									TimeframeTypes["3year"],
+									TimeframeTypes["5year"],
+									TimeframeTypes.max
+								]} />
 						</ScrollView>
 					)
 				},

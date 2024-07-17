@@ -196,7 +196,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 							{ valueHistoryData && (
 								<LineChart
 									id={ `${ account._id.toString() }-value-chart` }
-									label={ __( "Account Value") }
+									label={ __( "Value") }
 									unit={ "€" }
 									data={ valueHistoryData }
 									timeframeOptions={[
@@ -211,7 +211,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 							{ returnHistoryData && (
 								<LineChart
 									id={ `${ account._id.toString() }-return-chart` }
-									label={ __( "Account Return") }
+									label={ __( "Return") }
 									unit={ "€" }
 									data={ returnHistoryData }
 									timeframeOptions={[

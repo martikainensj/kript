@@ -58,26 +58,31 @@ export const LineChart: React.FC<Props> = ({
 	}, [ data, timeframe ]);
 
 
-	const { lastValue, maxValue, minValue } = timeframedData.reduceRight(( result, current ) => {
-		if ( result.lastValue === 0 && current.value !== null && current.value !== undefined ) {
-			result.lastValue = current.value;
-		}
+	const { lastValue, maxValue, minValue } = useMemo(() => {
+		const values = timeframedData.reduceRight(( result, current ) => {
+			if ( result.lastValue === 0 && current.value !== null && current.value !== undefined ) {
+				result.lastValue = current.value;
+			}
 
-		if ( current.value !== null && current.value !== undefined ) {
-				if ( current.value > result.maxValue ) {
-						result.maxValue = current.value;
-				}
+			if ( current.value !== null && current.value !== undefined ) {
+					if ( current.value > result.maxValue ) {
+							result.maxValue = current.value;
+					}
 
-				if ( current.value < result.minValue ) {
-						result.minValue = current.value;
-				}
-		}
+					if ( current.value < result.minValue ) {
+							result.minValue = current.value;
+					}
+			}
 
-		return result;
-	}, { lastValue: 0, maxValue: 0, minValue: 0 });
+			return result;
+		}, { lastValue: 0, maxValue: -Infinity, minValue: Infinity });
+		
+		return values;
+	}, [ timeframedData ]);
 
 	const absoluteMaxValue = Math.abs(Math.max(maxValue, Math.abs(minValue)));
 	const stepValue = absoluteMaxValue / 10;
+	const yAxisOffset = minValue;
 	const chartColor = lastValue >= 0
 		? theme.colors.success
 		: theme.colors.error;
@@ -111,6 +116,7 @@ export const LineChart: React.FC<Props> = ({
 		if ( ! item || item.hideDataPoint ) {
 			return;
 		}
+		const offsetFixedValue = item.value + yAxisOffset;
 		
 		return (
 			<View style={ styles.pointerLabelContainer }>	
@@ -125,27 +131,14 @@ export const LineChart: React.FC<Props> = ({
 					{ backgroundColor: theme.colors.background }
 				]}>
 					<Value
-						value={ prettifyNumber( item.value, 0 )}
+						value={ prettifyNumber( offsetFixedValue, 0 )}
 						unit={ unit }
-						isPositive={ item.value > 0 }
-						isNegative={ item.value < 0 } />
+						isPositive={ offsetFixedValue > 0 }
+						isNegative={ offsetFixedValue < 0 } />
 				</View>
 			</View>
 		);
-	}, []);
-
-	const pointerConfig = {
-		//pointerStripHeight: lineChartWidth * 0.37,
-		autoAdjustPointerLabelPosition: true,
-		pointerStripColor: chartColor,
-		pointerStripWidth: 1,
-		strokeDashArray: [ 2, Spacing.xs ],
-		pointerColor: chartColor,
-		radius: 4,
-		pointerLabelWidth: 100,
-		pointerLabelHeight: 90,
-		pointerLabelComponent,
-	} as LineChartPropsType['pointerConfig'];
+	}, [ timeframedData ]);
 
 	useLayoutEffect(() => {
 		getData( '@filters/timeframe' ).then( filtersTimeframe => {
@@ -160,6 +153,39 @@ export const LineChart: React.FC<Props> = ({
 			}
 		})
 	}, []);
+
+	const pointerConfig = {
+		autoAdjustPointerLabelPosition: true,
+		pointerStripColor: chartColor,
+		pointerStripWidth: 1,
+		strokeDashArray: [ 2, Spacing.xs ],
+		pointerColor: chartColor,
+		radius: 4,
+		pointerLabelWidth: 100,
+		pointerLabelHeight: 90,
+		pointerLabelComponent,
+	} as LineChartPropsType['pointerConfig'];
+
+	const xAxis = {
+		xAxisThickness: 0,
+		xAxisLabelsHeight: 0,
+		xAxisColor: theme.colors.backdrop,
+	} as Partial<LineChartPropsType>
+
+	const yAxis = {
+		yAxisThickness: 0,
+		yAxisOffset: yAxisOffset,
+		yAxisLabelWidth: 0,
+		yAxisExtraHeight: Spacing.lg,
+		hideYAxisText: true,
+	} as Partial<LineChartPropsType>
+
+	const rules = {
+		rulesColor: theme.colors.outlineVariant,
+		rulesType: 'dashed'
+	} as Partial<LineChartPropsType>
+
+	console.log('tomii');
 
 	return (
 		<Animated.View
@@ -177,34 +203,31 @@ export const LineChart: React.FC<Props> = ({
 						unitStyle={ styles.lastValueUnit } />
 				</View>
 				<View style={ styles.lineChartWrapper }>
-					<GiftedLineChart
-						isAnimated
-						dataSet={[
-							{ data: timeframedData }
-						]}
-						showDataPointsForMissingValues={ true }
-						width={ lineChartWidth }
-						height={ lineChartWidth / 2 }
-						initialSpacing={ 0 }
-						thickness={ 2 }
-						xAxisThickness={ 0 }
-						yAxisThickness={ 0 }
-						xAxisLabelsHeight={ 0 }
-						yAxisLabelWidth={ 0 }
-						hideYAxisText
-						hideDataPoints
-						adjustToWidth
-						pointerConfig={ pointerConfig }
-						maxValue={ absoluteMaxValue }
-						stepValue={ stepValue }
-						areaChart
-						color={ chartColor }
-						startFillColor={ lastValue > 0 ? chartColor : 'transparent' }
-						endFillColor={ lastValue > 0 ? 'transparent' : chartColor }
-						startOpacity={ lastValue > 0 ? 0.3 : 0 }
-						endOpacity={ lastValue > 0 ? 0 : 0.3  } />
+					{( !! timeframedData?.length ) &&
+						<GiftedLineChart
+							isAnimated
+							data={ timeframedData }
+							{ ...xAxis }
+							{ ...yAxis }
+							{ ...rules }
+							width={ lineChartWidth }
+							height={ lineChartWidth / 2 }
+							initialSpacing={ 0 }
+							thickness={ 2 }
+							hideDataPoints
+							adjustToWidth
+							pointerConfig={ pointerConfig }
+							maxValue={ absoluteMaxValue }
+							stepValue={ stepValue }
+							areaChart
+							color={ chartColor }
+							startFillColor={ chartColor }
+							endFillColor={ 'transparent' }
+							startOpacity={ 0.3 }
+							endOpacity={ 0 } />
+					}
 				</View>
-				{ timeframeOptions &&
+				{ !! timeframeOptions?.length &&
 					<Menu
 						anchor={
 							<View style={ [
