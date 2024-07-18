@@ -184,7 +184,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 				{
 					label: __( 'Overview' ),
 					content: (
-						<ScrollView style={ styles.contentContainer }>
+						<View style={ styles.contentContainer }>
 							<LineChart
 								id={ `${ holding._id.toString() }-return-chart` }
 								label={ __( "Return") }
@@ -197,7 +197,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 									TimeframeTypes["5year"],
 									TimeframeTypes.max
 								]} />
-						</ScrollView>
+						</View>
 					)
 				},
 				{

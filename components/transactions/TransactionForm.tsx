@@ -8,10 +8,11 @@ import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
 import { useI18n } from "../../contexts/I18nContext";
-import { Cash, Trading, useTypes } from "../../hooks/useTypes";
+import { Cash, Loan, Trading, useTypes } from "../../hooks/useTypes";
 import { OptionProps, Select } from "../inputs/Select";
 import { Divider } from "../ui/Divider";
 import { Icon } from "../ui/Icon";
+import { useData } from "../../contexts/DataContext";
 
 interface TransactionFormProps {
 	transaction: Transaction,
@@ -26,6 +27,7 @@ export const TransactionForm = ( {
 }: TransactionFormProps ) => {
 	const { __ } = useI18n();
 	const { TransactionTypes, TradingTypes, CashTypes, LoanTypes } = useTypes();
+	const { getHoldingBy } = useData();
 	const [ trading, cash, adjustment ] = TransactionTypes;
 	const [ buy, sell ] = TradingTypes;
 	const [ deposit, withdrawal, dividend ] = CashTypes;
@@ -91,6 +93,18 @@ export const TransactionForm = ( {
 		);
 	}, [ subTypes ] );
 
+	useEffect(() => {
+		if ( type === 'adjustment' ) {
+			const holding = getHoldingBy( 'name', holding_name, { accountId: account._id });
+			
+			setEditedTransaction({
+				...editedTransaction,
+				price: holding?.lastPrice,
+				amount: holding?.amount
+			});
+		}
+	}, [ holding_name ]);
+
 	return (
     <TouchableWithoutFeedback onPress={ handleDismissKeyboard }>
 			<View style={ styles.container }>
@@ -128,7 +142,7 @@ export const TransactionForm = ( {
 					setValue={ sub_type => setEditedTransaction(
 						Object.assign( { ...editedTransaction }, { sub_type } )
 					) }
-					options={ subTypes.map( ( subType: Trading | Cash ) => {
+					options={ subTypes.map( ( subType: Trading | Cash | Loan ) => {
 						return {
 							icon: ( { size, color } ) => {
 								return (
@@ -177,9 +191,16 @@ export const TransactionForm = ( {
 						placeholder={ '0' }
 						keyboardType={ 'numeric' }
 						inputMode={ 'decimal' }
+						max={(() => {
+							const holding = getHoldingBy( 'name', holding_name, { accountId: account._id })
+							
+							return holding?.amount > 0
+								? holding.amount
+								: 0
+						})()}
 						onChangeText={ amount => setEditedTransaction(
-							Object.assign( { ...editedTransaction }, { amount } )
-						) } />
+							Object.assign({ ...editedTransaction }, { amount })
+						)} />
 		
 					<TextInput
 						label={ __( 'Total' ) }
@@ -229,9 +250,14 @@ export const TransactionForm = ( {
 						placeholder={ '0' }
 						keyboardType={ 'numeric' }
 						inputMode={ 'decimal' }
+						max={(() => {
+							return account.balance > 0
+								? account.balance
+								: 0
+						})()}
 						onChangeText={ amount => setEditedTransaction(
-							Object.assign( { ...editedTransaction }, { amount } )
-						) } />
+							Object.assign({ ...editedTransaction }, { amount })
+						)} />
 
 					<TextInput
 						label={ __( 'Notes' ) }

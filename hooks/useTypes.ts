@@ -156,13 +156,13 @@ export const useTypes = () => {
 		{
 			id: 'repayment',
 			name: __( 'Repayment' ),
-			color: theme.colors.success,
+			color: theme.colors.primary,
 			icon: 'push-outline',
 		},
 		{
 			id: 'disbursement',
 			name: __( 'Disbursement' ),
-			color: theme.colors.error,
+			color: theme.colors.primary,
 			icon: 'download-outline',
 		}
 	];

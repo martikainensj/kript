@@ -6,7 +6,9 @@ import { Icon } from '../ui/Icon';
 
 interface TextInputProps extends Omit<PaperTextInputProps, 'value' | 'onChangeText'> {
 	value: string | number,
-	onChangeText: ( ( text: string | number ) => void ) & Function
+	onChangeText: ( ( text: string | number ) => void ) & Function,
+	max?: number,
+	min?: number,
 }
 
 export const TextInput: React.FC<TextInputProps> = ( {
@@ -20,6 +22,8 @@ export const TextInput: React.FC<TextInputProps> = ( {
 	autoCorrect = false,
 	mode = 'flat',
 	disabled,
+	max,
+	min,
 	...rest
 } ) => {
 	const [inputValue, setInputValue] = useState( value );
@@ -29,6 +33,14 @@ export const TextInput: React.FC<TextInputProps> = ( {
 	const onChangeTextHandler = ( string: string ) => {
 		if ( keyboardType === 'numeric' ) {
 			string = string.replace(/[^0-9.]/g, '');
+
+			if ( max && parseFloat( string ) > max ) {
+				string = max.toString();
+			}
+
+			if ( min && parseFloat( string ) < min ) {
+				string = min.toString();
+			}
 
 			const parts = string.split( '.' );
 			const maxPartLength = 12;

@@ -29,7 +29,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 	const { __ } = useI18n();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { getAccountBy, saveTransaction } = useData();
-	const { TradingTypes, CashTypes, AdjustmentTypes } = useTypes();
+	const { TradingTypes, CashTypes, AdjustmentTypes, LoanTypes } = useTypes();
 	const [ longPressProgress, setLongPressProgress ] = useState( 0 );
 
   const progressAnim = useRef( new Animated.Value( 0 )).current;
@@ -99,6 +99,8 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 				return CashTypes.find(type => type.id === transaction.sub_type )
 			case 'adjustment':
 				return AdjustmentTypes.find(type => type.id === transaction.sub_type )
+			case 'loan':
+				return LoanTypes.find(type => type.id === transaction.sub_type )
 		}
 	}, [ transaction ] )
 

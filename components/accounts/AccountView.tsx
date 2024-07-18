@@ -171,9 +171,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 		{
 			label: __( 'Overview' ),
 			content: (
-				<ScrollView
-					style={ styles.contentContainer }
-					contentContainerStyle={ styles.scrollViewContentContainer }>
+				<View style={ styles.contentContainer }>
 					{ valueHistoryData && (
 						<LineChart
 							id={ `${ account._id.toString() }-value-chart` }
@@ -203,7 +201,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 								TimeframeTypes.max
 							]} />
 					)}
-				</ScrollView>
+				</View>
 			)
 		},
 		{
@@ -267,10 +265,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 		tabs.push({
 			label: __( 'Loan' ),
 			content: (
-				
-				<ScrollView
-					style={ styles.contentContainer }
-					contentContainerStyle={ styles.scrollViewContentContainer }>
+				<View style={ styles.contentContainer }>
 					<Value
 						label={ __( "Loan" ) }
 						value={ loanAmount }
@@ -290,7 +285,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 								TimeframeTypes.max
 							]} />
 					)}
-				</ScrollView>
+				</View>
 			)
 		})
 	}
@@ -332,7 +327,4 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
 	},
-	scrollViewContentContainer: {
-		paddingBottom: Spacing.xl * 3.5
-	}
 } );

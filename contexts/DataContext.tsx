@@ -277,7 +277,6 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 				title,
 				message,
 				onAccept() {
-					const account = getAccountBy( '_id', editedTransaction.account_id );
 					const transaction = getTransactionBy(
 						'_id',
 						editedTransaction._id,
@@ -286,6 +285,23 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 							accountId: editedTransaction.account_id
 						}
 					);
+
+					if ( editedTransaction.type === 'adjustment' ) {
+						const hasHigherPrice = editedTransaction.price > transaction.price;
+						const hasLowerPrice = editedTransaction.price < transaction.price;
+						const hasIncreasedAmount = editedTransaction.amount > transaction.amount;
+						const hasDecreasedAmount = editedTransaction.amount < transaction.amount;
+						
+						if ( hasIncreasedAmount && hasLowerPrice ) {
+							editedTransaction.sub_type = 'stockSplit';
+						} else if ( hasDecreasedAmount && hasHigherPrice ) {
+							editedTransaction.sub_type = 'merger';
+						} else if ( hasHigherPrice || hasLowerPrice ) {
+							editedTransaction.sub_type = 'priceUpdate';
+						} else if ( hasIncreasedAmount || hasDecreasedAmount ) {
+							editedTransaction.sub_type = 'amountUpdate';
+						}
+					}
 
 					resolve( updateVariables( transaction, editedTransaction ));
 				}

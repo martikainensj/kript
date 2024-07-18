@@ -173,13 +173,12 @@ export const LineChart: React.FC<Props> = ({
 		yAxisThickness: 0,
 		yAxisOffset: yAxisOffset,
 		yAxisLabelWidth: 0,
-		yAxisExtraHeight: Spacing.lg,
+		yAxisExtraHeight: Spacing.md,
 		hideYAxisText: true,
 	} as Partial<LineChartPropsType>
 
 	const rules = {
-		rulesColor: theme.colors.outlineVariant,
-		rulesType: 'dashed'
+		hideRules: true
 	} as Partial<LineChartPropsType>
 
 	const showChart = timeframedData?.length > 1;
@@ -189,7 +188,7 @@ export const LineChart: React.FC<Props> = ({
 		<Animated.View
 			onLayout={ onLayout }
 			style={ styles.container }>
-			<Card style={ { marginTop: Spacing.md, paddingHorizontal: 0, paddingBottom: 0 } }>
+			<Card style={ { paddingHorizontal: 0, paddingBottom: 0 } }>
 				<View style={ styles.headerContainer }>
 					<Title>{ label }</Title>
 					<Value
@@ -209,7 +208,7 @@ export const LineChart: React.FC<Props> = ({
 							{ ...yAxis }
 							{ ...rules }
 							width={ lineChartWidth }
-							height={ lineChartWidth / 2 }
+							height={ lineChartWidth / 4 }
 							initialSpacing={ 0 }
 							thickness={ 2 }
 							hideDataPoints
@@ -260,13 +259,14 @@ export const LineChart: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		gap: Spacing.sm
+		gap: Spacing.sm,
+		marginTop: Spacing.md,
 	},
 	headerContainer: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		gap: Spacing.md,
-		paddingHorizontal: Spacing.lg
+		paddingHorizontal: Spacing.md
 	},
 	lineChartWrapper: {
 		alignItems: 'flex-end',
