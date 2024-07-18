@@ -389,7 +389,11 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		variables: Partial<T>,
 	) => {
 		if ( ! object?.isValid() ) return;
-	
+		
+		if ( !! variables._id ) {
+			delete variables._id;
+		}
+
 		const hasChanges = Object.keys( variables )
 			.some( key => object[ key as keyof T ] !== variables[ key as keyof T ] );
 	
