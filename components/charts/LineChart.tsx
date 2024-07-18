@@ -79,8 +79,6 @@ export const LineChart: React.FC<Props> = ({
 		return values;
 	}, [ timeframedData ]);
 
-	const absoluteMaxValue = Math.abs(Math.max(maxValue, Math.abs(minValue)));
-	const stepValue = absoluteMaxValue / 10;
 	const yAxisOffset = minValue;
 	const chartColor = lastValue >= 0
 		? theme.colors.success
@@ -217,8 +215,6 @@ export const LineChart: React.FC<Props> = ({
 							hideDataPoints
 							adjustToWidth
 							pointerConfig={ pointerConfig }
-							maxValue={ absoluteMaxValue }
-							stepValue={ stepValue }
 							areaChart
 							color={ chartColor }
 							startFillColor={ chartColor }
