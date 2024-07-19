@@ -222,8 +222,8 @@ export const useTypes = () => {
 		'ytd': {
 			id: 'ytd',
 			name: __( 'YTD' ),
-			interval: 'weekly',
-			range: getYTD() / 7
+			interval: 'daily',
+			range: getYTD()
 		},
 		'1year': {
 			id: '1year',

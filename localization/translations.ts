@@ -588,7 +588,7 @@ const Translations: { [ key: string ]: Translation } = {
 		en_US: 'years'
 	},
 	'ytd': {
-		fi_FI: 'vuoden alusta',
+		fi_FI: 'Vuoden alusta',
 		en_US: 'YTD'
 	},
 	'max': {

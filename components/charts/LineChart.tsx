@@ -7,7 +7,7 @@ import { BorderRadius, FontSize, GlobalStyles, Spacing } from "../../constants";
 import { Menu, Text } from "react-native-paper";
 import { Card } from "../ui/Card";
 import { Value } from "../ui/Value";
-import { TimeframeType } from "../../hooks/useTypes";
+import { TimeframeType, useTypes } from "../../hooks/useTypes";
 import { IconButton } from "../buttons";
 import { useData } from "../../contexts/DataContext";
 import { DataPoint } from "../../models/DataPoint";
@@ -36,13 +36,10 @@ export const LineChart: React.FC<Props> = ({
 	const { theme } = useTheme();
 	const { filterDataByInterval } = useData();
 	const { getData, setData } = useStorage();
+	const { TimeframeTypes } = useTypes();
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
 
-	const [ timeframe, setTimeframe ] = useState<TimeframeType>({
-		id: 'max',
-		interval: 'weekly',
-		name: __( 'Max' )
-	});
+	const [ timeframe, setTimeframe ] = useState<TimeframeType>( TimeframeTypes.ytd );
 	const [ showTimeframeOptions, setShowTimeframeOptions ] = useState( false );
 
 	const timeframedData = useMemo(() => {
@@ -182,7 +179,7 @@ export const LineChart: React.FC<Props> = ({
 	} as Partial<LineChartPropsType>
 
 	const showChart = timeframedData?.length > 1;
-	const showTimeframe = showChart && !! timeframeOptions?.length;
+	const showTimeframe = !! timeframeOptions?.length;
 
 	return (
 		<Animated.View
