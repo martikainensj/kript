@@ -2,12 +2,12 @@ import React, {
 	createContext,
 	useContext,
 } from "react";
-import { CONFIG } from "../kript.config";
 import { AppProvider, UserProvider, RealmProvider } from "@realm/react";
 import { LoginScreen } from "../components/authentication";
 import { Schemas } from "../models";
 import { ClientResetMode, OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from "realm";
 import { DataProvider } from "./DataContext";
+import { REALM_APP_ID } from '@env';
 
 interface KriptRealmContext {}
 
@@ -20,11 +20,9 @@ interface KriptRealmProviderProps {
 }
 
 export const KriptRealmProvider: React.FC<KriptRealmProviderProps> = ( { children } ) => {
-	const { appId } = CONFIG;
-
 	return (
 		<KriptRealmContext.Provider value={ {} }>
-			<AppProvider id={ appId }>
+			<AppProvider id={ REALM_APP_ID }>
 				<UserProvider fallback={ <LoginScreen /> }>
 					<RealmProvider
 						schema={ Schemas }
