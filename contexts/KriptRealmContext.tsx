@@ -7,7 +7,6 @@ import { LoginScreen } from "../components/authentication";
 import { Schemas } from "../models";
 import { ClientResetMode, OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from "realm";
 import { DataProvider } from "./DataContext";
-import { REALM_APP_ID } from '@env';
 
 interface KriptRealmContext {}
 
@@ -20,9 +19,11 @@ interface KriptRealmProviderProps {
 }
 
 export const KriptRealmProvider: React.FC<KriptRealmProviderProps> = ( { children } ) => {
+  const appId = process.env.EXPO_PUBLIC_APP_ID;
+
 	return (
 		<KriptRealmContext.Provider value={ {} }>
-			<AppProvider id={ REALM_APP_ID }>
+			<AppProvider id={ appId }>
 				<UserProvider fallback={ <LoginScreen /> }>
 					<RealmProvider
 						schema={ Schemas }
