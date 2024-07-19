@@ -80,22 +80,27 @@ export const LoginScreen = () => {
 							borderColor: theme.colors.outlineVariant
 						}
 					] }>
-						<DefaultButton
-							icon={ ( { color } ) => <Icon name={ 'log-in-outline' } size={ IconSize.lg } color={ color } /> }
-							onPress={ () => logInWithEmailPassword( { email, password } ) }
-							disabled={ result.pending }
-							style={ styles.button }>
-							{ __( 'Login' ) }
-						</DefaultButton>
-
-						<DefaultButton
-							icon={ ( { size, color } ) => <Icon name={ 'person-add' } color={ color } /> }
-							onPress={ () => register( { email, password } ) }
-							disabled={ result.pending }
-							style={ styles.button	}
-							mode={ 'contained-tonal' }>
-							{ __( 'Sign up' ) }
-						</DefaultButton>
+						{ result.pending
+							? <ActivityIndicator />
+							: <>
+								<DefaultButton
+									icon={ ( { color } ) => <Icon name={ 'log-in-outline' } size={ IconSize.lg } color={ color } /> }
+									onPress={ () => logInWithEmailPassword( { email, password } ) }
+									disabled={ result.pending }
+									style={ styles.button }>
+									{ __( 'Login' ) }
+								</DefaultButton>
+	
+								<DefaultButton
+									icon={ ( { size, color } ) => <Icon name={ 'person-add' } color={ color } /> }
+									onPress={ () => register( { email, password } ) }
+									disabled={ result.pending }
+									style={ styles.button	}
+									mode={ 'contained-tonal' }>
+									{ __( 'Sign up' ) }
+								</DefaultButton>
+							</>
+						}
 					</View>
 				</View>
 			</View>
@@ -134,6 +139,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		gap: Spacing.md,
 		paddingVertical: Spacing.md,
+		justifyContent: 'center',
 		alignSelf: 'stretch',
 		alignItems: 'flex-end'
 	},
