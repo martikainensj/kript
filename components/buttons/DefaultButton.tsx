@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Button as PaperButton, ButtonProps } from 'react-native-paper';
-import { BorderRadius, FontSize, FontWeight, Spacing } from '../../constants';
+import { BorderRadius, FontSize, FontWeight, GlobalStyles, Spacing } from '../../constants';
 
 export const DefaultButton: React.FC<ButtonProps> = ( {
 	mode = 'contained',
@@ -27,8 +27,7 @@ const styles = StyleSheet.create( {
     borderRadius: BorderRadius.xl
   },
 	label: {
-		fontSize: FontSize.md,
-		fontWeight: FontWeight.regular
+		...GlobalStyles.lead
 	},
 	content: {
 		gap: Spacing.sm

@@ -128,17 +128,18 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 
 	const values = [];
 
-	if ( amount ) {
-		values.push( <Value label={ __( 'Amount' ) } value={ amount } isVertical={ true } /> );
-	}
-
 	if ( price ) {
 		values.push( <Value label={ __( 'Price' ) } value={ price } isVertical={ true } unit={ '€' } /> );
+	}
+	
+	if ( amount > 1 ) {
+		values.push( <Value label={ __( 'Amount' ) } value={ amount } isVertical={ true } /> );
 	}
 
 	if ( total ) {
 		values.push( <Value label={ __( 'Total' ) } value={ total } isVertical={ true } unit={ '€' } /> );
 	}
+
 
 	progressAnim.addListener(( state ) => {
 		setLongPressProgress( state.value );
@@ -188,15 +189,15 @@ const styles = StyleSheet.create( {
 		flex: 1,
 	},
 	date: {
-		fontWeight: FontWeight.bold,
+		...GlobalStyles.bold,
 		marginRight: Spacing.sm
 	},
 	type: {
-		fontWeight: FontWeight.bold,
+		...GlobalStyles.bold,
 		textAlign: 'right'
 	},
 	holding: {
-		fontWeight: FontWeight.bold
+		...GlobalStyles.bold,
 	},
 	progressBarWrapper: {
 		position: 'absolute',

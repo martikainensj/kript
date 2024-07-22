@@ -194,7 +194,7 @@ export const TransactionForm = ( {
 						max={(() => {
 							const holding = getHoldingBy( 'name', holding_name, { accountId: account._id })
 							
-							return holding?.amount > 0
+							return holding?.amount > 0 && sub_type === 'sell'
 								? holding.amount
 								: 0
 						})()}

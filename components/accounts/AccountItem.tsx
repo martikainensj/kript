@@ -42,34 +42,52 @@ export const AccountItem: React.FC<AccountItemProps> = ( { account } ) => {
 		returnPercentage
 	} = account;
 
-	const values = [
-		<Value
-			label={ __( 'Balance' ) }
-			value={ prettifyNumber( balance, 0 ) }
-			unit={ '€' }
-			isVertical={ true }
-			isNegative={ balance < 0 } />,
-		<Value
-			label={ __( 'Value' ) }
-			value={ prettifyNumber( value, 0 ) }
-			unit={ '€' }
-			isVertical={ true }
-			isNegative={ value < 0 } />,
-		<Value
-			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnValue, 0 ) }
-			unit={ '€' }
-			isVertical={ true }
-			isPositive={ returnValue > 0 }
-			isNegative={ returnValue < 0 } />,
-		<Value
-			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnPercentage, 0 ) }
-			unit={ '%' }
-			isVertical={ true }
-			isPositive={ returnPercentage > 0 }
-			isNegative={ returnPercentage < 0 } />,
-	];
+	const values = [];
+	if ( value ) {
+		values.push(
+			<Value
+				label={ __( 'Value' ) }
+				value={ prettifyNumber( value, 0 ) }
+				unit={ '€' }
+				isVertical={ true }
+				isNegative={ value < 0 } />
+		)
+	}
+
+	if ( returnValue ) {
+		values.push(
+			<Value
+				label={ __( 'Return' ) }
+				value={ prettifyNumber( returnValue, 0 ) }
+				unit={ '€' }
+				isVertical={ true }
+				isPositive={ returnValue > 0 }
+				isNegative={ returnValue < 0 } />
+		)
+	}
+
+	if ( returnPercentage ) {
+		values.push(
+			<Value
+				label={ __( 'Return' ) }
+				value={ prettifyNumber( returnPercentage, 0 ) }
+				unit={ '%' }
+				isVertical={ true }
+				isPositive={ returnPercentage > 0 }
+				isNegative={ returnPercentage < 0 } />
+		)
+	}
+
+	if ( balance ) {
+		values.push(
+			<Value
+				label={ __( 'Balance' ) }
+				value={ prettifyNumber( balance, 0 ) }
+				unit={ '€' }
+				isVertical={ true }
+				isNegative={ balance < 0 } />
+		)
+	}
 
 	const meta = [
 		<Text style={ [ styles.name, { color: theme.colors.primary} ] }>{ account.name }</Text>
@@ -110,6 +128,6 @@ const styles = StyleSheet.create( {
 		flexShrink: 1
 	},
 	name: {
-		fontWeight: FontWeight.bold,
+		...GlobalStyles.bold
 	}
 } );

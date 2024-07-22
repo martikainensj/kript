@@ -17,3 +17,25 @@ export const FontWeight: FontWeight = {
 	regular: '400',
 	bold:	 '700'
 }
+
+interface FontFamily {
+	extraLight: 'MonaSans-ExtraLight';
+	light: 'MonaSans-Light';
+	regular: 'MonaSans-Regular';
+	medium: 'MonaSans-Medium';
+	semiBold: 'MonaSans-SemiBold';
+	bold: 'MonaSans-Bold';
+	extraBold: 'MonaSans-ExtraBold';
+	black: 'MonaSans-Black';
+}
+
+export const FontFamily: FontFamily = {
+	extraLight: 'MonaSans-ExtraLight',
+	light: 'MonaSans-Light',
+	regular: 'MonaSans-Regular',
+	medium: 'MonaSans-Medium',
+	semiBold: 'MonaSans-SemiBold',
+	bold: 'MonaSans-Bold',
+	extraBold: 'MonaSans-ExtraBold',
+	black: 'MonaSans-Black'
+}

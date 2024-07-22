@@ -54,15 +54,27 @@ const ValueWrapper: React.FC<ValueWrapperProps> = ( {
 			<Text style={ [
         styles.value,
         valueStyle,
-        isPositive && { color: theme.colors.success, fontWeight: FontWeight.bold },
-        isNegative && { color: theme.colors.error, fontWeight: FontWeight.bold },
+        isPositive && {
+					...GlobalStyles.bold,
+					color: theme.colors.success
+				},
+        isNegative && {
+					...GlobalStyles.bold,
+					color: theme.colors.error,
+				},
       ] }>{ value }</Text>
 
       { unit && ! isVertical &&
         <Text style={ [
           styles.unit, { marginLeft: Spacing.xxs }, unitStyle,
-          isPositive && { color: theme.colors.success, fontWeight: FontWeight.bold },
-          isNegative && { color: theme.colors.error, fontWeight: FontWeight.bold },
+          isPositive && {
+						...GlobalStyles.bold,
+						color: theme.colors.success,
+					},
+          isNegative && {
+						...GlobalStyles.bold,
+						color: theme.colors.error
+					},
         ] }>
           { unit }
         </Text>

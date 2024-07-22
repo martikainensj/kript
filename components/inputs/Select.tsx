@@ -76,9 +76,9 @@ export const Select: React.FC<SelectProps> = ( {
 	);
 }
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
-		gap: Spacing.xs
+		gap: Spacing.sm
 	},
 	segmentedButtonsContainer: {
 		padding: Spacing.xs,
@@ -97,4 +97,4 @@ const styles = StyleSheet.create( {
 		overflow: 'hidden',
 		borderColor: 'transparent'
 	}
-} );
+});

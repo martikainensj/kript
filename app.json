@@ -7,12 +7,28 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-		"userInterfaceStyle": "automatic",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
     "ios": {
       "bundleIdentifier": "com.martikainensj.kript"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/MonaSans-Black.otf",
+            "./assets/fonts/MonaSans-Bold.otf",
+            "./assets/fonts/MonaSans-ExtraBold.otf",
+            "./assets/fonts/MonaSans-ExtraLight.otf",
+            "./assets/fonts/MonaSans-Light.otf",
+            "./assets/fonts/MonaSans-Medium.otf",
+            "./assets/fonts/MonaSans-Regular.otf",
+            "./assets/fonts/MonaSans-SemiBold.otf"
+          ]
+        }
+      ]
     ],
     "extra": {
       "router": {

@@ -97,7 +97,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 					openBottomSheet(
 						__( 'New Transaction' ),
 						<TransactionForm
-							transaction={ {
+							transaction={{
 								owner_id: user.id,
 								date: Date.now(),
 								price: null,
@@ -107,11 +107,11 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 								account_id: account._id,
 								type: 'trading',
 								sub_type: 'buy'
-							} }
+							}}
 							account={ account }
-							onSubmit={ ( transaction ) => {
+							onSubmit={( transaction ) => {
 								addTransaction( transaction ).then( closeBottomSheet );
-							}	} />
+							}} />
 					);
 				}
 			}
@@ -140,12 +140,6 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 
 	const values = [
 		<Value
-			label={ __( 'Balance' ) }
-			value={ prettifyNumber( balance, 0 ) }
-			unit={ '€' }
-			isVertical={ true }
-			isNegative={ balance < 0 } />,
-		<Value
 			label={ __( 'Value' ) }
 			value={ prettifyNumber( value, 0 ) }
 			unit={ '€' }
@@ -165,6 +159,12 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			isVertical={ true }
 			isPositive={ returnPercentage > 0 }
 			isNegative={ returnPercentage < 0 } />,
+		<Value
+			label={ __( 'Balance' ) }
+			value={ prettifyNumber( balance, 0 ) }
+			unit={ '€' }
+			isVertical={ true }
+			isNegative={ balance < 0 } />,
 	];
 
 	const tabs = [
@@ -175,7 +175,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 					{ valueHistoryData && (
 						<LineChart
 							id={ `${ account._id.toString() }-value-chart` }
-							label={ __( "Value") }
+							label={ __( "Net Value") }
 							unit={ "€" }
 							data={ valueHistoryData }
 							timeframeOptions={[
@@ -266,17 +266,17 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			label: __( 'Loan' ),
 			content: (
 				<View style={ styles.contentContainer }>
-					<Value
-						label={ __( "Loan" ) }
-						value={ loanAmount }
-						unit={ "€" } />
-
 					{ loanHistoryData && (
 						<LineChart
 							id={ `${ account._id.toString() }-loan-chart` }
-							label={ __( "Loan") }
+							label={ __( "Debt") }
 							unit={ "€" }
-							data={ loanHistoryData }
+							data={ loanHistoryData.map( data => {
+								return {
+									...data,
+									value: -data.value
+								}
+							})}
 							timeframeOptions={[
 								TimeframeTypes.ytd,
 								TimeframeTypes["1year"],

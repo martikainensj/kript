@@ -107,10 +107,9 @@ export const LineChart: React.FC<Props> = ({
 	const pointerLabelComponent = useCallback(( items: lineDataItem[] ) => {
 		const item = items[0];
 
-		if ( ! item || item.hideDataPoint ) {
+		if ( ! item?.value || item.hideDataPoint ) {
 			return;
 		}
-		const offsetFixedValue = item.value + yAxisOffset;
 		
 		return (
 			<View style={ styles.pointerLabelContainer }>	
@@ -125,10 +124,10 @@ export const LineChart: React.FC<Props> = ({
 					{ backgroundColor: theme.colors.background }
 				]}>
 					<Value
-						value={ prettifyNumber( offsetFixedValue, 0 )}
+						value={ prettifyNumber( item.value, 0 )}
 						unit={ unit }
-						isPositive={ offsetFixedValue > 0 }
-						isNegative={ offsetFixedValue < 0 } />
+						isPositive={ item.value > 0 }
+						isNegative={ item.value < 0 } />
 				</View>
 			</View>
 		);
@@ -158,6 +157,7 @@ export const LineChart: React.FC<Props> = ({
 		pointerLabelWidth: 100,
 		pointerLabelHeight: 90,
 		pointerLabelComponent,
+		pointerVanishDelay: 0
 	} as LineChartPropsType['pointerConfig'];
 
 	const xAxis = {

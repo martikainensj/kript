@@ -1,15 +1,14 @@
 import React from 'react';
+import 'expo-dev-client';
 import 'react-native-get-random-values';
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import 'expo-dev-client';
 import { registerRootComponent } from 'expo'
 import { StatusBar } from 'expo-status-bar';
 import { Stack } from 'expo-router';
 
 import { GlobalStyles } from '../constants';
 import { BottomSheetProvider } from '../contexts/BottomSheetContext';
-
 import { I18nProvider } from '../contexts/I18nContext';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import { MenuProvider } from '../contexts/MenuContext';

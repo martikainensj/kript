@@ -41,31 +41,50 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
 	
 	const { name, amount, value, returnValue, returnPercentage } = holding;
 
-	const values = [
-		<Value
-			label={ __( 'Amount' ) }
-			value={ prettifyNumber( amount ) }
-			isVertical={ true } />,
-		<Value
-			label={ __( 'Value' ) }
-			value={ prettifyNumber( value ) }
-			unit={ '€' }
-			isVertical={ true } />,
-		<Value
-			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnValue ) }
-			unit={ '€' }
-			isVertical={ true }
-			isPositive={ returnValue > 0 }
-			isNegative={ returnValue < 0 } />,
-		<Value
-			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnPercentage ) }
-			unit={ '%' }
-			isVertical={ true }
-			isPositive={ returnPercentage > 0 }
-			isNegative={ returnPercentage < 0 } />,
-	];
+	const values = [];
+	
+	if ( value ) {
+		values.push(
+			<Value
+				label={ __( 'Value' ) }
+				value={ prettifyNumber( value ) }
+				unit={ '€' }
+				isVertical={ true } />
+		)
+	}
+
+	if ( returnValue ) {
+		values.push(
+			<Value
+				label={ __( 'Return' ) }
+				value={ prettifyNumber( returnValue ) }
+				unit={ '€' }
+				isVertical={ true }
+				isPositive={ returnValue > 0 }
+				isNegative={ returnValue < 0 } />
+		)
+	}
+
+	if ( returnPercentage ) {
+		values.push(
+			<Value
+				label={ __( 'Return' ) }
+				value={ prettifyNumber( returnPercentage ) }
+				unit={ '%' }
+				isVertical={ true }
+				isPositive={ returnPercentage > 0 }
+				isNegative={ returnPercentage < 0 } />
+		)
+	}
+
+	if ( amount > 1 ) {
+		values.push(
+			<Value
+				label={ __( 'Amount' ) }
+				value={ prettifyNumber( amount ) }
+				isVertical={ true } />
+		)
+	}
 
 	const meta = [
 		<Text style={ [ styles.name, { color: theme.colors.primary } ] }>{ name }</Text>
@@ -108,7 +127,7 @@ const styles = StyleSheet.create( {
 		flexShrink: 1
 	},
 	name: {
-		fontWeight: FontWeight.bold,
+		...GlobalStyles.bold
 	},
 	iconContainer: {
 	}

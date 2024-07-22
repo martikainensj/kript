@@ -407,9 +407,17 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Arvo',
 		en_US: 'Value'
 	},
+	'net value': {
+		fi_FI: 'Nettoarvo',
+		en_US: 'Net value'
+	},
 	'return': {
 		fi_FI: 'Tuotto',
 		en_US: 'Return'
+	},
+	'debt': {
+		fi_FI: 'Velka',
+		en_US: 'Debt'
 	},
 	'light': {
 		fi_FI: 'Vaalea',
