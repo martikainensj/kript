@@ -33,7 +33,7 @@ export const LineChartButton: React.FC<Props> = ({
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
 
 	const timeframedData = useMemo(() => {
-		const timeframe = TimeframeTypes.max;
+		const timeframe = TimeframeTypes['1year'];
 		const filteredData = filterDataByInterval( data, timeframe.interval, timeframe.range );
 		const lineDataItems = filteredData.map( data => {
 			return {
@@ -92,7 +92,7 @@ export const LineChartButton: React.FC<Props> = ({
 		hideYAxisText: true,
 	} as Partial<LineChartPropsType>
 
-	const showChart = timeframedData?.length > 1;
+	const showChart = timeframedData?.length > 0;
 
 	return (
 		<TouchableRipple

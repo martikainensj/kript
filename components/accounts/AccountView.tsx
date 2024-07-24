@@ -187,10 +187,10 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			isNegative={ balance < 0 } />,
 	];
 
-	const charts = [];
+	const overviewCharts = [];
 
 	if ( valueHistoryData ) {
-		charts.push(
+		overviewCharts.push(
 			<LineChartButton
 				label={ __( "Net Value") }
 				unit={ "€" }
@@ -216,7 +216,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 	}
 
 	if ( returnHistoryData ) {
-		charts.push(
+		overviewCharts.push(
 			<LineChartButton
 				label={ __( "Return") }
 				unit={ "€" }
@@ -241,12 +241,50 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 		)
 	}
 
+	const LoanCharts = [];
+
+	if ( loanHistoryData ) {
+		LoanCharts.push(
+			<LineChartButton
+				label={ __( "Debt") }
+				unit={ "€" }
+				data={ loanHistoryData.map( data => {
+					return {
+						...data,
+						value: -data.value
+					}
+				})}
+				onPress={() => {
+					openChartSheet(
+						'',
+						<LineChart
+							id={ `${ account._id.toString() }-loan-chart` }
+							label={ __( "Debt") }
+							unit={ "€" }
+							data={ loanHistoryData.map( data => {
+								return {
+									...data,
+									value: -data.value
+								}
+							})}
+							timeframeOptions={[
+								TimeframeTypes.ytd,
+								TimeframeTypes["1year"],
+								TimeframeTypes["3year"],
+								TimeframeTypes["5year"],
+								TimeframeTypes.max
+							]} />
+					)
+				}} />
+		)
+	}
+
 	const tabs = [
 		{
 			label: __( 'Overview' ),
 			content: (
 				<View style={ styles.contentContainer }>
-					<Grid columns={ 2 } items={ charts } />
+					<Grid columns={ 2 } items={ overviewCharts } style={ styles.gridContainer } />
 				</View>
 			)
 		},
@@ -312,25 +350,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			label: __( 'Loan' ),
 			content: (
 				<View style={ styles.contentContainer }>
-					{ loanHistoryData && (
-						<LineChart
-							id={ `${ account._id.toString() }-loan-chart` }
-							label={ __( "Debt") }
-							unit={ "€" }
-							data={ loanHistoryData.map( data => {
-								return {
-									...data,
-									value: -data.value
-								}
-							})}
-							timeframeOptions={[
-								TimeframeTypes.ytd,
-								TimeframeTypes["1year"],
-								TimeframeTypes["3year"],
-								TimeframeTypes["5year"],
-								TimeframeTypes.max
-							]} />
-					)}
+					<Grid columns={ 1 } items={ LoanCharts } style={ styles.gridContainer } />
 				</View>
 			)
 		})
@@ -372,6 +392,8 @@ const styles = StyleSheet.create( {
 	contentContainer: {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
-		paddingVertical: Spacing.md
 	},
+	gridContainer: {
+		paddingTop: Spacing.md
+	}
 } );

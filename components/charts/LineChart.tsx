@@ -196,8 +196,9 @@ export const LineChart: React.FC<Props> = ({
 						valueStyle={ styles.lastValue }
 						unitStyle={ styles.lastValueUnit } />
 				</View>
-				<View style={ styles.lineChartWrapper }>
-					{ showChart &&
+
+				{ showChart &&
+					<View style={ styles.lineChartWrapper }>
 						<GiftedLineChart
 							curved
 							curveType={ 1 }
@@ -220,8 +221,15 @@ export const LineChart: React.FC<Props> = ({
 							endFillColor={ 'transparent' }
 							startOpacity={ 0.3 }
 							endOpacity={ 0 } />
-					}
-				</View>
+					</View>
+				}
+
+				{ ! showChart && 
+					<View style={ styles.noticeWrapper }>
+						<Text>{ __( 'Not enough data' ) }</Text>
+					</View>
+				}
+
 				{ showTimeframe &&
 					<Menu
 						anchor={
@@ -270,6 +278,10 @@ const styles = StyleSheet.create({
 	lineChartWrapper: {
 		alignItems: 'flex-end',
 		justifyContent: 'flex-end',
+	},
+	noticeWrapper: {
+		...GlobalStyles.gutter,
+		marginTop: Spacing.md
 	},
 	xAxisLabelText: {
 		display: 'none'

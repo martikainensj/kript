@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { GestureResponderEvent, ScrollView, StyleSheet, View } from "react-native"
+import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { router } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
@@ -13,13 +13,11 @@ import { useI18n } from '../../contexts/I18nContext';
 import { useFAB } from "../../contexts/FABContext";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { useUser } from "../../hooks/useUser";
-import { Card } from "../../components/ui/Card";
 import { Tabs } from "../../components/ui/Tabs";
 import { Icon } from "../../components/ui/Icon";
 import { Value } from "../../components/ui/Value";
 import { Header } from "../../components/ui/Header";
 import { Grid } from "../../components/ui/Grid";
-import { Title } from "../../components/ui/Title";
 import { ItemList } from "../../components/ui/ItemList";
 import { useTypes } from "../../hooks/useTypes";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -29,9 +27,9 @@ import { useHolding } from "../../hooks/useHolding";
 import { useSelector } from "../../hooks/useSelector";
 import { Transaction } from "../../models/Transaction";
 import Switcher from "../ui/Switcher";
-import { Text } from "react-native-paper";
 import { LineChart } from "../charts/LineChart";
-import { lineDataItem } from "react-native-gifted-charts";
+import { LineChartButton } from "../buttons/LineChartButton";
+import { useChartSheet } from "../../contexts/ChartSheetContext";
 
 interface HoldingViewProps {
 	holding: Holding;
@@ -46,6 +44,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { openChartSheet } = useChartSheet();
 	const { SortingTypes, TimeframeTypes } = useTypes();
 	const insets = useSafeAreaInsets();
 	const { isSelecting, select, deselect, selectedType, selectedObjects, validate, hasObject, canSelect } = useSelector();
@@ -157,6 +156,34 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 			isPositive={ returnPercentage > 0 }
 			isNegative={ returnPercentage < 0 } />,
 	];
+
+	const charts = [];
+
+	if ( returnHistoryData ) {
+		charts.push(
+			<LineChartButton
+				label={ __( "Return") }
+				unit={ "€" }
+				data={ returnHistoryData }
+				onPress={ () => {
+					openChartSheet(
+						'',
+						<LineChart
+							id={ `${ holding._id.toString() }-return-chart` }
+							label={ __( "Return") }
+							unit={ "€" }
+							data={ returnHistoryData }
+							timeframeOptions={[
+								TimeframeTypes.ytd,
+								TimeframeTypes["1year"],
+								TimeframeTypes["3year"],
+								TimeframeTypes["5year"],
+								TimeframeTypes.max
+							]} />
+					)
+				}} />
+		)
+	}
 	
 	return (
 		<View style={ styles.container }>
@@ -185,18 +212,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 					label: __( 'Overview' ),
 					content: (
 						<View style={ styles.contentContainer }>
-							<LineChart
-								id={ `${ holding._id.toString() }-return-chart` }
-								label={ __( "Return") }
-								unit={ "€" }
-								data={ returnHistoryData }
-								timeframeOptions={[
-									TimeframeTypes.ytd,
-									TimeframeTypes["1year"],
-									TimeframeTypes["3year"],
-									TimeframeTypes["5year"],
-									TimeframeTypes.max
-								]} />
+							<Grid columns={ 2 } items={ charts } style={ styles.gridContainer } />
 						</View>
 					)
 				},
@@ -243,4 +259,7 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
 	},
+	gridContainer: {
+		paddingTop: Spacing.md
+	}
 } );

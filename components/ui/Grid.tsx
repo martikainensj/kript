@@ -1,23 +1,28 @@
 import React from 'react';
-import { View, StyleSheet, DimensionValue } from 'react-native';
+import { View, StyleSheet, DimensionValue, StyleProp, ViewStyle } from 'react-native';
 import { Spacing } from '../../constants';
 
 interface GridProps {
   columns: number;
   items: React.ReactNode[];
+	style?: StyleProp<ViewStyle>
 }
 
 const gap = Spacing.sm;
 
 export const Grid: React.FC<GridProps> = ( {
 	columns = 1,
-	items
+	items,
+	style
 } ) => {
   const itemWidth: DimensionValue | undefined = `${ 100 / columns }%`;
 	
 
   return (
-    <View style={ styles.container }>
+    <View style={[
+			styles.container,
+			style
+		]}>
       { items?.map( ( item, key ) =>
         <View
 					key={ key }
