@@ -15,7 +15,7 @@ export const GlobalStyles = StyleSheet.create({
 		paddingHorizontal: Spacing.md
 	},
 	title: {
-		fontSize: FontSize.md,
+		fontSize: FontSize.lg,
 		fontWeight: FontWeight.regular,
 		fontFamily: FontFamily.regular,
 	},

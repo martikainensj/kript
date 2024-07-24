@@ -185,7 +185,7 @@ export const LineChart: React.FC<Props> = ({
 		<Animated.View
 			onLayout={ onLayout }
 			style={ styles.container }>
-			<Card style={ { paddingHorizontal: 0, paddingBottom: 0 } }>
+			<Card style={ { paddingHorizontal: 0, borderRadius: 0 } }>
 				<View style={ styles.headerContainer }>
 					<Title>{ label }</Title>
 					<Value
@@ -199,6 +199,9 @@ export const LineChart: React.FC<Props> = ({
 				<View style={ styles.lineChartWrapper }>
 					{ showChart &&
 						<GiftedLineChart
+							curved
+							curveType={ 1 }
+							animationDuration={ 1500 }
 							isAnimated
 							data={ timeframedData }
 							{ ...xAxis }

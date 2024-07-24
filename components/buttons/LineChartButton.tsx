@@ -112,6 +112,8 @@ export const LineChartButton: React.FC<Props> = ({
 					{ showChart &&
 						<GiftedLineChart
 							data={ timeframedData }
+							curved
+							curveType={ 1 }
 							{ ...xAxis }
 							{ ...yAxis }
 							width={ lineChartWidth }

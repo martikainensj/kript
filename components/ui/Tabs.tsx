@@ -31,7 +31,6 @@ export const Tabs: React.FC<TabsProps> = ( {
 		<TabsProvider defaultIndex={ defaultIndex }>
 			<PaperTabs
 				mode={ mode }
-				disableSwipe
 				showLeadingSpace={ false }
 				style={ {
 					...styles.container,
