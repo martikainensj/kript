@@ -603,6 +603,10 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Max',
 		en_US: 'Max'
 	},
+	'not enough data': {
+		fi_FI: 'Ei tarpeeksi dataa',
+		en_US: 'Not enough data'
+	}
 }
 
 export default Translations;
