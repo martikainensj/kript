@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import GorhomBottomSheet, {
 	BottomSheetBackdrop,
-	BottomSheetScrollView,
+	BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import {
 	BottomSheetMethods
@@ -110,6 +110,7 @@ export const BottomSheetProvider = ( { children } ) => {
 				index={ -1 }
 				backdropComponent={ renderBackdrop }
 				enablePanDownToClose={ true }
+				enableContentPanningGesture={false}
 				style={ styles.container }
 				onClose={ onClose }
 				snapPoints={ snapPoints }
@@ -125,12 +126,9 @@ export const BottomSheetProvider = ( { children } ) => {
 								onPress={ closeBottomSheet } /> 
 						} />
 				}>
-				<BottomSheetScrollView
-					keyboardShouldPersistTaps={ "handled" }
-					keyboardDismissMode={ "interactive" }
-					contentContainerStyle={ styles.contentContainer }>
+				<BottomSheetView style={ styles.contentContainer }>
 					{ content }
-				</BottomSheetScrollView>
+				</BottomSheetView>
 			</GorhomBottomSheet>
 		</BottomSheetContext.Provider>
 	);
