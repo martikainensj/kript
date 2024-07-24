@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { BackButton, IconButton } from "../buttons";
@@ -21,7 +22,6 @@ import { Grid } from "../ui/Grid";
 import { ItemList } from "../ui/ItemList";
 import HoldingItem from "../holdings/HoldingItem";
 import TransactionItem from "../transactions/TransactionItem";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useData } from "../../contexts/DataContext";
 import { useSelector } from "../../hooks/useSelector";
 import { Transaction } from "../../models/Transaction";
@@ -29,7 +29,8 @@ import { Account } from "../../models/Account";
 import { useAccount } from "../../hooks";
 import Switcher from "../ui/Switcher";
 import { LineChart } from "../charts/LineChart";
-import { ScrollView } from "react-native-gesture-handler";
+import { useChartSheet } from "../../contexts/ChartSheetContext";
+import { LineChartButton } from "../buttons/LineChartButton";
 
 interface AccountViewProps {
 	account: Account;
@@ -41,6 +42,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { openChartSheet, closeChartSheet } = useChartSheet();
 	const { SortingTypes, TimeframeTypes } = useTypes();
 	const insets = useSafeAreaInsets();
 	const { isSelecting, selectedType, selectedObjects, select, deselect, canSelect, hasObject, validate } = useSelector();
@@ -71,6 +73,24 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 					<Icon name={ 'trash' } { ...props } />,
 				onPress: () => removeObjects( 'Account', [ account ] ).then(() => router.navigate( '/accounts' )) ,
 			},
+			{
+				title: 'Test',
+				onPress: () => openChartSheet(
+					'',
+					<LineChart
+						id={ `${ account._id.toString() }-value-chart` }
+						label={ __( "Net Value") }
+						unit={ "€" }
+						data={ valueHistoryData }
+						timeframeOptions={[
+							TimeframeTypes.ytd,
+							TimeframeTypes["1year"],
+							TimeframeTypes["3year"],
+							TimeframeTypes["5year"],
+							TimeframeTypes.max
+						]} />
+				)
+			}
 		];
 
 		openMenu( anchor, menuItems );
@@ -167,12 +187,17 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			isNegative={ balance < 0 } />,
 	];
 
-	const tabs = [
-		{
-			label: __( 'Overview' ),
-			content: (
-				<View style={ styles.contentContainer }>
-					{ valueHistoryData && (
+	const charts = [];
+
+	if ( valueHistoryData ) {
+		charts.push(
+			<LineChartButton
+				label={ __( "Net Value") }
+				unit={ "€" }
+				data={ valueHistoryData }
+				onPress={ () => {
+					openChartSheet(
+						'',
 						<LineChart
 							id={ `${ account._id.toString() }-value-chart` }
 							label={ __( "Net Value") }
@@ -185,9 +210,20 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 								TimeframeTypes["5year"],
 								TimeframeTypes.max
 							]} />
-					)}
+					)
+				}}/>
+		)
+	}
 
-					{ returnHistoryData && (
+	if ( returnHistoryData ) {
+		charts.push(
+			<LineChartButton
+				label={ __( "Return") }
+				unit={ "€" }
+				data={ returnHistoryData }
+				onPress={ () => {
+					openChartSheet(
+						'',
 						<LineChart
 							id={ `${ account._id.toString() }-return-chart` }
 							label={ __( "Return") }
@@ -200,7 +236,17 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 								TimeframeTypes["5year"],
 								TimeframeTypes.max
 							]} />
-					)}
+					)
+				}}/>
+		)
+	}
+
+	const tabs = [
+		{
+			label: __( 'Overview' ),
+			content: (
+				<View style={ styles.contentContainer }>
+					<Grid columns={ 2 } items={ charts } />
 				</View>
 			)
 		},
@@ -326,5 +372,6 @@ const styles = StyleSheet.create( {
 	contentContainer: {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
+		paddingVertical: Spacing.md
 	},
 } );

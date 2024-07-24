@@ -205,7 +205,7 @@ export const LineChart: React.FC<Props> = ({
 							{ ...yAxis }
 							{ ...rules }
 							width={ lineChartWidth }
-							height={ lineChartWidth / 4 }
+							height={ lineChartWidth / 2 }
 							initialSpacing={ 0 }
 							thickness={ 2 }
 							hideDataPoints
@@ -257,7 +257,6 @@ export const LineChart: React.FC<Props> = ({
 const styles = StyleSheet.create({
 	container: {
 		gap: Spacing.sm,
-		marginTop: Spacing.md,
 	},
 	headerContainer: {
 		flexDirection: 'row',
