@@ -10,13 +10,17 @@ interface useHoldingProps {
 }
 
 export const useHolding = ( { holding }: useHoldingProps ) => {
-		const { updateVariables } = useData();
+		const { updateVariables, getAccountBy } = useData();
 
 		if ( ! holding?.isValid() ) return;
 
 		const { transactions } = holding;
+		const account = getAccountBy( '_id', holding.account_id );
+		const dividends = account.transactions.filtered( `holding_name == $0`, holding.name );
+
 		const checksum = generateChecksum({
-			transactions
+			transactions,
+			dividends
  		});
 
 		useLayoutEffect(() => {
@@ -27,8 +31,12 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 			// Transactions in ascending order by date
 			const sortedTransactions = transactions.sorted('date');
 
-			const valueHistoryData = [] as DataPoint[];
-			const returnHistoryData = [] as DataPoint[];
+			const valueHistoryData = [] as Holding['valueHistoryData'];
+			const returnHistoryData = [] as Holding['returnHistoryData'];
+
+			// TODO: tee datemap hommat tännekin et saadaan ehjä data kasaan
+			// nyt data muodostuu vain oikeista merkinnöistä ja välipäiviä ei ole
+			// Dividendseistä vois muodostaa sit omat datapointit
 
 			const {
 				lastPrice,
