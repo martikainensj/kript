@@ -10,30 +10,29 @@ interface GridProps {
 
 const gap = Spacing.sm;
 
-export const Grid: React.FC<GridProps> = ( {
+export const Grid: React.FC<GridProps> = ({
 	columns = 1,
 	items,
 	style
-} ) => {
+}) => {
   const itemWidth: DimensionValue | undefined = `${ 100 / columns }%`;
 	
-
   return (
     <View style={[
 			styles.container,
 			style
 		]}>
-      { items?.map( ( item, key ) =>
+      { items?.map(( item, key ) =>
         <View
 					key={ key }
-					style={ [
+					style={[
 						styles.item,
 						{ width: itemWidth },
 						key > columns - 1 && { paddingTop: gap }
-					] }>
+					]}>
           { item }
         </View>
-      ) }
+      )}
     </View>
   );
 };
@@ -43,9 +42,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
-		marginHorizontal: -gap
+		margin: -gap
   },
   item: {
-		paddingHorizontal: gap
+		padding: gap
   },
 });

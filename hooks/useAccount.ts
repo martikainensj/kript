@@ -35,9 +35,10 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			cashAmount: 0,
 			loanAmount: 0,
 			dividendAmount: 0,
-			valueHistoryData: [] as DataPoint[],
-			returnHistoryData: [] as DataPoint[],
-			loanHistoryData: [] as DataPoint[],
+			valueHistoryData: [] as Account['valueHistoryData'],
+			returnHistoryData: [] as Account['returnHistoryData'],
+			loanHistoryData: [] as Account['loanHistoryData'],
+			dividendHistoryData: [] as Account['dividendHistoryData'],
 		};
 
 		const transactionsResult = sortedTransactions.reduce(( acc, transaction ) => {
@@ -74,7 +75,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			if ( sub_type === 'dividend' ) {
 				acc.dividendAmount += amount;
 
-				const existingDateIndex = acc.returnHistoryData.findIndex( dataPoint => {
+				const existingDateIndex = acc.dividendHistoryData.findIndex( dataPoint => {
 					return dataPoint.date === date;
 				});
 
@@ -84,9 +85,9 @@ export const useAccount = ( { account }: useAccountProps ) => {
 				}
 
 				if ( existingDateIndex !== -1 ) {
-					acc.returnHistoryData[ existingDateIndex ] = dataPoint;
+					acc.dividendHistoryData[ existingDateIndex ] = dataPoint;
 				} else {
-					acc.returnHistoryData.push( dataPoint );
+					acc.dividendHistoryData.push( dataPoint );
 				}
 			}
 			
@@ -105,6 +106,8 @@ export const useAccount = ( { account }: useAccountProps ) => {
 				acc.valueHistoryData.push( dataPoint );
 			}
 
+			acc.returnHistoryData = [ ...acc.dividendHistoryData ];
+			
 			return acc;
 		}, transactionsInitial );
 
@@ -215,6 +218,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 		const sortedValueHistoryData = valueHistoryData.sort( SortingTypes.oldestFirst.function );
 		const sortedReturnHistoryData = returnHistoryData.sort( SortingTypes.oldestFirst.function );
 		const sortedLoanHistoryData = transactionsResult.loanHistoryData.sort( SortingTypes.oldestFirst.function );
+		const sorteddividendHistoryData = transactionsResult.dividendHistoryData.sort( SortingTypes.oldestFirst.function );
 
 		updateVariables( account, {
 			total,
@@ -227,6 +231,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			valueHistoryData: sortedValueHistoryData,
 			returnHistoryData: sortedReturnHistoryData,
 			loanHistoryData: sortedLoanHistoryData,
+			dividendHistoryData: sorteddividendHistoryData,
 			checksum
 		} );
 	}, [ checksum ]);

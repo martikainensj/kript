@@ -33,17 +33,17 @@ export const TextInput: React.FC<TextInputProps> = ( {
 	const onChangeTextHandler = ( string: string ) => {
 		if ( keyboardType === 'numeric' ) {
 			string = string.replace(/[^0-9.]/g, '');
+			const maxPartLength = 12;
 
 			if ( max && parseFloat( string ) > max ) {
-				string = max.toString();
+				return setInputValue( max.toFixed( maxPartLength ));
 			}
 
 			if ( min && parseFloat( string ) < min ) {
-				string = min.toString();
+				return setInputValue( min.toFixed( maxPartLength ) );
 			}
 
 			const parts = string.split( '.' );
-			const maxPartLength = 12;
 
 			// Prevent multiple dots in the string
 			if ( parts.length > 2 ) {
@@ -72,7 +72,7 @@ export const TextInput: React.FC<TextInputProps> = ( {
 		setInputValue( string );
 	}
 
-	useEffect( () => {
+	useEffect(() => {
 		if ( keyboardType === 'numeric' ) {
 			const numberValue = parseFloat( inputValue?.toString() );
 
@@ -84,13 +84,13 @@ export const TextInput: React.FC<TextInputProps> = ( {
 		}
 
 		onChangeText( inputValue );
-	}, [inputValue] );
+	}, [inputValue]);
 
-	useEffect( () => {
+	useEffect(() => {
 		if ( value?.toString() !== inputValue?.toString() ) {		
 			setInputValue( value ?? '' );
 		}
-	}, [value] );
+	}, [value]);
 
 	return (
 		<PaperTextInput

@@ -115,7 +115,8 @@ export const ChartSheetProvider = ( { children } ) => {
 				onClose={ onClose }
 				snapPoints={ snapPoints }
 				enableDynamicSizing={ true }
-				backgroundStyle={ { backgroundColor: theme.colors.background } }>
+				backgroundStyle={ { backgroundColor: theme.colors.background } }
+				handleIndicatorStyle={ { backgroundColor: theme.colors.surfaceVariant } }>
 				<BottomSheetView>
 					{ content }
 				</BottomSheetView>

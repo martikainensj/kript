@@ -3,7 +3,7 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native"
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { GlobalStyles, Spacing } from "../../constants";
+import { FontSize, FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { BackButton, IconButton } from "../buttons";
 import { MenuItem, useMenu } from "../../contexts/MenuContext";
 import { AccountForm } from "../accounts";
@@ -156,6 +156,7 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 		returnPercentage,
 		valueHistoryData,
 		returnHistoryData,
+		dividendHistoryData,
 	} = account;
 
 	const values = [
@@ -241,10 +242,34 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 		)
 	}
 
-	const LoanCharts = [];
+	if ( dividendHistoryData ) {
+		overviewCharts.push(
+			<LineChartButton
+				label={ __( "Dividend" ) }
+				unit={ "€" }
+				data={ dividendHistoryData }
+				onPress={ () => {
+					openChartSheet(
+						'',
+						<LineChart
+							id={ `${ account._id.toString() }-dividend-chart` }
+							label={ __( "Dividend" ) }
+							unit={ "€" }
+							data={ dividendHistoryData }
+							timeframeOptions={[
+								TimeframeTypes.ytd,
+								TimeframeTypes["1year"],
+								TimeframeTypes["3year"],
+								TimeframeTypes["5year"],
+								TimeframeTypes.max
+							]} />
+					)
+				}}/>
+		)
+	}
 
 	if ( loanHistoryData ) {
-		LoanCharts.push(
+		overviewCharts.push(
 			<LineChartButton
 				label={ __( "Debt") }
 				unit={ "€" }
@@ -283,8 +308,17 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 		{
 			label: __( 'Overview' ),
 			content: (
-				<View style={ styles.contentContainer }>
-					<Grid columns={ 2 } items={ overviewCharts } style={ styles.gridContainer } />
+				<View style={[
+					styles.contentContainer,
+					styles.overviewContainer
+				]}>
+					<Value
+						label={ __( 'Balance' ) }
+						value={ prettifyNumber( balance, 0 ) }
+						unit="€"
+						isVertical
+						valueStyle={ styles.value } />
+					<Grid columns={ 2 } items={ overviewCharts } />
 				</View>
 			)
 		},
@@ -345,17 +379,6 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 		}
 	] as TabsScreenContentProps[]
 
-	if ( !! loanAmount ) {
-		tabs.push({
-			label: __( 'Loan' ),
-			content: (
-				<View style={ styles.contentContainer }>
-					<Grid columns={ 1 } items={ LoanCharts } style={ styles.gridContainer } />
-				</View>
-			)
-		})
-	}
-
 	return (
 		<View style={ styles.container }>
 			<Header
@@ -373,9 +396,9 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 					activeIndex={ isSelecting ? 0 : 1 } />
 				}
 				showDivider={ false }>
-					<Grid
-						columns={ 4 }
-						items= { values } />
+				<Grid
+					columns={ 4 }
+					items= { values } />
 			</Header>
 
 			<Tabs screens={ tabs } />
@@ -393,7 +416,12 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
 	},
-	gridContainer: {
-		paddingTop: Spacing.md
+	overviewContainer: {
+		paddingVertical: Spacing.md,
+		gap: Spacing.md,
+	},
+	value: {
+		fontSize: FontSize.lg,
+		fontWeight: FontWeight.bold,
 	}
 } );

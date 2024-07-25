@@ -251,7 +251,7 @@ export const TransactionForm = ( {
 						keyboardType={ 'numeric' }
 						inputMode={ 'decimal' }
 						max={(() => {
-							return account.balance > 0
+							return account.balance > 0 && sub_type === 'withdrawal'
 								? account.balance
 								: 0
 						})()}
