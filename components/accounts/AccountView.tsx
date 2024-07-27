@@ -73,24 +73,6 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 					<Icon name={ 'trash' } { ...props } />,
 				onPress: () => removeObjects( 'Account', [ account ] ).then(() => router.navigate( '/accounts' )) ,
 			},
-			{
-				title: 'Test',
-				onPress: () => openChartSheet(
-					'',
-					<LineChart
-						id={ `${ account._id.toString() }-value-chart` }
-						label={ __( "Net Value") }
-						unit={ "€" }
-						data={ valueHistoryData }
-						timeframeOptions={[
-							TimeframeTypes.ytd,
-							TimeframeTypes["1year"],
-							TimeframeTypes["3year"],
-							TimeframeTypes["5year"],
-							TimeframeTypes.max
-						]} />
-				)
-			}
 		];
 
 		openMenu( anchor, menuItems );
