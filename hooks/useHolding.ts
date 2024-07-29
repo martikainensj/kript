@@ -2,8 +2,9 @@ import { useLayoutEffect, useState } from "react";
 
 import { Holding } from "../models/Holding";
 import { useData } from "../contexts/DataContext";
-import { generateChecksum, getTransactionEndOfDayTimestamp } from "../helpers";
+import { generateChecksum, getDateMap, getTransactionEndOfDayTimestamp } from "../helpers";
 import { DataPoint } from "../models/DataPoint";
+import { useTypes } from "./useTypes";
 
 interface useHoldingProps {
 	holding: Holding
@@ -11,6 +12,7 @@ interface useHoldingProps {
 
 export const useHolding = ( { holding }: useHoldingProps ) => {
 		const { updateVariables, getAccountBy } = useData();
+		const { SortingTypes } = useTypes();
 
 		if ( ! holding?.isValid() ) return;
 
@@ -29,76 +31,100 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 			}
 
 			// Transactions in ascending order by date
-			const sortedTransactions = transactions.sorted('date');
+			const sortedTransactions = [
+				...transactions,
+				...dividends
+			].sort( SortingTypes.oldestFirst.function );
+			
+			const initialData = {
+				lastPrice: 0,
+				amount: 0,
+				transactionSum: 0,
+				total: 0,
+				valueHistoryData: [] as Holding['valueHistoryData'],
+				returnHistoryData: [] as Holding['returnHistoryData'],
+				dividendHistoryData: [] as Holding['dividendHistoryData'],
+				feesHistoryData: [] as Holding['feesHistoryData'],
+			};
 
-			const valueHistoryData = [] as Holding['valueHistoryData'];
-			const returnHistoryData = [] as Holding['returnHistoryData'];
+			// TODO: 
+			// Ota resultData käyttöön 
 
-			// TODO: tee datemap hommat tännekin et saadaan ehjä data kasaan
-			// nyt data muodostuu vain oikeista merkinnöistä ja välipäiviä ei ole
-			// Dividendseistä vois muodostaa sit omat datapointit
+			/*
+			- Chartit luo ite välipäivät eli niitä ei tarvii laskee dataan itteensä sisään
+			- Chart kattoo intervallin mukaan "tyhjät välipäivät" esittävän datan sekaan
+				näin ollen data pysyy yksinkertaisempana
+				- Tämä toki lisää laskettavaa rendaukseen, mutta ei merkittävästi
+			*/
+	
+			const resultData = sortedTransactions.reduce(( acc, transaction ) => {
+				acc.lastPrice = transaction.price ?? acc.lastPrice;
+	
+				if ( transaction.type === 'trading' ) {
+					acc.transactionSum += acc.lastPrice * transaction.amount;
+					acc.total += transaction.total;
+				}
+	
+				if ( transaction.type === 'adjustment' ) {
+					acc.amount = transaction.amount;
+				} else {
+					acc.amount += transaction.amount;
+				}
 
-			const {
-				lastPrice,
-				amount,
-				transactionSum,
-				total,
-			} = sortedTransactions.reduce(
-				(acc, transaction) => {
-					acc.lastPrice = transaction.price ?? acc.lastPrice;
-		
-					if ( transaction.type === 'trading' ) {
-						acc.transactionSum += acc.lastPrice * transaction.amount;
-						acc.total += transaction.total;
-					}
-		
-					if ( transaction.type === 'adjustment' ) {
-						acc.amount = transaction.amount;
-					} else {
-						acc.amount += transaction.amount;
-					}
+				const date = getTransactionEndOfDayTimestamp( transaction );
+				const value = acc.amount * acc.lastPrice;
+				const returnValue = value - acc.total;
+				const fees = acc.total - value;
 
-					const date = getTransactionEndOfDayTimestamp( transaction );
-					const value = acc.amount * acc.lastPrice;
-					const returnValue = value - acc.total;
+				const existingDateIndex = acc.valueHistoryData.findIndex( dataPoint => {
+					return dataPoint.date === date;
+				});
 
-					const existingDateIndex = valueHistoryData.findIndex( dataPoint => {
-						return dataPoint.date === date;
-					});
-
-					if ( existingDateIndex !== -1 ) {
-						valueHistoryData[ existingDateIndex ] = {
-							date,
-							value,
-						};
-
-						returnHistoryData[ existingDateIndex ] = {
-							date,
-							value: returnValue
-						};
-
-						return acc;
-					}
-					
-					valueHistoryData.push({
+				if ( existingDateIndex !== -1 ) {
+					acc.valueHistoryData[ existingDateIndex ] = {
 						date,
 						value,
-					});
+					};
 
-					returnHistoryData.push({
+					acc.returnHistoryData[ existingDateIndex ] = {
 						date,
 						value: returnValue
-					});
-		
+					};
+
+					acc.feesHistoryData[ existingDateIndex ] = {
+						date,
+						value: fees
+					}
+
 					return acc;
-				}, {
-					lastPrice: 0,
-					amount: 0,
-					transactionSum: 0,
-					total: 0,
 				}
-			);
+				
+				acc.valueHistoryData.push({
+					date,
+					value,
+				});
+
+				acc.returnHistoryData.push({
+					date,
+					value: returnValue
+				});
+
+				acc.feesHistoryData.push({
+					date,
+					value: fees
+				});
+	
+				return acc;
+			}, initialData );
+
+			const datemap = getDateMap( resultData.valueHistoryData );
+
+			/*const {} = datemap.reduce((acc, date) => {
+
+			}, {})*/
 		
+			const { total, transactionSum, amount, lastPrice } = resultData;
+
 			const fees = total - transactionSum;
 			const averagePrice = amount ? transactionSum / amount : 0;
 			const averageValue = averagePrice * amount;

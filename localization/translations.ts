@@ -383,6 +383,67 @@ const Translations: { [ key: string ]: Translation } = {
 		en_US: 'No Adjustments'
 	},
 
+	// Weekdays
+
+	'monday': {
+		fi_FI: 'Maanantai',
+		en_US: 'Monday'
+	},
+	'mon': {
+		fi_FI: 'Ma',
+		en_US: 'Mon'
+	},
+	'tuesday': {
+		fi_FI: 'Tiistai',
+		en_US: 'Tuesday'
+	},
+	'tue': {
+		fi_FI: 'Ti',
+		en_US: 'Tue'
+	},
+	'wednesday': {
+		fi_FI: 'Keskiviikko',
+		en_US: 'Wednesday'
+	},
+	'wed': {
+		fi_FI: 'Ke',
+		en_US: 'Wed'
+	},
+	'thursday': {
+		fi_FI: 'Torstai',
+		en_US: 'Thursday'
+	},
+	'thu': {
+		fi_FI: 'To',
+		en_US: 'Thu'
+	},
+	'friday': {
+		fi_FI: 'Perjantai',
+		en_US: 'Friday'
+	},
+	'fri': {
+		fi_FI: 'Pe',
+		en_US: 'Fri'
+	},
+	'saturday': {
+		fi_FI: 'Lauantai',
+		en_US: 'Saturday'
+	},
+	'sat': {
+		fi_FI: 'La',
+		en_US: 'Sat'
+	},
+	'sunday': {
+		fi_FI: 'Sunnuntai',
+		en_US: 'Sunday'
+	},
+	'sun': {
+		fi_FI: 'Su',
+		en_US: 'Sun'
+	},
+
+	// Other
+
 	'buy': {
 		fi_FI: 'Osto',
 		en_US: 'Buy'

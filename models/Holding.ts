@@ -23,6 +23,8 @@ export type Holding = {
 	returnPercentage?: number;
 	valueHistoryData?: DataPoint[];
 	returnHistoryData?: DataPoint[];
+	dividendHistoryData?: DataPoint[];
+	feesHistoryData?: DataPoint[];
 	checksum?: string;
 };
 
@@ -52,6 +54,8 @@ export const HoldingSchema = {
 		returnPercentage: 'double?',
 		valueHistoryData: 'DataPoint[]',
 		returnHistoryData: 'DataPoint[]',
+		dividendHistoryData: 'DataPoint[]',
+		feesHistoryData: 'DataPoint[]',
 		checksum: 'string?',
 	}
 };

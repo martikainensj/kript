@@ -38,6 +38,22 @@ export interface SortingType {
 
 export type IntervalType = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
+export interface WeekDay {
+	id: number;
+	name: string;
+	acronym: String;
+};
+
+export const WeekDayType: WeekDay[] = [
+	{ id: 0, name: 'Monday', acronym: 'Mon' },
+	{ id: 1, name: 'Tuesday', acronym: 'Tue' },
+	{ id: 2, name: 'Wednesday', acronym: 'Wed' },
+	{ id: 3, name: 'Thursday', acronym: 'Thu' },
+	{ id: 4, name: 'Friday', acronym: 'Fri' },
+	{ id: 5, name: 'Saturday', acronym: 'Sat' },
+	{ id: 6, name: 'Sunday', acronym: 'Sun' }
+];
+
 export interface TimeframeType {
 	id: keyof TimeframeTypes,
 	name: string,

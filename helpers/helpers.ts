@@ -1,6 +1,7 @@
 import Realm from 'realm';
 import { Transaction } from '../models/Transaction';
 import { DataPoint } from '../models/DataPoint';
+import { IntervalType } from '../hooks/useTypes';
 
 export const addTimeToDateTimestamp = ( timestamp: number ) => {
 	const date = new Date( timestamp );
@@ -88,11 +89,11 @@ export const getDateMap = (...DataPointArrays: DataPoint[][]) => {
   const allDates = allDataPoints.map(dataPoint => dataPoint.date);
 	const firstDate = new Date(Math.min(...allDates));
 	const lastDate = new Date(Math.max(...allDates));
-	const dateMap = [];
+	const dateMap = [] as number[];
 
 	for (let date = new Date(firstDate); date <= lastDate; date.setDate(date.getDate() + 1)) {
 		const newDate = new Date(date.setHours(23, 59, 59, 999)).getTime();
-		dateMap.push(newDate.valueOf());
+		dateMap.push(newDate);
 	}
 
 	return dateMap;
@@ -121,3 +122,44 @@ export const getYTD = () => {
 	
 	return diffInDays + 1;
 };
+
+export const generateLabels = ( fromTimestamp: number, toTimestamp: number, interval: IntervalType ) => {
+	const labels = [] as string[];
+	const currentDate = new Date( fromTimestamp );
+	const toDate = new Date( toTimestamp );
+
+	while ( currentDate >= toDate ) {
+		switch ( interval ) {
+			default:
+			case 'daily': {
+				labels.push( currentDate.toLocaleDateString( 'fi' ));
+				currentDate.setDate( currentDate.getDate() - 1 );
+
+				break;
+			}
+
+			case 'weekly': {
+				labels.push( currentDate.toLocaleDateString( 'fi' ));
+				currentDate.setDate( currentDate.getDate() - 7 );
+
+				break;
+			}
+
+			case 'monthly': {
+				labels.push( `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}` );
+				currentDate.setMonth( currentDate.getMonth() - 1 );
+
+				break;
+			}
+
+			case 'yearly': {
+				labels.push( currentDate.getFullYear().toString() );
+				currentDate.setFullYear(currentDate.getFullYear() - 1);
+
+				break;
+			}
+		}
+	}
+
+	return labels.reverse();
+}
