@@ -25,17 +25,12 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 			dividends
  		});
 
-		useLayoutEffect(() => {
-			if ( holding.checksum === checksum ) {
-				return;
-			}
-
-			// Transactions in ascending order by date
+		const calculateVariables = () => {
 			const sortedTransactions = [
 				...transactions,
 				...dividends
 			].sort( SortingTypes.oldestFirst.function );
-			
+
 			const initialData = {
 				lastPrice: 0,
 				amount: 0,
@@ -55,7 +50,7 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 				näin ollen data pysyy yksinkertaisempana
 				- Tämä toki lisää laskettavaa rendaukseen, mutta ei merkittävästi
 			*/
-	
+
 			const resultData = sortedTransactions.reduce(( acc, transaction ) => {
 				const date = getTransactionEndOfDayTimestamp( transaction );
 				
@@ -74,7 +69,7 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 
 						return acc;
 					}
-	
+
 					acc.dividendHistoryData.push({
 						date,
 						value: acc.dividendSum,
@@ -88,7 +83,7 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 					acc.transactionSum += acc.lastPrice * transaction.amount;
 					acc.total += transaction.total;
 				}
-	
+
 				if ( transaction.type === 'adjustment' ) {
 					acc.amount = transaction.amount;
 				} else {
@@ -132,10 +127,10 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 					date,
 					value: acc.feesSum
 				});
-	
+
 				return acc;
 			}, initialData );
-		
+
 			const { total, transactionSum, amount, lastPrice } = resultData;
 
 			const fees = total - transactionSum;
@@ -161,5 +156,13 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 				feesHistoryData: resultData.feesHistoryData,
 				checksum
 			});
+		}
+
+		useLayoutEffect(() => {
+			if ( holding.checksum === checksum ) {
+				return;
+			}
+
+			calculateVariables();
 		}, [ checksum ]);
 	}
