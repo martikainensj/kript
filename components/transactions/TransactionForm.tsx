@@ -36,6 +36,15 @@ export const TransactionForm = ( {
 	const [ editedTransaction, setEditedTransaction ]
 		= useState( { ...transaction } );
 
+	const initialTransaction = {
+		...editedTransaction,
+		holding_name: undefined,
+		amount: undefined,
+		notes: undefined,
+		price: undefined,
+		total: undefined,
+	} as Transaction;
+
 	const { date, price, amount, total, holding_name, notes, type, sub_type } = {
 		...editedTransaction,
 		amount: editedTransaction.amount && Math.abs( editedTransaction.amount ),
@@ -88,9 +97,13 @@ export const TransactionForm = ( {
 			return;
 		}
 
-		subTypes && setEditedTransaction(
-			Object.assign( { ...editedTransaction }, { sub_type: subTypes[0].id } )
-		);
+		const initializedTransaction = { ...initialTransaction };
+
+		if ( subTypes?.length ) {
+			Object.assign( initializedTransaction, { sub_type: subTypes[0].id } )
+		}
+		
+		setEditedTransaction( initializedTransaction );
 	}, [ subTypes ] );
 
 	useEffect(() => {

@@ -40,6 +40,8 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 				lastPrice: 0,
 				amount: 0,
 				transactionSum: 0,
+				feesSum: 0,
+				dividendSum: 0,
 				total: 0,
 				valueHistoryData: [] as Holding['valueHistoryData'],
 				returnHistoryData: [] as Holding['returnHistoryData'],
@@ -47,10 +49,7 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 				feesHistoryData: [] as Holding['feesHistoryData'],
 			};
 
-			// TODO: 
-			// Ota resultData käyttöön 
-
-			/*
+			/* TODO
 			- Chartit luo ite välipäivät eli niitä ei tarvii laskee dataan itteensä sisään
 			- Chart kattoo intervallin mukaan "tyhjät välipäivät" esittävän datan sekaan
 				näin ollen data pysyy yksinkertaisempana
@@ -58,8 +57,33 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 			*/
 	
 			const resultData = sortedTransactions.reduce(( acc, transaction ) => {
-				acc.lastPrice = transaction.price ?? acc.lastPrice;
+				const date = getTransactionEndOfDayTimestamp( transaction );
+				
+				const existingDateIndex = acc.valueHistoryData.findIndex( dataPoint => {
+					return dataPoint.date === date;
+				});
+
+				if ( transaction.sub_type === 'dividend' ) {
+					acc.dividendSum += transaction.amount;
+
+					if ( existingDateIndex !== -1 ) {
+						acc.dividendHistoryData[ existingDateIndex ] = {
+							date,
+							value: acc.dividendSum,
+						};
+
+						return acc;
+					}
 	
+					acc.dividendHistoryData.push({
+						date,
+						value: acc.dividendSum,
+					});
+
+					return acc;
+				}
+
+				acc.lastPrice = transaction.price ?? acc.lastPrice;
 				if ( transaction.type === 'trading' ) {
 					acc.transactionSum += acc.lastPrice * transaction.amount;
 					acc.total += transaction.total;
@@ -70,15 +94,10 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 				} else {
 					acc.amount += transaction.amount;
 				}
+				acc.feesSum += transaction.total - ( transaction.amount * transaction.price );
 
-				const date = getTransactionEndOfDayTimestamp( transaction );
 				const value = acc.amount * acc.lastPrice;
 				const returnValue = value - acc.total;
-				const fees = acc.total - value;
-
-				const existingDateIndex = acc.valueHistoryData.findIndex( dataPoint => {
-					return dataPoint.date === date;
-				});
 
 				if ( existingDateIndex !== -1 ) {
 					acc.valueHistoryData[ existingDateIndex ] = {
@@ -93,7 +112,7 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 
 					acc.feesHistoryData[ existingDateIndex ] = {
 						date,
-						value: fees
+						value: acc.feesSum
 					}
 
 					return acc;
@@ -111,17 +130,11 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 
 				acc.feesHistoryData.push({
 					date,
-					value: fees
+					value: acc.feesSum
 				});
 	
 				return acc;
 			}, initialData );
-
-			const datemap = getDateMap( resultData.valueHistoryData );
-
-			/*const {} = datemap.reduce((acc, date) => {
-
-			}, {})*/
 		
 			const { total, transactionSum, amount, lastPrice } = resultData;
 
@@ -143,8 +156,9 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 				value,
 				returnValue,
 				returnPercentage,
-				valueHistoryData,
-				returnHistoryData,
+				valueHistoryData: resultData.valueHistoryData,
+				returnHistoryData: resultData.returnHistoryData,
+				feesHistoryData: resultData.feesHistoryData,
 				checksum
 			});
 		}, [ checksum ]);

@@ -92,7 +92,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 	};
 
 	const type = useMemo( () => {
-		switch ( transaction?.type) {
+		switch ( transaction?.type ) {
 			case 'trading':
 				return TradingTypes.find(type => type.id === transaction.sub_type )
 			case 'cash':
@@ -132,8 +132,15 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 		values.push( <Value label={ __( 'Price' ) } value={ price } isVertical={ true } unit={ '€' } /> );
 	}
 	
-	if ( amount > 1 ) {
-		values.push( <Value label={ __( 'Amount' ) } value={ amount } isVertical={ true } /> );
+	const isAmountCurrencyType = transaction?.type === 'cash' || transaction?.type === 'loan';
+
+	if ( isAmountCurrencyType || amount > 1 ) {
+		values.push(
+			<Value
+				label={ __( 'Amount' ) }
+				value={ amount } isVertical={ true }
+				unit={ isAmountCurrencyType && '€' } />
+		);
 	}
 
 	if ( total ) {

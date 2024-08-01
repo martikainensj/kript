@@ -31,7 +31,6 @@ const ConditionalView: React.FC<Props> = ({
 }) => {
 	const [ shouldRender, setShouldRender ] = useState( condition );
   const fadeAnim = useRef( new Animated.Value( condition ? 1 : 0 )).current;
-	// TODO: kato toi width kuntoon kun nyt transactionItem pomppii ku mikäki
 	const scaleX = fadeAnim.interpolate({
 		inputRange: [ 0, 1 ],
 		outputRange: [

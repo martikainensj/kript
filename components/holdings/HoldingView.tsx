@@ -129,7 +129,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 		return;
 	}
 
-	const { name, amount, value, returnValue, returnPercentage, valueHistoryData, returnHistoryData } = holding;
+	const { name, amount, value, returnValue, returnPercentage, valueHistoryData, returnHistoryData, feesHistoryData } = holding;
 
 	const values = [
 		<Value
@@ -173,6 +173,32 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 							label={ __( "Return") }
 							unit={ "€" }
 							data={ returnHistoryData }
+							timeframeOptions={[
+								TimeframeTypes.ytd,
+								TimeframeTypes["1year"],
+								TimeframeTypes["3year"],
+								TimeframeTypes["5year"],
+								TimeframeTypes.max
+							]} />
+					)
+				}} />
+		)
+	}
+
+	if ( feesHistoryData ) {
+		charts.push(
+			<LineChartButton
+				label={ __( "Fees") }
+				unit={ "€" }
+				data={ feesHistoryData }
+				onPress={ () => {
+					openChartSheet(
+						'',
+						<LineChart
+							id={ `${ holding._id.toString() }-fees-chart` }
+							label={ __( "Fees") }
+							unit={ "€" }
+							data={ feesHistoryData }
 							timeframeOptions={[
 								TimeframeTypes.ytd,
 								TimeframeTypes["1year"],

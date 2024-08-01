@@ -480,6 +480,10 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Velka',
 		en_US: 'Debt'
 	},
+	'fees': {
+		fi_FI: 'Kulut',
+		en_US: 'Fees'
+	},
 	'light': {
 		fi_FI: 'Vaalea',
 		en_US: 'Light'

@@ -5,7 +5,6 @@ import { useData } from "../contexts/DataContext";
 import { generateChecksum, getDateMap, getTransactionEndOfDayTimestamp } from "../helpers";
 import { DataPoint } from "../models/DataPoint";
 import { useTypes } from "./useTypes";
-import { lineDataItem } from "react-native-gifted-charts";
 
 interface useAccountProps {
 	account: Account
@@ -115,12 +114,14 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			total: 0,
 			value: 0,
 			returnHistoryData: [] as DataPoint[][],
+			feesHistoryData: [] as DataPoint[][],
 		};
 
 		const holdingsResult = holdings.reduce(( acc, holding ) => {
 			acc.total += holding.total;
 			acc.value += holding.value;
 			acc.returnHistoryData.push([ ...holding.returnHistoryData ]);
+			acc.feesHistoryData.push([ ...holding.feesHistoryData ]);
 
 			return acc;
 		}, holdingsInitial);
@@ -130,9 +131,11 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			...holdingsResult.returnHistoryData
 		];
 
+		// TODO: poista datemap hommelit
+		
 		const dateMap = getDateMap( ...valueHistoryDataset );
 
-		const valueHistoryData = dateMap.reduce(( acc: lineDataItem[], date ) => {
+		const valueHistoryData = dateMap.reduce(( acc: DataPoint[], date ) => {
 			let value = 0;
 
 			valueHistoryDataset.forEach( valueHistoryData => {
@@ -160,12 +163,12 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			const newDataPoint = {
 				date,
 				value: value,
-			} as lineDataItem;
+			} as DataPoint;
 			
 			acc.push( newDataPoint );
 
 			return acc
-		}, [] as lineDataItem[]);
+		}, [] as DataPoint[]);
 
 
 		const returnHistoryDataset = [
@@ -173,7 +176,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			...holdingsResult.returnHistoryData
 		];
 
-		const returnHistoryData = dateMap.reduce(( acc: lineDataItem[], date ) => {
+		const returnHistoryData = dateMap.reduce(( acc: DataPoint[], date ) => {
 			let value = 0;
 
 			returnHistoryDataset.forEach( returnHistoryData => {
@@ -201,12 +204,12 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			const newDataPoint = {
 				date,
 				value: value,
-			} as lineDataItem;
+			} as DataPoint;
 			
 			acc.push( newDataPoint );
 
 			return acc
-		}, [] as lineDataItem[]);
+		}, [] as DataPoint[]);
 
 		const total = holdingsResult.total;
 		const cashAmount = transactionsResult.cashAmount;
@@ -218,7 +221,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 		const sortedValueHistoryData = valueHistoryData.sort( SortingTypes.oldestFirst.function );
 		const sortedReturnHistoryData = returnHistoryData.sort( SortingTypes.oldestFirst.function );
 		const sortedLoanHistoryData = transactionsResult.loanHistoryData.sort( SortingTypes.oldestFirst.function );
-		const sorteddividendHistoryData = transactionsResult.dividendHistoryData.sort( SortingTypes.oldestFirst.function );
+		const sortedDividendHistoryData = transactionsResult.dividendHistoryData.sort( SortingTypes.oldestFirst.function );
 
 		updateVariables( account, {
 			total,
@@ -231,7 +234,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			valueHistoryData: sortedValueHistoryData,
 			returnHistoryData: sortedReturnHistoryData,
 			loanHistoryData: sortedLoanHistoryData,
-			dividendHistoryData: sorteddividendHistoryData,
+			dividendHistoryData: sortedDividendHistoryData,
 			checksum
 		} );
 	}, [ checksum ]);
