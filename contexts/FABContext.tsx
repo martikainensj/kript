@@ -7,13 +7,14 @@ import React, {
 import {
 	StyleSheet
 } from "react-native";
-import { FAB as PaperFAB, FABGroupProps } from 'react-native-paper';
+import { FAB as PaperFAB, FABGroupProps, ActivityIndicator } from 'react-native-paper';
 
 import {
 	BorderRadius,
 	IconSize
 } from "../constants";
 import { Icon } from "../components/ui/Icon";
+import { useData } from "./DataContext";
 
 interface FABContext {
 	actions: FABGroupProps["actions"]
@@ -42,6 +43,7 @@ export const FABProvider = ( { children } ) => {
 }
 
 const FAB = () => {
+	const { isProcessing } = useData();
 	const { actions } = useFAB();
 	const [ open, setOpen ] = useState( false );
 
@@ -49,14 +51,16 @@ const FAB = () => {
 		setOpen( ! open );
 	}, [ open ] );
 
+	const isVisible = ! isProcessing && !! actions.length;
+
 	return (
 		<PaperFAB.Group
 			open={ open }
-			visible={ !! actions.length }
+			visible={ isVisible }
 			icon={ () => {
 				return open
-				? <Icon name={ 'close' } size={ IconSize.lg } />
-				: <Icon name={ 'add' } size={ IconSize.lg } />
+					? <Icon name={ 'close' } size={ IconSize.lg } />
+					: <Icon name={ 'add' } size={ IconSize.lg } />
 			} }
 			actions={ actions }
 			variant={ "secondary" }

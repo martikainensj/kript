@@ -61,13 +61,13 @@ export const LineChart: React.FC<Props> = ({
 			}
 
 			if ( current.value !== null && current.value !== undefined ) {
-					if ( current.value > result.maxValue ) {
-							result.maxValue = current.value;
-					}
+				if ( current.value > result.maxValue ) {
+					result.maxValue = current.value;
+				}
 
-					if ( current.value < result.minValue ) {
-							result.minValue = current.value;
-					}
+				if ( current.value < result.minValue ) {
+					result.minValue = current.value;
+				}
 			}
 
 			return result;

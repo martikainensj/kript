@@ -163,3 +163,43 @@ export const generateLabels = ( fromTimestamp: number, toTimestamp: number, inte
 
 	return labels.reverse();
 }
+
+export const buildChartData = ( datasets: DataPoint[][] ): DataPoint[] => {
+	const dateMap = getDateMap( ...datasets );
+	const chartData = dateMap.reduce(( acc: DataPoint[], date ) => {
+		let value = 0;
+
+		datasets.forEach( dataset => {
+			[ ...dataset ].forEach( currentDataPoint => {
+				const nextDateDataPoint = dataset.find( dataPoint => dataPoint.date >= date );
+
+				if (
+					nextDateDataPoint &&
+					currentDataPoint.date < date &&
+					nextDateDataPoint.date <= date
+				) {
+					dataset.shift();
+					return;
+				}
+
+				if (
+					currentDataPoint &&
+					currentDataPoint.date <= date
+				) {
+					value += currentDataPoint.value;
+				}
+			});
+		});
+
+		const newDataPoint = {
+			date,
+			value: value,
+		} as DataPoint;
+		
+		acc.push( newDataPoint );
+
+		return acc
+	}, [] as DataPoint[]);
+
+	return chartData;
+}

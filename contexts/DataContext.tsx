@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useCallback, useEffect } from "react";
+import React, { createContext, useContext, useCallback, useEffect, useState } from "react";
 import Realm, { UpdateMode } from "realm";
 import { useQuery, useRealm } from "@realm/react";
 
 import { useI18n } from "./I18nContext";
 import { useUser } from "../hooks/useUser";
-import { confirmation, getWeekNumber } from "../helpers";
+import { buildChartData, confirmation, getWeekNumber } from "../helpers";
 import { Account, AccountKey, AccountValue } from "../models/Account";
 import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
@@ -27,12 +27,15 @@ interface DataContext {
 	getAccountBy: <K extends AccountKey>( key: K, value: AccountValue<K> ) => Account;
 	getHoldingBy: <K extends HoldingKey>( key: K, value: HoldingValue<K>, options: { accountId: Realm.BSON.UUID } ) => Holding;
 	getTransactionBy: <K extends TransactionKey>( key: K, value: TransactionValue<K>, options: { accountId?: Realm.BSON.UUID, holdingId?: Realm.BSON.UUID }) => Transaction;
+	getOverallValue: () => DataPoint[];
 	saveAccount: ( account: Account ) => Promise<Account>;
 	saveHolding: ( holding: Holding ) => Promise<Holding>;
 	saveTransaction: ( transaction: Transaction ) => Promise<Transaction>;
 	removeObjects: <T extends DataIdentifier>( type: T, objects: DataObject[T][] ) => Promise<boolean>;
 	updateVariables: <T extends Account | Holding | Transaction>( object: T, variables: Partial<T> ) => void;
 	filterDataByInterval: ( dataPoints: DataPoint[], interval?: IntervalType, range?: number ) => DataPoint[];
+	isProcessing: boolean;
+	setIsProcessing: React.Dispatch<React.SetStateAction<DataContext['isProcessing']>>;
 }
 
 const DataContext = createContext<DataContext>( {
@@ -44,12 +47,15 @@ const DataContext = createContext<DataContext>( {
 	getAccountBy: (): Account => { return },
 	getHoldingBy: (): Holding => { return },
 	getTransactionBy: (): Transaction => { return },
+	getOverallValue: () => { return [] as DataPoint[] },
 	saveAccount: (): Promise<Account> => { return },
 	saveHolding: (): Promise<Holding> => { return },
 	saveTransaction: (): Promise<Transaction> => { return },	
 	removeObjects: (): Promise<boolean> => { return },
 	updateVariables: () => {},
 	filterDataByInterval: () => { return [] },
+	isProcessing: false,
+	setIsProcessing: () => {},
 } );
 
 export const useData = () => useContext( DataContext );
@@ -63,6 +69,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 	const { __ } = useI18n();
 	const realm = useRealm();
 	const accounts = useQuery<Account>( 'Account' );
+	const [ isProcessing, setIsProcessing ] = useState( false );
 
 	// Getters
 
@@ -147,6 +154,12 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		return transaction;
 	}, [] );
 
+	const getOverallValue = useCallback(() => {
+		const chartData = buildChartData( accounts.map( account => account.valueHistoryData ));
+
+		return chartData;
+	}, [ accounts ]);
+
 	// Setters
 
 	const addAccount = useCallback(( account: Account ): Promise<Account> => {
@@ -159,8 +172,13 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 				title: title,
 				message: message,
 				onAccept() {
+					setIsProcessing( true );
+
 					resolve( realm.write(() => {
-						return realm.create( 'Account', account, UpdateMode.Never );
+						const createdAccount = realm.create( 'Account', account, UpdateMode.Never );
+						setIsProcessing( false );
+
+						return createdAccount;
 					}));
 				}
 			});
@@ -184,6 +202,8 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 				title: title,
 				message: message,
 				onAccept: async () => {
+					setIsProcessing( true );
+
 					const newTransaction = {
 						...transaction,
 						_id: new Realm.BSON.UUID
@@ -216,6 +236,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 						return account.transactions[ account.transactions.length - 1 ];
 					});
 
+					setIsProcessing( false );
 					resolve( newTransaction );
 				}
 			});
@@ -233,12 +254,16 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 				title: title,
 				message: message,
 				onAccept() {
+					setIsProcessing( true );
+
 					const account = getAccountBy(
 						'_id',
 						editedAccount._id
 					);
-					
-					resolve( updateVariables( account, editedAccount ) );
+					const udpatedAccount = updateVariables( account, editedAccount );
+					setIsProcessing( false );
+
+					resolve( udpatedAccount );
 				}
 			});
 		})
@@ -254,14 +279,17 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 				title,
 				message,
 				onAccept() {
-					const account = getAccountBy( '_id', editedHolding.account_id );
+					setIsProcessing( true );
+					
 					const holding = getHoldingBy(
 						'_id',
 						editedHolding._id,
 						{ accountId: editedHolding.account_id }
 					);
-					
-					resolve( updateVariables( holding, editedHolding ));
+					const updatedHolding = updateVariables( holding, editedHolding );
+
+					setIsProcessing( false );
+					resolve( updatedHolding );
 				}
 			});
 		});
@@ -277,6 +305,8 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 				title,
 				message,
 				onAccept() {
+					setIsProcessing( true );
+
 					const transaction = getTransactionBy(
 						'_id',
 						editedTransaction._id,
@@ -303,7 +333,10 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 						}
 					}
 
-					resolve( updateVariables( transaction, editedTransaction ));
+					const updatedTransaction =  updateVariables( transaction, editedTransaction );
+					setIsProcessing( false );
+
+					resolve( updatedTransaction );
 				}
 			});
 		});
@@ -311,6 +344,8 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 
 	const removeAccounts = useCallback(( accounts: Account[] ): Promise<boolean> => {
 		return new Promise( ( resolve, reject ) => {
+			setIsProcessing( true );
+
 			try {
 				accounts.forEach( account => {
 					if ( ! account?.isValid() ) return;
@@ -320,8 +355,10 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 					});
 				});
 
+				setIsProcessing( false );
 				resolve( true );
 			} catch (error) {
+				setIsProcessing( false );
 				reject( false );
 			}
 		});
@@ -329,6 +366,8 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 
 	const removeHoldings = useCallback(( holdings: Holding[] ): Promise<boolean> => {
 		return new Promise( ( resolve, reject ) => {
+			setIsProcessing( true );
+
 			try {
 				holdings.forEach( holding => {
 					const { _id, account_id } = holding;
@@ -342,8 +381,10 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 					});
 				});
 
+				setIsProcessing( false );
 				resolve( true );
 			} catch (error) {
+				setIsProcessing( false );
 				reject( false );
 			}
 		});
@@ -351,8 +392,9 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 
 	const removeTransactions = useCallback(( transactions: Transaction[] ): Promise<boolean> => {
 		return new Promise( ( resolve, reject ) => {
-			try {
+			setIsProcessing( true );
 
+			try {
 				realm.write(() => {	
 					transactions.forEach( transaction => {
 						const { _id, holding_id, account_id } = transaction;
@@ -370,8 +412,10 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 					});
 				});
 
+				setIsProcessing( false );
 				resolve( true );
 			} catch (error) {
+				setIsProcessing( false );
 				reject( false );
 			}
 		});
@@ -386,13 +430,17 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 				title,
 				message,
 				onAccept: async () => {
+					setIsProcessing( true );
+
 					try {
 						type === 'Account' && await removeAccounts( objects as Account[] );
 						type === 'Holding' && await removeHoldings( objects as Holding[] );
 						type === 'Transaction' && await removeTransactions( objects as Transaction[] );
 						
+						setIsProcessing( false );
 						resolve( true );
 					} catch ( error ) {
+						setIsProcessing( false );
 						reject( error );
 					}
 				}
@@ -486,6 +534,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			getAccountBy,
 			getHoldingBy,
 			getTransactionBy,
+			getOverallValue,
 			addAccount,
 			addTransaction,
 			removeObjects,
@@ -494,6 +543,8 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			saveTransaction,
 			updateVariables,
 			filterDataByInterval,
+			isProcessing,
+			setIsProcessing,
 		} }>
 			{ children }
 		</DataContext.Provider>

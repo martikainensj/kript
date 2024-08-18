@@ -19,6 +19,8 @@ const Home: React.FC = () => {
 			onAccept: logOut
 		} );
 	}
+
+	// TODO: Overall value chart
 	
 	return (
 		<View style={ styles.container }>

@@ -2,7 +2,7 @@ import { useLayoutEffect } from "react";
 
 import { Account } from "../models/Account"
 import { useData } from "../contexts/DataContext";
-import { generateChecksum, getDateMap, getTransactionEndOfDayTimestamp } from "../helpers";
+import { buildChartData, generateChecksum, getDateMap, getTransactionEndOfDayTimestamp } from "../helpers";
 import { DataPoint } from "../models/DataPoint";
 import { useTypes } from "./useTypes";
 
@@ -20,7 +20,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 	const checksum = generateChecksum({
 		transactions,
 		holdings
- 	});
+	});
 
 	useLayoutEffect(() => {
 		if ( account.checksum === checksum ) {
@@ -131,85 +131,14 @@ export const useAccount = ( { account }: useAccountProps ) => {
 			...holdingsResult.returnHistoryData
 		];
 
-		// TODO: poista datemap hommelit
-		
-		const dateMap = getDateMap( ...valueHistoryDataset );
-
-		const valueHistoryData = dateMap.reduce(( acc: DataPoint[], date ) => {
-			let value = 0;
-
-			valueHistoryDataset.forEach( valueHistoryData => {
-				[ ...valueHistoryData ].forEach( currentDataPoint => {
-					const nextDateDataPoint = valueHistoryData.find( dataPoint => dataPoint.date >= date );
-
-					if (
-						nextDateDataPoint &&
-						currentDataPoint.date < date &&
-						nextDateDataPoint.date <= date
-					) {
-						valueHistoryData.shift();
-						return;
-					}
-
-					if (
-						currentDataPoint &&
-						currentDataPoint.date <= date
-					) {
-						value += currentDataPoint.value;
-					}
-				});
-			});
-
-			const newDataPoint = {
-				date,
-				value: value,
-			} as DataPoint;
-			
-			acc.push( newDataPoint );
-
-			return acc
-		}, [] as DataPoint[]);
-
+		const valueHistoryData = buildChartData( valueHistoryDataset );
 
 		const returnHistoryDataset = [
 			transactionsResult.returnHistoryData,
 			...holdingsResult.returnHistoryData
 		];
 
-		const returnHistoryData = dateMap.reduce(( acc: DataPoint[], date ) => {
-			let value = 0;
-
-			returnHistoryDataset.forEach( returnHistoryData => {
-				[ ...returnHistoryData ].forEach( currentDataPoint => {
-					const nextDateDataPoint = returnHistoryData.find( dataPoint => dataPoint.date >= date );
-
-					if (
-						nextDateDataPoint &&
-						currentDataPoint.date < date &&
-						nextDateDataPoint.date <= date
-					) {
-						returnHistoryData.shift();
-						return;
-					}
-
-					if (
-						currentDataPoint &&
-						currentDataPoint.date <= date
-					) {
-						value += currentDataPoint.value;
-					}
-				});
-			});
-
-			const newDataPoint = {
-				date,
-				value: value,
-			} as DataPoint;
-			
-			acc.push( newDataPoint );
-
-			return acc
-		}, [] as DataPoint[]);
+		const returnHistoryData = buildChartData( returnHistoryDataset );
 
 		const total = holdingsResult.total;
 		const cashAmount = transactionsResult.cashAmount;
