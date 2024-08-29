@@ -20,8 +20,6 @@ const Home: React.FC = () => {
 		} );
 	}
 
-	// TODO: Overall value chart
-	
 	return (
 		<View style={ styles.container }>
 			<Header

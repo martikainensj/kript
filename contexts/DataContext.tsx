@@ -27,7 +27,6 @@ interface DataContext {
 	getAccountBy: <K extends AccountKey>( key: K, value: AccountValue<K> ) => Account;
 	getHoldingBy: <K extends HoldingKey>( key: K, value: HoldingValue<K>, options: { accountId: Realm.BSON.UUID } ) => Holding;
 	getTransactionBy: <K extends TransactionKey>( key: K, value: TransactionValue<K>, options: { accountId?: Realm.BSON.UUID, holdingId?: Realm.BSON.UUID }) => Transaction;
-	getOverallValue: () => DataPoint[];
 	saveAccount: ( account: Account ) => Promise<Account>;
 	saveHolding: ( holding: Holding ) => Promise<Holding>;
 	saveTransaction: ( transaction: Transaction ) => Promise<Transaction>;
@@ -47,7 +46,6 @@ const DataContext = createContext<DataContext>( {
 	getAccountBy: (): Account => { return },
 	getHoldingBy: (): Holding => { return },
 	getTransactionBy: (): Transaction => { return },
-	getOverallValue: () => { return [] as DataPoint[] },
 	saveAccount: (): Promise<Account> => { return },
 	saveHolding: (): Promise<Holding> => { return },
 	saveTransaction: (): Promise<Transaction> => { return },	
@@ -70,7 +68,6 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 	const realm = useRealm();
 	const accounts = useQuery<Account>( 'Account' );
 	const [ isProcessing, setIsProcessing ] = useState( false );
-
 	// Getters
 
 	const getAccounts = useCallback(() => {
@@ -153,12 +150,6 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 
 		return transaction;
 	}, [] );
-
-	const getOverallValue = useCallback(() => {
-		const chartData = buildChartData( accounts.map( account => account.valueHistoryData ));
-
-		return chartData;
-	}, [ accounts ]);
 
 	// Setters
 
@@ -395,7 +386,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			setIsProcessing( true );
 
 			try {
-				realm.write(() => {	
+				realm.write(() => {
 					transactions.forEach( transaction => {
 						const { _id, holding_id, account_id } = transaction;
 						const holding = getHoldingBy( '_id', holding_id, { accountId: account_id });
@@ -452,7 +443,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		object: T,
 		variables: Partial<T>,
 	) => {
-		if ( ! object?.isValid() ) return;
+		if ( ! object?.isValid() || realm.isInTransaction ) return;
 		
 		if ( !! variables._id ) {
 			delete variables._id;
@@ -534,7 +525,6 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			getAccountBy,
 			getHoldingBy,
 			getTransactionBy,
-			getOverallValue,
 			addAccount,
 			addTransaction,
 			removeObjects,

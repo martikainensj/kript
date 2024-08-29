@@ -84,8 +84,9 @@ export const generateChecksum = ( object: object ) => {
 	return uniqueDatesArray;
 }*/
 
-export const getDateMap = (...DataPointArrays: DataPoint[][]) => {
-	const allDataPoints = DataPointArrays.flat();  
+export const getDateMap = ( DataPointArrays: DataPoint[][] ) => {
+	const allDataPoints = JSON.parse(JSON.stringify( DataPointArrays )).flat();
+	
   const allDates = allDataPoints.map(dataPoint => dataPoint.date);
 	const firstDate = new Date(Math.min(...allDates));
 	const lastDate = new Date(Math.max(...allDates));
@@ -164,42 +165,22 @@ export const generateLabels = ( fromTimestamp: number, toTimestamp: number, inte
 	return labels.reverse();
 }
 
-export const buildChartData = ( datasets: DataPoint[][] ): DataPoint[] => {
-	const dateMap = getDateMap( ...datasets );
-	const chartData = dateMap.reduce(( acc: DataPoint[], date ) => {
+export const buildChartData = (datasets: DataPoint[][]): DataPoint[] => {
+	const dateMap = getDateMap( datasets );
+	const handledDatasets = JSON.parse( JSON.stringify( datasets )) as DataPoint[][];
+	const chartData = dateMap.map( date => {
 		let value = 0;
 
-		datasets.forEach( dataset => {
-			[ ...dataset ].forEach( currentDataPoint => {
-				const nextDateDataPoint = dataset.find( dataPoint => dataPoint.date >= date );
+		handledDatasets.forEach( dataset => {
+			if ( dataset[1]?.date <= date ) {
+				dataset.splice(0, 1);
+			}
 
-				if (
-					nextDateDataPoint &&
-					currentDataPoint.date < date &&
-					nextDateDataPoint.date <= date
-				) {
-					dataset.shift();
-					return;
-				}
-
-				if (
-					currentDataPoint &&
-					currentDataPoint.date <= date
-				) {
-					value += currentDataPoint.value;
-				}
-			});
+			value += dataset[0]?.value ?? 0;
 		});
 
-		const newDataPoint = {
-			date,
-			value: value,
-		} as DataPoint;
-		
-		acc.push( newDataPoint );
-
-		return acc
-	}, [] as DataPoint[]);
+		return { date, value } as DataPoint;
+	});
 
 	return chartData;
-}
+};
