@@ -4,7 +4,7 @@ import { useQuery, useRealm } from "@realm/react";
 
 import { useI18n } from "./I18nContext";
 import { useUser } from "../hooks/useUser";
-import { buildChartData, confirmation, getWeekNumber } from "../helpers";
+import { buildChartData, confirmation, getDateMap, getIntervalMap, getWeekNumber } from "../helpers";
 import { Account, AccountKey, AccountValue } from "../models/Account";
 import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
@@ -468,45 +468,38 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		interval: IntervalType = 'weekly',
 		range?: number
 	) => {
-		const generateIntervalKey = ( dataPoint: DataPoint, interval: IntervalType ) => {
-			const date = new Date( dataPoint.date );
-			
-			switch ( interval ) {
-				case 'daily':
-					return `${ date.getFullYear() }-${ date.getMonth() + 1 }-${ date.getDate() }`;
-				case 'weekly':
-					const week = getWeekNumber(date);
-					return `${ date.getFullYear() }-W${ week }`;
-				case 'monthly':
-					return `${ date.getFullYear() }-${ date.getMonth() + 1 }`;
-				case 'yearly':
-					return `${ date.getFullYear() }`;
-				default:
-					throw new Error( 'Unsupported interval' );
-			}
-		};
+		// Generate the interval map based on the given range and interval type
+	const intervalMap = getIntervalMap(data, interval, range);
 
-		const groupedData = data.reduce(( acc, dataPoint ) => {
-			const intervalKey = generateIntervalKey( dataPoint, interval );
-			
-			if ( ! acc[ intervalKey ] ) {
-					acc[ intervalKey ] = [];
-			}
-			
-			acc[ intervalKey ].push( dataPoint );
+	// Initialize an array to hold the filtered data
+	const filteredData: DataPoint[] = [];
 
-			return acc;
-		}, {} as {[ key: string ]: DataPoint[]});
+	// Iterate through the intervalMap and find the last data point within each interval
+	for (let i = 0; i < intervalMap.length - 1; i++) {
+		const startInterval = intervalMap[i];
+		const endInterval = intervalMap[i + 1];
 
-		const dataFilteredByInterval = Object.values( groupedData ).map( intervalData => {
-			return intervalData.reduce(( lastDataPoint, currentDataPoint ) => {
-				return ( !! currentDataPoint.value && currentDataPoint.date > lastDataPoint.date ) ? currentDataPoint : lastDataPoint;
-			});
-		});
+		// Filter data points that fall within the current interval
+		const intervalData = data.filter(dataPoint =>
+			new Date(dataPoint.date) >= startInterval && new Date(dataPoint.date) < endInterval
+		);
 
-		return !! range
-			? dataFilteredByInterval.slice( -range )
-			: dataFilteredByInterval;
+		// Find the last data point within this interval and add it to the filteredData array
+		if (intervalData.length > 0) {
+			filteredData.push(intervalData[intervalData.length - 1]);
+		}
+	}
+
+	// Handle the last interval separately (from the last interval to the current date)
+	const lastIntervalData = data.filter(dataPoint =>
+		new Date(dataPoint.date) >= intervalMap[intervalMap.length - 1]
+	);
+	if (lastIntervalData.length > 0) {
+		filteredData.push(lastIntervalData[lastIntervalData.length - 1]);
+	}
+
+	// Return the filtered data points
+	return filteredData;
 	}
 
 	useEffect( () => {

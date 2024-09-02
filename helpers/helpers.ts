@@ -84,8 +84,61 @@ export const generateChecksum = ( object: object ) => {
 	return uniqueDatesArray;
 }*/
 
+export const getIntervalMap = (
+	data: DataPoint[],
+	interval: IntervalType = 'weekly',
+	range?: number
+) => {
+
+	//TODO: Jollain pitäis saada aina vika päivä viikossa(pe), kuukaudessa tai vuodessa
+	// pääteltyy ja se tuutattais sit puskien tonne intervalMappiin.
+	const currentDate = new Date();
+	const fromDate = (() => {
+		if ( ! range ) {
+			return new Date( data[0].date );
+		}
+
+		const date = new Date( currentDate );
+	
+		const intervals = {
+			daily: () => date.setDate( date.getDate() - range ),
+			weekly: () => date.setDate( date.getDate() - range * 7 ),
+			monthly: () => date.setMonth( date.getMonth() - range ),
+			yearly: () => date.setFullYear( date.getFullYear() - range ),
+		};
+	
+		intervals[ interval ]?.();
+	
+		return date;
+	})();
+
+	const intervalMap: Date[] = [];
+	const date = new Date( fromDate );
+
+	while ( date <= currentDate ) {
+		intervalMap.push( new Date( date ));
+		
+		switch ( interval ) {
+			case 'daily':
+				date.setDate( date.getDate() + 1 );
+				break;
+			case 'weekly':
+				date.setDate( date.getDate() + 7 );
+				break;
+			case 'monthly':
+				date.setMonth( date.getMonth() + 1 );
+				break;
+			case 'yearly':
+				date.setFullYear( date.getFullYear() + 1 );
+				break;
+		}
+	}
+
+	return intervalMap;
+}
+
 export const getDateMap = ( DataPointArrays: DataPoint[][] ) => {
-	const allDataPoints = JSON.parse(JSON.stringify( DataPointArrays )).flat();
+	const allDataPoints = JSON.parse(JSON.stringify( DataPointArrays )).flat() as DataPoint[];
 	
   const allDates = allDataPoints.map(dataPoint => dataPoint.date);
 	const firstDate = new Date(Math.min(...allDates));
@@ -115,6 +168,31 @@ export const getWeekNumber = (date: Date) => {
 
   return weekNo;
 }
+
+export const getLastWorkingDayOfWeek = (date: Date): Date =>{
+  const result = new Date(date);
+  const dayOfWeek = result.getDay();
+  const daysUntilFriday = (5 - dayOfWeek + 7) % 7;
+  result.setDate(result.getDate() + daysUntilFriday);
+  
+  return result;
+}
+
+export const getLastDayOfMonth = ( date: Date ): Date => {
+  const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+  nextMonth.setDate(nextMonth.getDate() - 1);
+  
+  return nextMonth;
+}
+
+export const getLastDayOfYear = (date: Date): Date => {
+  const nextYear = new Date(date.getFullYear() + 1, 0, 1);
+  nextYear.setDate(nextYear.getDate() - 1);
+  
+  return nextYear;
+}
+
+
 export const getYTD = () => {
 	const today = new Date();
 	const startOfYear = new Date( today.getFullYear(), 0, 1 );
@@ -124,63 +202,32 @@ export const getYTD = () => {
 	return diffInDays + 1;
 };
 
-export const generateLabels = ( fromTimestamp: number, toTimestamp: number, interval: IntervalType ) => {
-	const labels = [] as string[];
-	const currentDate = new Date( fromTimestamp );
-	const toDate = new Date( toTimestamp );
-
-	while ( currentDate >= toDate ) {
-		switch ( interval ) {
-			default:
-			case 'daily': {
-				labels.push( currentDate.toLocaleDateString( 'fi' ));
-				currentDate.setDate( currentDate.getDate() - 1 );
-
-				break;
-			}
-
-			case 'weekly': {
-				labels.push( currentDate.toLocaleDateString( 'fi' ));
-				currentDate.setDate( currentDate.getDate() - 7 );
-
-				break;
-			}
-
-			case 'monthly': {
-				labels.push( `${currentDate.getMonth() + 1}/${currentDate.getFullYear()}` );
-				currentDate.setMonth( currentDate.getMonth() - 1 );
-
-				break;
-			}
-
-			case 'yearly': {
-				labels.push( currentDate.getFullYear().toString() );
-				currentDate.setFullYear(currentDate.getFullYear() - 1);
-
-				break;
-			}
-		}
-	}
-
-	return labels.reverse();
-}
-
 export const buildChartData = (datasets: DataPoint[][]): DataPoint[] => {
-	const dateMap = getDateMap( datasets );
-	const handledDatasets = JSON.parse( JSON.stringify( datasets )) as DataPoint[][];
-	const chartData = dateMap.map( date => {
-		let value = 0;
+	const copiedDatasets = datasets.map(dataset => dataset.map(dataPoint => ({ ...dataPoint })));
 
-		handledDatasets.forEach( dataset => {
+	const dates = copiedDatasets.reduce((acc, dataset) => {
+		dataset.forEach(dataPoint => {
+			acc.add(dataPoint.date);
+		});
+		return acc;
+	}, new Set<DataPoint['date']>());
+
+	const sortedDates = [...dates].sort();
+	const chartData = sortedDates.map(date => {
+    let value = 0;
+
+    copiedDatasets.forEach( dataset => {
 			if ( dataset[1]?.date <= date ) {
 				dataset.splice(0, 1);
 			}
 
-			value += dataset[0]?.value ?? 0;
+			if ( dataset[0]?.date <= date ) {
+				value += dataset[0]?.value ?? 0;
+			}
 		});
 
-		return { date, value } as DataPoint;
-	});
+    return { date, value } as DataPoint;
+  });
 
 	return chartData;
 };
