@@ -5,7 +5,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { FABProvider } from "../../../contexts/FABContext";
 import HoldingView from "../../../components/holdings/HoldingView";
 import { useData } from "../../../contexts/DataContext";
-import { ChartSheetProvider } from "../../../contexts/ChartSheetContext";
 
 export default function HoldingLayout() {
 	const { getHoldingBy } = useData();
@@ -25,10 +24,8 @@ export default function HoldingLayout() {
 	}
 
 	return ( 
-		<ChartSheetProvider>
-			<FABProvider>
-				<HoldingView holding={ holding } />
-			</FABProvider>
-		</ChartSheetProvider>
+		<FABProvider>
+			<HoldingView holding={ holding } />
+		</FABProvider>
 	);
 }

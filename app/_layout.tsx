@@ -13,6 +13,7 @@ import { I18nProvider } from '../contexts/I18nContext';
 import { ThemeProvider } from '../contexts/ThemeContext';
 import { MenuProvider } from '../contexts/MenuContext';
 import { KriptRealmProvider } from '../contexts/KriptRealmContext';
+import { ChartSheetProvider } from '../contexts/ChartSheetContext';
 
 export default function AppLayout() {
 	return (
@@ -22,12 +23,14 @@ export default function AppLayout() {
 					<KriptRealmProvider>
 						<MenuProvider>
 							<BottomSheetProvider>
-								<StatusBar />
-								<Stack screenOptions={ {
-									animationDuration: 200,
-									animation: 'fade_from_bottom',
-									headerShown: false
-								} } />
+								<ChartSheetProvider>
+									<StatusBar />
+									<Stack screenOptions={ {
+										animationDuration: 200,
+										animation: 'fade_from_bottom',
+										headerShown: false
+									} } />
+								</ChartSheetProvider>
 							</BottomSheetProvider>
 						</MenuProvider>
 					</KriptRealmProvider>

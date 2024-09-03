@@ -484,6 +484,14 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Kulut',
 		en_US: 'Fees'
 	},
+	'overall net value': {
+		fi_FI: 'Kokonaisnettoarvo',
+		en_US: 'Overall net value'
+	},
+	'overall return value': {
+		fi_FI: 'Kokonaistuottoarvo',
+		en_US: 'Overall return value'
+	},
 	'light': {
 		fi_FI: 'Vaalea',
 		en_US: 'Light'
