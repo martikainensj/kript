@@ -4,7 +4,7 @@ import { useQuery, useRealm } from "@realm/react";
 
 import { useI18n } from "./I18nContext";
 import { useUser } from "../hooks/useUser";
-import { buildChartData, confirmation, getDateMap, getIntervalMap, getWeekNumber } from "../helpers";
+import { confirmation, getIntervalMap } from "../helpers";
 import { Account, AccountKey, AccountValue } from "../models/Account";
 import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
@@ -32,7 +32,6 @@ interface DataContext {
 	saveTransaction: ( transaction: Transaction ) => Promise<Transaction>;
 	removeObjects: <T extends DataIdentifier>( type: T, objects: DataObject[T][] ) => Promise<boolean>;
 	updateVariables: <T extends Account | Holding | Transaction>( object: T, variables: Partial<T> ) => void;
-	filterDataByInterval: ( dataPoints: DataPoint[], interval?: IntervalType, range?: number ) => DataPoint[];
 	isProcessing: boolean;
 	setIsProcessing: React.Dispatch<React.SetStateAction<DataContext['isProcessing']>>;
 }
@@ -51,7 +50,6 @@ const DataContext = createContext<DataContext>( {
 	saveTransaction: (): Promise<Transaction> => { return },	
 	removeObjects: (): Promise<boolean> => { return },
 	updateVariables: () => {},
-	filterDataByInterval: () => { return [] },
 	isProcessing: false,
 	setIsProcessing: () => {},
 } );
@@ -463,45 +461,6 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		});
 	};
 
-	const filterDataByInterval = (
-		data: DataPoint[],
-		interval: IntervalType = 'weekly',
-		range?: number
-	) => {
-		// Generate the interval map based on the given range and interval type
-	const intervalMap = getIntervalMap(data, interval, range);
-
-	// Initialize an array to hold the filtered data
-	const filteredData: DataPoint[] = [];
-
-	// Iterate through the intervalMap and find the last data point within each interval
-	for (let i = 0; i < intervalMap.length - 1; i++) {
-		const startInterval = intervalMap[i];
-		const endInterval = intervalMap[i + 1];
-
-		// Filter data points that fall within the current interval
-		const intervalData = data.filter(dataPoint =>
-			new Date(dataPoint.date) >= startInterval && new Date(dataPoint.date) < endInterval
-		);
-
-		// Find the last data point within this interval and add it to the filteredData array
-		if (intervalData.length > 0) {
-			filteredData.push(intervalData[intervalData.length - 1]);
-		}
-	}
-
-	// Handle the last interval separately (from the last interval to the current date)
-	const lastIntervalData = data.filter(dataPoint =>
-		new Date(dataPoint.date) >= intervalMap[intervalMap.length - 1]
-	);
-	if (lastIntervalData.length > 0) {
-		filteredData.push(lastIntervalData[lastIntervalData.length - 1]);
-	}
-
-	// Return the filtered data points
-	return filteredData;
-	}
-
 	useEffect( () => {
 		//realm.deleteAll();
 		realm.subscriptions.update( mutableSubs => {
@@ -525,7 +484,6 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			saveHolding,
 			saveTransaction,
 			updateVariables,
-			filterDataByInterval,
 			isProcessing,
 			setIsProcessing,
 		} }>

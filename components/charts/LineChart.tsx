@@ -9,11 +9,10 @@ import { Card } from "../ui/Card";
 import { Value } from "../ui/Value";
 import { TimeframeType, useTypes } from "../../hooks/useTypes";
 import { IconButton } from "../buttons";
-import { useData } from "../../contexts/DataContext";
 import { DataPoint } from "../../models/DataPoint";
 import { useStorage } from "../../hooks/useStorage";
 import { useI18n } from "../../contexts/I18nContext";
-import { prettifyNumber } from "../../helpers";
+import { filterDataByInterval, prettifyNumber } from "../../helpers";
 
 interface Props {
 	id: string,
@@ -34,7 +33,6 @@ export const LineChart: React.FC<Props> = ({
 }) => {
 	const { __ } = useI18n();
 	const { theme } = useTheme();
-	const { filterDataByInterval } = useData();
 	const { getData, setData } = useStorage();
 	const { TimeframeTypes } = useTypes();
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );

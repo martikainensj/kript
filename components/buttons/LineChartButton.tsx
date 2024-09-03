@@ -8,10 +8,9 @@ import { BorderRadius, FontSize, FontWeight, Spacing } from "../../constants";
 import { Card } from "../ui/Card";
 import { Value } from "../ui/Value";
 import { useTypes } from "../../hooks/useTypes";
-import { useData } from "../../contexts/DataContext";
 import { DataPoint } from "../../models/DataPoint";
 import { useI18n } from "../../contexts/I18nContext";
-import { prettifyNumber } from "../../helpers";
+import { filterDataByInterval, prettifyNumber } from "../../helpers";
 
 interface Props {
 	data: DataPoint[]
@@ -28,7 +27,6 @@ export const LineChartButton: React.FC<Props> = ({
 }) => {
 	const { __ } = useI18n();
 	const { theme } = useTheme();
-	const { filterDataByInterval } = useData();
 	const { TimeframeTypes } = useTypes();
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
 
