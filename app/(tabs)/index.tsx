@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '@realm/react';
 import { StyleSheet, View } from 'react-native';
 
-import { GlobalStyles } from '../../constants';
+import { GlobalStyles, Spacing } from '../../constants';
 import { IconButton } from '../../components/buttons';
 import { buildChartData, confirmation } from '../../helpers';
 import { useI18n } from '../../contexts/I18nContext';
@@ -112,5 +112,6 @@ const styles = StyleSheet.create( {
 	contentContainer: {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
+		paddingVertical: Spacing.md
 	}
 } );

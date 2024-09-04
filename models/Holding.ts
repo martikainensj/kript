@@ -25,6 +25,8 @@ export type Holding = {
 	returnHistoryData?: DataPoint[];
 	dividendHistoryData?: DataPoint[];
 	feesHistoryData?: DataPoint[];
+	ownershipRatio?: number;
+	leverageRatio?: number;
 	checksum?: string;
 };
 
@@ -56,6 +58,8 @@ export const HoldingSchema = {
 		returnHistoryData: 'DataPoint[]',
 		dividendHistoryData: 'DataPoint[]',
 		feesHistoryData: 'DataPoint[]',
+		ownershipRatio: 'double?',
+		leverageRatio: 'double?',
 		checksum: 'string?',
 	}
 };

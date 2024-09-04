@@ -43,13 +43,6 @@ export const useHolding = ( { holding }: useHoldingProps ) => {
 				feesHistoryData: [] as Holding['feesHistoryData'],
 			};
 
-			/* TODO
-			- Chartit luo ite välipäivät eli niitä ei tarvii laskee dataan itteensä sisään
-			- Chart kattoo intervallin mukaan "tyhjät välipäivät" esittävän datan sekaan
-				näin ollen data pysyy yksinkertaisempana
-				- Tämä toki lisää laskettavaa rendaukseen, mutta ei merkittävästi
-			*/
-
 			const resultData = sortedTransactions.reduce(( acc, transaction ) => {
 				const date = getTransactionEndOfDayTimestamp( transaction );
 				
