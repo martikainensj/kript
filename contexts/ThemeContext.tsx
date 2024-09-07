@@ -98,13 +98,13 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, sourceCo
 		Appearance.addChangeListener(({ colorScheme }) => {
 			setData("@settings/colorScheme", colorScheme);
 			setTheme(getTheme(colorScheme));
-		})
+		});
 
-		Platform.OS === 'android' && (
+		if (Platform.OS === 'android') {
 			getData('@settings/sourceColor').then(sourceColor => {
 				setSourceColor(sourceColor, true);
-			})
-		)
+			});
+		}
 	}, []);
 
 	return (
