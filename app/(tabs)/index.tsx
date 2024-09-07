@@ -63,15 +63,15 @@ const Home: React.FC = () => {
 	if ( overallReturnValue ) {
 		overviewCharts.push(
 			<LineChartButton
-				label={ __( "Overall Return Value" ) }
+				label={ __( "Overall Return" ) }
 				unit={ "€" }
 				data={ overallReturnValue }
 				onPress={ () => {
 					openChartSheet(
 						'',
 						<LineChart
-							id={ "overall-return-value-chart" }
-							label={ __( "Overall Return Value" ) }
+							id={ "overall-return-chart" }
+							label={ __( "Overall Return" ) }
 							unit={ "€" }
 							data={ overallReturnValue }
 							timeframeOptions={[
