@@ -13,6 +13,7 @@ import { ItemList } from '../../components/ui/ItemList';
 import { useTypes } from '../../hooks/useTypes';
 import { useData } from '../../contexts/DataContext';
 import { router } from 'expo-router';
+import { FABProvider } from '../../contexts/FABContext';
 
 const Accounts: React.FC = () => {
 	const { getAccounts, addAccount } = useData();
@@ -58,23 +59,25 @@ const Accounts: React.FC = () => {
 						icon={ 'add' } />
 	 			) } />
 			<View style={ styles.contentContainer }>
-				<ItemList
-					title={ __( 'Accounts' ) }
-					noItemsText={ __( 'No accounts' ) }
-					data={ accounts.map( account => {
-						if ( ! account.isValid() ) return;
+				<FABProvider side='left' iconName='funnel-outline'>
+					<ItemList
+						title={ __( 'Accounts' ) }
+						noItemsText={ __( 'No accounts' ) }
+						data={ accounts.map( account => {
+							if ( ! account.isValid() ) return;
 
-						return {
-							item: account,
-							renderItem: <AccountItem account={ account } />
-						}
-					}) }
-					sortingOptions={ [
-						SortingTypes.name,
-						SortingTypes.highestReturn,
-						SortingTypes.lowestReturn,
-						SortingTypes.highestValue
-					] } />
+							return {
+								item: account,
+								renderItem: <AccountItem account={ account } />
+							}
+						}) }
+						sortingOptions={ [
+							SortingTypes.name,
+							SortingTypes.highestReturn,
+							SortingTypes.lowestReturn,
+							SortingTypes.highestValue
+						] } />
+				</FABProvider>
 			</View>
 		</View>
 	);

@@ -10,7 +10,7 @@ import { HoldingForm } from "../../components/holdings/HoldingForm";
 import TransactionItem from "../../components/transactions/TransactionItem";
 import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../../contexts/I18nContext';
-import { useFAB } from "../../contexts/FABContext";
+import { FABProvider, useFAB } from "../../contexts/FABContext";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { useUser } from "../../hooks/useUser";
 import { Tabs } from "../../components/ui/Tabs";
@@ -246,26 +246,28 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 					label: __( 'Transactions' ),
 					content: (
 						<View style={ styles.contentContainer }>
-							<ItemList
-								noItemsText={ __( 'No Transactions' ) }
-								data={ transactions.map( transaction => {
-									return {
-										item: transaction,
-										renderItem: (
-											<TransactionItem
-												transaction={ transaction }
-												onPressSelect={ onPressSelectTransaction }
-												onLongPress={ onLongPressTransaction }
-												isSelectable={ canSelect( 'Transaction' ) && isSelecting }
-												isSelected={ hasObject( transaction ) } />
-										)
-									}
-								}) }
-								sortingContainerStyle={ { marginBottom: insets.bottom } }
-								sortingOptions={ [
-									SortingTypes.newestFirst,
-									SortingTypes.oldestFirst
-								] }  />
+							<FABProvider side='left' insets={insets} iconName={ "funnel-outline" }>
+								<ItemList
+									noItemsText={ __( 'No Transactions' ) }
+									data={ transactions.map( transaction => {
+										return {
+											item: transaction,
+											renderItem: (
+												<TransactionItem
+													transaction={ transaction }
+													onPressSelect={ onPressSelectTransaction }
+													onLongPress={ onLongPressTransaction }
+													isSelectable={ canSelect( 'Transaction' ) && isSelecting }
+													isSelected={ hasObject( transaction ) } />
+											)
+										}
+									}) }
+									sortingContainerStyle={ { marginBottom: insets.bottom } }
+									sortingOptions={ [
+										SortingTypes.newestFirst,
+										SortingTypes.oldestFirst
+									] }  />
+							</FABProvider>
 						</View>
 					)
 				},

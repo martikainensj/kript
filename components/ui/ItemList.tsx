@@ -1,14 +1,15 @@
 import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { GlobalStyles, Spacing } from "../../constants";
-import { Divider, Menu, Text } from "react-native-paper";
-import React, { useMemo, useState } from "react";
+import { Divider, Text } from "react-native-paper";
+import React, { useEffect, useMemo, useState } from "react";
 import { useI18n } from "../../contexts/I18nContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { SortingType } from "../../hooks/useTypes";
 import { Account } from "../../models/Account";
 import { Holding } from "../../models/Holding";
 import { Transaction } from "../../models/Transaction";
-import { IconButton } from "../buttons";
+import { useFAB } from "../../contexts/FABContext";
+import { Icon } from "./Icon";
 
 interface ItemListProps {
 	title?: string;
@@ -29,13 +30,12 @@ export const ItemList: React.FC<ItemListProps> = ( {
 	data,
 	style,
 	contentContainerStyle,
-	sortingContainerStyle,
 	sortingOptions
 } ) => {
 	const { __ } = useI18n();
 	const { theme } = useTheme();
+	const { setActions } = useFAB();
 	const [ sorting, setSorting ] = useState<SortingType['name']>( sortingOptions && sortingOptions[0].name );
-	const [ showSortingOptions, setShowSortingOptions ] = useState( false );
 
 	const sortedData = useMemo( () => {
 		const sortingFunction = sorting && sortingOptions?.find( option => option.name === sorting )?.function;
@@ -47,6 +47,16 @@ export const ItemList: React.FC<ItemListProps> = ( {
 		return data;
 	}, [ data, sorting ] );
 
+
+	useEffect(() => {
+		setActions(sortingOptions.map( sortingOption => {
+			return {
+				icon: ({size}) => <Icon name={sortingOption.icon} size={size} />,
+				label: sortingOption.name,
+				onPress: setSorting.bind(this, sortingOption.name)
+			}
+		}));
+	}, []);
 	return (
 		<View style={ [
 			styles.container,
@@ -69,42 +79,9 @@ export const ItemList: React.FC<ItemListProps> = ( {
 				renderItem={ ( { item } ) => item.renderItem }
 				contentContainerStyle={ [
 					styles.contentContainer,
+					sortingOptions?.length && { paddingBottom: Spacing.fab },
 					contentContainerStyle
 				] } />
-
-			{ sortingOptions &&
-				<Menu 
-					anchor={
-						<View style={ [
-							styles.sortingContainer,
-							sortingContainerStyle
-						] }>
-							<IconButton
-								icon={ 'funnel-outline' }
-								onPress={ () => setShowSortingOptions( true ) } />
-							{ sorting &&
-								<Text style={ styles.sortingText }>
-									{ sorting }
-								</Text>
-							}
-						</View>
-					}
-					visible={ showSortingOptions }
-					onDismiss={ () => setShowSortingOptions( false ) }
-					style={ styles.menuContainer }>
-					{ sortingOptions.map( ( option, key ) => {
-						return (
-							<Menu.Item
-								key={ key }
-								title={ option.name }
-								onPress={ () => {
-									setShowSortingOptions( false );
-									setSorting( option.name );
-								} } />
-						)
-					} ) }
-				</Menu>
-			}
 		</View>
 	)
 }

@@ -32,6 +32,7 @@ export interface Loan extends TransactionType {
 }
 
 export interface SortingType {
+	icon?: React.ComponentProps<typeof Ionicons>['name'];
 	name: string,
 	function: ( a: any, b: any ) => number
 }
@@ -185,29 +186,35 @@ export const useTypes = () => {
 
 	const SortingTypes = {
 		newestFirst: {
+			icon: 'arrow-up-outline',
 			name: __( 'Newest first' ),
 			function: ( a: any, b: any ) => b.date - a.date
-		},	
+		} as SortingType,
 		oldestFirst: {
+			icon: 'arrow-down-outline',
 			name: __( 'Oldest first' ),
 			function: ( a: any, b: any ) => a.date - b.date
-		},
+		} as SortingType,
 		name: {
+			icon: 'text-outline',
 			name: __( 'Name (A-Z)' ),
 			function: ( a: any, b: any ) => a.name.localeCompare( b.name )
-		},
+		} as SortingType,
 		highestReturn: {
+			icon: 'arrow-up-outline',
 			name: __( 'Highest return' ),
 			function: ( a: any, b: any ) => b.returnValue - a.returnValue
-		},
+		} as SortingType,
 		lowestReturn: {
+			icon: 'arrow-down-outline',
 			name: __( 'Lowest return' ),
 			function: ( a: any, b: any ) => a.returnValue - b.returnValue
-		},
+		} as SortingType,
 		highestValue: {
+			icon: 'arrow-up-outline',
 			name: __( 'Highest value' ),
 			function: ( a: any, b: any ) => b.value - a.value
-		}
+		} as SortingType
 	}
 
 	const TimeframeTypes: TimeframeTypes = {

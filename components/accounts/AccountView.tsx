@@ -11,7 +11,7 @@ import { TransactionForm } from "../transactions/TransactionForm";
 import { prettifyNumber } from "../../helpers";
 import { useI18n } from '../../contexts/I18nContext';
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
-import { useFAB } from "../../contexts/FABContext";
+import { FABProvider, useFAB } from "../../contexts/FABContext";
 import { useUser } from "../../hooks/useUser";
 import { useTypes } from "../../hooks/useTypes";
 import { Tabs, TabsScreenContentProps } from "../ui/Tabs";
@@ -308,21 +308,23 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			label: __( 'Holdings' ),
 			content: (
 				<View style={ styles.contentContainer }>
-					<ItemList
-						noItemsText={ __( 'No Holdings' ) }
-						data={ holdings.map( holding => {
-							return {
-								item: holding,
-								renderItem: <HoldingItem holding={ holding } />
-							}
-						}) }
-						sortingContainerStyle={ { marginBottom: insets.bottom } }
-						sortingOptions={ [
-							SortingTypes.name,
-							SortingTypes.highestReturn,
-							SortingTypes.lowestReturn,
-							SortingTypes.highestValue
-						] } />
+					<FABProvider side='left' insets={insets} iconName='funnel-outline'>
+						<ItemList
+							noItemsText={ __( 'No Holdings' ) }
+							data={ holdings.map( holding => {
+								return {
+									item: holding,
+									renderItem: <HoldingItem holding={ holding } />
+								}
+							}) }
+							sortingContainerStyle={ { marginBottom: insets.bottom } }
+							sortingOptions={ [
+								SortingTypes.name,
+								SortingTypes.highestReturn,
+								SortingTypes.lowestReturn,
+								SortingTypes.highestValue
+							] } />
+					</FABProvider>
 				</View>
 			)
 		},
@@ -330,32 +332,34 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 			label: __( 'Transactions' ),
 			content: (
 				<View style={ styles.contentContainer }>
-					<ItemList
-						noItemsText={ __( 'No Transactions' ) }
-						data={[
-							...transactions,
-							...holdings.flatMap( holding => {
-								return [ ...holding.transactions ]
-							})
-						].map( transaction => {
-							return {
-								item: transaction,
-								renderItem: (
-									<TransactionItem
-										transaction={ transaction }
-										onPressSelect={ onPressSelectTransaction }
-										onLongPress={ onLongPressTransaction }
-										isSelectable={ canSelect( 'Transaction' ) && isSelecting }
-										isSelected={ hasObject( transaction ) }
-										showHolding />
-								)
-							}
-						})}
-						sortingContainerStyle={ { marginBottom: insets.bottom } }
-						sortingOptions={ [
-							SortingTypes.newestFirst,
-							SortingTypes.oldestFirst
-						] } />
+					<FABProvider side='left' insets={insets} iconName='funnel-outline'>
+						<ItemList
+							noItemsText={ __( 'No Transactions' ) }
+							data={[
+								...transactions,
+								...holdings.flatMap( holding => {
+									return [ ...holding.transactions ]
+								})
+							].map( transaction => {
+								return {
+									item: transaction,
+									renderItem: (
+										<TransactionItem
+											transaction={ transaction }
+											onPressSelect={ onPressSelectTransaction }
+											onLongPress={ onLongPressTransaction }
+											isSelectable={ canSelect( 'Transaction' ) && isSelecting }
+											isSelected={ hasObject( transaction ) }
+											showHolding />
+									)
+								}
+							})}
+							sortingContainerStyle={ { marginBottom: insets.bottom } }
+							sortingOptions={ [
+								SortingTypes.newestFirst,
+								SortingTypes.oldestFirst
+							] } />
+					</FABProvider>
 				</View>
 			)
 		}

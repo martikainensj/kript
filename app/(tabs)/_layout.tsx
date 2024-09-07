@@ -12,44 +12,44 @@ export default function TabsLayout() {
 
 	const focusedColor = theme.colors.primary;
 	const iconColor = theme.colors.secondary;
-	
-  return (
-    <BottomTabs
-			sceneAnimationEnabled={ true }
-			sceneAnimationType={ 'shifting' }
-			barStyle={ {
+
+	return (
+		<BottomTabs
+			sceneAnimationEnabled={true}
+			sceneAnimationType={'shifting'}
+			barStyle={{
 				backgroundColor: theme.colors.background,
 				borderTopWidth: StyleSheet.hairlineWidth,
 				borderColor: theme.colors.outlineVariant
-			} }
-			shifting={ true }>
-      <BottomTabs.Screen
-        name={ "index" }
-        options={ {
-          title: __( 'Home' ),
-          tabBarIcon: ( { focused } ) =>
-						<Icon
-							name={ focused ? 'home' : 'home-outline' }
-							color={ focused ? focusedColor : iconColor } />
-        } } />
-      <BottomTabs.Screen
-        name={ "accounts" }
-        options={ {
-          title: __( 'Accounts' ),
-          tabBarIcon: ( { focused } ) =>
-						<Icon
-							name={ focused ? 'wallet' : 'wallet-outline' }
-							color={ focused ? focusedColor : iconColor } />
-        } } />
+			}}
+			shifting={true}>
 			<BottomTabs.Screen
-				name={ "settings" }
-				options={ {
-					title: __( 'Settings' ),
-					tabBarIcon: ( { focused } ) =>
+				name={"index"}
+				options={{
+					title: __('Home'),
+					tabBarIcon: ({ focused }) =>
 						<Icon
-							name={ focused ? 'settings' : 'settings-outline' }
-							color={ focused ? focusedColor : iconColor } />
-				} } />
-    </BottomTabs>
-  );
+							name={focused ? 'home' : 'home-outline'}
+							color={focused ? focusedColor : iconColor} />
+				}} />
+			<BottomTabs.Screen
+				name={"accounts"}
+				options={{
+					title: __('Accounts'),
+					tabBarIcon: ({ focused }) =>
+						<Icon
+							name={focused ? 'wallet' : 'wallet-outline'}
+							color={focused ? focusedColor : iconColor} />
+				}} />
+			<BottomTabs.Screen
+				name={"settings"}
+				options={{
+					title: __('Settings'),
+					tabBarIcon: ({ focused }) =>
+						<Icon
+							name={focused ? 'settings' : 'settings-outline'}
+							color={focused ? focusedColor : iconColor} />
+				}} />
+		</BottomTabs>
+	);
 }
