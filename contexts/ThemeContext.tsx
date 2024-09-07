@@ -6,9 +6,9 @@ import { useMaterial3Theme } from "@pchmn/expo-material3-theme";
 
 export interface ThemeProps extends MD3Theme {
 	colors: MD3Theme['colors'] & {
-    success: string;
-    onSuccess: string;
-  };
+		success: string;
+		onSuccess: string;
+	};
 }
 
 interface ThemeContext {
@@ -20,7 +20,7 @@ interface ThemeContext {
 	setColorScheme: React.Dispatch<React.SetStateAction<ColorSchemeName>>
 }
 
-const ThemeContext = createContext<ThemeContext>( {
+const ThemeContext = createContext<ThemeContext>({
 	theme: {
 		...MD3LightTheme,
 		colors: {
@@ -32,11 +32,11 @@ const ThemeContext = createContext<ThemeContext>( {
 	sourceColor: null,
 	colorScheme: 'light',
 	defaultSourceColor: null,
-	setSourceColor: () => {},
-	setColorScheme: () => {},
-} );
+	setSourceColor: () => { },
+	setColorScheme: () => { },
+});
 
-export const useTheme = () => useContext( ThemeContext );
+export const useTheme = () => useContext(ThemeContext);
 
 interface ThemeProviderProps {
 	children: React.ReactNode,
@@ -44,39 +44,35 @@ interface ThemeProviderProps {
 	fallbackSourceColor?: string
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ( { children, sourceColor, fallbackSourceColor = '#66B2FF' } ) => {
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, sourceColor, fallbackSourceColor = '#66B2FF' }) => {
 	const defaultSourceColor = fallbackSourceColor;
-	const [ theme, setTheme ] = useState<ThemeProps>();
-	const [ _sourceColor, _setSourceColor ] = useState( null );
-	const { theme: materialTheme, updateTheme, resetTheme } = useMaterial3Theme( { sourceColor, fallbackSourceColor } );
-	
+	const [theme, setTheme] = useState<ThemeProps>();
+	const [_sourceColor, _setSourceColor] = useState(null);
+	const { theme: materialTheme, updateTheme, resetTheme } = useMaterial3Theme({ sourceColor, fallbackSourceColor });
+
 	const { getData, setData } = useStorage();
 	const colorScheme = useColorScheme();
 
-	const setSourceColor = ( sourceColor?: string, skipStorage = false ) => {
-		if ( sourceColor ) {
-			updateTheme( sourceColor );
+	const setSourceColor = (sourceColor?: string, skipStorage = false) => {
+		if (sourceColor) {
+			updateTheme(sourceColor);
 		} else {
 			resetTheme();
 		}
-		
-		_setSourceColor( sourceColor );
-		
-		if ( ! skipStorage ) {
-			setData( '@settings/sourceColor', sourceColor );
+
+		_setSourceColor(sourceColor);
+
+		if (!skipStorage) {
+			setData('@settings/sourceColor', sourceColor);
 		}
 	}
 
-	const setColorScheme = ( colorScheme: ColorSchemeName, skipStorage = false ) => {
-		Appearance.setColorScheme( colorScheme );
-
-		if ( ! skipStorage ) {
-			setData( '@settings/colorScheme', colorScheme );
-		}
+	const setColorScheme = (colorScheme: ColorSchemeName) => {
+		Appearance.setColorScheme(colorScheme);
 	}
 
-	useEffect( () => {
-		setTheme( colorScheme === 'dark' ? {
+	const getTheme = (colorScheme: ColorSchemeName): ThemeProps => {
+		return colorScheme === 'dark' ? {
 			...MD3DarkTheme,
 			colors: {
 				...materialTheme.dark,
@@ -90,33 +86,39 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ( { children, sourceC
 				success: '#66a077',
 				onSuccess: materialTheme.light.onPrimary
 			}
-		} );
-	}, [ colorScheme, materialTheme ] );
+		}
+	}
 
-	useLayoutEffect( () => {
-		getData( '@settings/colorScheme' ).then( colorScheme => {
-			setColorScheme( colorScheme, true );
-		} );
+	useLayoutEffect(() => {
+		getData('@settings/colorScheme').then(colorScheme => {
+			Appearance.setColorScheme(colorScheme);
+			setTheme(getTheme(colorScheme));
+		});
+
+		Appearance.addChangeListener(({ colorScheme }) => {
+			setData("@settings/colorScheme", colorScheme);
+			setTheme(getTheme(colorScheme));
+		})
 
 		Platform.OS === 'android' && (
-			getData( '@settings/sourceColor' ).then( sourceColor => {
-				setSourceColor( sourceColor, true );
-			} )
+			getData('@settings/sourceColor').then(sourceColor => {
+				setSourceColor(sourceColor, true);
+			})
 		)
-	}, [] );
+	}, []);
 
-  return (
-    <ThemeContext.Provider value={ {
+	return (
+		<ThemeContext.Provider value={{
 			theme,
 			sourceColor: _sourceColor,
 			colorScheme,
 			defaultSourceColor,
 			setSourceColor,
 			setColorScheme,
-		} }>
-			<PaperProvider theme={ theme }>
-				{ children }
+		}}>
+			<PaperProvider theme={theme}>
+				{children}
 			</PaperProvider>
-    </ThemeContext.Provider>
-  );
+		</ThemeContext.Provider>
+	);
 }
