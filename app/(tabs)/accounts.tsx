@@ -3,8 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import Realm from 'realm';
 
 import { GlobalStyles } from '../../constants';
-import { AccountItem, AccountForm  } from '../../components/accounts';
-import { IconButton} from '../../components/buttons';
+import { AccountItem, AccountForm } from '../../components/accounts';
+import { IconButton } from '../../components/buttons';
 import { useBottomSheet } from '../../contexts/BottomSheetContext';
 import { useI18n } from '../../contexts/I18nContext';
 import { useUser } from '../../hooks/useUser';
@@ -19,64 +19,64 @@ const Accounts: React.FC = () => {
 	const { getAccounts, addAccount } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
-	
+
 	const accounts = getAccounts();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { SortingTypes } = useTypes();
 
 	const onPressAdd = () => {
 		openBottomSheet(
-			__( 'New Account' ),
+			__('New Account'),
 			<AccountForm
-				account={ {
+				account={{
 					_id: new Realm.BSON.UUID(),
 					owner_id: user.id,
 					name: '',
-				}	}
-				onSubmit={ ( account ) => {
-					addAccount( account ).then( () => {
-						router.navigate( {
+				}}
+				onSubmit={(account) => {
+					addAccount(account).then(() => {
+						router.navigate({
 							pathname: 'accounts/[account]',
 							params: {
 								accountId: account._id.toString(),
 								name: account.name
 							}
-						} );
-						
+						});
+
 						closeBottomSheet();
-					} );
-				}	} />
+					});
+				}} />
 		);
 	}
 
 	return (
-		<View style={ styles.container }>
+		<View style={styles.container}>
 			<Header
-				title={ __( 'Accounts' ) }
-				right={ ( 
+				title={__('Accounts')}
+				right={(
 					<IconButton
-						onPress={ onPressAdd }
-						icon={ 'add' } />
-	 			) } />
-			<View style={ styles.contentContainer }>
-				<FABProvider side='left' iconName='funnel-outline'>
+						onPress={onPressAdd}
+						icon={'add'} />
+				)} />
+			<View style={styles.contentContainer}>
+				<FABProvider side='left'>
 					<ItemList
-						title={ __( 'Accounts' ) }
-						noItemsText={ __( 'No accounts' ) }
-						data={ accounts.map( account => {
-							if ( ! account.isValid() ) return;
+						title={__('Accounts')}
+						noItemsText={__('No accounts')}
+						data={accounts.map(account => {
+							if (!account.isValid()) return;
 
 							return {
 								item: account,
-								renderItem: <AccountItem account={ account } />
+								renderItem: <AccountItem account={account} />
 							}
-						}) }
-						sortingOptions={ [
+						})}
+						sortingOptions={[
 							SortingTypes.name,
 							SortingTypes.highestReturn,
 							SortingTypes.lowestReturn,
 							SortingTypes.highestValue
-						] } />
+						]} />
 				</FABProvider>
 			</View>
 		</View>
@@ -85,7 +85,7 @@ const Accounts: React.FC = () => {
 
 export default Accounts;
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.container
 	},
@@ -94,4 +94,4 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.container,
 		...GlobalStyles.gutter,
 	}
-} );
+});

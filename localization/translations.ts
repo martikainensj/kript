@@ -679,6 +679,10 @@ const Translations: { [ key: string ]: Translation } = {
 	'not enough data': {
 		fi_FI: 'Ei tarpeeksi dataa',
 		en_US: 'Not enough data'
+	},
+	'reset': {
+		fi_FI: 'Nollaa',
+		en_US: 'Reset'
 	}
 }
 

@@ -1,8 +1,7 @@
 import React, {
 	useState,
 	createContext,
-	useContext,
-	useCallback
+	useContext
 } from "react";
 import {
 	StyleSheet
@@ -12,89 +11,109 @@ import { Ionicons } from '@expo/vector-icons';
 
 import {
 	BorderRadius,
-	IconSize,
 	Spacing
 } from "../constants";
 import { Icon } from "../components/ui/Icon";
 import { useData } from "./DataContext";
-import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
-import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
-import { IconProps } from "react-native-paper/lib/typescript/components/MaterialCommunityIcon";
+import { EdgeInsets } from "react-native-safe-area-context";
+import { useI18n } from "./I18nContext";
 
 interface FABContext {
 	actions: FABGroupProps["actions"];
 	setActions: React.Dispatch<React.SetStateAction<FABContext['actions']>>;
+	icon?: React.ComponentProps<typeof Ionicons>['name'];
+	setIcon?: React.Dispatch<React.SetStateAction<FABContext['icon']>>;
+	label?: string;
+	setLabel?: React.Dispatch<React.SetStateAction<FABContext['label']>>;
 }
 
-const FABContext = createContext<FABContext>( {
+const FABContext = createContext<FABContext>({
 	actions: [],
-	setActions: () => {},
-} );
+	setActions: () => { },
+	icon: 'ellipsis-vertical',
+	setIcon: () => { },
+	label: '',
+	setLabel: () => { },
+});
 
-export const useFAB = () => useContext( FABContext );
+export const useFAB = () => useContext(FABContext);
 
 interface ProviderProps {
 	side?: 'left' | 'right';
 	insets?: EdgeInsets;
-	iconName?: React.ComponentProps<typeof Ionicons>['name'],
 	children: React.ReactNode;
 }
 
-export const FABProvider: React.FC<ProviderProps> = ( { side = 'right', insets, iconName, children } ) => {
-	const [ actions, setActions ] = useState<FABContext['actions']>( [] );
+export const FABProvider: React.FC<ProviderProps> = ({
+	side = 'right',
+	insets,
+	children
+}) => {
+	const [actions, setActions] = useState<FABContext['actions']>([]);
+	const [icon, setIcon] = useState<FABContext['icon']>('ellipsis-vertical');
+	const [label, setLabel] = useState<FABContext['label']>('');
 
-  return (
-    <FABContext.Provider value={ {
+	return (
+		<FABContext.Provider value={{
 			actions,
 			setActions,
-		} }>
-      { children }
-			<FAB side={side} insets={insets} iconName={iconName} />
-    </FABContext.Provider>
-  );
+			icon,
+			setIcon,
+			label,
+			setLabel
+		}}>
+			{children}
+			<FAB
+				side={side}
+				insets={insets}
+				icon={icon}
+				label={label}
+			/>
+		</FABContext.Provider>
+	);
 }
 
 interface FABProps {
 	side: ProviderProps['side'];
 	insets: ProviderProps['insets'];
-	iconName: ProviderProps['iconName'];
+	icon: FABContext['icon'];
+	label: FABContext['label'];
 }
 
-const FAB: React.FC<FABProps> = ({ side, insets, iconName }) => {
+const FAB: React.FC<FABProps> = ({ side, insets, icon, label }) => {
 	const { isProcessing } = useData();
-	const { actions } = useFAB();
-	const [ open, setOpen ] = useState( false );
+	const { __ } = useI18n();
+	const { actions, setIcon, setLabel } = useFAB();
+	const [open, setOpen] = useState(false);
 
-	const onStateChange = useCallback( () => {
-		setOpen( ! open );
-	}, [ open ] );
+	const isVisible = !isProcessing && !!actions.length;
 
-	const isVisible = ! isProcessing && !! actions.length;
-
-	const getIcon = ({ size }) => {
-		if ( open ) {
-			return <Icon name={ 'close' } size={ size } />
+	const getIcon = () => {
+		if (open) {
+			return 'close';
 		}
 
-		if ( iconName ) {
-			return <Icon name={ iconName } size={ size } />
+		if (icon) {
+			return icon;
 		}
 
-		return <Icon name={ 'ellipsis-vertical' } size={ size } />
+		return 'ellipsis-vertical';
 	}
-	
+
 	return (
 		<PaperFAB.Group
-			open={ open }
-			visible={ isVisible }
-			icon={ getIcon }
-			actions={ actions }
-			variant={ "secondary" }
-			onStateChange={ onStateChange }
+			open={open}
+			visible={isVisible}
+			icon={({ size }) => <Icon name={getIcon()} size={size} />}
+			actions={actions}
+			variant={"secondary"}
+			onStateChange={(state) => {
+				setOpen(state.open);
+			}}
 			style={{
 				paddingBottom: insets?.bottom,
 			}}
-			
+			label={label}
 			fabStyle={[
 				styles.fab,
 				side === 'left' && styles.left,
@@ -103,7 +122,7 @@ const FAB: React.FC<FABProps> = ({ side, insets, iconName }) => {
 	)
 }
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	fab: {
 		borderRadius: BorderRadius.xl,
 	},
@@ -115,4 +134,4 @@ const styles = StyleSheet.create( {
 		marginLeft: 'auto',
 		marginRight: Spacing.md
 	}
-} );
+});

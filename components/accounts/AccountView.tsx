@@ -35,7 +35,7 @@ import { LineChartButton } from "../buttons/LineChartButton";
 interface AccountViewProps {
 	account: Account;
 }
-const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
+const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 	const { saveAccount, removeObjects, addTransaction } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
@@ -49,55 +49,57 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 
 	useAccount({ account });
 
-	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
+	const onPressOptions = useCallback(({ nativeEvent }: GestureResponderEvent) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
 		const menuItems: MenuItem[] = [
 			{
-				title: __( 'Edit' ),
-				leadingIcon: ( { color } ) => 
-					<Icon name={ 'create' } color={ color } />,
+				title: __('Edit'),
+				leadingIcon: ({ color }) =>
+					<Icon name={'create'} color={color} />,
 				onPress: () => {
 					openBottomSheet(
-						__( 'Edit Account' ),
+						__('Edit Account'),
 						<AccountForm
-							account={ account }
-							onSubmit={ ( editedAccount ) => {
-								saveAccount( editedAccount ).then( closeBottomSheet );
-							}	} />
+							account={account}
+							onSubmit={(editedAccount) => {
+								saveAccount(editedAccount).then(closeBottomSheet);
+							}} />
 					);
 				},
 			},
 			{
-				title: __( 'Remove' ),
-				leadingIcon: ( props ) => 
-					<Icon name={ 'trash' } { ...props } />,
-				onPress: () => removeObjects( 'Account', [ account ] ).then(() => router.navigate( '/accounts' )) ,
+				title: __('Remove'),
+				leadingIcon: (props) =>
+					<Icon name={'trash'} {...props} />,
+				onPress: () => removeObjects('Account', [account]).then(() => router.navigate('/accounts')),
 			},
 		];
 
-		openMenu( anchor, menuItems );
-	}, [ account ] );
+		openMenu(anchor, menuItems);
+	}, [account]);
 
-	const onLongPressTransaction = useCallback(( transaction: Transaction ) => {
-		! isSelecting && select( 'Transaction', transaction );	
+	const onLongPressTransaction = useCallback((transaction: Transaction) => {
+		!isSelecting && select('Transaction', transaction);
 	}, []);
 
-	const onPressSelectTransaction = useCallback(( transaction: Transaction ) => {
-		hasObject( transaction )
-			? deselect( transaction )
-			: select( 'Transaction', transaction );
-	}, [ selectedObjects ]);
+	const onPressSelectTransaction = useCallback((transaction: Transaction) => {
+		hasObject(transaction)
+			? deselect(transaction)
+			: select('Transaction', transaction);
+	}, [selectedObjects]);
 
-	useEffect( () => {
-		setActions( [
+	useEffect(() => {
+		setActions([
 			{
-				icon: ( { color, size } ) => { return (
-					<Icon name={ 'receipt' } size={ size } color={ color } />
-				) },
-				label: __( 'Add Transaction' ),
+				icon: ({ size }) => {
+					return (
+						<Icon name={'receipt'} size={size} />
+					)
+				},
+				label: __('Add Transaction'),
 				onPress: () => {
 					openBottomSheet(
-						__( 'New Transaction' ),
+						__('New Transaction'),
 						<TransactionForm
 							transaction={{
 								owner_id: user.id,
@@ -110,17 +112,17 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 								type: 'trading',
 								sub_type: 'buy'
 							}}
-							account={ account }
-							onSubmit={( transaction ) => {
-								addTransaction( transaction ).then( closeBottomSheet );
+							account={account}
+							onSubmit={(transaction) => {
+								addTransaction(transaction).then(closeBottomSheet);
 							}} />
 					);
 				}
 			}
 		])
-	}, [ account ] );
+	}, [account]);
 
-	if ( ! account?.isValid() ) {
+	if (!account?.isValid()) {
 		router.back();
 		return;
 	}
@@ -143,49 +145,49 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 
 	const values = [
 		<Value
-			label={ __( 'Value' ) }
-			value={ prettifyNumber( value, 0 ) }
-			unit={ '€' }
-			isVertical={ true }
-			isNegative={ value < 0 } />,
+			label={__('Value')}
+			value={prettifyNumber(value, 0)}
+			unit={'€'}
+			isVertical={true}
+			isNegative={value < 0} />,
 		<Value
-			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnValue, 0 ) }
-			unit={ '€' }
-			isVertical={ true }
-			isPositive={ returnValue > 0 }
-			isNegative={ returnValue < 0 } />,
+			label={__('Return')}
+			value={prettifyNumber(returnValue, 0)}
+			unit={'€'}
+			isVertical={true}
+			isPositive={returnValue > 0}
+			isNegative={returnValue < 0} />,
 		<Value
-			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnPercentage, 0 ) }
-			unit={ '%' }
-			isVertical={ true }
-			isPositive={ returnPercentage > 0 }
-			isNegative={ returnPercentage < 0 } />,
+			label={__('Return')}
+			value={prettifyNumber(returnPercentage, 0)}
+			unit={'%'}
+			isVertical={true}
+			isPositive={returnPercentage > 0}
+			isNegative={returnPercentage < 0} />,
 		<Value
-			label={ __( 'Balance' ) }
-			value={ prettifyNumber( balance, 0 ) }
-			unit={ '€' }
-			isVertical={ true }
-			isNegative={ balance < 0 } />,
+			label={__('Balance')}
+			value={prettifyNumber(balance, 0)}
+			unit={'€'}
+			isVertical={true}
+			isNegative={balance < 0} />,
 	];
 
 	const overviewCharts = [];
 
-	if ( valueHistoryData ) {
+	if (valueHistoryData) {
 		overviewCharts.push(
 			<LineChartButton
-				label={ __( "Net Value") }
-				unit={ "€" }
-				data={ valueHistoryData }
-				onPress={ () => {
+				label={__("Net Value")}
+				unit={"€"}
+				data={valueHistoryData}
+				onPress={() => {
 					openChartSheet(
 						'',
 						<LineChart
-							id={ `${ account._id.toString() }-value-chart` }
-							label={ __( "Net Value") }
-							unit={ "€" }
-							data={ valueHistoryData }
+							id={`${account._id.toString()}-value-chart`}
+							label={__("Net Value")}
+							unit={"€"}
+							data={valueHistoryData}
 							timeframeOptions={[
 								TimeframeTypes.ytd,
 								TimeframeTypes["1year"],
@@ -194,24 +196,24 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 								TimeframeTypes.max
 							]} />
 					)
-				}}/>
+				}} />
 		)
 	}
 
-	if ( returnHistoryData ) {
+	if (returnHistoryData) {
 		overviewCharts.push(
 			<LineChartButton
-				label={ __( "Return") }
-				unit={ "€" }
-				data={ returnHistoryData }
-				onPress={ () => {
+				label={__("Return")}
+				unit={"€"}
+				data={returnHistoryData}
+				onPress={() => {
 					openChartSheet(
 						'',
 						<LineChart
-							id={ `${ account._id.toString() }-return-chart` }
-							label={ __( "Return") }
-							unit={ "€" }
-							data={ returnHistoryData }
+							id={`${account._id.toString()}-return-chart`}
+							label={__("Return")}
+							unit={"€"}
+							data={returnHistoryData}
 							timeframeOptions={[
 								TimeframeTypes.ytd,
 								TimeframeTypes["1year"],
@@ -220,24 +222,24 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 								TimeframeTypes.max
 							]} />
 					)
-				}}/>
+				}} />
 		)
 	}
 
-	if ( dividendHistoryData ) {
+	if (dividendHistoryData) {
 		overviewCharts.push(
 			<LineChartButton
-				label={ __( "Dividend" ) }
-				unit={ "€" }
-				data={ dividendHistoryData }
-				onPress={ () => {
+				label={__("Dividend")}
+				unit={"€"}
+				data={dividendHistoryData}
+				onPress={() => {
 					openChartSheet(
 						'',
 						<LineChart
-							id={ `${ account._id.toString() }-dividend-chart` }
-							label={ __( "Dividend" ) }
-							unit={ "€" }
-							data={ dividendHistoryData }
+							id={`${account._id.toString()}-dividend-chart`}
+							label={__("Dividend")}
+							unit={"€"}
+							data={dividendHistoryData}
 							timeframeOptions={[
 								TimeframeTypes.ytd,
 								TimeframeTypes["1year"],
@@ -246,16 +248,16 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 								TimeframeTypes.max
 							]} />
 					)
-				}}/>
+				}} />
 		)
 	}
 
-	if ( loanHistoryData ) {
+	if (loanHistoryData) {
 		overviewCharts.push(
 			<LineChartButton
-				label={ __( "Debt") }
-				unit={ "€" }
-				data={ loanHistoryData.map( data => {
+				label={__("Debt")}
+				unit={"€"}
+				data={loanHistoryData.map(data => {
 					return {
 						...data,
 						value: -data.value
@@ -265,10 +267,10 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 					openChartSheet(
 						'',
 						<LineChart
-							id={ `${ account._id.toString() }-loan-chart` }
-							label={ __( "Debt") }
-							unit={ "€" }
-							data={ loanHistoryData.map( data => {
+							id={`${account._id.toString()}-loan-chart`}
+							label={__("Debt")}
+							unit={"€"}
+							data={loanHistoryData.map(data => {
 								return {
 									...data,
 									value: -data.value
@@ -288,77 +290,77 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 
 	const tabs = [
 		{
-			label: __( 'Overview' ),
+			label: __('Overview'),
 			content: (
 				<View style={[
 					styles.contentContainer,
 					styles.overviewContainer
 				]}>
 					<Value
-						label={ __( 'Balance' ) }
-						value={ prettifyNumber( balance, 0 ) }
+						label={__('Balance')}
+						value={prettifyNumber(balance, 0)}
 						unit="€"
 						isVertical
-						valueStyle={ styles.value } />
-					<Grid columns={ 2 } items={ overviewCharts } />
+						valueStyle={styles.value} />
+					<Grid columns={2} items={overviewCharts} />
 				</View>
 			)
 		},
 		{
-			label: __( 'Holdings' ),
+			label: __('Holdings'),
 			content: (
-				<View style={ styles.contentContainer }>
-					<FABProvider side='left' insets={insets} iconName='funnel-outline'>
+				<View style={styles.contentContainer}>
+					<FABProvider side='left' insets={insets}>
 						<ItemList
-							noItemsText={ __( 'No Holdings' ) }
-							data={ holdings.map( holding => {
+							noItemsText={__('No Holdings')}
+							data={holdings.map(holding => {
 								return {
 									item: holding,
-									renderItem: <HoldingItem holding={ holding } />
+									renderItem: <HoldingItem holding={holding} />
 								}
-							}) }
-							sortingContainerStyle={ { marginBottom: insets.bottom } }
-							sortingOptions={ [
+							})}
+							sortingContainerStyle={{ marginBottom: insets.bottom }}
+							sortingOptions={[
 								SortingTypes.name,
 								SortingTypes.highestReturn,
 								SortingTypes.lowestReturn,
 								SortingTypes.highestValue
-							] } />
+							]} />
 					</FABProvider>
 				</View>
 			)
 		},
 		{
-			label: __( 'Transactions' ),
+			label: __('Transactions'),
 			content: (
-				<View style={ styles.contentContainer }>
-					<FABProvider side='left' insets={insets} iconName='funnel-outline'>
+				<View style={styles.contentContainer}>
+					<FABProvider side='left' insets={insets}>
 						<ItemList
-							noItemsText={ __( 'No Transactions' ) }
+							noItemsText={__('No Transactions')}
 							data={[
 								...transactions,
-								...holdings.flatMap( holding => {
-									return [ ...holding.transactions ]
+								...holdings.flatMap(holding => {
+									return [...holding.transactions]
 								})
-							].map( transaction => {
+							].map(transaction => {
 								return {
 									item: transaction,
 									renderItem: (
 										<TransactionItem
-											transaction={ transaction }
-											onPressSelect={ onPressSelectTransaction }
-											onLongPress={ onLongPressTransaction }
-											isSelectable={ canSelect( 'Transaction' ) && isSelecting }
-											isSelected={ hasObject( transaction ) }
+											transaction={transaction}
+											onPressSelect={onPressSelectTransaction}
+											onLongPress={onLongPressTransaction}
+											isSelectable={canSelect('Transaction') && isSelecting}
+											isSelected={hasObject(transaction)}
 											showHolding />
 									)
 								}
 							})}
-							sortingContainerStyle={ { marginBottom: insets.bottom } }
-							sortingOptions={ [
+							sortingContainerStyle={{ marginBottom: insets.bottom }}
+							sortingOptions={[
 								SortingTypes.newestFirst,
 								SortingTypes.oldestFirst
-							] } />
+							]} />
 					</FABProvider>
 				</View>
 			)
@@ -366,35 +368,35 @@ const AccountView: React.FC<AccountViewProps> = ( { account } ) => {
 	] as TabsScreenContentProps[]
 
 	return (
-		<View style={ styles.container }>
+		<View style={styles.container}>
 			<Header
-				title={ name }
-				left={ <BackButton /> }
-				right={ <Switcher
+				title={name}
+				left={<BackButton />}
+				right={<Switcher
 					components={[
 						<IconButton
-							icon={ 'trash' }
-							onPress={ () => { removeObjects( selectedType, selectedObjects ).then( validate )}} />,
+							icon={'trash'}
+							onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />,
 						<IconButton
-							icon={ 'ellipsis-vertical' }
-							onPress={ onPressOptions } />
+							icon={'ellipsis-vertical'}
+							onPress={onPressOptions} />
 					]}
-					activeIndex={ isSelecting ? 0 : 1 } />
+					activeIndex={isSelecting ? 0 : 1} />
 				}
-				showDivider={ false }>
+				showDivider={false}>
 				<Grid
-					columns={ 4 }
-					items= { values } />
+					columns={4}
+					items={values} />
 			</Header>
 
-			<Tabs screens={ tabs } />
+			<Tabs screens={tabs} />
 		</View>
 	)
 }
 
 export default AccountView;
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.container,
 	},
@@ -410,4 +412,4 @@ const styles = StyleSheet.create( {
 		fontSize: FontSize.lg,
 		fontWeight: FontWeight.bold,
 	}
-} );
+});

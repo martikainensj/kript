@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import { router } from 'expo-router';
 
-import { FontWeight, GlobalStyles, Spacing } from "../../constants";
+import { GlobalStyles, Spacing } from "../../constants";
 import { Account } from "../../models/Account";
 import { useTheme } from "../../contexts/ThemeContext";
 import { prettifyNumber } from "../../helpers";
@@ -17,23 +17,23 @@ interface AccountItemProps {
 	account: Account
 }
 
-export const AccountItem: React.FC<AccountItemProps> = ( { account } ) => {
+export const AccountItem: React.FC<AccountItemProps> = ({ account }) => {
 	const { theme } = useTheme();
 	const { __ } = useI18n();
 
 	useAccount({ account });
 
 	function onPress() {
-		router.navigate( {
+		router.navigate({
 			pathname: 'accounts/[account]',
 			params: {
 				accountId: account._id.toString(),
 				name: account.name
 			}
-		} );
+		});
 	}
 
-	if ( ! account?.isValid() ) return;
+	if (!account?.isValid()) return;
 
 	const {
 		balance,
@@ -43,70 +43,70 @@ export const AccountItem: React.FC<AccountItemProps> = ( { account } ) => {
 	} = account;
 
 	const values = [];
-	if ( value ) {
+	if (value) {
 		values.push(
 			<Value
-				label={ __( 'Value' ) }
-				value={ prettifyNumber( value, 0 ) }
-				unit={ '€' }
-				isVertical={ true }
-				isNegative={ value < 0 } />
+				label={__('Value')}
+				value={prettifyNumber(value, 0)}
+				unit={'€'}
+				isVertical={true}
+				isNegative={value < 0} />
 		)
 	}
 
-	if ( returnValue ) {
+	if (returnValue) {
 		values.push(
 			<Value
-				label={ __( 'Return' ) }
-				value={ prettifyNumber( returnValue, 0 ) }
-				unit={ '€' }
-				isVertical={ true }
-				isPositive={ returnValue > 0 }
-				isNegative={ returnValue < 0 } />
+				label={__('Return')}
+				value={prettifyNumber(returnValue, 0)}
+				unit={'€'}
+				isVertical={true}
+				isPositive={returnValue > 0}
+				isNegative={returnValue < 0} />
 		)
 	}
 
-	if ( returnPercentage ) {
+	if (returnPercentage) {
 		values.push(
 			<Value
-				label={ __( 'Return' ) }
-				value={ prettifyNumber( returnPercentage, 0 ) }
-				unit={ '%' }
-				isVertical={ true }
-				isPositive={ returnPercentage > 0 }
-				isNegative={ returnPercentage < 0 } />
+				label={__('Return')}
+				value={prettifyNumber(returnPercentage, 0)}
+				unit={'%'}
+				isVertical={true}
+				isPositive={returnPercentage > 0}
+				isNegative={returnPercentage < 0} />
 		)
 	}
 
-	if ( balance ) {
+	if (balance) {
 		values.push(
 			<Value
-				label={ __( 'Balance' ) }
-				value={ prettifyNumber( balance, 0 ) }
-				unit={ '€' }
-				isVertical={ true }
-				isNegative={ balance < 0 } />
+				label={__('Balance')}
+				value={prettifyNumber(balance, 0)}
+				unit={'€'}
+				isVertical={true}
+				isNegative={balance < 0} />
 		)
 	}
 
 	const meta = [
-		<Text style={ [ styles.name, { color: theme.colors.primary} ] }>{ account.name }</Text>
+		<Text style={[styles.name, { color: theme.colors.primary }]}>{account.name}</Text>
 	];
 
 	return (
-		<TouchableRipple onPress={ onPress }>
-			<View style={ styles.container }>
-				<View style={ styles.contentContainer }>
+		<TouchableRipple onPress={onPress}>
+			<View style={styles.container}>
+				<View style={styles.contentContainer}>
 					<Grid
-						columns={ 2 }
-						items={ meta } />
-					
+						columns={2}
+						items={meta} />
+
 					<Grid
-						columns={ 4 }
-						items= { values } />
+						columns={4}
+						items={values} />
 				</View>
 
-				<Icon name={ 'chevron-forward' } />
+				<Icon name={'chevron-forward'} />
 			</View>
 		</TouchableRipple>
 	)
@@ -114,7 +114,7 @@ export const AccountItem: React.FC<AccountItemProps> = ( { account } ) => {
 
 export default AccountItem;
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.gutter,
 		flexDirection: 'row',
@@ -130,4 +130,4 @@ const styles = StyleSheet.create( {
 	name: {
 		...GlobalStyles.bold
 	}
-} );
+});

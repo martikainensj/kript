@@ -32,9 +32,10 @@ export interface Loan extends TransactionType {
 }
 
 export interface SortingType {
+	id: string;
 	icon?: React.ComponentProps<typeof Ionicons>['name'];
-	name: string,
-	function: ( a: any, b: any ) => number
+	name: string;
+	function: (a: any, b: any) => number;
 }
 
 export type IntervalType = 'daily' | 'weekly' | 'monthly' | 'yearly';
@@ -81,25 +82,25 @@ export const useTypes = () => {
 	const TransactionTypes: Transaction[] = [
 		{
 			id: 'trading',
-			name: __( 'Trading' ),
+			name: __('Trading'),
 			color: theme.colors.primary,
 			icon: 'swap-horizontal-outline'
 		},
 		{
 			id: 'cash',
-			name: __( 'Cash' ),
+			name: __('Cash'),
 			color: theme.colors.primary,
 			icon: 'swap-vertical-outline'
 		},
 		{
 			id: 'adjustment',
-			name: __( 'Adjustment' ),
+			name: __('Adjustment'),
 			color: theme.colors.primary,
 			icon: 'options'
 		},
 		{
 			id: 'loan',
-			name: __( 'Loan' ),
+			name: __('Loan'),
 			color: theme.colors.primary,
 			icon: 'cash-outline'
 		}
@@ -108,13 +109,13 @@ export const useTypes = () => {
 	const TradingTypes: Trading[] = [
 		{
 			id: 'buy',
-			name: __( 'Buy' ),
+			name: __('Buy'),
 			color: theme.colors.success,
 			icon: 'enter-outline',
 		},
 		{
 			id: 'sell',
-			name: __( 'Sell' ),
+			name: __('Sell'),
 			color: theme.colors.error,
 			icon: 'exit-outline',
 		},
@@ -123,19 +124,19 @@ export const useTypes = () => {
 	const CashTypes: Cash[] = [
 		{
 			id: 'deposit',
-			name: __( 'Deposit' ),
+			name: __('Deposit'),
 			color: theme.colors.success,
 			icon: 'enter-outline',
 		},
 		{
 			id: 'withdrawal',
-			name: __( 'Withdrawal' ),
+			name: __('Withdrawal'),
 			color: theme.colors.error,
 			icon: 'exit-outline',
 		},
 		{
 			id: 'dividend',
-			name: __( 'Dividend' ),
+			name: __('Dividend'),
 			color: theme.colors.primary,
 			icon: 'cash-outline',
 		}
@@ -144,27 +145,27 @@ export const useTypes = () => {
 	const AdjustmentTypes: Adjustment[] = [
 		{
 			id: 'stockSplit',
-			name: __( 'Stock Split' ),
+			name: __('Stock Split'),
 			color: theme.colors.tertiary
 		},
 		{
 			id: 'merger',
-			name: __( 'Merger' ),
+			name: __('Merger'),
 			color: theme.colors.tertiary
 		},
 		{
 			id: 'priceUpdate',
-			name: __( 'Price Update' ),
+			name: __('Price Update'),
 			color: theme.colors.tertiary
 		},
 		{
 			id: 'amountUpdate',
-			name: __( 'Amount Update' ),
+			name: __('Amount Update'),
 			color: theme.colors.tertiary
 		},
 		{
 			id: 'update',
-			name: __( 'Update' ),
+			name: __('Update'),
 			color: theme.colors.tertiary
 		}
 	];
@@ -172,13 +173,13 @@ export const useTypes = () => {
 	const LoanTypes: Loan[] = [
 		{
 			id: 'repayment',
-			name: __( 'Repayment' ),
+			name: __('Repayment'),
 			color: theme.colors.primary,
 			icon: 'push-outline',
 		},
 		{
 			id: 'disbursement',
-			name: __( 'Disbursement' ),
+			name: __('Disbursement'),
 			color: theme.colors.primary,
 			icon: 'download-outline',
 		}
@@ -186,89 +187,95 @@ export const useTypes = () => {
 
 	const SortingTypes = {
 		newestFirst: {
+			id: 'newestFirst',
 			icon: 'arrow-up-outline',
-			name: __( 'Newest first' ),
-			function: ( a: any, b: any ) => b.date - a.date
+			name: __('Newest first'),
+			function: (a: any, b: any) => b.date - a.date
 		} as SortingType,
 		oldestFirst: {
+			id: 'oldestFirst',
 			icon: 'arrow-down-outline',
-			name: __( 'Oldest first' ),
-			function: ( a: any, b: any ) => a.date - b.date
+			name: __('Oldest first'),
+			function: (a: any, b: any) => a.date - b.date
 		} as SortingType,
 		name: {
+			id: 'name',
 			icon: 'text-outline',
-			name: __( 'Name (A-Z)' ),
-			function: ( a: any, b: any ) => a.name.localeCompare( b.name )
+			name: __('Name (A-Z)'),
+			function: (a: any, b: any) => a.name.localeCompare(b.name)
 		} as SortingType,
 		highestReturn: {
+			id: 'highestReturn',
 			icon: 'arrow-up-outline',
-			name: __( 'Highest return' ),
-			function: ( a: any, b: any ) => b.returnValue - a.returnValue
+			name: __('Highest return'),
+			function: (a: any, b: any) => b.returnValue - a.returnValue
 		} as SortingType,
 		lowestReturn: {
+			id: 'lowestReturn',
 			icon: 'arrow-down-outline',
-			name: __( 'Lowest return' ),
-			function: ( a: any, b: any ) => a.returnValue - b.returnValue
+			name: __('Lowest return'),
+			function: (a: any, b: any) => a.returnValue - b.returnValue
 		} as SortingType,
 		highestValue: {
+			id: 'highestValue',
 			icon: 'arrow-up-outline',
-			name: __( 'Highest value' ),
-			function: ( a: any, b: any ) => b.value - a.value
+			name: __('Highest value'),
+			function: (a: any, b: any) => b.value - a.value
 		} as SortingType
 	}
 
 	const TimeframeTypes: TimeframeTypes = {
 		'1day': {
 			id: '1day',
-			name: `1 ${ __( 'day' ) }`,
+			name: `1 ${__('day')}`,
 			interval: 'daily',
 			range: 1
 		},
 		'1week': {
 			id: '1week',
-			name: `1 ${ __( 'week' ) }`,
+			name: `1 ${__('week')}`,
 			interval: 'daily',
 			range: 7
 		},
 		'1month': {
 			id: '1month',
-			name: `1 ${ __( 'month' ) }`,
+			name: `1 ${__('month')}`,
 			interval: 'daily',
 			range: 30
 		},
 		'3month': {
 			id: '3month',
-			name: `3 ${ __( 'month' ) }`,
+			name: `3 ${__('month')}`,
 			interval: 'daily',
 			range: 90
 		},
 		'ytd': {
 			id: 'ytd',
-			name: __( 'YTD' ),
+			name: __('YTD'),
 			interval: 'daily',
 			range: getYTD()
 		},
 		'1year': {
 			id: '1year',
-			name: `1 ${ __( 'year' ) }`,
+			name: `1 ${__('year')}`,
 			interval: 'weekly',
 			range: 52
 		},
 		'3year': {
 			id: '3year',
-			name: `3 ${ __( 'years' ) }`,
+			name: `3 ${__('years')}`,
 			interval: 'weekly',
 			range: 156
 		},
 		'5year': {
 			id: '5year',
-			name: `5 ${ __( 'years' ) }`,
+			name: `5 ${__('years')}`,
 			interval: 'weekly',
 			range: 260
 		},
 		'max': {
 			id: 'max',
-			name: __( 'Max' ),
+			name: __('Max'),
 			interval: 'monthly',
 		},
 	};

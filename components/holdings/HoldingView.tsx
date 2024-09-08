@@ -35,12 +35,12 @@ interface HoldingViewProps {
 	holding: Holding;
 }
 
-const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
+const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 	const { getAccountBy, saveHolding, removeObjects, addTransaction, getTransactions } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
-	const account = getAccountBy( '_id', holding.account_id );
-	const transactions = getTransactions( { accountId: holding.account_id, holdingId: holding._id } );
+	const account = getAccountBy('_id', holding.account_id);
+	const transactions = getTransactions({ accountId: holding.account_id, holdingId: holding._id });
 	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
@@ -49,61 +49,64 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 	const insets = useSafeAreaInsets();
 	const { isSelecting, select, deselect, selectedType, selectedObjects, validate, hasObject, canSelect } = useSelector();
 
-	useHolding( { holding } );
+	useHolding({ holding });
 
-	const onPressOptions = useCallback( ( { nativeEvent }: GestureResponderEvent ) => {
+	const onPressOptions = useCallback(({ nativeEvent }: GestureResponderEvent) => {
 		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
 		const menuItems: MenuItem[] = [
 			{
-				title: __( 'Edit' ),
-				leadingIcon: ( props ) => 
-					<Icon name={ 'create' } { ...props }/>,
+				title: __('Edit'),
+				leadingIcon: (props) =>
+					<Icon name={'create'} {...props} />,
 				onPress: () => {
 					openBottomSheet(
-						__( 'Edit Holding' ),
+						__('Edit Holding'),
 						<HoldingForm
-							holding={ holding }
-							onSubmit={ holding => {
-								saveHolding( holding ).then( closeBottomSheet ) }
+							holding={holding}
+							onSubmit={holding => {
+								saveHolding(holding).then(closeBottomSheet)
+							}
 							} />
 					);
 				}
 			},
 			{
-				title: __( 'Remove' ),
-				leadingIcon: ( props ) => 
-					<Icon name={ 'trash' } { ...props } />,
+				title: __('Remove'),
+				leadingIcon: (props) =>
+					<Icon name={'trash'} {...props} />,
 				onPress: () => {
-					removeObjects( 'Holding', [ holding ] ).then( router.back )
+					removeObjects('Holding', [holding]).then(router.back)
 				}
 			},
 		];
 
-		openMenu( anchor, menuItems );
-	}, [ holding ] );
+		openMenu(anchor, menuItems);
+	}, [holding]);
 
-	const onLongPressTransaction = useCallback(( transaction: Transaction ) => {
-		! isSelecting && select( 'Transaction', transaction );	
+	const onLongPressTransaction = useCallback((transaction: Transaction) => {
+		!isSelecting && select('Transaction', transaction);
 	}, []);
 
-	const onPressSelectTransaction = useCallback(( transaction: Transaction ) => {
-		hasObject( transaction )
-			? deselect( transaction )
-			: select( 'Transaction', transaction );
-	}, [ selectedObjects ]);
+	const onPressSelectTransaction = useCallback((transaction: Transaction) => {
+		hasObject(transaction)
+			? deselect(transaction)
+			: select('Transaction', transaction);
+	}, [selectedObjects]);
 
-	useEffect( () => {
-		setActions( [
+	useEffect(() => {
+		setActions([
 			{
-				icon: ( props ) => { return (
-					<Icon name={ 'receipt' } { ...props } />
-				) },
-				label: __( 'Add Transaction' ),
+				icon: ({ size }) => {
+					return (
+						<Icon name={'receipt'} size={size} />
+					)
+				},
+				label: __('Add Transaction'),
 				onPress: () => {
 					openBottomSheet(
-						__( 'New Transaction' ),
+						__('New Transaction'),
 						<TransactionForm
-							transaction={ {
+							transaction={{
 								owner_id: user.id,
 								date: Date.now(),
 								price: null,
@@ -113,18 +116,18 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 								account_id: account._id,
 								type: 'trading',
 								sub_type: 'buy'
-							} }
-							account={ account }
-							onSubmit={ ( transaction ) => {
-								addTransaction( transaction ).then( closeBottomSheet );
-							}	} />
+							}}
+							account={account}
+							onSubmit={(transaction) => {
+								addTransaction(transaction).then(closeBottomSheet);
+							}} />
 					);
 				}
 			},
 		])
-	}, [ holding, account ] );
+	}, [holding, account]);
 
-	if ( ! holding?.isValid() ) {
+	if (!holding?.isValid()) {
 		router.back();
 		return;
 	}
@@ -133,46 +136,46 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 
 	const values = [
 		<Value
-			label={ __( 'Amount' ) }
-			value={ prettifyNumber( amount ) }
-			isVertical={ true } />,
+			label={__('Amount')}
+			value={prettifyNumber(amount)}
+			isVertical={true} />,
 		<Value
-			label={ __( 'Value' ) }
-			value={ prettifyNumber( value ) }
-			unit={ '€' }
-			isVertical={ true } />,
+			label={__('Value')}
+			value={prettifyNumber(value)}
+			unit={'€'}
+			isVertical={true} />,
 		<Value
-			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnValue ) }
-			unit={ '€' }
-			isVertical={ true }
-			isPositive={ returnValue > 0 }
-			isNegative={ returnValue < 0 } />,
+			label={__('Return')}
+			value={prettifyNumber(returnValue)}
+			unit={'€'}
+			isVertical={true}
+			isPositive={returnValue > 0}
+			isNegative={returnValue < 0} />,
 		<Value
-			label={ __( 'Return' ) }
-			value={ prettifyNumber( returnPercentage ) }
-			unit={ '%' }
-			isVertical={ true }
-			isPositive={ returnPercentage > 0 }
-			isNegative={ returnPercentage < 0 } />,
+			label={__('Return')}
+			value={prettifyNumber(returnPercentage)}
+			unit={'%'}
+			isVertical={true}
+			isPositive={returnPercentage > 0}
+			isNegative={returnPercentage < 0} />,
 	];
 
 	const charts = [];
 
-	if ( returnHistoryData ) {
+	if (returnHistoryData) {
 		charts.push(
 			<LineChartButton
-				label={ __( "Return") }
-				unit={ "€" }
-				data={ returnHistoryData }
-				onPress={ () => {
+				label={__("Return")}
+				unit={"€"}
+				data={returnHistoryData}
+				onPress={() => {
 					openChartSheet(
 						'',
 						<LineChart
-							id={ `${ holding._id.toString() }-return-chart` }
-							label={ __( "Return") }
-							unit={ "€" }
-							data={ returnHistoryData }
+							id={`${holding._id.toString()}-return-chart`}
+							label={__("Return")}
+							unit={"€"}
+							data={returnHistoryData}
 							timeframeOptions={[
 								TimeframeTypes.ytd,
 								TimeframeTypes["1year"],
@@ -185,20 +188,20 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 		)
 	}
 
-	if ( feesHistoryData ) {
+	if (feesHistoryData) {
 		charts.push(
 			<LineChartButton
-				label={ __( "Fees") }
-				unit={ "€" }
-				data={ feesHistoryData }
-				onPress={ () => {
+				label={__("Fees")}
+				unit={"€"}
+				data={feesHistoryData}
+				onPress={() => {
 					openChartSheet(
 						'',
 						<LineChart
-							id={ `${ holding._id.toString() }-fees-chart` }
-							label={ __( "Fees") }
-							unit={ "€" }
-							data={ feesHistoryData }
+							id={`${holding._id.toString()}-fees-chart`}
+							label={__("Fees")}
+							unit={"€"}
+							data={feesHistoryData}
 							timeframeOptions={[
 								TimeframeTypes.ytd,
 								TimeframeTypes["1year"],
@@ -210,68 +213,68 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 				}} />
 		)
 	}
-	
+
 	return (
-		<View style={ styles.container }>
+		<View style={styles.container}>
 			<Header
-				title={ name }
-				left={ <BackButton /> }
-				right={ <Switcher
+				title={name}
+				left={<BackButton />}
+				right={<Switcher
 					components={[
 						<IconButton
-							icon={ 'trash' }
-							onPress={ () => { removeObjects( selectedType, selectedObjects ).then( validate )}} />,
+							icon={'trash'}
+							onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />,
 						<IconButton
-							icon={ 'ellipsis-vertical' }
-							onPress={ onPressOptions } />
+							icon={'ellipsis-vertical'}
+							onPress={onPressOptions} />
 					]}
-					activeIndex={ isSelecting ? 0 : 1 } />
+					activeIndex={isSelecting ? 0 : 1} />
 				}
-				showDivider={ false }>
-					<Grid
-						columns={ 4 }
-						items= { values } />
+				showDivider={false}>
+				<Grid
+					columns={4}
+					items={values} />
 			</Header>
 
-			<Tabs screens={ [
+			<Tabs screens={[
 				{
-					label: __( 'Overview' ),
+					label: __('Overview'),
 					content: (
-						<View style={ styles.contentContainer }>
-							<Grid columns={ 2 } items={ charts } style={ styles.gridContainer } />
+						<View style={styles.contentContainer}>
+							<Grid columns={2} items={charts} style={styles.gridContainer} />
 						</View>
 					)
 				},
 				{
-					label: __( 'Transactions' ),
+					label: __('Transactions'),
 					content: (
-						<View style={ styles.contentContainer }>
-							<FABProvider side='left' insets={insets} iconName={ "funnel-outline" }>
+						<View style={styles.contentContainer}>
+							<FABProvider side='left' insets={insets}>
 								<ItemList
-									noItemsText={ __( 'No Transactions' ) }
-									data={ transactions.map( transaction => {
+									noItemsText={__('No Transactions')}
+									data={transactions.map(transaction => {
 										return {
 											item: transaction,
 											renderItem: (
 												<TransactionItem
-													transaction={ transaction }
-													onPressSelect={ onPressSelectTransaction }
-													onLongPress={ onLongPressTransaction }
-													isSelectable={ canSelect( 'Transaction' ) && isSelecting }
-													isSelected={ hasObject( transaction ) } />
+													transaction={transaction}
+													onPressSelect={onPressSelectTransaction}
+													onLongPress={onLongPressTransaction}
+													isSelectable={canSelect('Transaction') && isSelecting}
+													isSelected={hasObject(transaction)} />
 											)
 										}
-									}) }
-									sortingContainerStyle={ { marginBottom: insets.bottom } }
-									sortingOptions={ [
+									})}
+									sortingContainerStyle={{ marginBottom: insets.bottom }}
+									sortingOptions={[
 										SortingTypes.newestFirst,
 										SortingTypes.oldestFirst
-									] }  />
+									]} />
 							</FABProvider>
 						</View>
 					)
 				},
-			] }>
+			]}>
 			</Tabs>
 		</View>
 	)
@@ -279,7 +282,7 @@ const HoldingView: React.FC<HoldingViewProps> = ( { holding } ) => {
 
 export default HoldingView;
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.container,
 	},
@@ -290,4 +293,4 @@ const styles = StyleSheet.create( {
 	gridContainer: {
 		paddingTop: Spacing.md
 	}
-} );
+});
