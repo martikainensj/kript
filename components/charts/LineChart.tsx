@@ -35,85 +35,85 @@ export const LineChart: React.FC<Props> = ({
 	const { theme } = useTheme();
 	const { getData, setData } = useStorage();
 	const { TimeframeTypes } = useTypes();
-	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
+	const [lineChartWidth, setLineChartWidth] = useState(0);
 
-	const [ timeframe, setTimeframe ] = useState<TimeframeType>( TimeframeTypes.ytd );
-	const [ showTimeframeOptions, setShowTimeframeOptions ] = useState( false );
+	const [timeframe, setTimeframe] = useState<TimeframeType>(TimeframeTypes.ytd);
+	const [showTimeframeOptions, setShowTimeframeOptions] = useState(false);
 
 	const timeframedData = useMemo(() => {
-		const filteredData = filterDataByInterval( data, timeframe?.interval ?? 'weekly', timeframe?.range );
-		const lineDataItems = filteredData.map( data => {
+		const filteredData = filterDataByInterval(data, timeframe?.interval ?? 'weekly', timeframe?.range);
+		const lineDataItems = filteredData.map(data => {
 			return {
-				label: new Date( data.date ).toLocaleDateString( 'fi' ),
+				label: new Date(data.date).toLocaleDateString('fi'),
 				value: data.value,
 			} as lineDataItem
 		});
 
 		return lineDataItems as lineDataItem[];
-	}, [ data, timeframe ]);
+	}, [data, timeframe]);
 
 	const { lastValue, maxValue, minValue } = useMemo(() => {
-		const values = timeframedData.reduceRight(( result, current ) => {
-			if ( result.lastValue === 0 && current.value !== null && current.value !== undefined ) {
+		const values = timeframedData.reduceRight((result, current) => {
+			if (result.lastValue === 0 && current.value !== null && current.value !== undefined) {
 				result.lastValue = current.value;
 			}
 
-			if ( current.value !== null && current.value !== undefined ) {
-				if ( current.value > result.maxValue ) {
+			if (current.value !== null && current.value !== undefined) {
+				if (current.value > result.maxValue) {
 					result.maxValue = current.value;
 				}
 
-				if ( current.value < result.minValue ) {
+				if (current.value < result.minValue) {
 					result.minValue = current.value;
 				}
 			}
 
 			return result;
 		}, { lastValue: 0, maxValue: -Infinity, minValue: Infinity });
-		
+
 		return values;
-	}, [ timeframedData ]);
+	}, [timeframedData]);
 
 	const yAxisOffset = minValue;
 	const chartColor = lastValue >= 0
 		? theme.colors.success
 		: theme.colors.error;
 
-	const onLayout = ( event: LayoutChangeEvent ) => {
+	const onLayout = (event: LayoutChangeEvent) => {
 		const { width } = event.nativeEvent.layout;
 
-		setLineChartWidth( width );
+		setLineChartWidth(width);
 	};
 
-	const onPressTimeframeOption = ( option: TimeframeType ) => {
-		setShowTimeframeOptions( false );
-		setTimeframe( option );
+	const onPressTimeframeOption = (option: TimeframeType) => {
+		setShowTimeframeOptions(false);
+		setTimeframe(option);
 
-		getData( '@filters/timeframe' ).then( filtersTimeframe => {
+		getData('@filters/timeframe').then(filtersTimeframe => {
 			const newFiltersTimeframe = {};
 
-			if ( !! filtersTimeframe ) {
-				Object.assign( newFiltersTimeframe, filtersTimeframe );
+			if (!!filtersTimeframe) {
+				Object.assign(newFiltersTimeframe, filtersTimeframe);
 			}
 
 			newFiltersTimeframe[id] = { id: option.id };
 
-			setData( '@filters/timeframe', newFiltersTimeframe )
+			setData('@filters/timeframe', newFiltersTimeframe)
 		});
 	}
 
-	const pointerLabelComponent = useCallback(( items: lineDataItem[] ) => {
+	const pointerLabelComponent = useCallback((items: lineDataItem[]) => {
 		const item = items[0];
 
-		if ( ! item?.value || item.hideDataPoint ) {
+		if (!item?.value || item.hideDataPoint) {
 			return;
 		}
-		
+
 		return (
-			<View style={ styles.pointerLabelContainer }>	
-				{ item.label && (
-					<Text style={ styles.pointerLabelLabel }>
-						{ item.label }
+			<View style={styles.pointerLabelContainer}>
+				{item.label && (
+					<Text style={styles.pointerLabelLabel}>
+						{item.label}
 					</Text>
 				)}
 
@@ -122,25 +122,23 @@ export const LineChart: React.FC<Props> = ({
 					{ backgroundColor: theme.colors.background }
 				]}>
 					<Value
-						value={ prettifyNumber( item.value, 0 )}
-						unit={ unit }
-						isPositive={ item.value > 0 }
-						isNegative={ item.value < 0 } />
+						value={prettifyNumber(item.value, 0)}
+						unit={unit}
+						isPositive={item.value > 0}
+						isNegative={item.value < 0} />
 				</View>
 			</View>
 		);
-	}, [ timeframedData ]);
+	}, [timeframedData]);
 
 	useLayoutEffect(() => {
-		getData( '@filters/timeframe' ).then( filtersTimeframe => {
-			const timeframeId = ( !! filtersTimeframe && filtersTimeframe[ id ])
-				? filtersTimeframe[ id ].id
-				: null;
+		getData('@filters/timeframe').then(filtersTimeframe => {
+			const timeframeId = filtersTimeframe?.[id]?.id || null;
 
-			if ( !! timeframeId ) {
-				setTimeframe( timeframeOptions.find( option => option.id === timeframeId ));
-			} else if ( !! timeframeOptions?.length ) {
-				setTimeframe( timeframeOptions[ 0 ]);
+			if (timeframeId) {
+				setTimeframe(timeframeOptions.find(option => option.id === timeframeId));
+			} else if (timeframeOptions?.length) {
+				setTimeframe(timeframeOptions[0]);
 			}
 		})
 	}, []);
@@ -149,7 +147,7 @@ export const LineChart: React.FC<Props> = ({
 		autoAdjustPointerLabelPosition: true,
 		pointerStripColor: chartColor,
 		pointerStripWidth: 1,
-		strokeDashArray: [ 2, Spacing.xs ],
+		strokeDashArray: [2, Spacing.xs],
 		pointerColor: chartColor,
 		radius: 4,
 		pointerLabelWidth: 100,
@@ -177,85 +175,85 @@ export const LineChart: React.FC<Props> = ({
 	} as Partial<LineChartPropsType>
 
 	const showChart = timeframedData?.length > 1;
-	const showTimeframe = !! timeframeOptions?.length;
+	const showTimeframe = !!timeframeOptions?.length;
 
 	return (
 		<Animated.View
-			onLayout={ onLayout }
-			style={ styles.container }>
-			<Card style={ { paddingHorizontal: 0, borderRadius: 0 } }>
-				<View style={ styles.headerContainer }>
-					<Title>{ label }</Title>
+			onLayout={onLayout}
+			style={styles.container}>
+			<Card style={{ paddingHorizontal: 0, borderRadius: 0 }}>
+				<View style={styles.headerContainer}>
+					<Title>{label}</Title>
 					<Value
-						value={ prettifyNumber( lastValue, 0 )}
-						unit={ unit }
-						isPositive={ lastValue > 0 }
-						isNegative={ lastValue < 0 }
-						valueStyle={ styles.lastValue }
-						unitStyle={ styles.lastValueUnit } />
+						value={prettifyNumber(lastValue, 0)}
+						unit={unit}
+						isPositive={lastValue > 0}
+						isNegative={lastValue < 0}
+						valueStyle={styles.lastValue}
+						unitStyle={styles.lastValueUnit} />
 				</View>
 
-				{ showChart &&
-					<View style={ styles.lineChartWrapper }>
+				{showChart &&
+					<View style={styles.lineChartWrapper}>
 						<GiftedLineChart
 							curved
-							curveType={ 1 }
-							animationDuration={ 1500 }
+							curveType={1}
+							animationDuration={1500}
 							isAnimated
-							data={ timeframedData }
-							{ ...xAxis }
-							{ ...yAxis }
-							{ ...rules }
-							width={ lineChartWidth }
-							height={ lineChartWidth / 2 }
-							initialSpacing={ 0 }
-							thickness={ 2 }
+							data={timeframedData}
+							{...xAxis}
+							{...yAxis}
+							{...rules}
+							width={lineChartWidth}
+							height={lineChartWidth / 2}
+							initialSpacing={0}
+							thickness={2}
 							hideDataPoints
 							adjustToWidth
-							pointerConfig={ pointerConfig }
+							pointerConfig={pointerConfig}
 							areaChart
-							color={ chartColor }
-							startFillColor={ chartColor }
-							endFillColor={ 'transparent' }
-							startOpacity={ 0.3 }
-							endOpacity={ 0 } />
+							color={chartColor}
+							startFillColor={chartColor}
+							endFillColor={'transparent'}
+							startOpacity={0.3}
+							endOpacity={0} />
 					</View>
 				}
 
-				{ ! showChart && 
-					<View style={ styles.noticeWrapper }>
-						<Text>{ __( 'Not enough data' ) }</Text>
+				{!showChart &&
+					<View style={styles.noticeWrapper}>
+						<Text>{__('Not enough data')}</Text>
 					</View>
 				}
 
-				{ showTimeframe &&
+				{showTimeframe &&
 					<Menu
 						anchor={
-							<View style={ [
+							<View style={[
 								styles.sortingContainer,
 								timeframeContainerStyle
-							] }>
-								{ timeframe &&
-									<Text style={ styles.sortingText }>
-										{ timeframe.name }
+							]}>
+								{timeframe &&
+									<Text style={styles.sortingText}>
+										{timeframe.name}
 									</Text>
 								}
 								<IconButton
-									icon={ 'time-outline' }
-									onPress={ () => setShowTimeframeOptions( true ) } />
+									icon={'time-outline'}
+									onPress={() => setShowTimeframeOptions(true)} />
 							</View>
 						}
-						visible={ showTimeframeOptions }
-						onDismiss={ () => setShowTimeframeOptions( false ) }
-						style={ styles.menuContainer }>
-						{ timeframeOptions.map( ( option, key ) => {
+						visible={showTimeframeOptions}
+						onDismiss={() => setShowTimeframeOptions(false)}
+						style={styles.menuContainer}>
+						{timeframeOptions.map((option, key) => {
 							return (
 								<Menu.Item
-									key={ key }
-									title={ option.name }
-									onPress={ onPressTimeframeOption.bind( this, option ) } />
+									key={key}
+									title={option.name}
+									onPress={onPressTimeframeOption.bind(this, option)} />
 							)
-						} ) }
+						})}
 					</Menu>
 				}
 			</Card>
@@ -291,8 +289,8 @@ const styles = StyleSheet.create({
 	},
 	pointerLabelLabel: {
 		...GlobalStyles.label,
-		marginBottom:6,
-		textAlign:'center',
+		marginBottom: 6,
+		textAlign: 'center',
 	},
 	pointerLabelValue: {
 		...GlobalStyles.label,

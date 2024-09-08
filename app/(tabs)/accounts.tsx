@@ -61,6 +61,7 @@ const Accounts: React.FC = () => {
 			<View style={styles.contentContainer}>
 				<FABProvider side='left'>
 					<ItemList
+						id='list-accounts'
 						title={__('Accounts')}
 						noItemsText={__('No accounts')}
 						data={accounts.map(account => {

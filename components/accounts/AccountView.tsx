@@ -312,6 +312,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				<View style={styles.contentContainer}>
 					<FABProvider side='left' insets={insets}>
 						<ItemList
+							id={`list-account-${account._id}-holdings`}
 							noItemsText={__('No Holdings')}
 							data={holdings.map(holding => {
 								return {
@@ -336,6 +337,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				<View style={styles.contentContainer}>
 					<FABProvider side='left' insets={insets}>
 						<ItemList
+							id={`list-account-${account._id}-transactions`}
 							noItemsText={__('No Transactions')}
 							data={[
 								...transactions,

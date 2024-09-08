@@ -1,7 +1,7 @@
 import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { GlobalStyles, Spacing } from "../../constants";
 import { Divider, Text } from "react-native-paper";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { useI18n } from "../../contexts/I18nContext";
 import { useTheme } from "../../contexts/ThemeContext";
 import { SortingType } from "../../hooks/useTypes";
@@ -10,8 +10,10 @@ import { Holding } from "../../models/Holding";
 import { Transaction } from "../../models/Transaction";
 import { useFAB } from "../../contexts/FABContext";
 import { Icon } from "./Icon";
+import { useStorage } from "../../hooks/useStorage";
 
 interface ItemListProps {
+	id: string;
 	title?: string;
 	noItemsText?: string;
 	data: {
@@ -25,6 +27,7 @@ interface ItemListProps {
 }
 
 export const ItemList: React.FC<ItemListProps> = ({
+	id,
 	title,
 	noItemsText,
 	data,
@@ -35,10 +38,10 @@ export const ItemList: React.FC<ItemListProps> = ({
 	const { __ } = useI18n();
 	const { theme } = useTheme();
 	const { setActions, setIcon, setLabel } = useFAB();
+	const { setData, getData } = useStorage();
 	const [sorting, setSorting] = useState<SortingType>(sortingOptions && sortingOptions[0]);
 
 	const sortedData = useMemo(() => {
-
 		if (sorting?.function) {
 			return data.sort((a, b) => sorting.function(a.item, b.item));
 		}
@@ -49,6 +52,18 @@ export const ItemList: React.FC<ItemListProps> = ({
 	useEffect(() => {
 		setIcon(sorting?.icon);
 		setLabel(sorting?.name);
+
+		getData('@filters/sorting').then(filtersSorting => {
+			const newFiltersSorting = {};
+
+			if (!!filtersSorting) {
+				Object.assign(newFiltersSorting, filtersSorting);
+			}
+
+			newFiltersSorting[id] = { id: sorting.id };
+
+			setData('@filters/sorting', newFiltersSorting)
+		});
 	}, [sorting]);
 
 	useEffect(() => {
@@ -65,6 +80,18 @@ export const ItemList: React.FC<ItemListProps> = ({
 			}
 		}));
 	}, [sortingOptions]);
+
+	useLayoutEffect(() => {
+		getData('@filters/sorting').then(filtersSorting => {
+			const sortingId = filtersSorting?.[id]?.id || null;
+
+			if (sortingId) {
+				setSorting(sortingOptions.find(option => option.id === sortingId));
+			} else if (sortingOptions?.length) {
+				setSorting(sortingOptions[0]);
+			}
+		})
+	}, []);
 
 	return (
 		<View style={[

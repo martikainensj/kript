@@ -251,6 +251,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 						<View style={styles.contentContainer}>
 							<FABProvider side='left' insets={insets}>
 								<ItemList
+									id={`list-holding-${holding._id}-transactions`}
 									noItemsText={__('No Transactions')}
 									data={transactions.map(transaction => {
 										return {
