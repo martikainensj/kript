@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useLayoutEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { MD3DarkTheme, MD3LightTheme, MD3Theme, PaperProvider } from "react-native-paper";
 import { useStorage } from "../hooks/useStorage";
 import { Appearance, ColorSchemeName, Platform, useColorScheme } from "react-native";
@@ -47,7 +47,7 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, sourceColor, fallbackSourceColor = '#66B2FF' }) => {
 	const defaultSourceColor = fallbackSourceColor;
 	const [theme, setTheme] = useState<ThemeProps>();
-	const [_sourceColor, _setSourceColor] = useState(null);
+  const sourceColorRef = useRef(fallbackSourceColor); 
 	const { theme: materialTheme, updateTheme, resetTheme } = useMaterial3Theme({ sourceColor, fallbackSourceColor });
 
 	const { getData, setData } = useStorage();
@@ -60,7 +60,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, sourceCo
 			resetTheme();
 		}
 
-		_setSourceColor(sourceColor);
+		sourceColorRef.current = sourceColor;
 
 		if (!skipStorage) {
 			setData('@settings/sourceColor', sourceColor);
@@ -89,7 +89,15 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, sourceCo
 		}
 	}
 
+	useEffect(() => {
+		setTheme(getTheme(colorScheme));
+	}, [materialTheme, colorScheme]);
+
 	useLayoutEffect(() => {
+		getData('@settings/sourceColor').then(sourceColor => {
+			setSourceColor(sourceColor, true);
+		})
+	
 		getData('@settings/colorScheme').then(colorScheme => {
 			Appearance.setColorScheme(colorScheme);
 			setTheme(getTheme(colorScheme));
@@ -99,18 +107,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, sourceCo
 			setData("@settings/colorScheme", colorScheme);
 			setTheme(getTheme(colorScheme));
 		});
-
-		if (Platform.OS === 'android') {
-			getData('@settings/sourceColor').then(sourceColor => {
-				setSourceColor(sourceColor, true);
-			});
-		}
 	}, []);
 
 	return (
 		<ThemeContext.Provider value={{
 			theme,
-			sourceColor: _sourceColor,
+			sourceColor: sourceColorRef.current,
 			colorScheme,
 			defaultSourceColor,
 			setSourceColor,
