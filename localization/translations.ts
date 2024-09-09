@@ -683,7 +683,18 @@ const Translations: { [ key: string ]: Translation } = {
 	'reset': {
 		fi_FI: 'Nollaa',
 		en_US: 'Reset'
-	}
+	},
+
+	// Värit
+
+	'green': {
+		fi_FI: 'Vihreä',
+		en_US: 'Green'
+	},
+	'purple': {
+		fi_FI: 'Violetti',
+		en_US: 'Purple'
+	},
 }
 
 export default Translations;

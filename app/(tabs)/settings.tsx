@@ -53,16 +53,18 @@ const Accounts: React.FC = () => {
 				) } />
 				
 			<View style={ styles.contentContainer }>
-				{ Platform.OS === 'android' && (
+				{
 					<Select
 						label={ __( 'Color' ) }
 						value={ sourceColor }
 						options={ [
 							{ value: defaultSourceColor, label: __( 'Default' ) },
-							{ value: '', label: __( 'System' ) },
+							{ value: '#966fd6', label: __( 'Purple' ) },
+							{ value: '#204326', label: __( 'Green' )},
+							Platform.OS === 'android' && { value: '', label: __( 'System' ) },
 						] }
 						setValue={ setSourceColor } />
-				) }
+				}
 					
 				<Select
 					label={ __( 'Language' ) }
