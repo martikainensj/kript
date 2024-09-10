@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, Children } from 'react';
-import { View, Animated, StyleSheet, Easing } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Animated, StyleSheet } from 'react-native';
 import { Duration } from '../../constants';
 
 interface Props {
@@ -29,7 +29,6 @@ const ConditionalView: React.FC<Props> = ({
 	initialValues,
 	targetValues
 }) => {
-	const [ shouldRender, setShouldRender ] = useState( condition );
   const fadeAnim = useRef( new Animated.Value( condition ? 1 : 0 )).current;
 	const scaleX = fadeAnim.interpolate({
 		inputRange: [ 0, 1 ],
@@ -80,8 +79,6 @@ const ConditionalView: React.FC<Props> = ({
 
   useEffect(() => {
     if (condition) {
-      setShouldRender(true);
-
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration,
@@ -92,29 +89,27 @@ const ConditionalView: React.FC<Props> = ({
         toValue: 0,
         duration,
         useNativeDriver: false,
-      }).start(() => setShouldRender(false)); // Remove the component after fade-out
+      }).start();
     }
   }, [condition]);
 
   return (
-    shouldRender && (
-      <Animated.View style={[
-				styles.container,
-				{
-					width,
-					height,
-					opacity: fadeAnim,
-					transform: [
-						{ scaleX },
-						{ scaleY },
-						{ translateX },
-						{ translateY }
-					]
-				}
-			]}>
-        { children }
-      </Animated.View>
-    )
+		<Animated.View style={[
+			styles.container,
+			{
+				width,
+				height,
+				opacity: fadeAnim,
+				transform: [
+					{ scaleX },
+					{ scaleY },
+					{ translateX },
+					{ translateY }
+				]
+			}
+		]}>
+			{ children }
+		</Animated.View>
   );
 };
 

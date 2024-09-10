@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect } from "react";
-import { GestureResponderEvent, StyleSheet, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { FontSize, FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { BackButton, IconButton } from "../buttons";
-import { MenuItem, useMenu } from "../../contexts/MenuContext";
 import { AccountForm } from "../accounts";
 import { TransactionForm } from "../transactions/TransactionForm";
 import { prettifyNumber } from "../../helpers";
@@ -27,10 +26,10 @@ import { useSelector } from "../../hooks/useSelector";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
 import { useAccount } from "../../hooks";
-import Switcher from "../ui/Switcher";
 import { LineChart } from "../charts/LineChart";
 import { useChartSheet } from "../../contexts/ChartSheetContext";
 import { LineChartButton } from "../buttons/LineChartButton";
+import ConditionalView from "../ui/ConditionalView";
 
 interface AccountViewProps {
 	account: Account;
@@ -39,44 +38,14 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 	const { saveAccount, removeObjects, addTransaction } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
-	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { openChartSheet, closeChartSheet } = useChartSheet();
+	const { openChartSheet } = useChartSheet();
 	const { SortingTypes, TimeframeTypes } = useTypes();
 	const insets = useSafeAreaInsets();
 	const { isSelecting, selectedType, selectedObjects, select, deselect, canSelect, hasObject, validate } = useSelector();
 
 	useAccount({ account });
-
-	const onPressOptions = useCallback(({ nativeEvent }: GestureResponderEvent) => {
-		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
-		const menuItems: MenuItem[] = [
-			{
-				title: __('Edit'),
-				leadingIcon: ({ color }) =>
-					<Icon name={'create'} color={color} />,
-				onPress: () => {
-					openBottomSheet(
-						__('Edit Account'),
-						<AccountForm
-							account={account}
-							onSubmit={(editedAccount) => {
-								saveAccount(editedAccount).then(closeBottomSheet);
-							}} />
-					);
-				},
-			},
-			{
-				title: __('Remove'),
-				leadingIcon: (props) =>
-					<Icon name={'trash'} {...props} />,
-				onPress: () => removeObjects('Account', [account]).then(() => router.navigate('/accounts')),
-			},
-		];
-
-		openMenu(anchor, menuItems);
-	}, [account]);
 
 	const onLongPressTransaction = useCallback((transaction: Transaction) => {
 		!isSelecting && select('Transaction', transaction);
@@ -91,11 +60,32 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 	useEffect(() => {
 		setActions([
 			{
-				icon: ({ size }) => {
-					return (
-						<Icon name={'receipt'} size={size} />
-					)
+				icon: ({ size }) => <Icon name={'create-outline'} size={size} />,
+				label: __('Edit'),
+				onPress: () => {
+					openBottomSheet(
+						__('Edit Account'),
+						<AccountForm
+							account={account}
+							onSubmit={(editedAccount) => {
+								saveAccount(editedAccount).then(closeBottomSheet);
+							}} />
+					);
 				},
+			},
+			{
+				icon: ({ size }) => <Icon name={'trash-outline'} size={size} />,
+				label: __('Remove'),
+				onPress: () => {
+					removeObjects('Account', [account]).then(
+						() => router.navigate('/accounts')
+					);
+				},
+				containerStyle: styles.fabAction,
+				style: styles.fabAction,
+			},
+			{
+				icon: ({ size }) => <Icon name={'receipt-outline'} size={size} />,
 				label: __('Add Transaction'),
 				onPress: () => {
 					openBottomSheet(
@@ -374,16 +364,17 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 			<Header
 				title={name}
 				left={<BackButton />}
-				right={<Switcher
-					components={[
+				right={
+					<ConditionalView
+						condition={isSelecting}
+						initialValues={{
+							scaleX: 0.5,
+							scaleY: 0.5
+						}}>
 						<IconButton
 							icon={'trash'}
-							onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />,
-						<IconButton
-							icon={'ellipsis-vertical'}
-							onPress={onPressOptions} />
-					]}
-					activeIndex={isSelecting ? 0 : 1} />
+							onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />
+					</ConditionalView>
 				}
 				showDivider={false}>
 				<Grid
@@ -413,5 +404,8 @@ const styles = StyleSheet.create({
 	value: {
 		fontSize: FontSize.lg,
 		fontWeight: FontWeight.bold,
+	},
+	fabAction: {
+		marginBottom: Spacing.xl,
 	}
 });

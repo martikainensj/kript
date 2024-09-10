@@ -16,7 +16,7 @@ interface HeaderProps {
 	style?: ViewStyle
 }
 
-export const Header: React.FC<HeaderProps> = ( {
+export const Header: React.FC<HeaderProps> = ({
 	title,
 	left,
 	right,
@@ -24,57 +24,61 @@ export const Header: React.FC<HeaderProps> = ( {
 	showDivider = true,
 	children,
 	style
-} ) => {
+}) => {
 	const { theme } = useTheme();
 	const insets = useSafeAreaInsets();
 
-	return ( <>
-		<View style={ [
+	return (<>
+		<View style={[
 			styles.container,
 			isScreenHeader && { marginTop: insets.top },
-			showDivider && { 
+			showDivider && {
 				borderBottomWidth: StyleSheet.hairlineWidth,
 				borderColor: theme.colors.outlineVariant
 			},
 			style
-		] }>
-			<Row style={ styles.row }>
-				{ left && <View style={ styles.left } children={ left } /> }
+		]}>
+			<Row style={styles.row}>
+				<View style={styles.left} children={left} />
 
-				<Title>{ title }</Title>
+				<View style={styles.title}>
+					<Title>{title}</Title>
+				</View>
 
-				{ right && <View style={ styles.right } children={ right } /> }
+				<View style={styles.right} children={right} />
 			</Row>
-			{ children &&
-				<View style={ styles.children }>
-					{ children }
+			{children &&
+				<View style={styles.children}>
+					{children}
 				</View>
 			}
 		</View>
-	</> );
+	</>);
 }
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
 		width: '100%',
 		paddingVertical: Spacing.md,
 		gap: Spacing.md,
 	},
-
 	row: {
 		...GlobalStyles.gutter,
 		flexWrap: 'nowrap',
 	},
-
+	title: {
+		position: 'absolute',
+		left: '20%',
+		right: '20%',
+		alignItems: 'center'
+	},
 	left: {
 		gap: Spacing.md
 	},
-
 	right: {
 		gap: Spacing.md
 	},
-
 	children: {
 		...GlobalStyles.gutter
 	}
-} );
+});

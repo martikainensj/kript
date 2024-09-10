@@ -30,6 +30,7 @@ import Switcher from "../ui/Switcher";
 import { LineChart } from "../charts/LineChart";
 import { LineChartButton } from "../buttons/LineChartButton";
 import { useChartSheet } from "../../contexts/ChartSheetContext";
+import ConditionalView from "../ui/ConditionalView";
 
 interface HoldingViewProps {
 	holding: Holding;
@@ -41,7 +42,6 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 	const { __ } = useI18n();
 	const account = getAccountBy('_id', holding.account_id);
 	const transactions = getTransactions({ accountId: holding.account_id, holdingId: holding._id });
-	const { openMenu } = useMenu();
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { openChartSheet } = useChartSheet();
@@ -50,38 +50,6 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 	const { isSelecting, select, deselect, selectedType, selectedObjects, validate, hasObject, canSelect } = useSelector();
 
 	useHolding({ holding });
-
-	const onPressOptions = useCallback(({ nativeEvent }: GestureResponderEvent) => {
-		const anchor = { x: nativeEvent.pageX, y: nativeEvent.pageY };
-		const menuItems: MenuItem[] = [
-			{
-				title: __('Edit'),
-				leadingIcon: (props) =>
-					<Icon name={'create'} {...props} />,
-				onPress: () => {
-					openBottomSheet(
-						__('Edit Holding'),
-						<HoldingForm
-							holding={holding}
-							onSubmit={holding => {
-								saveHolding(holding).then(closeBottomSheet)
-							}
-							} />
-					);
-				}
-			},
-			{
-				title: __('Remove'),
-				leadingIcon: (props) =>
-					<Icon name={'trash'} {...props} />,
-				onPress: () => {
-					removeObjects('Holding', [holding]).then(router.back)
-				}
-			},
-		];
-
-		openMenu(anchor, menuItems);
-	}, [holding]);
 
 	const onLongPressTransaction = useCallback((transaction: Transaction) => {
 		!isSelecting && select('Transaction', transaction);
@@ -96,11 +64,31 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 	useEffect(() => {
 		setActions([
 			{
-				icon: ({ size }) => {
-					return (
-						<Icon name={'receipt'} size={size} />
-					)
+				label: __('Edit'),
+				icon: ({ size }) => <Icon name={'create-outline'} size={size} />,
+				onPress: () => {
+					openBottomSheet(
+						__('Edit Holding'),
+						<HoldingForm
+							holding={holding}
+							onSubmit={holding => {
+								saveHolding(holding).then(closeBottomSheet)
+							}
+							} />
+					);
+				}
+			},
+			{
+				label: __('Remove'),
+				icon: ({ size }) => <Icon name={'trash-outline'} size={size} />,
+				onPress: () => {
+					removeObjects('Holding', [holding]).then(router.back)
 				},
+				style: styles.fabAction,
+				containerStyle: styles.fabAction
+			},
+			{
+				icon: ({ size }) => <Icon name={'receipt-outline'} size={size} />,
 				label: __('Add Transaction'),
 				onPress: () => {
 					openBottomSheet(
@@ -219,16 +207,17 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 			<Header
 				title={name}
 				left={<BackButton />}
-				right={<Switcher
-					components={[
+				right={
+					<ConditionalView
+						condition={isSelecting}
+						initialValues={{
+							scaleX: 0.5,
+							scaleY: 0.5
+						}}>
 						<IconButton
 							icon={'trash'}
-							onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />,
-						<IconButton
-							icon={'ellipsis-vertical'}
-							onPress={onPressOptions} />
-					]}
-					activeIndex={isSelecting ? 0 : 1} />
+							onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />
+					</ConditionalView>
 				}
 				showDivider={false}>
 				<Grid
@@ -293,5 +282,8 @@ const styles = StyleSheet.create({
 	},
 	gridContainer: {
 		paddingTop: Spacing.md
+	},
+	fabAction: {
+		marginBottom: Spacing.xl,
 	}
 });
