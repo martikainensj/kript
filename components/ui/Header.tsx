@@ -28,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
 	const { theme } = useTheme();
 	const insets = useSafeAreaInsets();
 
-	return (<>
+	return (
 		<View style={[
 			styles.container,
 			isScreenHeader && { marginTop: insets.top },
@@ -39,13 +39,17 @@ export const Header: React.FC<HeaderProps> = ({
 			style
 		]}>
 			<Row style={styles.row}>
-				<View style={styles.left} children={left} />
+				{left &&
+					<View style={styles.left} children={left} />
+				}
 
 				<View style={styles.title}>
 					<Title>{title}</Title>
 				</View>
 
-				<View style={styles.right} children={right} />
+				{right &&
+					<View style={styles.right} children={right} />
+				}
 			</Row>
 			{children &&
 				<View style={styles.children}>
@@ -53,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
 				</View>
 			}
 		</View>
-	</>);
+	);
 }
 
 const styles = StyleSheet.create({
@@ -67,10 +71,9 @@ const styles = StyleSheet.create({
 		flexWrap: 'nowrap',
 	},
 	title: {
-		position: 'absolute',
-		left: '20%',
-		right: '20%',
-		alignItems: 'center'
+		flex: 1,
+		flexShrink: 1,
+		alignItems: 'flex-start'
 	},
 	left: {
 		gap: Spacing.md
