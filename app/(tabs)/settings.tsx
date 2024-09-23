@@ -11,9 +11,10 @@ import { UserInfo } from '../../components/user/UserInfo';
 import { useUser } from '../../hooks/useUser';
 import { Toggle } from '../../components/inputs/Toggle';
 import { Header } from '../../components/ui/Header';
+import themes from '../../themes';
 
 const Accounts: React.FC = () => {
-	const { setColorScheme, setSourceColor, colorScheme, sourceColor, defaultSourceColor } = useTheme();
+	const { setColorScheme, setSelectedTheme, colorScheme, selectedTheme } = useTheme();
 	const { openBottomSheet } = useBottomSheet();
 	const { __, currentLang, languages, setLang } = useI18n();
 	const { refreshData: refreshUserData } = useUser();
@@ -56,14 +57,14 @@ const Accounts: React.FC = () => {
 				{
 					<Select
 						label={ __( 'Color' ) }
-						value={ sourceColor }
-						options={ [
-							{ value: defaultSourceColor, label: __( 'Default' ) },
-							{ value: '#966fd6', label: __( 'Purple' ) },
-							{ value: '#204326', label: __( 'Green' )},
-							Platform.OS === 'android' && { value: '', label: __( 'System' ) },
-						] }
-						setValue={ setSourceColor } />
+						value={ selectedTheme }
+						options={ Object.keys(themes).map( theme => {
+							return {
+								value: theme,
+								label: __( theme )
+							}
+						}) }
+						setValue={ setSelectedTheme } />
 				}
 					
 				<Select

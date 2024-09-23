@@ -2,9 +2,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ColorSchemeName } from 'react-native';
 import { Languages } from '../contexts/I18nContext';
 import { TimeframeTypes, SortingType } from './useTypes';
+import themes from '../themes';
 
 interface storageKeys {
-  '@settings/sourceColor': { type: string };
+  '@settings/selectedTheme': { type: keyof typeof themes };
   '@settings/colorScheme': { type: ColorSchemeName };
   '@settings/language': { type: keyof Languages };
 	'@filters/timeframe': { type: {[ key: string ]: { id: keyof TimeframeTypes }}}

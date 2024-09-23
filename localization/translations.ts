@@ -508,9 +508,9 @@ const Translations: { [ key: string ]: Translation } = {
 		fi_FI: 'Tumma',
 		en_US: 'Dark'
 	},
-	'default': {
+	'base': {
 		fi_FI: 'Oletus',
-		en_US: 'Default'
+		en_US: 'Base'
 	},
 	'system': {
 		fi_FI: 'Järjestelmä',

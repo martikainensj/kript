@@ -16,8 +16,8 @@ export const Card: React.FC<CardProps> = ( { children, style } ) => {
 	return (
 		<LinearGradient
 			colors={ [
-				theme.colors.surfaceVariant + "80",
-				theme.colors.surfaceVariant + "08",
+				theme.colors.surfaceVariant,
+				theme.colors.background,
 			] }
 			style={ [
 				styles.container,

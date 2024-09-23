@@ -1,121 +1,88 @@
-import React, { createContext, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { MD3DarkTheme, MD3LightTheme, MD3Theme, PaperProvider } from "react-native-paper";
+import React, { createContext, useContext, useEffect, useLayoutEffect, useState } from "react";
+import { MD3Theme, PaperProvider } from "react-native-paper";
 import { useStorage } from "../hooks/useStorage";
-import { Appearance, ColorSchemeName, Platform, useColorScheme } from "react-native";
-import { useMaterial3Theme } from "@pchmn/expo-material3-theme";
+import { Appearance, ColorSchemeName, useColorScheme } from "react-native";
+import themes from "../themes";
 
 export interface ThemeProps extends MD3Theme {
 	colors: MD3Theme['colors'] & {
 		success: string;
 		onSuccess: string;
+		successContainer: string;
+		onSuccessContainer: string;
 	};
 }
-
 interface ThemeContext {
 	theme: ThemeProps;
-	sourceColor: string;
+	selectedTheme: keyof typeof themes;
 	colorScheme: ColorSchemeName;
-	defaultSourceColor: string;
-	setSourceColor: React.Dispatch<React.SetStateAction<string>>
-	setColorScheme: React.Dispatch<React.SetStateAction<ColorSchemeName>>
+	setTheme: React.Dispatch<React.SetStateAction<ThemeContext['theme']>>
+	setSelectedTheme: React.Dispatch<React.SetStateAction<ThemeContext['selectedTheme']>>
+	setColorScheme: React.Dispatch<React.SetStateAction<ThemeContext['colorScheme']>>
 }
 
 const ThemeContext = createContext<ThemeContext>({
-	theme: {
-		...MD3LightTheme,
-		colors: {
-			...MD3LightTheme.colors,
-			success: '#66A077',
-			onSuccess: MD3LightTheme.colors.onPrimary
-		}
-	} as ThemeProps,
-	sourceColor: null,
+	theme: themes.base.light,
+	selectedTheme: 'base',
 	colorScheme: 'light',
-	defaultSourceColor: null,
-	setSourceColor: () => { },
+	setTheme: () => { },
+	setSelectedTheme: () => { },
 	setColorScheme: () => { },
 });
 
 export const useTheme = () => useContext(ThemeContext);
 
 interface ThemeProviderProps {
-	children: React.ReactNode,
-	sourceColor?: string
-	fallbackSourceColor?: string
+	children: React.ReactNode
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children, sourceColor, fallbackSourceColor = '#66B2FF' }) => {
-	const defaultSourceColor = fallbackSourceColor;
-	const [theme, setTheme] = useState<ThemeProps>();
-  const sourceColorRef = useRef(fallbackSourceColor); 
-	const { theme: materialTheme, updateTheme, resetTheme } = useMaterial3Theme({ sourceColor, fallbackSourceColor });
-
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 	const { getData, setData } = useStorage();
 	const colorScheme = useColorScheme();
 
-	const setSourceColor = (sourceColor?: string, skipStorage = false) => {
-		if (sourceColor) {
-			updateTheme(sourceColor);
-		} else {
-			resetTheme();
-		}
-
-		sourceColorRef.current = sourceColor;
-
-		if (!skipStorage) {
-			setData('@settings/sourceColor', sourceColor);
-		}
-	}
+	const [theme, setTheme] = useState<ThemeProps>(themes.base.light);
+	const [selectedTheme, setSelectedTheme] = useState<keyof typeof themes>('base');
 
 	const setColorScheme = (colorScheme: ColorSchemeName) => {
-		Appearance.setColorScheme(colorScheme);
-	}
-
-	const getTheme = (colorScheme: ColorSchemeName): ThemeProps => {
-		return colorScheme === 'dark' ? {
-			...MD3DarkTheme,
-			colors: {
-				...materialTheme.dark,
-				success: '#66a077',
-				onSuccess: materialTheme.dark.onPrimary
-			}
-		} : {
-			...MD3LightTheme,
-			colors: {
-				...materialTheme.light,
-				success: '#66a077',
-				onSuccess: materialTheme.light.onPrimary
-			}
-		}
+		Appearance.setColorScheme(colorScheme);;
 	}
 
 	useEffect(() => {
-		setTheme(getTheme(colorScheme));
-	}, [materialTheme, colorScheme]);
+		getData('@settings/selectedTheme').then(storageSelectedTheme => {
+			if (storageSelectedTheme !== selectedTheme) {
+				setData('@settings/selectedTheme', selectedTheme);
+			}
+		});
+
+		setTheme(themes[selectedTheme][colorScheme]);
+	}, [selectedTheme, themes]);
 
 	useLayoutEffect(() => {
-		getData('@settings/sourceColor').then(sourceColor => {
-			setSourceColor(sourceColor, true);
+		getData('@settings/selectedTheme').then(selectedTheme => {
+			setSelectedTheme(selectedTheme ?? 'base');
 		})
-	
+
 		getData('@settings/colorScheme').then(colorScheme => {
 			Appearance.setColorScheme(colorScheme);
-			setTheme(getTheme(colorScheme));
+			setTheme(themes[selectedTheme][colorScheme]);
 		});
 
 		Appearance.addChangeListener(({ colorScheme }) => {
 			setData("@settings/colorScheme", colorScheme);
-			setTheme(getTheme(colorScheme));
+
+			getData("@settings/selectedTheme").then( selectedTheme => {
+				setTheme(themes[selectedTheme ?? 'base'][colorScheme]);
+			})
 		});
 	}, []);
 
 	return (
 		<ThemeContext.Provider value={{
 			theme,
-			sourceColor: sourceColorRef.current,
+			selectedTheme,
 			colorScheme,
-			defaultSourceColor,
-			setSourceColor,
+			setTheme,
+			setSelectedTheme,
 			setColorScheme,
 		}}>
 			<PaperProvider theme={theme}>
