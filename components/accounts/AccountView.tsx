@@ -25,11 +25,11 @@ import { useData } from "../../contexts/DataContext";
 import { useSelector } from "../../hooks/useSelector";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
-import { useAccount } from "../../hooks";
 import { LineChart } from "../charts/LineChart";
 import { useChartSheet } from "../../contexts/ChartSheetContext";
 import { LineChartButton } from "../buttons/LineChartButton";
 import ConditionalView from "../ui/ConditionalView";
+import { useAccount } from "../../hooks/useAccount";
 
 interface AccountViewProps {
 	account: Account;

@@ -11,7 +11,7 @@ import { useI18n } from '../../contexts/I18nContext';
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
-import { useAccount } from "../../hooks";
+import { useAccount } from "../../hooks/useAccount";
 
 interface AccountItemProps {
 	account: Account
