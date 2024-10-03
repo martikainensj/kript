@@ -1,17 +1,16 @@
-export interface Language {
-  fi_FI: string;
-  en_US: string;
-}
+export type LocaleString = 'fi_FI' | 'en_US';
 
-export interface Translation extends Partial<Language> {}
+export type LocaleTranslations = {
+	[key in LocaleString]?: string;
+};
 
 export interface i18nContext {
-	__: ( key: string ) => string;
-	languages: { id: keyof Language, name: string }[];
-	language: keyof Language;
-	setLanguage: React.Dispatch<React.SetStateAction<keyof i18nContext['language']>>
+	__: (key: string) => string;
+	languages: { id: LocaleString, name: string }[];
+	language: LocaleString;
+	setLanguage: React.Dispatch<React.SetStateAction<i18nContext['language']>>
 }
 
 export interface I18nProviderProps {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }

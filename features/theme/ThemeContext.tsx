@@ -1,6 +1,9 @@
-import { createContext, useContext } from "react";
-import { ThemeContext, ThemeProviderProps } from "./Types";
+import { createContext, useContext, useLayoutEffect, useState } from "react";
+import { Appearance, useColorScheme } from "react-native";
+import { PaperProvider } from "react-native-paper";
+import { ThemeContext, ThemeProps, ThemeProviderProps } from "./types";
 import { DefaultTheme } from "./DefaultTheme";
+import { useStorage } from "../storage/useStorage";
 
 const ThemeContext = createContext<ThemeContext>({
 	theme: DefaultTheme.light,
@@ -12,42 +15,23 @@ const ThemeContext = createContext<ThemeContext>({
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-	const { getData, setData } = useStorage();
-	const colorScheme = useColorScheme();
+	const { get, set } = useStorage();
+	const dark = useColorScheme() === 'dark';
 
-	const [theme, setTheme] = useState<ThemeProps>(themes.base.light);
-	const [selectedTheme, setSelectedTheme] = useState<keyof typeof themes>('base');
+	const [theme, setTheme] = useState<ThemeProps>(DefaultTheme.light);
 
-	const setColorScheme = (colorScheme: ColorSchemeName) => {
-		Appearance.setColorScheme(colorScheme);;
+	const setDark = (dark: boolean) => {
+		Appearance.setColorScheme(dark ? 'dark' : 'light');
 	}
 
-	useEffect(() => {
-		getData('@settings/selectedTheme').then(storageSelectedTheme => {
-			if (storageSelectedTheme !== selectedTheme) {
-				setData('@settings/selectedTheme', selectedTheme);
-			}
-		});
-
-		setTheme(themes[selectedTheme][colorScheme]);
-	}, [selectedTheme, themes]);
-
 	useLayoutEffect(() => {
-		getData('@settings/selectedTheme').then(selectedTheme => {
-			setSelectedTheme(selectedTheme ?? 'base');
-		})
-
-		getData('@settings/colorScheme').then(colorScheme => {
+		get('@settings/colorScheme').then(colorScheme => {
 			Appearance.setColorScheme(colorScheme);
-			setTheme(themes[selectedTheme][colorScheme]);
+			setTheme(DefaultTheme[colorScheme]);
 		});
 
 		Appearance.addChangeListener(({ colorScheme }) => {
-			setData("@settings/colorScheme", colorScheme);
-
-			getData("@settings/selectedTheme").then( selectedTheme => {
-				setTheme(themes[selectedTheme ?? 'base'][colorScheme]);
-			})
+			set("@settings/colorScheme", colorScheme);
 		});
 	}, []);
 
