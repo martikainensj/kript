@@ -7,12 +7,12 @@ import { GlobalStyles, IconSize } from "../../constants";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
-import { useI18n } from "../../contexts/I18nContext";
 import { Cash, Loan, Trading, useTypes } from "../../hooks/useTypes";
 import { OptionProps, Select } from "../inputs/Select";
 import { Divider } from "../ui/Divider";
 import { Icon } from "../ui/Icon";
 import { useData } from "../../contexts/DataContext";
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface TransactionFormProps {
 	transaction: Transaction,

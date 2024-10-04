@@ -16,7 +16,7 @@ import {
 import { Icon } from "../components/ui/Icon";
 import { useData } from "./DataContext";
 import { EdgeInsets } from "react-native-safe-area-context";
-import { useI18n } from "./I18nContext";
+import { useI18n } from "../features/i18n/I18nContext";
 
 interface FABContext {
 	actions: FABGroupProps["actions"];
@@ -83,7 +83,7 @@ interface FABProps {
 const FAB: React.FC<FABProps> = ({ side, insets, icon, label }) => {
 	const { isProcessing } = useData();
 	const { __ } = useI18n();
-	const { actions, setIcon, setLabel } = useFAB();
+	const { actions } = useFAB();
 	const [open, setOpen] = useState(false);
 
 	const isVisible = !isProcessing && !!actions.length;

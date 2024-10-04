@@ -3,16 +3,16 @@ import { StyleSheet, View } from "react-native";
 import { Text, TouchableRipple } from "react-native-paper";
 import { router } from "expo-router";
 
-import { FontWeight, GlobalStyles, Spacing } from "../../constants";
+import { GlobalStyles, Spacing } from "../../constants";
 import { Holding } from "../../models/Holding";
 import { prettifyNumber } from "../../helpers";
-import { useI18n } from '../../contexts/I18nContext';
-import { useTheme } from "../../contexts/ThemeContext";
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
 import { useData } from "../../contexts/DataContext";
 import { useHolding } from "../../hooks/useHolding";
+import { useTheme } from "../../features/theme/ThemeContext";
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface HoldingItemProps {
 	holding: Holding

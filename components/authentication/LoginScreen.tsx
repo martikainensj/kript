@@ -7,11 +7,11 @@ import AuthenticationErrorMessage from './AuthenticationErrorMessage';
 import { DefaultButton } from '../buttons';
 import { TextInput } from '../inputs';
 import { GlobalStyles, Spacing, IconSize } from '../../constants';
-import { useI18n } from '../../contexts/I18nContext';
-import { useTheme } from '../../contexts/ThemeContext';
 import { ActivityIndicator } from 'react-native-paper';
 import { Header } from '../ui/Header';
 import { Icon } from '../ui/Icon';
+import { useTheme } from '../../features/theme/ThemeContext';
+import { useI18n } from '../../features/i18n/I18nContext';
 
 export const LoginScreen = () => {
 	const { theme } = useTheme();

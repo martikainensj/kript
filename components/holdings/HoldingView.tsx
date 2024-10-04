@@ -9,7 +9,6 @@ import { TransactionForm } from "../../components/transactions/TransactionForm";
 import { HoldingForm } from "../../components/holdings/HoldingForm";
 import TransactionItem from "../../components/transactions/TransactionItem";
 import { prettifyNumber } from "../../helpers";
-import { useI18n } from '../../contexts/I18nContext';
 import { FABProvider, useFAB } from "../../contexts/FABContext";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { useUser } from "../../hooks/useUser";
@@ -31,6 +30,7 @@ import { LineChart } from "../charts/LineChart";
 import { LineChartButton } from "../buttons/LineChartButton";
 import { useChartSheet } from "../../contexts/ChartSheetContext";
 import ConditionalView from "../ui/ConditionalView";
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface HoldingViewProps {
 	holding: Holding;

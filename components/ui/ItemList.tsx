@@ -2,8 +2,6 @@ import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { GlobalStyles, Spacing } from "../../constants";
 import { Divider, Text } from "react-native-paper";
 import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { useI18n } from "../../contexts/I18nContext";
-import { useTheme } from "../../contexts/ThemeContext";
 import { SortingType } from "../../hooks/useTypes";
 import { Account } from "../../models/Account";
 import { Holding } from "../../models/Holding";
@@ -11,6 +9,8 @@ import { Transaction } from "../../models/Transaction";
 import { useFAB } from "../../contexts/FABContext";
 import { Icon } from "./Icon";
 import { useStorage } from "../../hooks/useStorage";
+import { useTheme } from "../../features/theme/ThemeContext";
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface ItemListProps {
 	id: string;

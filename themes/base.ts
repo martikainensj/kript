@@ -1,5 +1,5 @@
 import { MD3DarkTheme, MD3LightTheme } from "react-native-paper";
-import { ThemeProps } from "../contexts/ThemeContext";
+import { ThemeProps } from "../features/theme/types";
 
 const theme = {
 	dark: {

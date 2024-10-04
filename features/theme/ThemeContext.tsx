@@ -1,11 +1,11 @@
 import { createContext, useContext, useLayoutEffect, useState } from "react";
 import { Appearance, useColorScheme } from "react-native";
 import { PaperProvider } from "react-native-paper";
-import { ThemeContext, ThemeProps, ThemeProviderProps } from "./types";
+import { ThemeContextProps, ThemeProps, ThemeProviderProps } from "./types";
 import { DefaultTheme } from "./DefaultTheme";
 import { useStorage } from "../storage/useStorage";
 
-const ThemeContext = createContext<ThemeContext>({
+const ThemeContext = createContext<ThemeContextProps>({
 	theme: DefaultTheme.light,
 	dark: DefaultTheme.light.dark,
 	setTheme: () => { },
@@ -22,16 +22,17 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
 	const setDark = (dark: boolean) => {
 		Appearance.setColorScheme(dark ? 'dark' : 'light');
+		setTheme(DefaultTheme[dark ? 'dark' : 'light']);
 	}
 
 	useLayoutEffect(() => {
-		get('@settings/colorScheme').then(colorScheme => {
-			Appearance.setColorScheme(colorScheme);
-			setTheme(DefaultTheme[colorScheme]);
+		get('@settings/dark').then(dark => {
+			Appearance.setColorScheme(dark ? 'dark' : 'light');
+			setTheme(DefaultTheme[(dark ? 'dark' : 'light')]);
 		});
 
 		Appearance.addChangeListener(({ colorScheme }) => {
-			set("@settings/colorScheme", colorScheme);
+			set("@settings/dark", colorScheme === 'dark');
 		});
 	}, []);
 

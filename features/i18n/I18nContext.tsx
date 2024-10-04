@@ -1,9 +1,9 @@
 import { createContext, useCallback, useContext, useLayoutEffect, useState } from "react";
-import { i18nContext, I18nProviderProps, LocaleString } from "./types";
+import { i18nContextProps, I18nProviderProps, LocaleString } from "./types";
 import { useStorage } from "../storage/useStorage";
 import Translations from "./translations";
 
-const i18nContext = createContext<i18nContext>({
+const i18nContext = createContext<i18nContextProps>({
 	__: () => '',
 	languages: [],
 	language: 'en_US',

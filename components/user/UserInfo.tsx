@@ -3,9 +3,9 @@ import { StyleSheet, View } from "react-native"
 
 import { UserDataValue, useUser } from "../../hooks/useUser";
 import { DefaultButton } from "../buttons";
-import { useI18n } from "../../contexts/I18nContext";
 import { Spacing } from "../../constants";
 import { EditableValue } from "../ui/EditableValue";
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface UserProps {}
 

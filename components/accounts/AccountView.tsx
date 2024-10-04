@@ -8,7 +8,6 @@ import { BackButton, IconButton } from "../buttons";
 import { AccountForm } from "../accounts";
 import { TransactionForm } from "../transactions/TransactionForm";
 import { prettifyNumber } from "../../helpers";
-import { useI18n } from '../../contexts/I18nContext';
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { FABProvider, useFAB } from "../../contexts/FABContext";
 import { useUser } from "../../hooks/useUser";
@@ -30,6 +29,7 @@ import { useChartSheet } from "../../contexts/ChartSheetContext";
 import { LineChartButton } from "../buttons/LineChartButton";
 import ConditionalView from "../ui/ConditionalView";
 import { useAccount } from "../../hooks/useAccount";
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface AccountViewProps {
 	account: Account;

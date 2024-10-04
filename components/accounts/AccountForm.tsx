@@ -6,7 +6,7 @@ import { TextInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
 import { Account } from "../../models/Account";
 import { stripRealmListsFromObject } from "../../helpers";
-import { useI18n } from '../../contexts/I18nContext';
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface AccountFormProps {
 	account?: Account,

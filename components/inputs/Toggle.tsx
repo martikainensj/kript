@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, View } from 'react-native';
-import { useTheme } from '../../contexts/ThemeContext';
 import { Duration, Spacing } from '../../constants';
 import { Icon } from '../ui/Icon';
+import { useTheme } from '../../features/theme/ThemeContext';
 
 interface ToggleProps {
 	value: boolean;

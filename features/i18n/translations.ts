@@ -692,6 +692,17 @@ const Translations: { [key: string]: LocaleTranslations } = {
 		fi_FI: 'Violetti',
 		en_US: 'Purple'
 	},
+
+	// Alerts
+
+	'ok': {
+		fi_FI: 'OK',
+		en_US: 'OK'
+	},
+	'cancel': {
+		fi_FI: 'Peruuta',
+		en_US: 'Cancel'
+	},
 }
 
 export default Translations;

@@ -5,13 +5,13 @@ import { router } from 'expo-router';
 
 import { GlobalStyles, Spacing } from "../../constants";
 import { Account } from "../../models/Account";
-import { useTheme } from "../../contexts/ThemeContext";
 import { prettifyNumber } from "../../helpers";
-import { useI18n } from '../../contexts/I18nContext';
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
 import { useAccount } from "../../hooks/useAccount";
+import { useTheme } from "../../features/theme/ThemeContext";
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface AccountItemProps {
 	account: Account

@@ -1,4 +1,3 @@
-import { ColorSchemeName } from "react-native";
 import { MD3Theme } from "react-native-paper";
 
 export interface ThemeProps extends MD3Theme {
@@ -10,11 +9,11 @@ export interface ThemeProps extends MD3Theme {
 	};
 }
 
-export interface ThemeContext {
+export interface ThemeContextProps {
 	theme: ThemeProps;
 	dark: ThemeProps['dark'];
-	setTheme: React.Dispatch<React.SetStateAction<ThemeContext['theme']>>
-	setDark: React.Dispatch<React.SetStateAction<ThemeContext['dark']>>
+	setTheme: React.Dispatch<React.SetStateAction<ThemeContextProps['theme']>>
+	setDark: React.Dispatch<React.SetStateAction<ThemeContextProps['dark']>>
 }
 
 export interface ThemeProviderProps {

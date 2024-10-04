@@ -1,6 +1,5 @@
 import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { LineChart as GiftedLineChart, LineChartPropsType, lineDataItem } from "react-native-gifted-charts";
-import { useTheme } from "../../contexts/ThemeContext";
 import { Animated, LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { Title } from "../ui/Title";
 import { BorderRadius, FontSize, GlobalStyles, Spacing } from "../../constants";
@@ -11,8 +10,9 @@ import { TimeframeType, useTypes } from "../../hooks/useTypes";
 import { IconButton } from "../buttons";
 import { DataPoint } from "../../models/DataPoint";
 import { useStorage } from "../../hooks/useStorage";
-import { useI18n } from "../../contexts/I18nContext";
 import { filterDataByInterval, prettifyNumber } from "../../helpers";
+import { useTheme } from "../../features/theme/ThemeContext";
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface Props {
 	id: string,

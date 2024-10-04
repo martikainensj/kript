@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 
-import { useI18n } from '../contexts/I18nContext';
-import { useTheme } from '../contexts/ThemeContext';
 import { getYTD } from '../helpers';
+import { useTheme } from '../features/theme/ThemeContext';
+import { useI18n } from '../features/i18n/I18nContext';
 
 export interface TransactionType {
 	id: string;

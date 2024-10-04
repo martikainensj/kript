@@ -1,10 +1,10 @@
-import { ColorSchemeName } from "react-native";
 import { TimeframeProps } from "../charts/types";
 import { LocaleString } from "../i18n/types";
 import { SortingProps } from "../data/types";
+import { ThemeProps } from "../theme/types";
 
 export interface storageProps {
-  '@settings/colorScheme': { type: ColorSchemeName };
+  '@settings/dark': { type: ThemeProps['dark'] };
   '@settings/language': { type: LocaleString };
 	'@filters/timeframe': { type: {[ key: string ]: { id: keyof TimeframeProps }}}
 	'@filters/sorting': { type: {[ key: string ]: { id: keyof SortingProps }}}

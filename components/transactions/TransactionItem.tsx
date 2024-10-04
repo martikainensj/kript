@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
-import { Text, TouchableRipple, useTheme } from "react-native-paper";
+import { Text, TouchableRipple } from "react-native-paper";
 
-import { Duration, FontWeight, GlobalStyles, Spacing } from "../../constants";
+import { Duration, GlobalStyles, Spacing } from "../../constants";
 import { TransactionForm } from "./TransactionForm";
-import { useI18n } from '../../contexts/I18nContext';
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
@@ -14,6 +13,8 @@ import { Checkbox } from "../inputs/Checkbox";
 import { useData } from "../../contexts/DataContext";
 import ConditionalView from "../ui/ConditionalView";
 import { ProgressBar } from "../ui/ProgressBar";
+import { useTheme } from "../../features/theme/ThemeContext";
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface TransactionItemProps {
 	transaction: Transaction;
@@ -25,7 +26,7 @@ interface TransactionItemProps {
 }
 
 export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, showHolding, isSelectable, isSelected, onPressSelect, onLongPress } ) => {
-	const theme = useTheme();
+	const {theme} = useTheme();
 	const { __ } = useI18n();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { getAccountBy, saveTransaction } = useData();

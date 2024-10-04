@@ -6,8 +6,8 @@ import { TextInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
 import { Holding } from "../../models/Holding";
-import { useI18n } from "../../contexts/I18nContext";
 import { Divider } from "../ui/Divider";
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface HoldingFormProps {
 	holding: Holding,

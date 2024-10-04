@@ -3,14 +3,14 @@ import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import { TouchableRipple, TouchableRippleProps } from "react-native-paper";
 import { LineChart as GiftedLineChart, LineChartPropsType, lineDataItem } from "react-native-gifted-charts";
 
-import { useTheme } from "../../contexts/ThemeContext";
 import { BorderRadius, FontSize, FontWeight, Spacing } from "../../constants";
 import { Card } from "../ui/Card";
 import { Value } from "../ui/Value";
 import { useTypes } from "../../hooks/useTypes";
 import { DataPoint } from "../../models/DataPoint";
-import { useI18n } from "../../contexts/I18nContext";
 import { filterDataByInterval, prettifyNumber } from "../../helpers";
+import { useTheme } from "../../features/theme/ThemeContext";
+import { useI18n } from "../../features/i18n/I18nContext";
 
 interface Props {
 	data: DataPoint[]

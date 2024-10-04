@@ -4,28 +4,19 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { GlobalStyles, Spacing } from '../../constants';
 import { IconButton } from '../../components/buttons';
 import { Select } from '../../components/inputs/Select';
-import { useI18n, Languages } from '../../contexts/I18nContext';
-import { useTheme } from '../../contexts/ThemeContext';
 import { useBottomSheet } from '../../contexts/BottomSheetContext';
 import { UserInfo } from '../../components/user/UserInfo';
 import { useUser } from '../../hooks/useUser';
 import { Toggle } from '../../components/inputs/Toggle';
 import { Header } from '../../components/ui/Header';
-import themes from '../../themes';
+import { useTheme } from '../../features/theme/ThemeContext';
+import { useI18n } from '../../features/i18n/I18nContext';
 
 const Accounts: React.FC = () => {
-	const { setColorScheme, setSelectedTheme, colorScheme, selectedTheme } = useTheme();
+	const { setDark, dark } = useTheme();
 	const { openBottomSheet } = useBottomSheet();
-	const { __, currentLang, languages, setLang } = useI18n();
+	const { __, language, languages, setLanguage } = useI18n();
 	const { refreshData: refreshUserData } = useUser();
-
-	const onSetLanguage = ( value: keyof Languages ) => {
-		setLang( value );
-	}
-	
-	const colorSchemeHanlder = ( isDarkMode: boolean ) => {
-		setColorScheme( isDarkMode ? 'dark' : 'light' );
-	}
 
 	useLayoutEffect( () => {
 		refreshUserData();
@@ -38,10 +29,10 @@ const Accounts: React.FC = () => {
 				right={ (
 					<View style={ styles.rightContainer }>
 						<Toggle
-							value={ colorScheme === 'dark' ?? false }
+							value={ dark }
 							activeIcon={ 'moon' }
 							inactiveIcon={ 'sunny' }
-							setValue={ colorSchemeHanlder} />
+							setValue={ setDark } />
 						<IconButton
 							icon={ 'person-outline' }
 							onPress={ () => {
@@ -54,26 +45,13 @@ const Accounts: React.FC = () => {
 				) } />
 				
 			<View style={ styles.contentContainer }>
-				{
-					<Select
-						label={ __( 'Color' ) }
-						value={ selectedTheme }
-						options={ Object.keys(themes).map( theme => {
-							return {
-								value: theme,
-								label: __( theme )
-							}
-						}) }
-						setValue={ setSelectedTheme } />
-				}
-					
 				<Select
 					label={ __( 'Language' ) }
-					value={ currentLang }
+					value={ language }
 					options={ languages.map( language => {
 						return { label: language.name, value: language.id }
 					} ) }
-					setValue={ onSetLanguage } />
+					setValue={ setLanguage } />
 			</View>
 		</View>
 	);

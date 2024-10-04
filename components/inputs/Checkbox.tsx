@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, StyleSheet } from 'react-native';
-import { useTheme } from '../../contexts/ThemeContext';
 import { BorderRadius, Duration } from '../../constants';
 import { Icon } from '../ui/Icon';
 import { TouchableRipple } from 'react-native-paper';
+import { useTheme } from '../../features/theme/ThemeContext';
 
 interface CheckboxProps {
 	value: boolean;

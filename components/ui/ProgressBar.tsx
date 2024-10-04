@@ -1,7 +1,6 @@
 import React from "react";
 import { Animated, StyleSheet, View, ViewStyle } from "react-native";
-
-import { useTheme } from "../../contexts/ThemeContext";
+import { useTheme } from "../../features/theme/ThemeContext";
 
 interface Props {
 	progress: number;

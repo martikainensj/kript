@@ -4,8 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { GlobalStyles, Spacing } from '../../constants';
 import { IconButton } from '../../components/buttons';
-import { buildChartData, confirmation } from '../../helpers';
-import { useI18n } from '../../contexts/I18nContext';
+import { buildChartData } from '../../helpers';
 import { Header } from '../../components/ui/Header';
 import { useData } from '../../contexts/DataContext';
 import { LineChart } from '../../components/charts/LineChart';
@@ -13,20 +12,27 @@ import { useTypes } from '../../hooks/useTypes';
 import { LineChartButton } from '../../components/buttons/LineChartButton';
 import { useChartSheet } from '../../contexts/ChartSheetContext';
 import { Grid } from '../../components/ui/Grid';
+import { useAlert } from '../../features/alerts/AlertContext';
+import { useI18n } from '../../features/i18n/I18nContext';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();
 	const { __ } = useI18n();
 	const { getAccounts } = useData();
 	const { TimeframeTypes } = useTypes();
-	const { openChartSheet, closeChartSheet } = useChartSheet();
+	const { openChartSheet } = useChartSheet();
+	const { show } = useAlert();
 
 	const logOutHandler = () => {
-		confirmation( {
+		show({
 			title: __( 'Logout' ),
-			message: __( 'Are you sure you want to log out?' ),
-			onAccept: logOut
-		} );
+			message: __( 'Are you sure?' ),
+			type: 'confirmation',
+			params: {
+				onConfirm: logOut,
+				onCancel: () => {}
+			}
+		})
 	}
 	const accounts = getAccounts();
 	const overallNetValue = buildChartData(accounts.map( account => account.valueHistoryData));

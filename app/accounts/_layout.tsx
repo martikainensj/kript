@@ -1,6 +1,6 @@
 import React from "react";
 import { Slot, Stack, useLocalSearchParams } from "expo-router";
-import { useTheme } from "../../contexts/ThemeContext";
+import { useTheme } from "../../features/theme/ThemeContext";
 
 export default function AccountsLayout() {
   const { name } = useLocalSearchParams<{ id: string, name: string }>();

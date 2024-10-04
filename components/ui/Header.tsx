@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GlobalStyles, Spacing } from "../../constants";
 import { Row } from "./Row";
 import { Title } from "./Title";
-import { useTheme } from "../../contexts/ThemeContext";
+import { useTheme } from "../../features/theme/ThemeContext";
 
 interface HeaderProps {
 	title: string

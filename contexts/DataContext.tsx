@@ -2,14 +2,15 @@ import React, { createContext, useContext, useCallback, useEffect, useState } fr
 import Realm, { UpdateMode } from "realm";
 import { useQuery, useRealm } from "@realm/react";
 
-import { useI18n } from "./I18nContext";
 import { useUser } from "../hooks/useUser";
-import { confirmation, getIntervalMap } from "../helpers";
+import { getIntervalMap } from "../helpers";
 import { Account, AccountKey, AccountValue } from "../models/Account";
 import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
 import { DataPoint } from "../models/DataPoint";
 import { IntervalType } from "../hooks/useTypes";
+import { useAlert } from "../features/alerts/AlertContext";
+import { useI18n } from "../features/i18n/I18nContext";
 
 export type DataIdentifier = 'Account' | 'Holding' | 'Transaction';
 export type DataObject = {
@@ -65,6 +66,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 	const { __ } = useI18n();
 	const realm = useRealm();
 	const accounts = useQuery<Account>( 'Account' );
+	const { show } = useAlert();
 	const [ isProcessing, setIsProcessing ] = useState( false );
 	// Getters
 
@@ -157,18 +159,22 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise(( resolve, _ ) => {
-			confirmation({
-				title: title,
-				message: message,
-				onAccept() {
-					setIsProcessing( true );
+			show({
+				title,
+				message,
+				type: 'confirmation',
+				params: {
+					onConfirm() {
+						setIsProcessing( true );
 
-					resolve( realm.write(() => {
-						const createdAccount = realm.create( 'Account', account, UpdateMode.Never );
-						setIsProcessing( false );
-
-						return createdAccount;
-					}));
+						resolve( realm.write(() => {
+							const createdAccount = realm.create( 'Account', account, UpdateMode.Never );
+							setIsProcessing( false );
+	
+							return createdAccount;
+						}));
+					},
+					onCancel() {}
 				}
 			});
 		});
@@ -187,46 +193,50 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		};
 
 		return new Promise(( resolve, _ ) => {
-			confirmation({
-				title: title,
-				message: message,
-				onAccept: async () => {
-					setIsProcessing( true );
-
-					const newTransaction = {
-						...transaction,
-						_id: new Realm.BSON.UUID
-					};
-
-					realm.write(() => {
-						const holding = transaction.holding_name && (
-							getHoldingBy(
-								'name',
-								transaction.holding_name,
-								{ accountId: transaction.account_id }
-							) ?? addHolding({
-									_id: new Realm.BSON.UUID,
-									account_id: transaction.account_id,
-									name: transaction.holding_name,
-									owner_id: user.id
-								})
-						);
-
-						if ( holding && transaction.sub_type !== 'dividend' ) {
-							newTransaction.holding_id = holding._id;
-							holding.transactions.push( newTransaction );
-
-							return holding.transactions[ holding.transactions.length - 1 ];
-						}
-
-						const account = getAccountBy( '_id', transaction.account_id );
-						account.transactions.push( newTransaction );
-
-						return account.transactions[ account.transactions.length - 1 ];
-					});
-
-					setIsProcessing( false );
-					resolve( newTransaction );
+			show({
+				title,
+				message,
+				type: 'confirmation',
+				params: {
+					onConfirm: async () => {
+						setIsProcessing( true );
+	
+						const newTransaction = {
+							...transaction,
+							_id: new Realm.BSON.UUID
+						};
+	
+						realm.write(() => {
+							const holding = transaction.holding_name && (
+								getHoldingBy(
+									'name',
+									transaction.holding_name,
+									{ accountId: transaction.account_id }
+								) ?? addHolding({
+										_id: new Realm.BSON.UUID,
+										account_id: transaction.account_id,
+										name: transaction.holding_name,
+										owner_id: user.id
+									})
+							);
+	
+							if ( holding && transaction.sub_type !== 'dividend' ) {
+								newTransaction.holding_id = holding._id;
+								holding.transactions.push( newTransaction );
+	
+								return holding.transactions[ holding.transactions.length - 1 ];
+							}
+	
+							const account = getAccountBy( '_id', transaction.account_id );
+							account.transactions.push( newTransaction );
+	
+							return account.transactions[ account.transactions.length - 1 ];
+						});
+	
+						setIsProcessing( false );
+						resolve( newTransaction );
+					},
+					onCancel() {}
 				}
 			});
 		});
@@ -239,20 +249,24 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise(( resolve, _ ) => {
-			confirmation({
-				title: title,
-				message: message,
-				onAccept() {
-					setIsProcessing( true );
-
-					const account = getAccountBy(
-						'_id',
-						editedAccount._id
-					);
-					const udpatedAccount = updateVariables( account, editedAccount );
-					setIsProcessing( false );
-
-					resolve( udpatedAccount );
+			show({
+				title,
+				message,
+				type: 'confirmation',
+				params: {
+					onConfirm() {
+						setIsProcessing( true );
+	
+						const account = getAccountBy(
+							'_id',
+							editedAccount._id
+						);
+						const udpatedAccount = updateVariables( account, editedAccount );
+						setIsProcessing( false );
+	
+						resolve( udpatedAccount );
+					},
+					onCancel() {}
 				}
 			});
 		})
@@ -264,21 +278,25 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise(( resolve, _ ) => {
-			confirmation({
+			show({
 				title,
 				message,
-				onAccept() {
-					setIsProcessing( true );
-					
-					const holding = getHoldingBy(
-						'_id',
-						editedHolding._id,
-						{ accountId: editedHolding.account_id }
-					);
-					const updatedHolding = updateVariables( holding, editedHolding );
+				type: 'confirmation',
+				params: {
+					onConfirm() {
+						setIsProcessing( true );
+						
+						const holding = getHoldingBy(
+							'_id',
+							editedHolding._id,
+							{ accountId: editedHolding.account_id }
+						);
+						const updatedHolding = updateVariables( holding, editedHolding );
 
-					setIsProcessing( false );
-					resolve( updatedHolding );
+						setIsProcessing( false );
+						resolve( updatedHolding );
+					},
+					onCancel() {}
 				}
 			});
 		});
@@ -290,42 +308,46 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise(( resolve, _ ) => {
-			confirmation({
+			show({
 				title,
 				message,
-				onAccept() {
-					setIsProcessing( true );
+				type: 'confirmation',
+				params: {
+					onConfirm() {
+						setIsProcessing( true );
 
-					const transaction = getTransactionBy(
-						'_id',
-						editedTransaction._id,
-						{
-							holdingId: editedTransaction.holding_id,
-							accountId: editedTransaction.account_id
+						const transaction = getTransactionBy(
+							'_id',
+							editedTransaction._id,
+							{
+								holdingId: editedTransaction.holding_id,
+								accountId: editedTransaction.account_id
+							}
+						);
+
+						if ( editedTransaction.type === 'adjustment' ) {
+							const hasHigherPrice = editedTransaction.price > transaction.price;
+							const hasLowerPrice = editedTransaction.price < transaction.price;
+							const hasIncreasedAmount = editedTransaction.amount > transaction.amount;
+							const hasDecreasedAmount = editedTransaction.amount < transaction.amount;
+							
+							if ( hasIncreasedAmount && hasLowerPrice ) {
+								editedTransaction.sub_type = 'stockSplit';
+							} else if ( hasDecreasedAmount && hasHigherPrice ) {
+								editedTransaction.sub_type = 'merger';
+							} else if ( hasHigherPrice || hasLowerPrice ) {
+								editedTransaction.sub_type = 'priceUpdate';
+							} else if ( hasIncreasedAmount || hasDecreasedAmount ) {
+								editedTransaction.sub_type = 'amountUpdate';
+							}
 						}
-					);
 
-					if ( editedTransaction.type === 'adjustment' ) {
-						const hasHigherPrice = editedTransaction.price > transaction.price;
-						const hasLowerPrice = editedTransaction.price < transaction.price;
-						const hasIncreasedAmount = editedTransaction.amount > transaction.amount;
-						const hasDecreasedAmount = editedTransaction.amount < transaction.amount;
-						
-						if ( hasIncreasedAmount && hasLowerPrice ) {
-							editedTransaction.sub_type = 'stockSplit';
-						} else if ( hasDecreasedAmount && hasHigherPrice ) {
-							editedTransaction.sub_type = 'merger';
-						} else if ( hasHigherPrice || hasLowerPrice ) {
-							editedTransaction.sub_type = 'priceUpdate';
-						} else if ( hasIncreasedAmount || hasDecreasedAmount ) {
-							editedTransaction.sub_type = 'amountUpdate';
-						}
-					}
+						const updatedTransaction =  updateVariables( transaction, editedTransaction );
+						setIsProcessing( false );
 
-					const updatedTransaction =  updateVariables( transaction, editedTransaction );
-					setIsProcessing( false );
-
-					resolve( updatedTransaction );
+						resolve( updatedTransaction );
+					},
+					onCancel() {}
 				}
 			});
 		});
@@ -415,23 +437,27 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 		const message = __( 'Are you sure?' );
 
 		return new Promise(( resolve, reject ) => {
-			confirmation({
+			show({
 				title,
 				message,
-				onAccept: async () => {
-					setIsProcessing( true );
+				type: 'confirmation',
+				params: {
+					onConfirm: async () => {
+						setIsProcessing( true );
 
-					try {
-						type === 'Account' && await removeAccounts( objects as Account[] );
-						type === 'Holding' && await removeHoldings( objects as Holding[] );
-						type === 'Transaction' && await removeTransactions( objects as Transaction[] );
-						
-						setIsProcessing( false );
-						resolve( true );
-					} catch ( error ) {
-						setIsProcessing( false );
-						reject( error );
-					}
+						try {
+							type === 'Account' && await removeAccounts( objects as Account[] );
+							type === 'Holding' && await removeHoldings( objects as Holding[] );
+							type === 'Transaction' && await removeTransactions( objects as Transaction[] );
+							
+							setIsProcessing( false );
+							resolve( true );
+						} catch ( error ) {
+							setIsProcessing( false );
+							reject( error );
+						}
+					},
+					onCancel() {}
 				}
 			});
 		});

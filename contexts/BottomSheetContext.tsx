@@ -25,8 +25,8 @@ import {
 import { GlobalStyles, Spacing } from "../constants";
 import { IconButton } from "../components/buttons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "./ThemeContext";
 import { Header } from "../components/ui/Header";
+import { useTheme } from "../features/theme/ThemeContext";
 
 interface BottomSheetContext {
 	title: string,
