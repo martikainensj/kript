@@ -3,12 +3,9 @@ import Realm, { UpdateMode } from "realm";
 import { useQuery, useRealm } from "@realm/react";
 
 import { useUser } from "../hooks/useUser";
-import { getIntervalMap } from "../helpers";
 import { Account, AccountKey, AccountValue } from "../models/Account";
 import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
 import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
-import { DataPoint } from "../models/DataPoint";
-import { IntervalType } from "../hooks/useTypes";
 import { useAlert } from "../features/alerts/AlertContext";
 import { useI18n } from "../features/i18n/I18nContext";
 
@@ -68,6 +65,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 	const accounts = useQuery<Account>( 'Account' );
 	const { show } = useAlert();
 	const [ isProcessing, setIsProcessing ] = useState( false );
+	
 	// Getters
 
 	const getAccounts = useCallback(() => {
