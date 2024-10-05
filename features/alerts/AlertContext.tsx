@@ -4,7 +4,7 @@ import { Animated, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import { DefaultButton } from "../../components/buttons";
 import { useI18n } from "../i18n/I18nContext";
-import { BorderRadius, GlobalStyles, Spacing } from "../../constants";
+import { BorderRadius, Duration, GlobalStyles, Spacing } from "../../constants";
 import { useTheme } from "../theme/ThemeContext";
 
 const AlertContext = createContext<AlertContextProps>({
@@ -28,7 +28,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
 	const hide = () => {
 		Animated.timing(fadeAnim, {
 			toValue: 0,
-			duration: 300,
+			duration: Duration.normal,
 			useNativeDriver: true,
 		}).start(() => {
 			setVisible(false);
@@ -40,7 +40,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
 		if (visible) {
 			Animated.timing(fadeAnim, {
 				toValue: 1,
-				duration: 300,
+				duration: Duration.normal,
 				useNativeDriver: true,
 			}).start();
 		}
@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "rgba(0, 0, 0, 0.6)",
 	},
 	alert: {
+		minWidth: '80%',
 		padding: Spacing.lg,
 		backgroundColor: "white",
 		borderRadius: BorderRadius.md,
@@ -153,7 +154,8 @@ const styles = StyleSheet.create({
 	buttons: {
 		flexDirection: "row",
 		justifyContent: "flex-end",
-		gap: Spacing.sm
+		gap: Spacing.sm,
+		marginTop: Spacing.md
 	},
 	button: {
 		flexShrink: 0
