@@ -9,7 +9,6 @@ import { Stack } from 'expo-router';
 
 import { GlobalStyles } from '../constants';
 import { BottomSheetProvider } from '../contexts/BottomSheetContext';
-import { MenuProvider } from '../contexts/MenuContext';
 import { KriptRealmProvider } from '../contexts/KriptRealmContext';
 import { ChartSheetProvider } from '../contexts/ChartSheetContext';
 import { AlertProvider } from '../features/alerts/AlertContext';
@@ -23,18 +22,16 @@ export default function AppLayout() {
 				<I18nProvider>
 					<AlertProvider>
 						<KriptRealmProvider>
-							<MenuProvider>
-								<BottomSheetProvider>
-									<ChartSheetProvider>
-										<StatusBar />
-										<Stack screenOptions={ {
-											animationDuration: 200,
-											animation: 'fade_from_bottom',
-											headerShown: false
-										} } />
-									</ChartSheetProvider>
-								</BottomSheetProvider>
-							</MenuProvider>
+							<BottomSheetProvider>
+								<ChartSheetProvider>
+									<StatusBar />
+									<Stack screenOptions={ {
+										animationDuration: 200,
+										animation: 'fade_from_bottom',
+										headerShown: false
+									} } />
+								</ChartSheetProvider>
+							</BottomSheetProvider>
 						</KriptRealmProvider>
 					</AlertProvider>
 				</I18nProvider>
