@@ -1,10 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { AlertContextProps, AlertProps, AlertProviderProps, AlertType } from "./types";
-import { StyleSheet, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import { DefaultButton } from "../../components/buttons";
 import { useI18n } from "../i18n/I18nContext";
-import { GlobalStyles, Spacing } from "../../constants";
+import { BorderRadius, GlobalStyles, Spacing } from "../../constants";
 import { useTheme } from "../theme/ThemeContext";
 
 const AlertContext = createContext<AlertContextProps>({
@@ -17,14 +17,34 @@ export const useAlert = () => useContext(AlertContext);
 
 export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
 	const [current, setCurrent] = useState<AlertProps<AlertType> | null>(null);
+	const [visible, setVisible] = useState(false);
+	const fadeAnim = useRef(new Animated.Value(0)).current;
 
 	const show = <T extends AlertType>(alert: AlertProps<T>) => {
 		setCurrent(alert);
+		setVisible(true);
 	};
 
 	const hide = () => {
-		setCurrent(null);
+		Animated.timing(fadeAnim, {
+			toValue: 0,
+			duration: 300,
+			useNativeDriver: true,
+		}).start(() => {
+			setVisible(false);
+			setCurrent(null);
+		});
 	};
+
+	useEffect(() => {
+		if (visible) {
+			Animated.timing(fadeAnim, {
+				toValue: 1,
+				duration: 300,
+				useNativeDriver: true,
+			}).start();
+		}
+	}, [visible]);
 
 	return (
 		<AlertContext.Provider value={{
@@ -34,10 +54,10 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
 		}}>
 			{children}
 
-			{current && (
-				<View style={styles.container}>
+			{current && visible && (
+				<Animated.View style={[styles.container, { opacity: fadeAnim }]}>
 					<Alert {...current} />
-				</View>
+				</Animated.View>
 			)}
 		</AlertContext.Provider>
 	);
@@ -47,44 +67,60 @@ const Alert = <T extends AlertType>({ title, message, params }: AlertProps<T>) =
 	const { __ } = useI18n();
 	const { hide } = useAlert();
 	const { theme } = useTheme();
+	const translateYAnim = useRef(new Animated.Value(Spacing.xl)).current;
+
+	useEffect(() => {
+		Animated.spring(translateYAnim, {
+			toValue: 0,
+			useNativeDriver: true,
+		}).start();
+	}, []);
+
 	const handler = (callback: () => void) => {
 		callback();
 		hide();
 	}
 
 	return (
-		<View style={[
-			styles.alert,
-			{ backgroundColor: theme.colors.background }
-		]}>
-			<Text style={[
-				styles.title
-			]}>{title}</Text>
+		<Animated.View
+			style={[
+				styles.alert,
+				{ backgroundColor: theme.colors.background, transform: [{ translateY: translateYAnim }] },
+			]}
+		>
+			<Text style={styles.title}>{title}</Text>
 
-			{message && (
-				<Text style={styles.message}>{message}</Text>
-			)}
+			{message && <Text style={styles.message}>{message}</Text>}
 
 			<View style={styles.buttons}>
-				{"onConfirm" in params && (
-					<DefaultButton onPress={() => handler(params.onConfirm)}>
-						{params.confirmText ?? __("OK")}
-					</DefaultButton>
-				)}
-
 				{"onCancel" in params && (
-					<DefaultButton onPress={() => handler(params.onCancel)}>
+					<DefaultButton
+						style={ styles.button }
+						onPress={() => handler(params.onCancel)}
+					>
 						{params.cancelText ?? __("Cancel")}
 					</DefaultButton>
 				)}
 
+				{"onConfirm" in params && (
+					<DefaultButton
+						style={ styles.button }
+						onPress={() => handler(params.onConfirm)}
+					>
+						{params.confirmText ?? __("OK")}
+					</DefaultButton>
+				)}
+
 				{"onDismiss" in params && (
-					<DefaultButton onPress={() => handler(params.onDismiss)}>
+					<DefaultButton
+						style={ styles.button }
+						onPress={() => handler(params.onDismiss)}
+					>
 						{params.dismissText ?? __("OK")}
 					</DefaultButton>
 				)}
 			</View>
-		</View>
+		</Animated.View>
 	);
 };
 
@@ -103,7 +139,7 @@ const styles = StyleSheet.create({
 	alert: {
 		padding: Spacing.lg,
 		backgroundColor: "white",
-		borderRadius: 8,
+		borderRadius: BorderRadius.md,
 	},
 	title: {
 		fontSize: 18,
@@ -116,7 +152,10 @@ const styles = StyleSheet.create({
 	},
 	buttons: {
 		flexDirection: "row",
-		justifyContent: "space-between",
-		gap: Spacing.md
+		justifyContent: "flex-end",
+		gap: Spacing.sm
 	},
+	button: {
+		flexShrink: 0
+	}
 });
