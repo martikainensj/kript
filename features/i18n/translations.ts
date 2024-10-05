@@ -53,13 +53,21 @@ const Translations: { [key: string]: LocaleTranslations } = {
 		fi_FI: 'Haluatko varmasti kirjautua ulos?',
 		en_US: 'Are you sure you want to log out?'
 	},
-	'login failed. please check your username and password and try again.': {
-		fi_FI: 'Kirjautuminen epäonnistui. Tarkista käyttäjätunnus ja salasana ja yritä uudelleen.',
-		en_US: 'Login failed. Please check your username and password and try again.'
+	'login failed': {
+		fi_FI: 'Kirjautuminen epäonnistui',
+		en_US: 'Login failed'
 	},
-	'registration failed. please check the information you provided and try again.': {
-		fi_FI: 'Rekisteröityminen epäonnistui. Tarkista antamasi tiedot ja yritä uudelleen.',
-		en_US: 'Registration failed. Please check the information you provided and try again.'
+	'please check your username and password and try again.': {
+		fi_FI: 'Tarkista käyttäjätunnus ja salasana ja yritä uudelleen.',
+		en_US: 'Please check your username and password and try again.'
+	},
+	'registration failed': {
+		fi_FI: 'Rekisteröityminen epäonnistui',
+		en_US: 'Registration failed'
+	},
+	'please check the information you provided and try again.': {
+		fi_FI: 'Tarkista antamasi tiedot ja yritä uudelleen.',
+		en_US: 'Please check the information you provided and try again.'
 	},
 	'overview': {
 		fi_FI: 'Yleistä',
