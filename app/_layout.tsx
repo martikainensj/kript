@@ -9,11 +9,11 @@ import { Stack } from 'expo-router';
 
 import { GlobalStyles } from '../constants';
 import { BottomSheetProvider } from '../contexts/BottomSheetContext';
-import { KriptRealmProvider } from '../contexts/KriptRealmContext';
 import { ChartSheetProvider } from '../contexts/ChartSheetContext';
 import { AlertProvider } from '../features/alerts/AlertContext';
 import { ThemeProvider } from '../features/theme/ThemeContext';
 import { I18nProvider } from '../features/i18n/I18nContext';
+import { RealmProvider } from '../features/realm/RealmContext';
 
 export default function AppLayout() {
 	return (
@@ -21,7 +21,7 @@ export default function AppLayout() {
 			<ThemeProvider>
 				<I18nProvider>
 					<AlertProvider>
-						<KriptRealmProvider>
+						<RealmProvider>
 							<BottomSheetProvider>
 								<ChartSheetProvider>
 									<StatusBar />
@@ -32,7 +32,7 @@ export default function AppLayout() {
 									} } />
 								</ChartSheetProvider>
 							</BottomSheetProvider>
-						</KriptRealmProvider>
+						</RealmProvider>
 					</AlertProvider>
 				</I18nProvider>
 			</ThemeProvider>

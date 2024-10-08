@@ -6,7 +6,6 @@ import { GlobalStyles, Spacing } from '../../constants';
 import { IconButton } from '../../components/buttons';
 import { buildChartData } from '../../helpers';
 import { Header } from '../../components/ui/Header';
-import { useData } from '../../contexts/DataContext';
 import { LineChart } from '../../components/charts/LineChart';
 import { useTypes } from '../../hooks/useTypes';
 import { LineChartButton } from '../../components/buttons/LineChartButton';
@@ -14,6 +13,7 @@ import { useChartSheet } from '../../contexts/ChartSheetContext';
 import { Grid } from '../../components/ui/Grid';
 import { useAlert } from '../../features/alerts/AlertContext';
 import { useI18n } from '../../features/i18n/I18nContext';
+import { useData } from '../../features/data/DataContext';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();

@@ -1,10 +1,10 @@
 import { useLayoutEffect } from "react";
 
 import { Account } from "../models/Account"
-import { useData } from "../contexts/DataContext";
 import { buildChartData, generateChecksum, getTransactionEndOfDayTimestamp } from "../helpers";
 import { DataPoint } from "../models/DataPoint";
 import { useTypes } from "./useTypes";
+import { useData } from "../features/data/DataContext";
 
 interface useAccountProps {
 	account: Account

@@ -10,7 +10,6 @@ import { TransactionForm } from "../transactions/TransactionForm";
 import { prettifyNumber } from "../../helpers";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { FABProvider, useFAB } from "../../contexts/FABContext";
-import { useUser } from "../../hooks/useUser";
 import { useTypes } from "../../hooks/useTypes";
 import { Tabs, TabsScreenContentProps } from "../ui/Tabs";
 import { Icon } from "../ui/Icon";
@@ -20,7 +19,6 @@ import { Grid } from "../ui/Grid";
 import { ItemList } from "../ui/ItemList";
 import HoldingItem from "../holdings/HoldingItem";
 import TransactionItem from "../transactions/TransactionItem";
-import { useData } from "../../contexts/DataContext";
 import { useSelector } from "../../hooks/useSelector";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
@@ -30,6 +28,8 @@ import { LineChartButton } from "../buttons/LineChartButton";
 import ConditionalView from "../ui/ConditionalView";
 import { useAccount } from "../../hooks/useAccount";
 import { useI18n } from "../../features/i18n/I18nContext";
+import { useData } from "../../features/data/DataContext";
+import { useUser } from "../../features/realm/useUser";
 
 interface AccountViewProps {
 	account: Account;

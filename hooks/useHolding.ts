@@ -1,9 +1,9 @@
 import { useLayoutEffect, useState } from "react";
 
 import { Holding } from "../models/Holding";
-import { useData } from "../contexts/DataContext";
 import { generateChecksum, getTransactionEndOfDayTimestamp } from "../helpers";
 import { useTypes } from "./useTypes";
+import { useData } from "../features/data/DataContext";
 
 interface useHoldingProps {
 	holding: Holding

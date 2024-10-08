@@ -1,24 +1,25 @@
 import React from "react";
 import { StyleSheet, View } from "react-native"
 
-import { UserDataValue, useUser } from "../../hooks/useUser";
 import { DefaultButton } from "../buttons";
 import { Spacing } from "../../constants";
 import { EditableValue } from "../ui/EditableValue";
 import { useI18n } from "../../features/i18n/I18nContext";
+import { useUser } from "../../features/realm/useUser";
+import { UserValue } from "../../features/realm/types";
 
 interface UserProps {}
 
 export const UserInfo: React.FC<UserProps> = () => {
 	const { __ } = useI18n();
-	const { data, logOut, setData, removeUser } = useUser();
+	const { data, logOut, set, removeUser } = useUser();
 
 	return <View style={ styles.container }>
 		<View style={ styles.dataContainer}>
 			<EditableValue 
 				label={ __( 'Name' ) }
-				value={ data.name }
-				setValue={ ( value ) => setData( 'name', value as UserDataValue<'name'> )} />
+				value={	data.name }
+				setValue={ ( value ) => set( 'name', value as UserValue<'name'> )} />
 		</View>
 
 		<View style={ styles.buttonsContainer}>

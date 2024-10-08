@@ -14,9 +14,9 @@ import {
 	Spacing
 } from "../constants";
 import { Icon } from "../components/ui/Icon";
-import { useData } from "./DataContext";
 import { EdgeInsets } from "react-native-safe-area-context";
 import { useI18n } from "../features/i18n/I18nContext";
+import { useData } from "../features/data/DataContext";
 
 interface FABContext {
 	actions: FABGroupProps["actions"];

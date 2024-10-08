@@ -9,10 +9,10 @@ import { prettifyNumber } from "../../helpers";
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
-import { useData } from "../../contexts/DataContext";
 import { useHolding } from "../../hooks/useHolding";
 import { useTheme } from "../../features/theme/ThemeContext";
 import { useI18n } from "../../features/i18n/I18nContext";
+import { useData } from "../../features/data/DataContext";
 
 interface HoldingItemProps {
 	holding: Holding

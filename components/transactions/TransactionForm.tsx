@@ -11,8 +11,8 @@ import { Cash, Loan, Trading, useTypes } from "../../hooks/useTypes";
 import { OptionProps, Select } from "../inputs/Select";
 import { Divider } from "../ui/Divider";
 import { Icon } from "../ui/Icon";
-import { useData } from "../../contexts/DataContext";
 import { useI18n } from "../../features/i18n/I18nContext";
+import { useData } from "../../features/data/DataContext";
 
 interface TransactionFormProps {
 	transaction: Transaction,

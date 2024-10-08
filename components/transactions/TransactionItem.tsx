@@ -10,11 +10,11 @@ import { Grid } from "../ui/Grid";
 import { Transaction } from "../../models/Transaction";
 import { useTypes } from "../../hooks/useTypes";
 import { Checkbox } from "../inputs/Checkbox";
-import { useData } from "../../contexts/DataContext";
 import ConditionalView from "../ui/ConditionalView";
 import { ProgressBar } from "../ui/ProgressBar";
 import { useTheme } from "../../features/theme/ThemeContext";
 import { useI18n } from "../../features/i18n/I18nContext";
+import { useData } from "../../features/data/DataContext";
 
 interface TransactionItemProps {
 	transaction: Transaction;

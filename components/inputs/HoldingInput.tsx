@@ -10,7 +10,7 @@ import { Spacing } from "../../constants";
 import Realm from "realm";
 import { TextInput } from "./TextInput";
 import { Account } from "../../models/Account";
-import { useUser } from "../../hooks/useUser";
+import { useUser } from "../../features/realm/useUser";
 
 interface HoldingInputProps {
 	value: string
@@ -66,7 +66,7 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 		filteredHoldings.push( {
 			name: value,
 			owner_id: user.id,
-			account_id: account._id
+			account_id: account._id,
 		} );
 
 		setFilteredHoldings( filteredHoldings );

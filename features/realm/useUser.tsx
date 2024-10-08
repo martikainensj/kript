@@ -2,8 +2,9 @@ import { useApp, useAuth, useUser as useRealmUser } from "@realm/react";
 import { User as RealmUser } from "realm";
 
 import { useI18n } from "../i18n/I18nContext";
-import { UserKey, UserValue } from "./types";
+import { User, UserKey, UserValue } from "./types";
 import { useAlert } from "../alerts/AlertContext";
+import { useMemo } from "react";
 
 export const useUser = () => {
 	const app = useApp();
@@ -22,6 +23,16 @@ export const useUser = () => {
 	};
 
 	const options = { upsert: true };
+
+	const data = useMemo(() => {
+		const userKeys: (keyof User)[] = ["name"];
+	
+		return Object.fromEntries(
+			Object.entries(user.customData).filter(([key]) =>
+				userKeys.includes(key as keyof User)
+			)
+		) as User;
+	}, [user]);
 
 	const set = async <K extends UserKey>(key: K, value: UserValue<K>) => {
 		try {
@@ -77,6 +88,7 @@ export const useUser = () => {
 
 	return {
 		user, removeUser, logOut,
+		data,
 		set, get, refresh
 	}
 }

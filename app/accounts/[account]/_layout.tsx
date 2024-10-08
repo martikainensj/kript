@@ -1,8 +1,8 @@
 import React from "react";
 import Realm from "realm";
 import { Stack, router, useGlobalSearchParams } from "expo-router";
-import { useData } from "../../../contexts/DataContext";
 import { useTheme } from "../../../features/theme/ThemeContext";
+import { useData } from "../../../features/data/DataContext";
 
 export default function AccountLayout() {
 	const { getAccountBy } = useData();

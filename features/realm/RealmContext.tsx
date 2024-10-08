@@ -6,7 +6,7 @@ import { AppProvider, UserProvider, RealmProvider as RProvider } from "@realm/re
 import { LoginScreen } from "./LoginScreen";
 import { Schemas } from "./schemas";
 import { ClientResetMode, OpenRealmBehaviorType, OpenRealmTimeOutBehavior } from "realm";
-import { DataProvider } from "./DataContext";
+import { DataProvider } from "../data/DataContext";
 
 interface RealmContext {}
 

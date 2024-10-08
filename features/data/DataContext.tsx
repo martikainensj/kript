@@ -2,12 +2,12 @@ import React, { createContext, useContext, useCallback, useEffect, useState } fr
 import Realm, { UpdateMode } from "realm";
 import { useQuery, useRealm } from "@realm/react";
 
-import { useUser } from "../hooks/useUser";
-import { Account, AccountKey, AccountValue } from "../models/Account";
-import { Transaction, TransactionKey, TransactionValue } from "../models/Transaction";
-import { Holding, HoldingKey, HoldingValue } from "../models/Holding";
-import { useAlert } from "../features/alerts/AlertContext";
-import { useI18n } from "../features/i18n/I18nContext";
+import { useAlert } from "../alerts/AlertContext";
+import { useI18n } from "../i18n/I18nContext";
+import { useUser } from "../realm/useUser";
+import { Account, AccountKey, AccountValue } from "../realm/models/Account";
+import { Holding, HoldingKey, HoldingValue } from "../realm/models/Holding";
+import { Transaction, TransactionKey, TransactionValue } from "../realm/models/Transaction";
 
 export type DataIdentifier = 'Account' | 'Holding' | 'Transaction';
 export type DataObject = {

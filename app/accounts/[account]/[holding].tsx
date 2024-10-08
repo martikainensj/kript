@@ -4,8 +4,8 @@ import { router, useLocalSearchParams } from "expo-router";
 
 import { FABProvider } from "../../../contexts/FABContext";
 import HoldingView from "../../../components/holdings/HoldingView";
-import { useData } from "../../../contexts/DataContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useData } from "../../../features/data/DataContext";
 
 export default function HoldingLayout() {
 	const insets = useSafeAreaInsets();

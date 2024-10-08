@@ -6,14 +6,14 @@ import { GlobalStyles } from '../../constants';
 import { AccountItem, AccountForm } from '../../components/accounts';
 import { IconButton } from '../../components/buttons';
 import { useBottomSheet } from '../../contexts/BottomSheetContext';
-import { useUser } from '../../hooks/useUser';
 import { Header } from '../../components/ui/Header';
 import { ItemList } from '../../components/ui/ItemList';
 import { useTypes } from '../../hooks/useTypes';
-import { useData } from '../../contexts/DataContext';
 import { router } from 'expo-router';
 import { FABProvider } from '../../contexts/FABContext';
 import { useI18n } from '../../features/i18n/I18nContext';
+import { useUser } from '../../features/realm/useUser';
+import { useData } from '../../features/data/DataContext';
 
 const Accounts: React.FC = () => {
 	const { getAccounts, addAccount } = useData();
