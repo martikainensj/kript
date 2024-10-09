@@ -172,7 +172,7 @@ export const getWeekNumber = (date: Date) => {
 	date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
 
 	const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-	const weekNo = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+	const weekNo = Math.ceil((((date.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
 
 	return weekNo;
 }
@@ -204,7 +204,7 @@ export const getLastDayOfYear = (date: Date): Date => {
 export const getYTD = () => {
 	const today = new Date();
 	const startOfYear = new Date(today.getFullYear(), 0, 1);
-	const diffInMs = today - startOfYear;
+	const diffInMs = today.getTime() - startOfYear.getTime();
 	const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
 	return diffInDays + 1;
