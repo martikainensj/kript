@@ -105,27 +105,28 @@ export const LoginScreen = () => {
 							borderColor: theme.colors.outlineVariant
 						}
 					]}>
-						{result.pending
-							? <ActivityIndicator />
-							: <>
-								<DefaultButton
-									icon={({ color }) => <Icon name={'log-in-outline'} size={IconSize.lg} color={color} />}
-									onPress={() => logInWithEmailPassword({ email, password })}
-									disabled={result.pending}
-									style={styles.button}>
-									{__('Login')}
-								</DefaultButton>
+						{result.pending && <ActivityIndicator />}
+						
+						{!result.pending && (
+							<DefaultButton
+								icon={({ color }) => <Icon name={'log-in-outline'} size={IconSize.lg} color={color} />}
+								onPress={() => logInWithEmailPassword({ email, password })}
+								disabled={result.pending}
+								style={styles.button}>
+								{__('Login')}
+							</DefaultButton>
+						)}
 
-								<DefaultButton
-									icon={({ size, color }) => <Icon name={'person-add'} color={color} />}
-									onPress={() => register({ email, password })}
-									disabled={result.pending}
-									style={styles.button}
-									mode={'contained-tonal'}>
-									{__('Sign up')}
-								</DefaultButton>
-							</>
-						}
+						{!result.pending && (
+							<DefaultButton
+								icon={({ size, color }) => <Icon name={'person-add'} color={color} />}
+								onPress={() => register({ email, password })}
+								disabled={result.pending}
+								style={styles.button}
+								mode={'contained-tonal'}>
+								{__('Sign up')}
+							</DefaultButton>
+						)}
 					</View>
 				</View>
 			</View>
