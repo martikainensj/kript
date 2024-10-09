@@ -24,7 +24,7 @@ export const DefaultButton: React.FC<ButtonProps> = ( {
 
 const styles = StyleSheet.create( {
   container: {
-    borderRadius: BorderRadius.xl
+    borderRadius: BorderRadius.lg
   },
 	label: {
 		...GlobalStyles.lead
