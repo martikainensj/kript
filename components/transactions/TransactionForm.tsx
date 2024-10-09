@@ -7,12 +7,13 @@ import { GlobalStyles, IconSize } from "../../constants";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
-import { Cash, Loan, Trading, useTypes } from "../../hooks/useTypes";
 import { OptionProps, Select } from "../inputs/Select";
 import { Divider } from "../ui/Divider";
 import { Icon } from "../ui/Icon";
 import { useI18n } from "../../features/i18n/I18nContext";
 import { useData } from "../../features/data/DataContext";
+import { useCategories } from "../../features/data/useCategories";
+import { CashCategory, LoanCategory, TradingCategory } from "../../features/data/types";
 
 interface TransactionFormProps {
 	transaction: Transaction,
@@ -26,12 +27,12 @@ export const TransactionForm = ( {
 	onSubmit
 }: TransactionFormProps ) => {
 	const { __ } = useI18n();
-	const { TransactionTypes, TradingTypes, CashTypes, LoanTypes } = useTypes();
+	const { TransactionCategories, TradingCategories, CashCategories, LoanCategories } = useCategories();
 	const { getHoldingBy } = useData();
-	const [ trading, cash, adjustment ] = TransactionTypes;
-	const [ buy, sell ] = TradingTypes;
-	const [ deposit, withdrawal, dividend ] = CashTypes;
-	const [ repayment, disbursement ] = LoanTypes;
+	const [ trading, cash, adjustment ] = TransactionCategories;
+	const [ buy, sell ] = TradingCategories;
+	const [ deposit, withdrawal, dividend ] = CashCategories;
+	const [ repayment, disbursement ] = LoanCategories;
 
 	const [ editedTransaction, setEditedTransaction ]
 		= useState( { ...transaction } );
@@ -54,13 +55,13 @@ export const TransactionForm = ( {
 	const subTypes = useMemo( () => {
 		switch ( type ) {
 			case 'trading':
-				return TradingTypes;
+				return TradingCategories;
 				
 			case 'cash':
-				return CashTypes;
+				return CashCategories;
 
 			case 'loan':
-				return LoanTypes;
+				return LoanCategories;
 			
 			default:
 				return null; 
@@ -133,7 +134,7 @@ export const TransactionForm = ( {
 					setValue={ type => setEditedTransaction(
 						Object.assign( { ...editedTransaction }, { type } )
 					) }
-					options={ TransactionTypes.map( transactionType => {
+					options={ TransactionCategories.map( transactionType => {
 						return {
 							icon: ( { size, color } ) => {
 								return (
@@ -155,7 +156,7 @@ export const TransactionForm = ( {
 					setValue={ sub_type => setEditedTransaction(
 						Object.assign( { ...editedTransaction }, { sub_type } )
 					) }
-					options={ subTypes.map( ( subType: Trading | Cash | Loan ) => {
+					options={ subTypes.map( ( subType: TradingCategory | CashCategory | LoanCategory ) => {
 						return {
 							icon: ( { size, color } ) => {
 								return (

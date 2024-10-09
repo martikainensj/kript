@@ -7,19 +7,19 @@ import { IconButton } from '../../components/buttons';
 import { buildChartData } from '../../helpers';
 import { Header } from '../../components/ui/Header';
 import { LineChart } from '../../components/charts/LineChart';
-import { useTypes } from '../../hooks/useTypes';
 import { LineChartButton } from '../../components/buttons/LineChartButton';
 import { useChartSheet } from '../../contexts/ChartSheetContext';
 import { Grid } from '../../components/ui/Grid';
 import { useAlert } from '../../features/alerts/AlertContext';
 import { useI18n } from '../../features/i18n/I18nContext';
 import { useData } from '../../features/data/DataContext';
+import { useCharts } from '../../features/charts/useCharts';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();
 	const { __ } = useI18n();
 	const { getAccounts } = useData();
-	const { TimeframeTypes } = useTypes();
+	const { TimeframeTypes } = useCharts();
 	const { openChartSheet } = useChartSheet();
 	const { show } = useAlert();
 

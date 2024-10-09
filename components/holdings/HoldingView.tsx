@@ -16,7 +16,6 @@ import { Value } from "../../components/ui/Value";
 import { Header } from "../../components/ui/Header";
 import { Grid } from "../../components/ui/Grid";
 import { ItemList } from "../../components/ui/ItemList";
-import { useTypes } from "../../hooks/useTypes";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Holding } from "../../models/Holding";
 import { useHolding } from "../../hooks/useHolding";
@@ -30,6 +29,8 @@ import ConditionalView from "../ui/ConditionalView";
 import { useI18n } from "../../features/i18n/I18nContext";
 import { useData } from "../../features/data/DataContext";
 import { useUser } from "../../features/realm/useUser";
+import { useSorting } from "../../features/data/useSorting";
+import { useCharts } from "../../features/charts/useCharts";
 
 interface HoldingViewProps {
 	holding: Holding;
@@ -44,7 +45,8 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { openChartSheet } = useChartSheet();
-	const { SortingTypes, TimeframeTypes } = useTypes();
+	const { SortingTypes } = useSorting();
+	const { TimeframeTypes } = useCharts();
 	const insets = useSafeAreaInsets();
 	const { isSelecting, select, deselect, selectedType, selectedObjects, validate, hasObject, canSelect } = useSelector();
 

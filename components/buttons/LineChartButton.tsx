@@ -6,11 +6,11 @@ import { LineChart as GiftedLineChart, LineChartPropsType, lineDataItem } from "
 import { BorderRadius, FontSize, FontWeight, Spacing } from "../../constants";
 import { Card } from "../ui/Card";
 import { Value } from "../ui/Value";
-import { useTypes } from "../../hooks/useTypes";
 import { DataPoint } from "../../models/DataPoint";
 import { filterDataByInterval, prettifyNumber } from "../../helpers";
 import { useTheme } from "../../features/theme/ThemeContext";
 import { useI18n } from "../../features/i18n/I18nContext";
+import { useCharts } from "../../features/charts/useCharts";
 
 interface Props {
 	data: DataPoint[]
@@ -27,7 +27,7 @@ export const LineChartButton: React.FC<Props> = ({
 }) => {
 	const { __ } = useI18n();
 	const { theme } = useTheme();
-	const { TimeframeTypes } = useTypes();
+	const { TimeframeTypes } = useCharts();
 	const [ lineChartWidth, setLineChartWidth ] = useState( 0 );
 
 	const timeframedData = useMemo(() => {

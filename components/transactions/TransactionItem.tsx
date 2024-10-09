@@ -8,13 +8,13 @@ import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { Value } from "../ui/Value";
 import { Grid } from "../ui/Grid";
 import { Transaction } from "../../models/Transaction";
-import { useTypes } from "../../hooks/useTypes";
 import { Checkbox } from "../inputs/Checkbox";
 import ConditionalView from "../ui/ConditionalView";
 import { ProgressBar } from "../ui/ProgressBar";
 import { useTheme } from "../../features/theme/ThemeContext";
 import { useI18n } from "../../features/i18n/I18nContext";
 import { useData } from "../../features/data/DataContext";
+import { useCategories } from "../../features/data/useCategories";
 
 interface TransactionItemProps {
 	transaction: Transaction;
@@ -30,7 +30,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 	const { __ } = useI18n();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { getAccountBy, saveTransaction } = useData();
-	const { TradingTypes, CashTypes, AdjustmentTypes, LoanTypes } = useTypes();
+	const { TradingCategories, CashCategories, AdjustmentCategories, LoanCategories } = useCategories();
 	const [ longPressProgress, setLongPressProgress ] = useState( 0 );
 
   const progressAnim = useRef( new Animated.Value( 0 )).current;
@@ -95,13 +95,13 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 	const type = useMemo( () => {
 		switch ( transaction?.type ) {
 			case 'trading':
-				return TradingTypes.find(type => type.id === transaction.sub_type )
+				return TradingCategories.find(type => type.id === transaction.sub_type )
 			case 'cash':
-				return CashTypes.find(type => type.id === transaction.sub_type )
+				return CashCategories.find(type => type.id === transaction.sub_type )
 			case 'adjustment':
-				return AdjustmentTypes.find(type => type.id === transaction.sub_type )
+				return AdjustmentCategories.find(type => type.id === transaction.sub_type )
 			case 'loan':
-				return LoanTypes.find(type => type.id === transaction.sub_type )
+				return LoanCategories.find(type => type.id === transaction.sub_type )
 		}
 	}, [ transaction ] )
 

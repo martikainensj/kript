@@ -10,7 +10,6 @@ import { TransactionForm } from "../transactions/TransactionForm";
 import { prettifyNumber } from "../../helpers";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { FABProvider, useFAB } from "../../contexts/FABContext";
-import { useTypes } from "../../hooks/useTypes";
 import { Tabs, TabsScreenContentProps } from "../ui/Tabs";
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
@@ -30,6 +29,8 @@ import { useAccount } from "../../hooks/useAccount";
 import { useI18n } from "../../features/i18n/I18nContext";
 import { useData } from "../../features/data/DataContext";
 import { useUser } from "../../features/realm/useUser";
+import { useSorting } from "../../features/data/useSorting";
+import { useCharts } from "../../features/charts/useCharts";
 
 interface AccountViewProps {
 	account: Account;
@@ -41,7 +42,8 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { openChartSheet } = useChartSheet();
-	const { SortingTypes, TimeframeTypes } = useTypes();
+	const { SortingTypes } = useSorting();
+	const { TimeframeTypes } = useCharts();
 	const insets = useSafeAreaInsets();
 	const { isSelecting, selectedType, selectedObjects, select, deselect, canSelect, hasObject, validate } = useSelector();
 

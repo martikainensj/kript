@@ -1,7 +1,7 @@
 import Realm from 'realm';
 import { Transaction } from '../models/Transaction';
 import { DataPoint } from '../models/DataPoint';
-import { IntervalType } from '../hooks/useTypes';
+import { IntervalKey } from '../features/charts/types';
 
 export const addTimeToDateTimestamp = (timestamp: number) => {
 	const date = new Date(timestamp);
@@ -78,7 +78,7 @@ export const generateChecksum = (object: object) => {
 
 export const getIntervalMap = (
 	data: DataPoint[],
-	interval: IntervalType = 'weekly',
+	interval: IntervalKey = 'weekly',
 	range?: number
 ) => {
 	const currentDate = new Date();
@@ -128,7 +128,7 @@ export const getIntervalMap = (
 
 export const filterDataByInterval = (
 	data: DataPoint[],
-	interval: IntervalType = 'weekly',
+	interval: IntervalKey = 'weekly',
 	range?: number
 ) => {
 	const intervalMap = getIntervalMap(data, interval, range);

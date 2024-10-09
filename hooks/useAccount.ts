@@ -3,8 +3,8 @@ import { useLayoutEffect } from "react";
 import { Account } from "../models/Account"
 import { buildChartData, generateChecksum, getTransactionEndOfDayTimestamp } from "../helpers";
 import { DataPoint } from "../models/DataPoint";
-import { useTypes } from "./useTypes";
 import { useData } from "../features/data/DataContext";
+import { useSorting } from "../features/data/useSorting";
 
 interface useAccountProps {
 	account: Account
@@ -12,7 +12,7 @@ interface useAccountProps {
 
 export const useAccount = ( { account }: useAccountProps ) => {
 	const { updateVariables } = useData();
-	const { SortingTypes } = useTypes();
+	const { SortingTypes } = useSorting();
 	
 	if ( ! account?.isValid() ) return;
 

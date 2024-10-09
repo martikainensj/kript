@@ -6,7 +6,7 @@ import { ThemeProps } from "../theme/types";
 export interface storageProps {
   '@settings/dark': { type: ThemeProps['dark'] };
   '@settings/language': { type: LocaleString };
-	'@filters/timeframe': { type: {[ key: string ]: { id: keyof TimeframeProps }}}
+	'@filters/timeframe': { type: {[ key: string ]: { id: TimeframeProps['id'] }}}
 	'@filters/sorting': { type: {[ key: string ]: { id: keyof SortingProps }}}
 }
 

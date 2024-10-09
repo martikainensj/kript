@@ -6,13 +6,14 @@ import { BorderRadius, FontSize, GlobalStyles, Spacing } from "../../constants";
 import { Menu, Text } from "react-native-paper";
 import { Card } from "../ui/Card";
 import { Value } from "../ui/Value";
-import { TimeframeType, useTypes } from "../../hooks/useTypes";
 import { IconButton } from "../buttons";
 import { DataPoint } from "../../models/DataPoint";
-import { useStorage } from "../../hooks/useStorage";
 import { filterDataByInterval, prettifyNumber } from "../../helpers";
 import { useTheme } from "../../features/theme/ThemeContext";
 import { useI18n } from "../../features/i18n/I18nContext";
+import { useStorage } from "../../features/storage/useStorage";
+import { TimeframeProps } from "../../features/charts/types";
+import { useCharts } from "../../features/charts/useCharts";
 
 interface Props {
 	id: string,
@@ -20,7 +21,7 @@ interface Props {
 	label?: string,
 	unit?: string,
 	timeframeContainerStyle?: StyleProp<ViewStyle>;
-	timeframeOptions?: TimeframeType[];
+	timeframeOptions?: TimeframeProps[];
 }
 
 export const LineChart: React.FC<Props> = ({
@@ -33,11 +34,11 @@ export const LineChart: React.FC<Props> = ({
 }) => {
 	const { __ } = useI18n();
 	const { theme } = useTheme();
-	const { getData, setData } = useStorage();
-	const { TimeframeTypes } = useTypes();
+	const { get, set } = useStorage();
+	const { TimeframeTypes } = useCharts();
 	const [lineChartWidth, setLineChartWidth] = useState(0);
 
-	const [timeframe, setTimeframe] = useState<TimeframeType>(TimeframeTypes.ytd);
+	const [timeframe, setTimeframe] = useState<TimeframeProps>(TimeframeTypes.ytd);
 	const [showTimeframeOptions, setShowTimeframeOptions] = useState(false);
 
 	const timeframedData = useMemo(() => {
@@ -85,11 +86,11 @@ export const LineChart: React.FC<Props> = ({
 		setLineChartWidth(width);
 	};
 
-	const onPressTimeframeOption = (option: TimeframeType) => {
+	const onPressTimeframeOption = (option: TimeframeProps) => {
 		setShowTimeframeOptions(false);
 		setTimeframe(option);
 
-		getData('@filters/timeframe').then(filtersTimeframe => {
+		get('@filters/timeframe').then(filtersTimeframe => {
 			const newFiltersTimeframe = {};
 
 			if (!!filtersTimeframe) {
@@ -98,7 +99,7 @@ export const LineChart: React.FC<Props> = ({
 
 			newFiltersTimeframe[id] = { id: option.id };
 
-			setData('@filters/timeframe', newFiltersTimeframe)
+			set('@filters/timeframe', newFiltersTimeframe)
 		});
 	}
 
@@ -132,7 +133,7 @@ export const LineChart: React.FC<Props> = ({
 	}, [timeframedData]);
 
 	useLayoutEffect(() => {
-		getData('@filters/timeframe').then(filtersTimeframe => {
+		get('@filters/timeframe').then(filtersTimeframe => {
 			const timeframeId = filtersTimeframe?.[id]?.id || null;
 
 			if (timeframeId) {

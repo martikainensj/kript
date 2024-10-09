@@ -2,15 +2,15 @@ import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { GlobalStyles, Spacing } from "../../constants";
 import { Divider, Text } from "react-native-paper";
 import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { SortingType } from "../../hooks/useTypes";
 import { Account } from "../../models/Account";
 import { Holding } from "../../models/Holding";
 import { Transaction } from "../../models/Transaction";
 import { useFAB } from "../../contexts/FABContext";
 import { Icon } from "./Icon";
-import { useStorage } from "../../hooks/useStorage";
 import { useTheme } from "../../features/theme/ThemeContext";
 import { useI18n } from "../../features/i18n/I18nContext";
+import { useStorage } from "../../features/storage/useStorage";
+import { SortingProps } from "../../features/data/types";
 
 interface ItemListProps {
 	id: string;
@@ -23,7 +23,7 @@ interface ItemListProps {
 	style?: StyleProp<ViewStyle>;
 	contentContainerStyle?: StyleProp<ViewStyle>;
 	sortingContainerStyle?: StyleProp<ViewStyle>;
-	sortingOptions?: SortingType[];
+	sortingOptions?: SortingProps[];
 }
 
 export const ItemList: React.FC<ItemListProps> = ({
@@ -38,8 +38,8 @@ export const ItemList: React.FC<ItemListProps> = ({
 	const { __ } = useI18n();
 	const { theme } = useTheme();
 	const { setActions, setIcon, setLabel } = useFAB();
-	const { setData, getData } = useStorage();
-	const [sorting, setSorting] = useState<SortingType>(sortingOptions && sortingOptions[0]);
+	const { set, get } = useStorage();
+	const [sorting, setSorting] = useState<SortingProps>(sortingOptions && sortingOptions[0]);
 
 	const sortedData = useMemo(() => {
 		if (sorting?.function) {
@@ -53,7 +53,7 @@ export const ItemList: React.FC<ItemListProps> = ({
 		setIcon(sorting?.icon);
 		setLabel(sorting?.name);
 
-		getData('@filters/sorting').then(filtersSorting => {
+		get('@filters/sorting').then(filtersSorting => {
 			const newFiltersSorting = {};
 
 			if (!!filtersSorting) {
@@ -62,7 +62,7 @@ export const ItemList: React.FC<ItemListProps> = ({
 
 			newFiltersSorting[id] = { id: sorting.id };
 
-			setData('@filters/sorting', newFiltersSorting)
+			set('@filters/sorting', newFiltersSorting)
 		});
 	}, [sorting]);
 
@@ -82,7 +82,7 @@ export const ItemList: React.FC<ItemListProps> = ({
 	}, [sortingOptions]);
 
 	useLayoutEffect(() => {
-		getData('@filters/sorting').then(filtersSorting => {
+		get('@filters/sorting').then(filtersSorting => {
 			const sortingId = filtersSorting?.[id]?.id || null;
 
 			if (sortingId) {

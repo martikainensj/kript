@@ -2,8 +2,8 @@ import { useLayoutEffect, useState } from "react";
 
 import { Holding } from "../models/Holding";
 import { generateChecksum, getTransactionEndOfDayTimestamp } from "../helpers";
-import { useTypes } from "./useTypes";
 import { useData } from "../features/data/DataContext";
+import { useSorting } from "../features/data/useSorting";
 
 interface useHoldingProps {
 	holding: Holding
@@ -11,7 +11,7 @@ interface useHoldingProps {
 
 export const useHolding = ( { holding }: useHoldingProps ) => {
 		const { updateVariables, getAccountBy } = useData();
-		const { SortingTypes } = useTypes();
+		const { SortingTypes } = useSorting();
 
 		if ( ! holding?.isValid() ) return;
 
