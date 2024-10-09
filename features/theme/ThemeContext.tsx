@@ -22,7 +22,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
 	const setDark = (dark: boolean) => {
 		Appearance.setColorScheme(dark ? 'dark' : 'light');
-		setTheme(DefaultTheme[dark ? 'dark' : 'light']);
 	}
 
 	useLayoutEffect(() => {
@@ -33,6 +32,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
 		Appearance.addChangeListener(({ colorScheme }) => {
 			set("@settings/dark", colorScheme === 'dark');
+			setTheme(DefaultTheme[colorScheme]);
 		});
 	}, []);
 
