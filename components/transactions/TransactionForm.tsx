@@ -16,7 +16,7 @@ import { useCategories } from "../../features/data/useCategories";
 import { CashCategory, LoanCategory, TradingCategory } from "../../features/data/types";
 
 interface TransactionFormProps {
-	transaction: Transaction,
+	transaction: Partial<Transaction>,
 	account?: Account,
 	onSubmit: ( transaction: Transaction ) => void;
 }
@@ -86,7 +86,7 @@ export const TransactionForm = ( {
 					? -total
 					: Math.abs( total )
 			)
-		} ) )
+		} ) as Transaction )
 	}
 		
 	useEffect( () => {
