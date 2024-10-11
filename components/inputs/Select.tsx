@@ -1,9 +1,10 @@
 import React from 'react';
 import { GestureResponderEvent, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
-import { SegmentedButtons, Text } from 'react-native-paper';
+import { SegmentedButtons } from 'react-native-paper';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import { BorderRadius, GlobalStyles, Spacing } from '../../constants';
 import { useTheme } from '../../features/theme/ThemeContext';
+import { Text } from '../ui/Text';
 
 export interface OptionProps {
 	value: string;

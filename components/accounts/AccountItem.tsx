@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Text, TouchableRipple } from "react-native-paper";
+import { TouchableRipple } from "react-native-paper";
 import { router } from 'expo-router';
 
 import { GlobalStyles, Spacing } from "../../constants";
@@ -12,6 +12,7 @@ import { Grid } from "../ui/Grid";
 import { useAccount } from "../../hooks/useAccount";
 import { useTheme } from "../../features/theme/ThemeContext";
 import { useI18n } from "../../features/i18n/I18nContext";
+import { Text } from "../ui/Text";
 
 interface AccountItemProps {
 	account: Account

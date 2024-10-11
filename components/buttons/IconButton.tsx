@@ -18,11 +18,11 @@ export const IconButton: React.FC<IconButtonProps> = ( {
 } ) => {
 	return (
 		<PaperIconButton
+			{ ...rest }
 			icon={ ( { color } ) => <Icon name={ icon } size={ size - 4 } color={ color } />}
 			mode={ mode }
 			size={ size }
 			style={ [ styles.container, style ] }
-			{ ...rest }
 			/>
 	)
 }

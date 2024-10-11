@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleProp, StyleSheet, TextStyle } from "react-native";
-import { Text } from "react-native-paper";
 
 import { GlobalStyles } from "../../constants";
+import { Text } from './Text';
 
 interface TitleProps {
 	children: string,

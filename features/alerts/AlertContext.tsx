@@ -1,11 +1,11 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { AlertContextProps, AlertProps, AlertProviderProps, AlertType } from "./types";
 import { Animated, StyleSheet, View } from "react-native";
-import { Text } from "react-native-paper";
 import { DefaultButton } from "../../components/buttons";
 import { useI18n } from "../i18n/I18nContext";
 import { BorderRadius, Duration, GlobalStyles, Spacing } from "../../constants";
 import { useTheme } from "../theme/ThemeContext";
+import { Text } from "../../components/ui/Text";
 
 const AlertContext = createContext<AlertContextProps>({
 	show: () => { },

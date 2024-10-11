@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
-import { Text, TouchableRipple } from "react-native-paper";
+import { TouchableRipple } from "react-native-paper";
 
 import { Duration, GlobalStyles, Spacing } from "../../constants";
 import { TransactionForm } from "./TransactionForm";
@@ -15,6 +15,7 @@ import { useTheme } from "../../features/theme/ThemeContext";
 import { useI18n } from "../../features/i18n/I18nContext";
 import { useData } from "../../features/data/DataContext";
 import { useCategories } from "../../features/data/useCategories";
+import { Text } from "../ui/Text";
 
 interface TransactionItemProps {
 	transaction: Transaction;

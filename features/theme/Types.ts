@@ -1,12 +1,36 @@
-import { MD3Theme } from "react-native-paper";
-
-export interface ThemeProps extends MD3Theme {
-	colors: MD3Theme['colors'] & {
+export interface ThemeProps {
+	dark: boolean;
+	colors: {
+		primary: string;
+		onPrimary: string;
+		primaryContainer: string;
+		onPrimaryContainer: string;
+		secondary: string;
+		onSecondary: string;
+		secondaryContainer: string;
+		onSecondaryContainer: string;
+		tertiary: string;
+		onTertiary: string;
+		tertiaryContainer: string;
+		onTertiaryContainer: string;
+		error: string;
+		onError: string;
+		errorContainer: string;
+		onErrorContainer: string;
+		background: string;
+		onBackground: string;
+		surface: string;
+		onSurface: string;
+		surfaceVariant: string;
+		onSurfaceVariant: string;
+		outline: string;
+		outlineVariant: string;
+		backdrop: string;
 		success: string;
 		onSuccess: string;
 		successContainer: string;
 		onSuccessContainer: string;
-	};
+	}
 }
 
 export interface ThemeContextProps {

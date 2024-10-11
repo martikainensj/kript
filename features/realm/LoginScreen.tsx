@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Image, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, Image, Keyboard, TouchableWithoutFeedback, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AuthOperationName, useAuth, useEmailPasswordAuth } from '@realm/react';
 
 import { GlobalStyles, Spacing, IconSize } from '../../constants';
-import { ActivityIndicator } from 'react-native-paper';
 import { useTheme } from '../../features/theme/ThemeContext';
 import { useI18n } from '../../features/i18n/I18nContext';
 import { useAlert } from '../../features/alerts/AlertContext';

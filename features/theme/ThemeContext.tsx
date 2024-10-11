@@ -1,6 +1,5 @@
 import { createContext, useContext, useLayoutEffect, useState } from "react";
 import { Appearance, useColorScheme } from "react-native";
-import { PaperProvider } from "react-native-paper";
 import { ThemeContextProps, ThemeProps, ThemeProviderProps } from "./types";
 import { DefaultTheme } from "./DefaultTheme";
 import { useStorage } from "../storage/useStorage";
@@ -43,9 +42,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 			setTheme,
 			setDark,
 		}}>
-			<PaperProvider theme={theme}>
-				{children}
-			</PaperProvider>
+			{children}
 		</ThemeContext.Provider>
 	);
 }

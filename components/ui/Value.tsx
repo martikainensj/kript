@@ -1,8 +1,8 @@
 import React from "react";
 import { View, StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { Text } from "react-native-paper";
 import { Spacing, GlobalStyles, FontSize } from "../../constants";
 import { useTheme } from "../../features/theme/ThemeContext";
+import { Text } from "./Text";
 
 interface ValueWrapperProps {
   value: string | number;

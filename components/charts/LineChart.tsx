@@ -3,7 +3,7 @@ import { LineChart as GiftedLineChart, LineChartPropsType, lineDataItem } from "
 import { Animated, LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { Title } from "../ui/Title";
 import { BorderRadius, FontSize, GlobalStyles, Spacing } from "../../constants";
-import { Menu, Text } from "react-native-paper";
+import { Menu } from "react-native-paper";
 import { Card } from "../ui/Card";
 import { Value } from "../ui/Value";
 import { IconButton } from "../buttons";
@@ -14,6 +14,7 @@ import { useI18n } from "../../features/i18n/I18nContext";
 import { useStorage } from "../../features/storage/useStorage";
 import { TimeframeProps } from "../../features/charts/types";
 import { useCharts } from "../../features/charts/useCharts";
+import { Text } from "../ui/Text";
 
 interface Props {
 	id: string,
