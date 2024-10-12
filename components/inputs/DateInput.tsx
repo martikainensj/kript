@@ -1,9 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { TextInput } from "./TextInput";
 import { addTimeToDateTimestamp } from "../../helpers";
 import DateTimePicker from "react-native-modal-datetime-picker";
-import { TouchableRipple } from "react-native-paper";
 import { useTheme } from "../../features/theme/ThemeContext";
 
 interface DateInputProps {
@@ -50,7 +49,7 @@ export const DateInput: React.FC<DateInputProps> = ( {
 	}, [ value ]);
 
 	return (
-		<TouchableRipple onPress={ onPress }>
+		<TouchableOpacity onPress={ onPress }>
 			<View style={ styles.container }>
 				<TextInput
 					label={ label }
@@ -66,7 +65,7 @@ export const DateInput: React.FC<DateInputProps> = ( {
 					onConfirm={ onConfirm }
 					onCancel={ onCandel } />
 			</View>
-		</TouchableRipple>
+		</TouchableOpacity>
 	)
 }
 
