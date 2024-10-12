@@ -1,19 +1,26 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { Spacing } from '../../constants';
 import React from 'react';
-import { Divider as PaperDivider } from 'react-native-paper';
+import { useTheme } from '../../features/theme/ThemeContext';
 
-export const Divider: React.FC = () => {
+interface Props {
+	style?: StyleProp<ViewStyle>
+}
+
+export const Divider: React.FC<Props> = ({ style }) => {
+	const { theme } = useTheme();
+
 	return (
-		<View style={ styles.container }>
-			<PaperDivider />
-		</View>
+		<View style={[
+			styles.container,
+			{ backgroundColor: theme.colors.outlineVariant },
+			style
+		]} />
 	);
 }
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
-		marginVertical: Spacing.sm,
-		marginHorizontal: -Spacing.md
-	}
-} )
+		height: StyleSheet.hairlineWidth
+	},
+})
