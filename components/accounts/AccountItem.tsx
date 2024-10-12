@@ -1,6 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { TouchableRipple } from "react-native-paper";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { router } from 'expo-router';
 
 import { GlobalStyles, Spacing } from "../../constants";
@@ -95,7 +94,7 @@ export const AccountItem: React.FC<AccountItemProps> = ({ account }) => {
 	];
 
 	return (
-		<TouchableRipple onPress={onPress}>
+		<TouchableOpacity onPress={onPress}>
 			<View style={styles.container}>
 				<View style={styles.contentContainer}>
 					<Grid
@@ -109,7 +108,7 @@ export const AccountItem: React.FC<AccountItemProps> = ({ account }) => {
 
 				<Icon name={'chevron-forward'} />
 			</View>
-		</TouchableRipple>
+		</TouchableOpacity>
 	)
 }
 

@@ -1,35 +1,56 @@
-import { StyleSheet } from 'react-native';
-import { Button as PaperButton, ButtonProps } from 'react-native-paper';
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
 import { BorderRadius, GlobalStyles, Spacing } from '../../constants';
+import { useTheme } from '../../features/theme/ThemeContext';
+import { Text } from '../ui/Text';
 
-export const DefaultButton: React.FC<ButtonProps> = ( {
-	mode = 'contained',
-	children,
-	style,
-	labelStyle,
-	contentStyle,
-	...rest
-}: ButtonProps ) => {
-  return (
-		<PaperButton
-			mode={ mode }
-			style={ [ styles.container, style ] }
-			labelStyle={ [ styles.label, labelStyle ] }
-			contentStyle={ [ styles.content, contentStyle ] }
-			{ ...rest }>
-			{ children }
-		</PaperButton>
-  );
+interface Props extends TouchableOpacityProps {
+	children: string,
+	mode?: 'default' | 'outlined' | 'text' | 'inverted';
 }
 
-const styles = StyleSheet.create( {
-  container: {
-    borderRadius: BorderRadius.lg
-  },
-	label: {
-		...GlobalStyles.lead
+export const DefaultButton: React.FC<Props> = ({
+	children,
+	mode = 'default',
+	...rest
+}) => {
+	const { theme } = useTheme();
+	return (
+		<TouchableOpacity
+			style={styles.container}
+			{...rest}
+		>
+			<View
+				style={[
+					styles.content,
+					mode === 'default' && { backgroundColor: theme.colors.primary },
+					mode === 'inverted' && { backgroundColor: theme.colors.background },
+					mode === 'outlined' && { borderColor: theme.colors.onBackground },
+					mode === 'text' && { padding: 0 },
+					rest.style
+				]}
+			>
+				<Text
+					textAlign='center'
+					style={[
+						mode === 'default' && { color: theme.colors.onPrimary },
+					]}
+				>
+					{children}
+				</Text>
+			</View>
+		</TouchableOpacity>
+	);
+}
+
+const styles = StyleSheet.create({
+	container: {
+		borderRadius: BorderRadius.lg,
+		overflow: 'hidden'
 	},
 	content: {
-		gap: Spacing.sm
+		...GlobalStyles.button,
+		gap: Spacing.sm,
+		borderWidth: StyleSheet.hairlineWidth,
+		borderColor: 'transparent'
 	}
-} );
+});
