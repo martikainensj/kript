@@ -3,16 +3,19 @@ import { Spacing } from "./variables";
 import { FontFamily, FontSize, FontWeight } from "./font";
 
 export const GlobalStyles = StyleSheet.create({
-	androidSafeArea: {
-    paddingTop: Platform.OS === "android"
-			? StatusBar.currentHeight
-			: 0
-  },
 	container: {
 		flex: 1,
 	},
 	gutter: {
 		paddingHorizontal: Spacing.md
+	},
+	button: {
+		paddingHorizontal: Spacing.sm,
+		paddingVertical: Spacing.xs,
+	},
+	disabled: {
+		opacity: 0.5,
+		pointerEvents: 'none'
 	},
 	title: {
 		fontSize: FontSize.lg,

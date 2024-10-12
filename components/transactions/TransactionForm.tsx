@@ -146,7 +146,7 @@ export const TransactionForm = ( {
 							},
 							label: transactionType.name,
 							value: transactionType.id,
-							checkedColor: transactionType.color
+							selectedColor: transactionType.color,
 						}
 					} ) }
 					disabled={ !! transaction._id } />
@@ -168,7 +168,7 @@ export const TransactionForm = ( {
 							},
 							label: subType.name,
 							value: subType.id,
-							checkedColor: subType.color,
+							selectedColor: subType.color,
 							disabled: !! transaction._id && subType.id === 'dividend'
 						} as OptionProps
 					} ) }

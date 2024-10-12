@@ -1,78 +1,88 @@
 import React from 'react';
-import { GestureResponderEvent, StyleProp, StyleSheet, TextStyle, View, ViewStyle } from 'react-native';
-import { SegmentedButtons } from 'react-native-paper';
-import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
-import { BorderRadius, GlobalStyles, Spacing } from '../../constants';
+import { StyleProp, StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { BorderRadius, FontWeight, GlobalStyles, Spacing } from '../../constants';
 import { useTheme } from '../../features/theme/ThemeContext';
 import { Text } from '../ui/Text';
 
 export interface OptionProps {
 	value: string;
-	icon?: IconSource;
 	disabled?: boolean;
-	accessibilityLabel?: string;
-	checkedColor?: string;
-	uncheckedColor?: string;
-	onPress?: ( event: GestureResponderEvent ) => void;
+	selectedColor?: string;
+	deselectedColor?: string;
 	label?: string;
-	showSelectedCheck?: boolean;
 	style?: StyleProp<ViewStyle>;
 	labelStyle?: StyleProp<TextStyle>;
-	testID?: string;
 }
 
-interface SelectProps {
+interface Props {
 	label?: string;
-	value: any;
-	setValue: React.Dispatch<React.SetStateAction<any>>;
+	value: string | number;
+	setValue: React.Dispatch<React.SetStateAction<Props['value']>>;
 	options: OptionProps[];
 	style?: StyleProp<ViewStyle>;
+	horizontal?: boolean;
 	disabled?: boolean;
 }
 
-export const Select: React.FC<SelectProps> = ( {
+export const Select: React.FC<Props> = ({
 	label,
 	value,
 	setValue,
 	options,
 	style,
+	horizontal = true,
 	disabled,
-} ) => {
+}) => {
 	const { theme } = useTheme();
-	const onValueChange = ( value ) => {
-		setValue( value );
+	const onValueChange = (value) => {
+		setValue(value);
 	}
-	
-	return (
-		<View style={ styles.container }>
-			{ label && (
-				<Text style={ GlobalStyles.label }>
-					{ label }
-				</Text>
-			) }
 
-			<SegmentedButtons
-				value={ value }
-				onValueChange={ onValueChange }
-				theme={ { roundness: 0 } }
-				buttons={ options?.filter( option => option?.label ).map( option => {
-					return {
-						...option,
-						showSelectedCheck: true,
-						disabled: disabled || option.disabled,
-						style: [
-							styles.buttonContainer,
-							option.value === value && {
-								backgroundColor: theme.colors.background
-							}
-						]
-					}	
-				} ) }
-				style={ [
-					styles.segmentedButtonsContainer,
+	return (
+		<View style={styles.container}>
+			{label && (
+				<Text style={GlobalStyles.label}>
+					{label}
+				</Text>
+			)}
+
+			<View
+				style={[
+					styles.optionsContainer,
 					{ backgroundColor: theme.colors.surfaceVariant },
+					horizontal && { flexDirection: "row" },
+					disabled && { ...GlobalStyles.disabled },
 					style
-				] } />
+				]}
+			>
+				{options?.map((option, index) => {
+					const active = option.value === value;
+
+					return (
+						<TouchableOpacity
+							key={index}
+							style={[
+								styles.buttonContainer,
+								active && { backgroundColor: theme.colors.background }
+							]}
+							onPress={() => setValue(option.value)}
+							disabled={active}
+						>
+							<Text
+								fontWeight={ active ? 'semiBold' : 'regular' }
+								textAlign='center'
+								style={[
+									active && {
+										color: option.selectedColor ?? theme.colors.onBackground,
+									}
+								]}
+							>
+								{option.label}
+							</Text>
+						</TouchableOpacity>
+					)
+				})}
+			</View>
 		</View>
 	);
 }
@@ -81,21 +91,16 @@ const styles = StyleSheet.create({
 	container: {
 		gap: Spacing.sm
 	},
-	segmentedButtonsContainer: {
+	optionsContainer: {
 		padding: Spacing.xs,
-		borderRadius: BorderRadius.lg,
+		borderRadius: BorderRadius.md,
 		gap: Spacing.xs
 	},
 	buttonContainer: {
-		borderTopLeftRadius: BorderRadius.lg - Spacing.xs,
-		borderTopRightRadius: BorderRadius.lg - Spacing.xs,
-		borderBottomLeftRadius: BorderRadius.lg - Spacing.xs,
-		borderBottomRightRadius: BorderRadius.lg - Spacing.xs,
-		borderTopWidth: 0,
-		borderLeftWidth: 0,
-		borderRightWidth: 0,
-		borderBottomWidth: 0,
+		...GlobalStyles.button,
+		flexGrow: 1,
+		alignItems: 'center',
+		borderRadius: BorderRadius.md - Spacing.xs,
 		overflow: 'hidden',
-		borderColor: 'transparent'
 	}
 });

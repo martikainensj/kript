@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Animated, Easing, StyleSheet, View } from "react-native";
-import { TouchableRipple } from "react-native-paper";
+import { Animated, Easing, StyleSheet, TouchableOpacity, View } from "react-native";
 
 import { Duration, GlobalStyles, Spacing } from "../../constants";
 import { TransactionForm } from "./TransactionForm";
@@ -161,7 +160,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 	}, [ longPressProgress ]);
 
 	return (
-		<TouchableRipple
+		<TouchableOpacity
 			onPress={ onPressHandler }
 			onPressIn={ onPressIn }
 			onPressOut={ onPressOut }
@@ -179,7 +178,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ( { transaction, 
 						style={ { opacity } } />
 				</View>
 			</View>
-		</TouchableRipple>
+		</TouchableOpacity>
 	)
 }
 

@@ -6,6 +6,7 @@ export const FontSize = {
 	xl: 24
 }
 
+export type TextAlignKey = 'left' | 'center' | 'right';
 export type FontWeightKey = 'extraLight' | 'light' | 'regular' | 'medium' | 'semiBold' | 'bold' | 'extraBold' | 'black';
 export type FontWeightValue = 100 | 200 | 300 | 400| 500 | 600 | 700 | 800 | 900;
 export type FontWeightType = {
