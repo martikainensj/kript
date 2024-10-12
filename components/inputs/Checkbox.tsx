@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet } from 'react-native';
+import { Animated, Easing, StyleSheet, TouchableOpacity } from 'react-native';
 import { BorderRadius, Duration } from '../../constants';
 import { Icon } from '../ui/Icon';
-import { TouchableRipple } from 'react-native-paper';
 import { useTheme } from '../../features/theme/ThemeContext';
 
 interface CheckboxProps {
@@ -12,39 +11,44 @@ interface CheckboxProps {
 	inactiveColor?: string;
 }
 
-export const Checkbox: React.FC<CheckboxProps> = ( {
+export const Checkbox: React.FC<CheckboxProps> = ({
 	value,
 	setValue,
 	activeColor,
 	inactiveColor,
-} ) => {
+}) => {
 	const { theme } = useTheme();
-	const opacity = useRef( new Animated.Value( 0 ) ).current;
+	const opacity = useRef(new Animated.Value(0)).current;
 
 	const onPressHandler = () => {
-		setValue && setValue( ! value );
+		setValue && setValue(!value);
 	}
 
-	useEffect( () => {
-		Animated.timing( opacity, {
+	useEffect(() => {
+		Animated.timing(opacity, {
 			toValue: value ? 1 : 0,
 			duration: Duration.normal,
 			useNativeDriver: true,
-			easing: Easing.out( Easing.cubic )
-		} ).start();
-	}, [ value ] );
+			easing: Easing.out(Easing.cubic)
+		}).start();
+	}, [value]);
 
-	const backgroundColor = opacity.interpolate( {
-		inputRange: [ 0, 1 ],
+	const backgroundColor = opacity.interpolate({
+		inputRange: [0, 1],
 		outputRange: [
 			inactiveColor ?? theme.colors.surfaceVariant,
 			activeColor ?? theme.colors.surfaceVariant,
 		],
-	} );
+	});
 
 	return (
-		<TouchableRipple onPress={ onPressHandler } pointerEvents={ !! setValue ? 'auto' : 'none' }>
-			<Animated.View style={[ 
+		<TouchableOpacity
+			onPress={onPressHandler}
+			style={[
+				{ pointerEvents: setValue ? 'auto' : 'none' }
+			]}
+		>
+			<Animated.View style={[
 				styles.container,
 				{ backgroundColor }
 			]}>
@@ -52,22 +56,22 @@ export const Checkbox: React.FC<CheckboxProps> = ( {
 					styles.iconWrapper,
 					{ opacity }
 				]}>
-					<Icon name={ 'checkmark' } size={ 14 } />
+					<Icon name={'checkmark'} size={14} />
 				</Animated.View>
 			</Animated.View>
-		</TouchableRipple>
+		</TouchableOpacity>
 	)
 }
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
 		height: 16,
 		aspectRatio: 1,
 		borderRadius: BorderRadius.xs,
 		alignItems: 'center',
-		justifyContent: 'center', 
+		justifyContent: 'center',
 	},
 	iconWrapper: {
 		aspectRatio: 1,
 	}
-} )
+})
