@@ -108,22 +108,22 @@ export const LoginScreen = () => {
 						
 						{!result.pending && (
 							<DefaultButton
-								icon={({ color }) => <Icon name={'log-in-outline'} size={IconSize.lg} color={color} />}
-								onPress={() => logInWithEmailPassword({ email, password })}
-								disabled={result.pending}
-								style={styles.button}>
-								{__('Login')}
-							</DefaultButton>
-						)}
-
-						{!result.pending && (
-							<DefaultButton
-								icon={({ size, color }) => <Icon name={'person-add'} color={color} />}
 								onPress={() => register({ email, password })}
 								disabled={result.pending}
+								mode="outlined"
 								style={styles.button}
-								mode={'contained-tonal'}>
+							>
 								{__('Sign up')}
+							</DefaultButton>
+						)}
+						
+						{!result.pending && (
+							<DefaultButton
+								onPress={() => logInWithEmailPassword({ email, password })}
+								disabled={result.pending}
+								style={styles.button}
+							>
+								{__('Login')}
 							</DefaultButton>
 						)}
 					</View>
@@ -162,14 +162,14 @@ const styles = StyleSheet.create({
 	buttonsContainer: {
 		...GlobalStyles.gutter,
 		flexDirection: 'row',
-		gap: Spacing.md,
-		paddingVertical: Spacing.md,
+		gap: Spacing.sm,
+		paddingVertical: Spacing.sm,
 		justifyContent: 'center',
 		alignSelf: 'stretch',
 		alignItems: 'flex-end'
 	},
 
 	button: {
-		flex: 1
+		flexGrow: 1
 	}
 });

@@ -44,12 +44,12 @@ export const DefaultButton: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
 	container: {
-		borderRadius: BorderRadius.lg,
 		overflow: 'hidden'
 	},
 	content: {
 		...GlobalStyles.button,
 		gap: Spacing.sm,
+		borderRadius: BorderRadius.md,
 		borderWidth: StyleSheet.hairlineWidth,
 		borderColor: 'transparent'
 	}

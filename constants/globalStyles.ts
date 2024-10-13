@@ -10,8 +10,8 @@ export const GlobalStyles = StyleSheet.create({
 		paddingHorizontal: Spacing.md
 	},
 	button: {
-		paddingHorizontal: Spacing.sm,
-		paddingVertical: Spacing.xs,
+		paddingHorizontal: Spacing.md,
+		paddingVertical: Spacing.sm,
 	},
 	disabled: {
 		opacity: 0.5,
