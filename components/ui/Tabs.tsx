@@ -56,7 +56,6 @@ const styles = StyleSheet.create( {
 		borderBottomWidth: StyleSheet.hairlineWidth,
 	},
 	labelContainer: {
-		...GlobalStyles.label,
 	},
 	contentContainer: {
 		...GlobalStyles.container,

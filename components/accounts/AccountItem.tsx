@@ -85,12 +85,21 @@ export const AccountItem: React.FC<AccountItemProps> = ({ account }) => {
 				value={prettifyNumber(balance, 0)}
 				unit={'€'}
 				isVertical={true}
-				isNegative={balance < 0} />
+				isNegative={balance < 0}
+			/>
 		)
 	}
 
 	const meta = [
-		<Text style={[styles.name, { color: theme.colors.primary }]}>{account.name}</Text>
+		<Text
+			fontWeight="semiBold"
+			style={[
+				styles.name,
+				{ color: theme.colors.primary }
+			]}
+		>
+			{account.name}
+		</Text>
 	];
 
 	return (
@@ -128,6 +137,5 @@ const styles = StyleSheet.create({
 		flexShrink: 1
 	},
 	name: {
-		...GlobalStyles.bold
 	}
 });

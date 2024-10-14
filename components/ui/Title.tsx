@@ -9,24 +9,30 @@ interface TitleProps {
 	style?: StyleProp<TextStyle>
 }
 
-export const Title: React.FC<TitleProps> = ( {
+export const Title: React.FC<TitleProps> = ({
 	children,
 	style
-} ) => {
-	if ( ! children ) {
+}) => {
+	if (!children) {
 		return;
 	}
-	
+
 	return (
-		<Text numberOfLines={ 1 } style={ [ styles.title, style ] }>
-			{ children }
+		<Text
+			fontSize="md"
+			numberOfLines={1}
+			style={[
+				styles.title,
+				style
+			]}
+		>
+			{children}
 		</Text>
 	);
 }
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	title: {
-		...GlobalStyles.title,
 		flexShrink: 1
 	}
-} );
+});

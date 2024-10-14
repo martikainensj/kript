@@ -41,7 +41,7 @@ export const Select: React.FC<Props> = ({
 	return (
 		<View style={styles.container}>
 			{label && (
-				<Text style={GlobalStyles.label}>
+				<Text fontWeight="semiBold">
 					{label}
 				</Text>
 			)}

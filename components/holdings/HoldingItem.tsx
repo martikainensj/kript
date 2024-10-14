@@ -18,93 +18,101 @@ interface HoldingItemProps {
 	holding: Holding
 }
 
-export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
-	useHolding( { holding } );
-	
+export const HoldingItem: React.FC<HoldingItemProps> = ({ holding }) => {
+	useHolding({ holding });
+
 	const { getAccountBy } = useData();
 	const { theme } = useTheme();
 	const { __ } = useI18n();
-	const account = getAccountBy( '_id', holding.account_id );
+	const account = getAccountBy('_id', holding.account_id);
 
-	const onPress = useCallback( () => {
-		router.navigate( {
+	const onPress = useCallback(() => {
+		router.navigate({
 			pathname: `accounts/[account]/[holding]`,
 			params: {
 				accountId: account._id.toString(),
 				holdingId: holding._id.toString(),
 				name: holding.name
 			}
-		} );
-	}, [ holding ] );
+		});
+	}, [holding]);
 
-	if ( ! holding?.isValid() ) return;
-	
+	if (!holding?.isValid()) return;
+
 	const { name, amount, value, returnValue, returnPercentage } = holding;
 
 	const values = [];
-	
-	if ( value ) {
+
+	if (value) {
 		values.push(
 			<Value
-				label={ __( 'Value' ) }
-				value={ prettifyNumber( value ) }
-				unit={ '€' }
-				isVertical={ true } />
+				label={__('Value')}
+				value={prettifyNumber(value)}
+				unit={'€'}
+				isVertical={true} />
 		)
 	}
 
-	if ( returnValue ) {
+	if (returnValue) {
 		values.push(
 			<Value
-				label={ __( 'Return' ) }
-				value={ prettifyNumber( returnValue ) }
-				unit={ '€' }
-				isVertical={ true }
-				isPositive={ returnValue > 0 }
-				isNegative={ returnValue < 0 } />
+				label={__('Return')}
+				value={prettifyNumber(returnValue)}
+				unit={'€'}
+				isVertical={true}
+				isPositive={returnValue > 0}
+				isNegative={returnValue < 0} />
 		)
 	}
 
-	if ( returnPercentage ) {
+	if (returnPercentage) {
 		values.push(
 			<Value
-				label={ __( 'Return' ) }
-				value={ prettifyNumber( returnPercentage ) }
-				unit={ '%' }
-				isVertical={ true }
-				isPositive={ returnPercentage > 0 }
-				isNegative={ returnPercentage < 0 } />
+				label={__('Return')}
+				value={prettifyNumber(returnPercentage)}
+				unit={'%'}
+				isVertical={true}
+				isPositive={returnPercentage > 0}
+				isNegative={returnPercentage < 0} />
 		)
 	}
 
-	if ( amount > 1 ) {
+	if (amount > 1) {
 		values.push(
 			<Value
-				label={ __( 'Amount' ) }
-				value={ prettifyNumber( amount ) }
-				isVertical={ true } />
+				label={__('Amount')}
+				value={prettifyNumber(amount)}
+				isVertical={true} />
 		)
 	}
 
 	const meta = [
-		<Text style={ [ styles.name, { color: theme.colors.primary } ] }>{ name }</Text>
+		<Text
+			fontWeight="semiBold"
+			style={[
+				styles.name,
+				{ color: theme.colors.primary }
+			]}
+		>
+			{name}
+		</Text>
 	]
-	
+
 	return (
-		<TouchableOpacity onPress={ onPress }>
-			<View style={ styles.container }>
-				<View style={ styles.contentContainer }>
+		<TouchableOpacity onPress={onPress}>
+			<View style={styles.container}>
+				<View style={styles.contentContainer}>
 					<Grid
-						columns={ 2 }
-						items={ meta } />
-					
+						columns={2}
+						items={meta} />
+
 					<Grid
-						columns={ 4 }
-						items= { values } />
+						columns={4}
+						items={values} />
 				</View>
 
-				<View style={ styles.iconContainer }>
-					<Icon name={ 'chevron-forward' } />
+				<View style={styles.iconContainer}>
+					<Icon name={'chevron-forward'} />
 				</View>
 			</View>
 		</TouchableOpacity>
@@ -113,7 +121,7 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
 
 export default HoldingItem;
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.gutter,
 		flexDirection: 'row',
@@ -127,8 +135,7 @@ const styles = StyleSheet.create( {
 		flexShrink: 1
 	},
 	name: {
-		...GlobalStyles.bold
 	},
 	iconContainer: {
 	}
-} );
+});

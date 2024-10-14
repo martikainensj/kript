@@ -151,8 +151,7 @@ const styles = StyleSheet.create({
 	},
 
 	title: {
-		...GlobalStyles.gutter,
-		...GlobalStyles.label
+		...GlobalStyles.gutter
 	},
 
 	menuContainer: {
@@ -169,7 +168,6 @@ const styles = StyleSheet.create({
 	},
 
 	sortingText: {
-		...GlobalStyles.label
 	},
 
 	contentContainer: {
@@ -181,7 +179,6 @@ const styles = StyleSheet.create({
 	},
 
 	placeholderText: {
-		...GlobalStyles.label
 	},
 
 	placeholderDescription: {

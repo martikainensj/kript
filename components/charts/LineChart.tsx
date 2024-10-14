@@ -290,12 +290,10 @@ const styles = StyleSheet.create({
 		paddingBottom: 0
 	},
 	pointerLabelLabel: {
-		...GlobalStyles.label,
 		marginBottom: 6,
 		textAlign: 'center',
 	},
 	pointerLabelValue: {
-		...GlobalStyles.label,
 		padding: Spacing.sm,
 		borderRadius: BorderRadius.lg,
 		overflow: 'hidden',
@@ -321,6 +319,5 @@ const styles = StyleSheet.create({
 		padding: Spacing.md
 	},
 	sortingText: {
-		...GlobalStyles.label
 	},
 });

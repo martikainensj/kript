@@ -197,15 +197,12 @@ const styles = StyleSheet.create( {
 		flex: 1,
 	},
 	date: {
-		...GlobalStyles.bold,
 		marginRight: Spacing.sm
 	},
 	type: {
-		...GlobalStyles.bold,
 		textAlign: 'right'
 	},
 	holding: {
-		...GlobalStyles.bold,
 	},
 	progressBarWrapper: {
 		position: 'absolute',
