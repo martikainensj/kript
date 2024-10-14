@@ -3,14 +3,13 @@ import { View, StyleSheet, Image, Keyboard, TouchableWithoutFeedback, ActivityIn
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AuthOperationName, useAuth, useEmailPasswordAuth } from '@realm/react';
 
-import { GlobalStyles, Spacing, IconSize } from '../../constants';
+import { GlobalStyles, Spacing } from '../../constants';
 import { useTheme } from '../../features/theme/ThemeContext';
 import { useI18n } from '../../features/i18n/I18nContext';
 import { useAlert } from '../../features/alerts/AlertContext';
 import { Header } from '../../components/ui/Header';
 import { TextInput } from '../../components/inputs';
 import { DefaultButton } from '../../components/buttons';
-import { Icon } from '../../components/ui/Icon';
 
 export const LoginScreen = () => {
 	const { theme } = useTheme();
@@ -116,7 +115,7 @@ export const LoginScreen = () => {
 								{__('Sign up')}
 							</DefaultButton>
 						)}
-						
+
 						{!result.pending && (
 							<DefaultButton
 								onPress={() => logInWithEmailPassword({ email, password })}
