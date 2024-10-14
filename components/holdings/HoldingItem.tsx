@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
-import { StyleSheet, View } from "react-native";
-import { TouchableRipple } from "react-native-paper";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { router } from "expo-router";
 
 import { GlobalStyles, Spacing } from "../../constants";
@@ -92,7 +91,7 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
 	]
 	
 	return (
-		<TouchableRipple onPress={ onPress }>
+		<TouchableOpacity onPress={ onPress }>
 			<View style={ styles.container }>
 				<View style={ styles.contentContainer }>
 					<Grid
@@ -108,7 +107,7 @@ export const HoldingItem: React.FC<HoldingItemProps> = ( { holding } ) => {
 					<Icon name={ 'chevron-forward' } />
 				</View>
 			</View>
-		</TouchableRipple>
+		</TouchableOpacity>
 	)
 }
 

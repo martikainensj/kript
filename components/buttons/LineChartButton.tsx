@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { LayoutChangeEvent, StyleSheet, View } from "react-native";
-import { TouchableRipple, TouchableRippleProps } from "react-native-paper";
+import { LayoutChangeEvent, StyleSheet, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 import { LineChart as GiftedLineChart, LineChartPropsType, lineDataItem } from "react-native-gifted-charts";
 
 import { BorderRadius, FontSize, FontWeight, Spacing } from "../../constants";
@@ -16,7 +15,7 @@ interface Props {
 	data: DataPoint[]
 	label?: string,
 	unit?: string,
-	onPress: TouchableRippleProps['onPress']
+	onPress: TouchableOpacityProps['onPress']
 }
 
 export const LineChartButton: React.FC<Props> = ({
@@ -93,7 +92,7 @@ export const LineChartButton: React.FC<Props> = ({
 	const showChart = timeframedData?.length > 0;
 
 	return (
-		<TouchableRipple
+		<TouchableOpacity
 			onLayout={ onLayout }
 			onPress={ onPress }
 			style={ styles.container }>
@@ -131,7 +130,7 @@ export const LineChartButton: React.FC<Props> = ({
 					}
 				</View>
 			</Card>
-		</TouchableRipple>
+		</TouchableOpacity>
 	)
 }
 
