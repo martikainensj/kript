@@ -5,7 +5,7 @@ import { Duration } from "../../constants";
 export const fadeIn = ({animation, callback}: AnimationProps) => {
 	Animated.timing(animation, {
 		toValue: 1,
-		duration: Duration.normal,
+		duration: Duration.fast,
 		useNativeDriver: true,
 	}).start( callback );
 };
@@ -13,7 +13,7 @@ export const fadeIn = ({animation, callback}: AnimationProps) => {
 export const fadeOut = ({animation, callback}: AnimationProps) => {
 	Animated.timing(animation, {
 		toValue: 0,
-		duration: Duration.normal,
+		duration: Duration.fast,
 		useNativeDriver: true,
 	}).start( callback );
 };

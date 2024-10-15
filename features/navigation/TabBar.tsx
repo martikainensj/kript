@@ -54,7 +54,7 @@ export const TabBar: React.FC<Props> = ({ descriptors, insets, navigation, state
 					inputRange: [0, 1],
 					outputRange: [
 						theme.colors.background,
-						theme.colors.secondaryContainer
+						theme.colors.surfaceVariant
 					]
 				});
 

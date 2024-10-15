@@ -15,7 +15,7 @@ import { useI18n } from '../../features/i18n/I18nContext';
 import { useData } from '../../features/data/DataContext';
 import { useCharts } from '../../features/charts/useCharts';
 import { useFocusEffect } from 'expo-router';
-import { fadeIn, fadeOut } from '../../features/animation/helpers';
+import { fadeIn, fadeOut } from '../../features/animations/fade';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();

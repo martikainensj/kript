@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleProp, StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { BorderRadius, FontWeight, GlobalStyles, Spacing } from '../../constants';
+import { BorderRadius, GlobalStyles, Spacing } from '../../constants';
 import { useTheme } from '../../features/theme/ThemeContext';
 import { Text } from '../ui/Text';
 
@@ -34,9 +34,6 @@ export const Select: React.FC<Props> = ({
 	disabled,
 }) => {
 	const { theme } = useTheme();
-	const onValueChange = (value) => {
-		setValue(value);
-	}
 
 	return (
 		<View style={styles.container}>

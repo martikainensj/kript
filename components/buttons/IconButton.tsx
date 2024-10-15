@@ -12,7 +12,7 @@ interface IconButtonProps extends TouchableOpacityProps {
 
 export const IconButton: React.FC<IconButtonProps> = ({
 	icon,
-	size = IconSize.lg,
+	size = IconSize.md,
 	...rest
 }) => {
 	const { theme } = useTheme();
@@ -24,13 +24,13 @@ export const IconButton: React.FC<IconButtonProps> = ({
 				styles.container,
 				{
 					backgroundColor: theme.colors.surfaceVariant,
-					height: size + 8,
+					height: size + 16,
 					aspectRatio: 1
 				},
 				rest.style
 			]}
 		>
-			<Icon name={icon} size={size-4} color={theme.colors.onSurfaceVariant} />
+			<Icon name={icon} size={size} color={theme.colors.primary} />
 		</TouchableOpacity>
 	)
 }

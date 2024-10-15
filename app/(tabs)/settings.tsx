@@ -12,7 +12,7 @@ import { useTheme } from '../../features/theme/ThemeContext';
 import { useI18n } from '../../features/i18n/I18nContext';
 import { useUser } from '../../features/realm/useUser';
 import { useFocusEffect } from 'expo-router';
-import { fadeIn, fadeOut } from '../../features/animation/helpers';
+import { fadeIn, fadeOut } from '../../features/animations/fade';
 
 const Accounts: React.FC = () => {
 	const { setDark, dark } = useTheme();

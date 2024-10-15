@@ -14,7 +14,7 @@ import { useI18n } from '../../features/i18n/I18nContext';
 import { useUser } from '../../features/realm/useUser';
 import { useData } from '../../features/data/DataContext';
 import { useSorting } from '../../features/data/useSorting';
-import { fadeIn, fadeOut } from '../../features/animation/helpers';
+import { fadeIn, fadeOut } from '../../features/animations/fade';
 
 const Accounts: React.FC = () => {
 	const { getAccounts, addAccount } = useData();
