@@ -82,7 +82,7 @@ export const TabBar: React.FC<Props> = ({ descriptors, insets, navigation, state
 							{options.tabBarIcon({
 								focused: isFocused,
 								color: isFocused ? focusedColor : iconColor,
-								size: null
+								size: IconSize.md
 							})}
 						</Animated.View>
 
@@ -92,7 +92,13 @@ export const TabBar: React.FC<Props> = ({ descriptors, insets, navigation, state
 								{ opacity: focusAnim }
 							]}
 						>
-							<Text style={{ color: theme.colors.onBackground }}>
+							<Text
+								numberOfLines={1}
+								fontSize="sm"
+								style={{
+									color: theme.colors.onBackground
+								}}
+							>
 								{label.toString()}
 							</Text>
 						</Animated.View>
