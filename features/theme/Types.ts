@@ -25,7 +25,6 @@ export interface ThemeProps {
 		onSurfaceVariant: string;
 		outline: string;
 		outlineVariant: string;
-		backdrop: string;
 		success: string;
 		onSuccess: string;
 		successContainer: string;

@@ -78,7 +78,7 @@ export const LineChartButton: React.FC<Props> = ({
 	const xAxis = {
 		xAxisThickness: 0,
 		xAxisLabelsHeight: 0,
-		xAxisColor: theme.colors.backdrop,
+		xAxisColor: theme.colors.outline,
 	} as Partial<LineChartPropsType>
 
 	const yAxis = {

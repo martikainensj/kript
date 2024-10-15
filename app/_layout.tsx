@@ -15,6 +15,7 @@ import { ThemeProvider } from '../features/theme/ThemeContext';
 import { I18nProvider } from '../features/i18n/I18nContext';
 import { RealmProvider } from '../features/realm/RealmContext';
 import { useFonts } from 'expo-font';
+import { RootNavigation } from '../features/navigation/RootNavigation';
 
 export default function AppLayout() {
 	const [loaded, error] = useFonts({
@@ -47,11 +48,7 @@ export default function AppLayout() {
 							<BottomSheetProvider>
 								<ChartSheetProvider>
 									<StatusBar />
-									<Stack screenOptions={{
-										animationDuration: 200,
-										animation: 'fade_from_bottom',
-										headerShown: false
-									}} />
+									<RootNavigation />
 								</ChartSheetProvider>
 							</BottomSheetProvider>
 						</RealmProvider>
