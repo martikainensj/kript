@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
 import { StyleSheet } from "react-native";
-import { Chip } from "react-native-paper";
+import { ScrollView } from "react-native-gesture-handler";
 
 import { BorderRadius, Spacing } from "../../constants";
-import { ScrollView } from "react-native-gesture-handler";
+import { ChipButton } from "../buttons/ChipButton";
 
 export interface ChipProps {
 	label: string
@@ -46,14 +46,13 @@ export const Chips: React.FC<ChipsProps> = ( {
 			showsHorizontalScrollIndicator={ false }
 			contentContainerStyle={ styles.contentContainer }>
 			{ uniqueValues.map( ( chip, key ) => (
-				<Chip
+				<ChipButton
 					key={ key }
-					mode={ 'flat' }
 					selected={ chip.value === value }
 					onPress={ onPressHandler.bind( this, chip ) }
 					style={ styles.chip }>
 					{ chip.label }
-				</Chip>
+				</ChipButton>
 			) ) }
 		</ScrollView>
 	);
