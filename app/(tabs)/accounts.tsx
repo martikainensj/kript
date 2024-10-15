@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useRef } from 'react';
+import { Animated, StyleSheet, View } from 'react-native';
 import Realm from 'realm';
 
 import { GlobalStyles } from '../../constants';
@@ -8,17 +8,19 @@ import { IconButton } from '../../components/buttons';
 import { useBottomSheet } from '../../contexts/BottomSheetContext';
 import { Header } from '../../components/ui/Header';
 import { ItemList } from '../../components/ui/ItemList';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { FABProvider } from '../../contexts/FABContext';
 import { useI18n } from '../../features/i18n/I18nContext';
 import { useUser } from '../../features/realm/useUser';
 import { useData } from '../../features/data/DataContext';
 import { useSorting } from '../../features/data/useSorting';
+import { fadeIn, fadeOut } from '../../features/animation/helpers';
 
 const Accounts: React.FC = () => {
 	const { getAccounts, addAccount } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
+	const focusAnim = useRef(new Animated.Value(0)).current;
 
 	const accounts = getAccounts();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
@@ -49,8 +51,24 @@ const Accounts: React.FC = () => {
 		);
 	}
 
+	useFocusEffect(
+		React.useCallback(() => {
+			fadeIn({
+				animation: focusAnim
+			}); // Start fade-in animation when the screen is focused
+
+			// Return a cleanup function to reset opacity when screen loses focus
+			return () => fadeOut({
+				animation: focusAnim
+			});
+		}, []) // Empty dependency array to ensure this only runs on focus/blur
+	);
+
 	return (
-		<View style={styles.container}>
+		<Animated.View style={[
+			styles.container,
+			{ opacity: focusAnim }
+		]}>
 			<Header
 				title={__('Accounts')}
 				right={(
@@ -80,7 +98,7 @@ const Accounts: React.FC = () => {
 						]} />
 				</FABProvider>
 			</View>
-		</View>
+		</Animated.View>
 	);
 };
 

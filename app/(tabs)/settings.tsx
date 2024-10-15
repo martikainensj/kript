@@ -1,5 +1,5 @@
-import React, { useLayoutEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useLayoutEffect, useRef } from 'react';
+import { Animated, StyleSheet, View } from 'react-native';
 
 import { GlobalStyles, Spacing } from '../../constants';
 import { IconButton } from '../../components/buttons';
@@ -11,19 +11,37 @@ import { Header } from '../../components/ui/Header';
 import { useTheme } from '../../features/theme/ThemeContext';
 import { useI18n } from '../../features/i18n/I18nContext';
 import { useUser } from '../../features/realm/useUser';
+import { useFocusEffect } from 'expo-router';
+import { fadeIn, fadeOut } from '../../features/animation/helpers';
 
 const Accounts: React.FC = () => {
 	const { setDark, dark } = useTheme();
 	const { openBottomSheet } = useBottomSheet();
 	const { __, language, languages, setLanguage } = useI18n();
 	const { refresh: refreshUserData } = useUser();
+	const focusAnim = useRef(new Animated.Value(0)).current;
 
 	useLayoutEffect( () => {
 		refreshUserData();
 	}, [] );
 
+	useFocusEffect(
+		React.useCallback(() => {
+			fadeIn({
+				animation: focusAnim
+			});
+			
+			return () => fadeOut({
+				animation: focusAnim
+			});
+		}, [])
+	);
+
 	return (
-		<View style={ styles.container }>
+		<Animated.View style={[
+			styles.container,
+			{ opacity: focusAnim }
+		]}>
 			<Header
 				title={ __( 'Settings' ) }
 				right={ (
@@ -53,7 +71,7 @@ const Accounts: React.FC = () => {
 					} ) }
 					setValue={ setLanguage } />
 			</View>
-		</View>
+		</Animated.View>
 	);
 };
 
