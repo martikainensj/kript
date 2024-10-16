@@ -31,6 +31,7 @@ import { useUser } from "../../features/realm/useUser";
 import { useSorting } from "../../features/data/useSorting";
 import { useCharts } from "../../features/charts/useCharts";
 import { TabsProvider } from "../../features/tabs/TabsContext";
+import { Tab } from "../../features/tabs/Tab";
 
 interface HoldingViewProps {
 	holding: Holding;
@@ -226,46 +227,40 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 					items={values} />
 			</Header>
 
-			<TabsProvider screens={[
-				{
-					label: __('Overview'),
-					content: (
-						<View style={styles.contentContainer}>
-							<Grid columns={2} items={charts} style={styles.gridContainer} />
-						</View>
-					)
-				},
-				{
-					label: __('Transactions'),
-					content: (
-						<View style={styles.contentContainer}>
-							<FABProvider side='left' insets={insets}>
-								<ItemList
-									id={`list-holding-${holding._id}-transactions`}
-									noItemsText={__('No Transactions')}
-									data={transactions.map(transaction => {
-										return {
-											item: transaction,
-											renderItem: (
-												<TransactionItem
-													transaction={transaction}
-													onPressSelect={onPressSelectTransaction}
-													onLongPress={onLongPressTransaction}
-													isSelectable={canSelect('Transaction') && isSelecting}
-													isSelected={hasObject(transaction)} />
-											)
-										}
-									})}
-									sortingContainerStyle={{ marginBottom: insets.bottom }}
-									sortingOptions={[
-										SortingTypes.newestFirst,
-										SortingTypes.oldestFirst
-									]} />
-							</FABProvider>
-						</View>
-					)
-				},
-			]} />
+			<TabsProvider>
+				<Tab label={__('Overview')}>
+					<View style={styles.contentContainer}>
+						<Grid columns={2} items={charts} style={styles.gridContainer} />
+					</View>
+				</Tab>
+				<Tab label={__('Transactions')}>
+					<View style={styles.contentContainer}>
+						<FABProvider side='left' insets={insets}>
+							<ItemList
+								id={`list-holding-${holding._id}-transactions`}
+								noItemsText={__('No Transactions')}
+								data={transactions.map(transaction => {
+									return {
+										item: transaction,
+										renderItem: (
+											<TransactionItem
+												transaction={transaction}
+												onPressSelect={onPressSelectTransaction}
+												onLongPress={onLongPressTransaction}
+												isSelectable={canSelect('Transaction') && isSelecting}
+												isSelected={hasObject(transaction)} />
+										)
+									}
+								})}
+								sortingContainerStyle={{ marginBottom: insets.bottom }}
+								sortingOptions={[
+									SortingTypes.newestFirst,
+									SortingTypes.oldestFirst
+								]} />
+						</FABProvider>
+					</View>
+				</Tab>
+			</TabsProvider>
 		</View>
 	)
 }

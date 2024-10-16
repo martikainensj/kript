@@ -25,7 +25,6 @@ export const Tab: React.FC<TabProps> = ({
 			return;
 		}
 
-		console.log(label, 'teste');
 		add({label});
 	});
 
