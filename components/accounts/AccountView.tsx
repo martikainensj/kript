@@ -10,7 +10,6 @@ import { TransactionForm } from "../transactions/TransactionForm";
 import { prettifyNumber } from "../../helpers";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { FABProvider, useFAB } from "../../contexts/FABContext";
-import { Tabs, TabsScreenContentProps } from "../ui/Tabs";
 import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Header } from "../ui/Header";
@@ -31,6 +30,9 @@ import { useData } from "../../features/data/DataContext";
 import { useUser } from "../../features/realm/useUser";
 import { useSorting } from "../../features/data/useSorting";
 import { useCharts } from "../../features/charts/useCharts";
+import { TabsScreenProps } from "../../features/tabs/types";
+import { TabsProvider } from "../../features/tabs/TabsContext";
+import { Tab } from "../../features/tabs/Tab";
 
 interface AccountViewProps {
 	account: Account;
@@ -280,87 +282,6 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 		)
 	}
 
-	const tabs = [
-		{
-			label: __('Overview'),
-			content: (
-				<View style={[
-					styles.contentContainer,
-					styles.overviewContainer
-				]}>
-					<Value
-						label={__('Balance')}
-						value={prettifyNumber(balance, 0)}
-						unit="€"
-						isVertical
-						valueStyle={styles.value} />
-					<Grid columns={2} items={overviewCharts} />
-				</View>
-			)
-		},
-		{
-			label: __('Holdings'),
-			content: (
-				<View style={styles.contentContainer}>
-					<FABProvider side='left' insets={insets}>
-						<ItemList
-							id={`list-account-${account._id}-holdings`}
-							noItemsText={__('No Holdings')}
-							data={holdings.map(holding => {
-								return {
-									item: holding,
-									renderItem: <HoldingItem holding={holding} />
-								}
-							})}
-							sortingContainerStyle={{ marginBottom: insets.bottom }}
-							sortingOptions={[
-								SortingTypes.name,
-								SortingTypes.highestReturn,
-								SortingTypes.lowestReturn,
-								SortingTypes.highestValue
-							]} />
-					</FABProvider>
-				</View>
-			)
-		},
-		{
-			label: __('Transactions'),
-			content: (
-				<View style={styles.contentContainer}>
-					<FABProvider side='left' insets={insets}>
-						<ItemList
-							id={`list-account-${account._id}-transactions`}
-							noItemsText={__('No Transactions')}
-							data={[
-								...transactions,
-								...holdings.flatMap(holding => {
-									return [...holding.transactions]
-								})
-							].map(transaction => {
-								return {
-									item: transaction,
-									renderItem: (
-										<TransactionItem
-											transaction={transaction}
-											onPressSelect={onPressSelectTransaction}
-											onLongPress={onLongPressTransaction}
-											isSelectable={canSelect('Transaction') && isSelecting}
-											isSelected={hasObject(transaction)}
-											showHolding />
-									)
-								}
-							})}
-							sortingContainerStyle={{ marginBottom: insets.bottom }}
-							sortingOptions={[
-								SortingTypes.newestFirst,
-								SortingTypes.oldestFirst
-							]} />
-					</FABProvider>
-				</View>
-			)
-		}
-	] as TabsScreenContentProps[]
-
 	return (
 		<View style={styles.container}>
 			<Header
@@ -384,7 +305,77 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 					items={values} />
 			</Header>
 
-			<Tabs screens={tabs} />
+			<TabsProvider>
+				<Tab label={__('Overview')}>
+					<View style={[
+						styles.contentContainer,
+						styles.overviewContainer
+					]}>
+						<Value
+							label={__('Balance')}
+							value={prettifyNumber(balance, 0)}
+							unit="€"
+							isVertical
+							valueStyle={styles.value} />
+						<Grid columns={2} items={overviewCharts} />
+					</View>
+				</Tab>
+				<Tab label={__('Holdings')}>
+					<View style={styles.contentContainer}>
+						<FABProvider side='left' insets={insets}>
+							<ItemList
+								id={`list-account-${account._id}-holdings`}
+								noItemsText={__('No Holdings')}
+								data={holdings.map(holding => {
+									return {
+										item: holding,
+										renderItem: <HoldingItem holding={holding} />
+									}
+								})}
+								sortingContainerStyle={{ marginBottom: insets.bottom }}
+								sortingOptions={[
+									SortingTypes.name,
+									SortingTypes.highestReturn,
+									SortingTypes.lowestReturn,
+									SortingTypes.highestValue
+								]} />
+						</FABProvider>
+					</View>
+				</Tab>
+				<Tab label={__('Transactions')}>
+					<View style={styles.contentContainer}>
+						<FABProvider side='left' insets={insets}>
+							<ItemList
+								id={`list-account-${account._id}-transactions`}
+								noItemsText={__('No Transactions')}
+								data={[
+									...transactions,
+									...holdings.flatMap(holding => {
+										return [...holding.transactions]
+									})
+								].map(transaction => {
+									return {
+										item: transaction,
+										renderItem: (
+											<TransactionItem
+												transaction={transaction}
+												onPressSelect={onPressSelectTransaction}
+												onLongPress={onLongPressTransaction}
+												isSelectable={canSelect('Transaction') && isSelecting}
+												isSelected={hasObject(transaction)}
+												showHolding />
+										)
+									}
+								})}
+								sortingContainerStyle={{ marginBottom: insets.bottom }}
+								sortingOptions={[
+									SortingTypes.newestFirst,
+									SortingTypes.oldestFirst
+								]} />
+						</FABProvider>
+					</View>
+				</Tab>
+			</TabsProvider>
 		</View>
 	)
 }

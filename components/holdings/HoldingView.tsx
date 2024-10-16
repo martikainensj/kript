@@ -10,7 +10,6 @@ import TransactionItem from "../../components/transactions/TransactionItem";
 import { prettifyNumber } from "../../helpers";
 import { FABProvider, useFAB } from "../../contexts/FABContext";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
-import { Tabs } from "../../components/ui/Tabs";
 import { Icon } from "../../components/ui/Icon";
 import { Value } from "../../components/ui/Value";
 import { Header } from "../../components/ui/Header";
@@ -31,6 +30,7 @@ import { useData } from "../../features/data/DataContext";
 import { useUser } from "../../features/realm/useUser";
 import { useSorting } from "../../features/data/useSorting";
 import { useCharts } from "../../features/charts/useCharts";
+import { TabsProvider } from "../../features/tabs/TabsContext";
 
 interface HoldingViewProps {
 	holding: Holding;
@@ -226,7 +226,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 					items={values} />
 			</Header>
 
-			<Tabs screens={[
+			<TabsProvider screens={[
 				{
 					label: __('Overview'),
 					content: (
@@ -265,8 +265,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 						</View>
 					)
 				},
-			]}>
-			</Tabs>
+			]} />
 		</View>
 	)
 }
