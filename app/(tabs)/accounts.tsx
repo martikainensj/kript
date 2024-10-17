@@ -14,7 +14,7 @@ import { useI18n } from '../../features/i18n/I18nContext';
 import { useUser } from '../../features/realm/useUser';
 import { useData } from '../../features/data/DataContext';
 import { useSorting } from '../../features/data/useSorting';
-import { fadeIn, fadeOut } from '../../features/animations/fade';
+import { animateIn, animateOut } from '../../features/animations/animate';
 
 const Accounts: React.FC = () => {
 	const { getAccounts, addAccount } = useData();
@@ -53,12 +53,12 @@ const Accounts: React.FC = () => {
 
 	useFocusEffect(
 		React.useCallback(() => {
-			fadeIn({
+			animateIn({
 				animation: focusAnim
 			}); // Start fade-in animation when the screen is focused
 
 			// Return a cleanup function to reset opacity when screen loses focus
-			return () => fadeOut({
+			return () => animateOut({
 				animation: focusAnim
 			});
 		}, []) // Empty dependency array to ensure this only runs on focus/blur
@@ -67,7 +67,9 @@ const Accounts: React.FC = () => {
 	return (
 		<Animated.View style={[
 			styles.container,
-			{ opacity: focusAnim }
+			{
+				opacity: focusAnim
+			}
 		]}>
 			<Header
 				title={__('Accounts')}

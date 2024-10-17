@@ -12,7 +12,7 @@ import { Header } from '../../components/ui/Header';
 import { useTheme } from '../../features/theme/ThemeContext';
 import { useI18n } from '../../features/i18n/I18nContext';
 import { useUser } from '../../features/realm/useUser';
-import { fadeIn, fadeOut } from '../../features/animations/fade';
+import { animateIn, animateOut } from '../../features/animations/animate';
 
 const Accounts: React.FC = () => {
 	const { setDark, dark } = useTheme();
@@ -21,17 +21,17 @@ const Accounts: React.FC = () => {
 	const { refresh: refreshUserData } = useUser();
 	const focusAnim = useRef(new Animated.Value(0)).current;
 
-	useLayoutEffect( () => {
+	useLayoutEffect(() => {
 		refreshUserData();
-	}, [] );
+	}, []);
 
 	useFocusEffect(
 		React.useCallback(() => {
-			fadeIn({
+			animateIn({
 				animation: focusAnim
 			});
-			
-			return () => fadeOut({
+
+			return () => animateOut({
 				animation: focusAnim
 			});
 		}, [])
@@ -40,36 +40,38 @@ const Accounts: React.FC = () => {
 	return (
 		<Animated.View style={[
 			styles.container,
-			{ opacity: focusAnim }
+			{
+				opacity: focusAnim
+			}
 		]}>
 			<Header
-				title={ __( 'Settings' ) }
-				right={ (
-					<View style={ styles.rightContainer }>
+				title={__('Settings')}
+				right={(
+					<View style={styles.rightContainer}>
 						<Toggle
-							value={ dark }
-							activeIcon={ 'moon' }
-							inactiveIcon={ 'sunny' }
-							setValue={ setDark } />
+							value={dark}
+							activeIcon={'moon'}
+							inactiveIcon={'sunny'}
+							setValue={setDark} />
 						<IconButton
-							icon={ 'person-outline' }
-							onPress={ () => {
+							icon={'person-outline'}
+							onPress={() => {
 								openBottomSheet(
-									__( 'User' ),
+									__('User'),
 									<UserInfo />
 								)
 							}} />
 					</View>
-				) } />
-				
-			<View style={ styles.contentContainer }>
+				)} />
+
+			<View style={styles.contentContainer}>
 				<Select
-					label={ __( 'Language' ) }
-					value={ language }
-					options={ languages.map( language => {
+					label={__('Language')}
+					value={language}
+					options={languages.map(language => {
 						return { label: language.name, value: language.id }
-					} ) }
-					setValue={ setLanguage } />
+					})}
+					setValue={setLanguage} />
 			</View>
 		</Animated.View>
 	);
@@ -77,7 +79,7 @@ const Accounts: React.FC = () => {
 
 export default Accounts;
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.container
 	},
@@ -92,4 +94,4 @@ const styles = StyleSheet.create( {
 		gap: Spacing.md,
 		paddingTop: Spacing.md
 	}
-} );
+});

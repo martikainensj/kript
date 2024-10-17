@@ -15,7 +15,7 @@ import { useI18n } from '../../features/i18n/I18nContext';
 import { useData } from '../../features/data/DataContext';
 import { useCharts } from '../../features/charts/useCharts';
 import { useFocusEffect } from 'expo-router';
-import { fadeIn, fadeOut } from '../../features/animations/fade';
+import { animateIn, animateOut } from '../../features/animations/animate';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();
@@ -100,11 +100,11 @@ const Home: React.FC = () => {
 
 	useFocusEffect(
 		React.useCallback(() => {
-			fadeIn({
+			animateIn({
 				animation: focusAnim
 			});
-			
-			return () => fadeOut({
+
+			return () => animateOut({
 				animation: focusAnim
 			});
 		}, [])
@@ -113,7 +113,9 @@ const Home: React.FC = () => {
 	return (
 		<Animated.View style={[
 			styles.container,
-			{ opacity: focusAnim }
+			{
+				opacity: focusAnim,
+			}
 		]}>
 			<Header
 				title={__('Home')}

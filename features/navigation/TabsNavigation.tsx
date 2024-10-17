@@ -11,12 +11,8 @@ interface Props {
 }
 
 export const TabsNavigation: React.FC<Props> = ({ }) => {
-
 	const { theme } = useTheme();
 	const { __ } = useI18n();
-
-	const focusedColor = theme.colors.primary;
-	const iconColor = theme.colors.secondary;
 
 	return (
 		<Tabs
@@ -26,14 +22,14 @@ export const TabsNavigation: React.FC<Props> = ({ }) => {
 			sceneContainerStyle={{
 				backgroundColor: theme.colors.background,
 			}}
-			tabBar={(props) => <TabBar {...props} />}
+			tabBar={props => <TabBar {...props} />}
 		>
 			<Tabs.Screen
 				name={"index"}
 				options={{
 					title: __('Home'),
 					tabBarIcon: ({ focused, color, size }) =>
-						<Icon	name={focused ? 'home' : 'home-outline'} color={color} size={size} />
+						<Icon name={focused ? 'home' : 'home-outline'} color={color} size={size} />
 				}}
 			/>
 			<Tabs.Screen
@@ -41,7 +37,7 @@ export const TabsNavigation: React.FC<Props> = ({ }) => {
 				options={{
 					title: __('Accounts'),
 					tabBarIcon: ({ focused, color, size }) =>
-						<Icon	name={focused ? 'wallet' : 'wallet-outline'} color={color} size={size} />
+						<Icon name={focused ? 'wallet' : 'wallet-outline'} color={color} size={size} />
 				}}
 			/>
 			<Tabs.Screen
