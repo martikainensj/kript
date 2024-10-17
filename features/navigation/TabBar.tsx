@@ -41,8 +41,6 @@ export const TabBar: React.FC<Props> = ({ descriptors, insets, navigation, state
 					}).start();
 				}, [isFocused]);
 
-				const focusedColor = theme.colors.primary;
-				const iconColor = theme.colors.secondary;
 				const translateY = focusAnim.interpolate({
 					inputRange: [0, 1],
 					outputRange: [
@@ -81,7 +79,9 @@ export const TabBar: React.FC<Props> = ({ descriptors, insets, navigation, state
 						>
 							{options.tabBarIcon({
 								focused: isFocused,
-								color: isFocused ? focusedColor : iconColor,
+								color: isFocused
+									? theme.colors.primary
+									: theme.colors.secondary,
 								size: IconSize.md
 							})}
 						</Animated.View>

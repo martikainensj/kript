@@ -9,7 +9,7 @@ interface TabSelectorProps {
 	screens: TabsScreenProps[];
 	currentIndex: number;
 	setIndex: (index: number) => void;
-  scrollData: { position: number; offset: number };
+	scrollData: { position: number; offset: number };
 }
 
 export const TabSelector: React.FC<TabSelectorProps> = ({ screens, currentIndex, setIndex, scrollData }) => {
@@ -28,26 +28,26 @@ export const TabSelector: React.FC<TabSelectorProps> = ({ screens, currentIndex,
 		});
 	};
 
-  useEffect(() => {
-    const { position, offset } = scrollData;
+	useEffect(() => {
+		const { position, offset } = scrollData;
 
-    if (tabWidths.length > 0 && tabWidths[position] !== undefined) {
-      const currentOffset = tabWidths.slice(0, position).reduce((acc, width) => acc + width, 0);
-      const nextWidth = tabWidths[position + 1] || tabWidths[position];
+		if (tabWidths.length > 0 && tabWidths[position] !== undefined) {
+			const currentOffset = tabWidths.slice(0, position).reduce((acc, width) => acc + width, 0);
+			const nextWidth = tabWidths[position + 1] || tabWidths[position];
 
-      Animated.timing(underlinePosition, {
-        toValue: currentOffset + offset * tabWidths[position],
-        duration: 0,
-        useNativeDriver: false,
-      }).start();
+			Animated.timing(underlinePosition, {
+				toValue: currentOffset + offset * tabWidths[position],
+				duration: 0,
+				useNativeDriver: false,
+			}).start();
 
-      Animated.timing(underlineWidth, {
-        toValue: tabWidths[position] + (nextWidth - tabWidths[position]) * offset,
-        duration: 0,
-        useNativeDriver: false,
-      }).start();
-    }
-  }, [scrollData, tabWidths]);
+			Animated.timing(underlineWidth, {
+				toValue: tabWidths[position] + (nextWidth - tabWidths[position]) * offset,
+				duration: 0,
+				useNativeDriver: false,
+			}).start();
+		}
+	}, [scrollData, tabWidths]);
 
 	return (
 		<View>
@@ -65,7 +65,11 @@ export const TabSelector: React.FC<TabSelectorProps> = ({ screens, currentIndex,
 							style={styles.selectorItemContainer}
 							onLayout={(event) => handleTabLayout(event, index)}
 						>
-							<Text style={[isActive && { color: theme.colors.primary }]}>
+							<Text
+								style={[
+									isActive && { color: theme.colors.primary }
+								]}
+							>
 								{screen.label}
 							</Text>
 						</TouchableOpacity>
@@ -99,6 +103,6 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		bottom: 0,
 		left: 0,
-		height: 2,
+		height: Spacing.xxs,
 	},
 });
