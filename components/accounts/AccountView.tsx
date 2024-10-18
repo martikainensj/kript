@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { StyleSheet, View } from "react-native"
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -33,6 +33,8 @@ import { useCharts } from "../../features/charts/useCharts";
 import { TabsScreenProps } from "../../features/tabs/types";
 import { TabsProvider } from "../../features/tabs/TabsContext";
 import { Tab } from "../../features/tabs/Tab";
+import { FAB } from "../../features/fab/FAB";
+import { Action } from "../../features/fab/types";
 
 interface AccountViewProps {
 	account: Account;
@@ -61,10 +63,10 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 			: select('Transaction', transaction);
 	}, [selectedObjects]);
 
-	useEffect(() => {
-		setActions([
+	const actions = useMemo(() => {
+		return [
 			{
-				icon: ({ size }) => <Icon name={'create-outline'} size={size} />,
+				icon: 'create-outline',
 				label: __('Edit'),
 				onPress: () => {
 					openBottomSheet(
@@ -78,18 +80,16 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				},
 			},
 			{
-				icon: ({ size }) => <Icon name={'trash-outline'} size={size} />,
+				icon: 'trash-outline',
 				label: __('Remove'),
 				onPress: () => {
 					removeObjects('Account', [account]).then(
 						() => router.navigate('/accounts')
 					);
-				},
-				containerStyle: styles.fabAction,
-				style: styles.fabAction,
+				}
 			},
 			{
-				icon: ({ size }) => <Icon name={'receipt-outline'} size={size} />,
+				icon: 'receipt-outline',
 				label: __('Add Transaction'),
 				onPress: () => {
 					openBottomSheet(
@@ -113,7 +113,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 					);
 				}
 			}
-		])
+		] as Action[];
 	}, [account]);
 
 	if (!account?.isValid()) {
@@ -284,98 +284,100 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 
 	return (
 		<View style={styles.container}>
-			<Header
-				title={name}
-				left={<BackButton />}
-				right={
-					<ConditionalView
-						condition={isSelecting}
-						initialValues={{
-							scaleX: 0.5,
-							scaleY: 0.5
-						}}>
-						<IconButton
-							icon={'trash'}
-							onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />
-					</ConditionalView>
-				}
-				showDivider={false}>
-				<Grid
-					columns={4}
-					items={values} />
-			</Header>
+			<FAB actions={actions}>
+				<Header
+					title={name}
+					left={<BackButton />}
+					right={
+						<ConditionalView
+							condition={isSelecting}
+							initialValues={{
+								scaleX: 0.5,
+								scaleY: 0.5
+							}}>
+							<IconButton
+								icon={'trash'}
+								onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />
+						</ConditionalView>
+					}
+					showDivider={false}>
+					<Grid
+						columns={4}
+						items={values} />
+				</Header>
 
-			<TabsProvider>
-				<Tab label={__('Overview')}>
-					<View style={[
-						styles.contentContainer,
-						styles.overviewContainer
-					]}>
-						<Value
-							label={__('Balance')}
-							value={prettifyNumber(balance, 0)}
-							unit="€"
-							isVertical
-							valueStyle={styles.value} />
-						<Grid columns={2} items={overviewCharts} />
-					</View>
-				</Tab>
-				<Tab label={__('Holdings')}>
-					<View style={styles.contentContainer}>
-						<FABProvider side='left' insets={insets}>
-							<ItemList
-								id={`list-account-${account._id}-holdings`}
-								noItemsText={__('No Holdings')}
-								data={holdings.map(holding => {
-									return {
-										item: holding,
-										renderItem: <HoldingItem holding={holding} />
-									}
-								})}
-								sortingContainerStyle={{ marginBottom: insets.bottom }}
-								sortingOptions={[
-									SortingTypes.name,
-									SortingTypes.highestReturn,
-									SortingTypes.lowestReturn,
-									SortingTypes.highestValue
-								]} />
-						</FABProvider>
-					</View>
-				</Tab>
-				<Tab label={__('Transactions')}>
-					<View style={styles.contentContainer}>
-						<FABProvider side='left' insets={insets}>
-							<ItemList
-								id={`list-account-${account._id}-transactions`}
-								noItemsText={__('No Transactions')}
-								data={[
-									...transactions,
-									...holdings.flatMap(holding => {
-										return [...holding.transactions]
-									})
-								].map(transaction => {
-									return {
-										item: transaction,
-										renderItem: (
-											<TransactionItem
-												transaction={transaction}
-												onPressSelect={onPressSelectTransaction}
-												onLongPress={onLongPressTransaction}
-												isSelectable={canSelect('Transaction') && isSelecting}
-												isSelected={hasObject(transaction)}
-												showHolding />
-										)
-									}
-								})}
-								sortingContainerStyle={{ marginBottom: insets.bottom }}
-								sortingOptions={[
-									SortingTypes.newestFirst,
-									SortingTypes.oldestFirst
-								]} />
-						</FABProvider>
-					</View>
-				</Tab>
-			</TabsProvider>
+				<TabsProvider>
+					<Tab label={__('Overview')}>
+						<View style={[
+							styles.contentContainer,
+							styles.overviewContainer
+						]}>
+							<Value
+								label={__('Balance')}
+								value={prettifyNumber(balance, 0)}
+								unit="€"
+								isVertical
+								valueStyle={styles.value} />
+							<Grid columns={2} items={overviewCharts} />
+						</View>
+					</Tab>
+					<Tab label={__('Holdings')}>
+						<View style={styles.contentContainer}>
+							<FABProvider side='left' insets={insets}>
+								<ItemList
+									id={`list-account-${account._id}-holdings`}
+									noItemsText={__('No Holdings')}
+									data={holdings.map(holding => {
+										return {
+											item: holding,
+											renderItem: <HoldingItem holding={holding} />
+										}
+									})}
+									sortingContainerStyle={{ marginBottom: insets.bottom }}
+									sortingOptions={[
+										SortingTypes.name,
+										SortingTypes.highestReturn,
+										SortingTypes.lowestReturn,
+										SortingTypes.highestValue
+									]} />
+							</FABProvider>
+						</View>
+					</Tab>
+					<Tab label={__('Transactions')}>
+						<View style={styles.contentContainer}>
+							<FABProvider side='left' insets={insets}>
+								<ItemList
+									id={`list-account-${account._id}-transactions`}
+									noItemsText={__('No Transactions')}
+									data={[
+										...transactions,
+										...holdings.flatMap(holding => {
+											return [...holding.transactions]
+										})
+									].map(transaction => {
+										return {
+											item: transaction,
+											renderItem: (
+												<TransactionItem
+													transaction={transaction}
+													onPressSelect={onPressSelectTransaction}
+													onLongPress={onLongPressTransaction}
+													isSelectable={canSelect('Transaction') && isSelecting}
+													isSelected={hasObject(transaction)}
+													showHolding />
+											)
+										}
+									})}
+									sortingContainerStyle={{ marginBottom: insets.bottom }}
+									sortingOptions={[
+										SortingTypes.newestFirst,
+										SortingTypes.oldestFirst
+									]} />
+							</FABProvider>
+						</View>
+					</Tab>
+				</TabsProvider>
+			</FAB>
 		</View>
 	)
 }
