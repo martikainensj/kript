@@ -127,7 +127,8 @@ const styles = StyleSheet.create({
 		paddingHorizontal: Spacing.lg,
 		height: Spacing.xl,
 		borderRadius: BorderRadius.xl,
-		justifyContent: 'center'
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	itemLabelContainer: {
 		position: 'absolute',
