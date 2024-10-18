@@ -33,14 +33,6 @@ export const TabBar: React.FC<Props> = ({ descriptors, insets, navigation, state
 
 				const focusAnim = useRef(new Animated.Value(isFocused ? 1 : 0)).current;
 
-				useEffect(() => {
-					Animated.timing(focusAnim, {
-						toValue: isFocused ? 1 : 0,
-						duration: Duration.fast,
-						useNativeDriver: true,
-					}).start();
-				}, [isFocused]);
-
 				const translateY = focusAnim.interpolate({
 					inputRange: [0, 1],
 					outputRange: [
@@ -48,6 +40,7 @@ export const TabBar: React.FC<Props> = ({ descriptors, insets, navigation, state
 						0
 					]
 				});
+
 				const backgroundColor = focusAnim.interpolate({
 					inputRange: [0, 1],
 					outputRange: [
@@ -56,6 +49,14 @@ export const TabBar: React.FC<Props> = ({ descriptors, insets, navigation, state
 					]
 				});
 
+				useEffect(() => {
+					Animated.timing(focusAnim, {
+						toValue: isFocused ? 1 : 0,
+						duration: Duration.fast,
+						useNativeDriver: true,
+					}).start();
+				}, [isFocused]);
+
 				return (
 					<TouchableOpacity
 						key={index}
@@ -63,7 +64,8 @@ export const TabBar: React.FC<Props> = ({ descriptors, insets, navigation, state
 						style={[
 							styles.itemContainer,
 							{
-								marginBottom: insets.bottom
+								marginTop: Spacing.md,
+								marginBottom: insets.bottom + Spacing.md
 							}
 						]}
 						disabled={isFocused}
@@ -120,12 +122,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		paddingHorizontal: Spacing.md,
-		paddingVertical: Spacing.sm,
 	},
 	itemIconContainer: {
 		paddingHorizontal: Spacing.lg,
-		paddingVertical: Spacing.sm,
-		borderRadius: BorderRadius.xl
+		height: Spacing.xl,
+		borderRadius: BorderRadius.xl,
+		justifyContent: 'center'
 	},
 	itemLabelContainer: {
 		position: 'absolute',
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
 		left: 0,
 		right: 0,
 		bottom: 'auto',
-		paddingTop: Spacing.sm,
+		paddingTop: Spacing.xs,
 		alignItems: 'center',
 	}
 })
