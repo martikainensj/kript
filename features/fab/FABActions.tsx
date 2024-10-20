@@ -4,6 +4,7 @@ import { Animated, StyleSheet, View } from "react-native";
 import { Duration, IconSize, Spacing } from "../../constants";
 import { IconButton } from "../../components/buttons";
 import { useTheme } from "../theme/ThemeContext";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props extends Action {
 	actions?: Action[];
@@ -16,16 +17,22 @@ export const FABActions: React.FC<Props> = ({
 	onPress,
 	onLongPress,
 }) => {
-	const [isExtended, setIsExtended] = useState(false);
 	const { theme } = useTheme();
+	const insets = useSafeAreaInsets();
 	const animations = actions.map(() => useRef(new Animated.Value(0)).current);
+	const [isExtended, setIsExtended] = useState(false);
+	const [shouldRenderActions, setShouldRenderActions] = useState(false);
 
 	useEffect(() => {
 		if (isExtended) {
+			setShouldRenderActions(true);
+
 			actions.forEach((_, index) => {
+				const delay = Duration.fast / actions.length * (actions.length - 1 - index);
+
 				Animated.spring(animations[index], {
 					toValue: 1,
-					delay: 50 * index,
+					delay,
 					useNativeDriver: true,
 				}).start();
 			});
@@ -36,36 +43,45 @@ export const FABActions: React.FC<Props> = ({
 					useNativeDriver: true,
 				}).start();
 			});
+
+			const timeout = setTimeout(() => setShouldRenderActions(false), 200); // Match with animation duration
+			return () => clearTimeout(timeout);
 		}
 	}, [isExtended]);
 
-	return (<>
+	return (
+		<>
 			<Animated.View
 				style={[
-					styles.backgroundOverlay,
-					isExtended && {
+					styles.background,
+					shouldRenderActions && {
 						backgroundColor: `${theme.colors.background}ee`,
 						pointerEvents: 'auto'
 					},
+					{ opacity: animations[animations.length - 1] }
 				]}
+				pointerEvents="none"
 			/>
 
-			{/* Main action buttons container */}
-			<View style={styles.buttonsContainer} pointerEvents="auto">
-				{/* Render action buttons */}
-				{actions.map((action, index) => (
+			<View
+				style={[
+					styles.container,
+					{ marginBottom: insets.bottom }
+				]}
+			>
+				{shouldRenderActions && actions.map((action, index) => (
 					<Animated.View
 						key={index}
 						style={[
 							styles.actionsWrapper,
 							{
-								opacity: animations[index], // Animate opacity
+								opacity: animations[index],
 								transform: [
 									{
 										translateY: animations[index].interpolate({
 											inputRange: [0, 1],
-											outputRange: [20, 0], // Slide up from below
-										}),
+											outputRange: [20, 0],
+										})
 									},
 								],
 							},
@@ -80,12 +96,12 @@ export const FABActions: React.FC<Props> = ({
 					</Animated.View>
 				))}
 
-				{/* Main FAB button */}
 				<IconButton
 					icon={icon}
 					onPress={() => setIsExtended(!isExtended)}
-					size={IconSize.xl}
+					size={IconSize.lg}
 					onLongPress={onLongPress}
+					style={styles.actionButton}
 				/>
 			</View>
 		</>
@@ -93,22 +109,20 @@ export const FABActions: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
-	wrapper: {
+	background: {
+		...StyleSheet.absoluteFillObject,
+		pointerEvents: 'none',
+	},
+	container: {
 		position: 'absolute',
-		top: 'auto',
-		left: 'auto',
 		right: Spacing.md,
 		bottom: Spacing.md,
 		alignItems: 'flex-end',
-		justifyContent: 'flex-end'
-	},
-	backgroundOverlay: {
-		...StyleSheet.absoluteFillObject,
-		pointerEvents: 'none'
-	},
-	buttonsContainer: {
 	},
 	actionsWrapper: {
 		marginBottom: 15,
 	},
+	actionButton: {
+		height: 56
+	}
 });
