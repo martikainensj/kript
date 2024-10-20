@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Action } from "./types";
-import { Animated, StyleSheet, View } from "react-native";
+import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Duration, IconSize, Spacing } from "../../constants";
 import { IconButton } from "../../components/buttons";
 import { useTheme } from "../theme/ThemeContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Icon } from "../../components/ui/Icon";
 
 interface Props extends Action {
 	actions?: Action[];
@@ -20,6 +21,7 @@ export const FABActions: React.FC<Props> = ({
 	const { theme } = useTheme();
 	const insets = useSafeAreaInsets();
 	const animations = actions.map(() => useRef(new Animated.Value(0)).current);
+	const lastAnimation = animations[animations.length - 1];
 	const [isExtended, setIsExtended] = useState(false);
 	const [shouldRenderActions, setShouldRenderActions] = useState(false);
 
@@ -28,7 +30,7 @@ export const FABActions: React.FC<Props> = ({
 			setShouldRenderActions(true);
 
 			actions.forEach((_, index) => {
-				const delay = Duration.fast / actions.length * (actions.length - 1 - index);
+				const delay = Duration.normal / actions.length * (actions.length -1 - index);
 
 				Animated.spring(animations[index], {
 					toValue: 1,
@@ -44,7 +46,7 @@ export const FABActions: React.FC<Props> = ({
 				}).start();
 			});
 
-			const timeout = setTimeout(() => setShouldRenderActions(false), 200); // Match with animation duration
+			const timeout = setTimeout(() => setShouldRenderActions(false), Duration.normal);
 			return () => clearTimeout(timeout);
 		}
 	}, [isExtended]);
@@ -54,11 +56,11 @@ export const FABActions: React.FC<Props> = ({
 			<Animated.View
 				style={[
 					styles.background,
-					shouldRenderActions && {
+					isExtended && {
 						backgroundColor: `${theme.colors.background}ee`,
 						pointerEvents: 'auto'
 					},
-					{ opacity: animations[animations.length - 1] }
+					{ opacity: lastAnimation }
 				]}
 				pointerEvents="none"
 			/>
@@ -91,17 +93,20 @@ export const FABActions: React.FC<Props> = ({
 							icon={action.icon}
 							onPress={action.onPress}
 							onLongPress={action.onLongPress}
-							size={IconSize.md}
+							size={IconSize.sm}
+							label={action.label}
 						/>
 					</Animated.View>
 				))}
 
 				<IconButton
-					icon={icon}
+					icon={isExtended ? 'close' : icon}
 					onPress={() => setIsExtended(!isExtended)}
 					size={IconSize.lg}
 					onLongPress={onLongPress}
-					style={styles.actionButton}
+					style={[
+						styles.actionButton,
+					]}
 				/>
 			</View>
 		</>
@@ -124,5 +129,8 @@ const styles = StyleSheet.create({
 	},
 	actionButton: {
 		height: 56
+	},
+	actionsButton: {
+		padding: Spacing.xs
 	}
 });
