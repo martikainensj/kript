@@ -9,12 +9,14 @@ import { Icon } from "../../components/ui/Icon";
 
 interface Props extends Action {
 	actions?: Action[];
+	side?: 'left' | 'right';
 }
 
 export const FABActions: React.FC<Props> = ({
 	label,
 	icon = 'ellipsis-vertical',
 	actions = [],
+	side = 'right',
 	onPress,
 	onLongPress,
 }) => {
@@ -68,7 +70,12 @@ export const FABActions: React.FC<Props> = ({
 			<View
 				style={[
 					styles.container,
-					{ marginBottom: insets.bottom }
+					{ marginBottom: insets.bottom },
+					side === 'left' && {
+						left: Spacing.md,
+						right: 'auto',
+						alignItems: 'flex-start'
+					}
 				]}
 			>
 				{shouldRenderActions && actions.map((action, index) => (
@@ -95,6 +102,15 @@ export const FABActions: React.FC<Props> = ({
 							onLongPress={action.onLongPress}
 							size={IconSize.sm}
 							label={action.label}
+							labelStyle={[
+								side === 'left' && {
+									left: '100%',
+									right: 'auto',
+									paddingRight: 0,
+									paddingLeft: Spacing.md,
+									textAlign: 'left',
+								}
+							]}
 						/>
 					</Animated.View>
 				))}

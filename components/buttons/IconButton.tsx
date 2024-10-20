@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, TouchableOpacity, TouchableOpacityProps, Animated, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps, Animated, View, ViewStyle, StyleProp, TextStyle } from 'react-native';
 import { BorderRadius, Duration, IconSize, Spacing } from '../../constants';
 import { Icon } from '../ui/Icon';
 import { useTheme } from '../../features/theme/ThemeContext';
@@ -10,12 +10,14 @@ interface IconButtonProps extends TouchableOpacityProps {
 	icon: React.ComponentProps<typeof Ionicons>['name'];
 	size?: number;
 	label?: string;
+	labelStyle?: StyleProp<TextStyle>;
 }
 
 export const IconButton: React.FC<IconButtonProps> = ({
 	icon,
 	size = IconSize.md,
 	label,
+	labelStyle,
 	...rest
 }) => {
 	const { theme } = useTheme();
@@ -84,7 +86,10 @@ export const IconButton: React.FC<IconButtonProps> = ({
 				<Text
 					numberOfLines={1}
 					fontSize="md"
-					style={styles.label}
+					style={[
+						styles.label,
+						labelStyle
+					]}
 				>
 					{label}
 				</Text>
