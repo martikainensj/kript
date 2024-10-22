@@ -76,13 +76,14 @@ const Accounts: React.FC = () => {
 				right={(
 					<IconButton
 						onPress={onPressAdd}
-						icon={'add'} />
-				)} />
-			<View style={styles.contentContainer}>
+						icon={'add'}
+					/>
+				)}
+			/>
+			<View style={styles.content}>
 				<FABProvider side='left'>
 					<ItemList
 						id='list-accounts'
-						title={__('Accounts')}
 						noItemsText={__('No accounts')}
 						data={accounts.map(account => {
 							if (!account.isValid()) return;
@@ -97,7 +98,8 @@ const Accounts: React.FC = () => {
 							SortingTypes.highestReturn,
 							SortingTypes.lowestReturn,
 							SortingTypes.highestValue
-						]} />
+						]}
+					/>
 				</FABProvider>
 			</View>
 		</Animated.View>
@@ -110,9 +112,8 @@ const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.container
 	},
-
-	contentContainer: {
+	content: {
 		...GlobalStyles.container,
-		...GlobalStyles.gutter,
-	}
+		...GlobalStyles.slice
+	},
 });

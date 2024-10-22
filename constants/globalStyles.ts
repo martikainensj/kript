@@ -6,8 +6,13 @@ export const GlobalStyles = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
-	gutter: {
-		paddingHorizontal: Spacing.md
+	content: {
+		paddingVertical: Spacing.md,
+		gap: Spacing.md
+	},
+	slice: {
+		paddingHorizontal: Spacing.md,
+		gap: Spacing.sm
 	},
 	button: {
 		paddingHorizontal: Spacing.md,

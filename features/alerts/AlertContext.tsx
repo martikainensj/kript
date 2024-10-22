@@ -126,7 +126,7 @@ const Alert = <T extends AlertType>({ title, message, params }: AlertProps<T>) =
 
 const styles = StyleSheet.create({
 	container: {
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 		position: "absolute",
 		top: 0,
 		left: 0,

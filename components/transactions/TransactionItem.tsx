@@ -186,7 +186,7 @@ export default TransactionItem;
 
 const styles = StyleSheet.create( {
 	container: {
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 		position: 'relative',
 		paddingVertical: Spacing.md,
 		gap: Spacing.sm

@@ -15,7 +15,6 @@ import { Divider } from "./Divider";
 
 interface ItemListProps {
 	id: string;
-	title?: string;
 	noItemsText?: string;
 	data: {
 		item: Account | Holding | Transaction;
@@ -29,7 +28,6 @@ interface ItemListProps {
 
 export const ItemList: React.FC<ItemListProps> = ({
 	id,
-	title,
 	noItemsText,
 	data,
 	style,
@@ -99,15 +97,6 @@ export const ItemList: React.FC<ItemListProps> = ({
 			styles.container,
 			style
 		]}>
-			{title &&
-				<View style={styles.titleContainer}>
-					<Text style={[styles.title, { color: theme.colors.secondary }]}>
-						{title}
-					</Text>
-					<Divider />
-				</View>
-			}
-
 			<FlatList
 				data={sortedData}
 				ItemSeparatorComponent={Divider}
@@ -144,21 +133,13 @@ const styles = StyleSheet.create({
 		...GlobalStyles.container,
 		marginHorizontal: -Spacing.md
 	},
-
 	titleContainer: {
 		gap: Spacing.sm,
-		paddingTop: Spacing.sm
 	},
-
-	title: {
-		...GlobalStyles.gutter
-	},
-
 	menuContainer: {
 		left: 0,
 		padding: Spacing.md
 	},
-
 	sortingContainer: {
 		position: 'relative',
 		flexDirection: 'row',
@@ -174,7 +155,7 @@ const styles = StyleSheet.create({
 	},
 
 	placeholderContainer: {
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 		paddingVertical: Spacing.md
 	},
 

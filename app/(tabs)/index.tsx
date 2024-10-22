@@ -3,7 +3,7 @@ import { useAuth } from '@realm/react';
 import { Animated, StyleSheet, View } from 'react-native';
 
 import { GlobalStyles, Spacing } from '../../constants';
-import { IconButton } from '../../components/buttons';
+import { DefaultButton, IconButton } from '../../components/buttons';
 import { buildChartData } from '../../helpers';
 import { Header } from '../../components/ui/Header';
 import { LineChart } from '../../components/charts/LineChart';
@@ -16,6 +16,7 @@ import { useData } from '../../features/data/DataContext';
 import { useCharts } from '../../features/charts/useCharts';
 import { useFocusEffect } from 'expo-router';
 import { animateIn, animateOut } from '../../features/animations/animate';
+import { useToasts } from '../../features/toasts/ToastsContext';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();
@@ -25,6 +26,7 @@ const Home: React.FC = () => {
 	const { openChartSheet } = useChartSheet();
 	const { show } = useAlert();
 	const focusAnim = useRef(new Animated.Value(0)).current;
+	const { show: showToast } = useToasts();
 
 	const logOutHandler = () => {
 		show({
@@ -122,10 +124,25 @@ const Home: React.FC = () => {
 				right={(
 					<IconButton
 						onPress={logOutHandler}
-						icon={'log-out-outline'} />
-				)} />
-			<View style={styles.contentContainer}>
-				<Grid columns={2} items={overviewCharts} />
+						icon={'log-out-outline'}
+					/>
+				)}
+			/>
+
+			<View style={styles.content}>
+				<View style={styles.slice}>
+					<Grid columns={2} items={overviewCharts} />
+				</View>
+				<View style={styles.slice}>
+					<DefaultButton onPress={() => showToast({
+						title: 'terve',
+						text: 'Jippikajei!',
+						timeout: 4000
+					})}>
+						Test Toast
+					</DefaultButton>
+				</View>
+				
 			</View>
 		</Animated.View>
 	);
@@ -137,10 +154,10 @@ const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.container
 	},
-
-	contentContainer: {
-		...GlobalStyles.container,
-		...GlobalStyles.gutter,
-		paddingVertical: Spacing.md
+	content: {
+		...GlobalStyles.content,
+	},
+	slice: {
+		...GlobalStyles.slice
 	}
 });

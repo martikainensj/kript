@@ -123,7 +123,7 @@ export default HoldingItem;
 
 const styles = StyleSheet.create({
 	container: {
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingVertical: Spacing.md,

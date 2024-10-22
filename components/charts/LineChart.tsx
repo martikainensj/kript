@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-end',
 	},
 	noticeWrapper: {
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 		marginTop: Spacing.md
 	},
 	xAxisLabelText: {

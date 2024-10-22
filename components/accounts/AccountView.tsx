@@ -34,7 +34,7 @@ import { TabsScreenProps } from "../../features/tabs/types";
 import { TabsProvider } from "../../features/tabs/TabsContext";
 import { Tab } from "../../features/tabs/Tab";
 import { FAB } from "../../features/fab/FAB";
-import { Action } from "../../features/fab/types";
+import { Action } from "../../constants/types";
 
 interface AccountViewProps {
 	account: Account;
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
 	},
 	contentContainer: {
 		...GlobalStyles.container,
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 	},
 	overviewContainer: {
 		paddingVertical: Spacing.md,

@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
 	},
 	contentContainer: {
 		...GlobalStyles.container,
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 		gap: Spacing.md,
 		paddingTop: Spacing.md
 	}

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Action } from "./types";
 import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Duration, IconSize, Spacing } from "../../constants";
 import { IconButton } from "../../components/buttons";
 import { useTheme } from "../theme/ThemeContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../../components/ui/Icon";
+import { Action } from "../../constants/types";
 
 interface Props extends Action {
 	actions?: Action[];
@@ -26,10 +26,12 @@ export const FABActions: React.FC<Props> = ({
 	const lastAnimation = animations[animations.length - 1];
 	const [isExtended, setIsExtended] = useState(false);
 	const [shouldRenderActions, setShouldRenderActions] = useState(false);
+	const [isAnimating, setIsAnimating] = useState(false);
 
 	useEffect(() => {
 		if (isExtended) {
 			setShouldRenderActions(true);
+			setIsAnimating(true);
 
 			actions.forEach((_, index) => {
 				const delay = Duration.normal / actions.length * (actions.length -1 - index);
@@ -38,18 +40,30 @@ export const FABActions: React.FC<Props> = ({
 					toValue: 1,
 					delay,
 					useNativeDriver: true,
-				}).start();
+				}).start(() => {
+					if (index === actions.length - 1) {
+						setIsAnimating(false);
+					}
+				});
 			});
 		} else {
+			setIsAnimating(true);
+
 			actions.forEach((_, index) => {
 				Animated.spring(animations[index], {
 					toValue: 0,
 					useNativeDriver: true,
-				}).start();
+				}).start(() => {
+					// Check if it's the last animation
+					if (index === actions.length - 1) {
+						const timeout = setTimeout(() => {
+							setShouldRenderActions(false); // Hide actions after animations
+							setIsAnimating(false); // Animation ends
+						}, Duration.normal);
+						return () => clearTimeout(timeout);
+					}
+				});
 			});
-
-			const timeout = setTimeout(() => setShouldRenderActions(false), Duration.normal);
-			return () => clearTimeout(timeout);
 		}
 	}, [isExtended]);
 
@@ -120,6 +134,7 @@ export const FABActions: React.FC<Props> = ({
 					onPress={() => setIsExtended(!isExtended)}
 					size={IconSize.lg}
 					onLongPress={onLongPress}
+					disabled={isAnimating}
 					style={[
 						styles.actionButton,
 					]}

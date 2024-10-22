@@ -139,7 +139,7 @@ const styles = StyleSheet.create( {
 		...GlobalStyles.container,
 	},
 	contentContainer: {
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 		paddingBottom: Spacing.md
 	}
 } );

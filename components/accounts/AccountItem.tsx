@@ -125,7 +125,7 @@ export default AccountItem;
 
 const styles = StyleSheet.create({
 	container: {
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingVertical: Spacing.md,

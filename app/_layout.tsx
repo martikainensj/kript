@@ -16,6 +16,7 @@ import { I18nProvider } from '../features/i18n/I18nContext';
 import { RealmProvider } from '../features/realm/RealmContext';
 import { useFonts } from 'expo-font';
 import { RootNavigation } from '../features/navigation/RootNavigation';
+import { ToastProvider } from '../features/toasts/ToastsContext';
 
 export default function AppLayout() {
 	const [loaded, error] = useFonts({
@@ -43,16 +44,18 @@ export default function AppLayout() {
 		<GestureHandlerRootView style={styles.container}>
 			<ThemeProvider>
 				<I18nProvider>
-					<AlertProvider>
-						<RealmProvider>
-							<BottomSheetProvider>
-								<ChartSheetProvider>
-									<StatusBar />
-									<RootNavigation />
-								</ChartSheetProvider>
-							</BottomSheetProvider>
-						</RealmProvider>
-					</AlertProvider>
+					<ToastProvider>
+						<AlertProvider>
+							<RealmProvider>
+								<BottomSheetProvider>
+									<ChartSheetProvider>
+										<StatusBar />
+										<RootNavigation />
+									</ChartSheetProvider>
+								</BottomSheetProvider>
+							</RealmProvider>
+						</AlertProvider>
+					</ToastProvider>
 				</I18nProvider>
 			</ThemeProvider>
 		</GestureHandlerRootView>

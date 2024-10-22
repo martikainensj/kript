@@ -153,13 +153,13 @@ const styles = StyleSheet.create({
 	},
 
 	inputsContainer: {
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 		gap: Spacing.sm,
 		alignSelf: 'stretch'
 	},
 
 	buttonsContainer: {
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 		flexDirection: 'row',
 		gap: Spacing.sm,
 		paddingVertical: Spacing.sm,

@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
 	},
 	contentContainer: {
 		...GlobalStyles.container,
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 	},
 	gridContainer: {
 		paddingTop: Spacing.md

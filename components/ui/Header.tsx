@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
 		gap: Spacing.md,
 	},
 	row: {
-		...GlobalStyles.gutter,
+		...GlobalStyles.slice,
 		flexWrap: 'nowrap',
 	},
 	title: {
@@ -82,6 +82,6 @@ const styles = StyleSheet.create({
 		gap: Spacing.md
 	},
 	children: {
-		...GlobalStyles.gutter
+		...GlobalStyles.slice
 	}
 });
