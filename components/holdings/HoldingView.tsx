@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { StyleSheet, View } from "react-native"
 import { router } from "expo-router";
 
@@ -8,7 +8,6 @@ import { TransactionForm } from "../../components/transactions/TransactionForm";
 import { HoldingForm } from "../../components/holdings/HoldingForm";
 import TransactionItem from "../../components/transactions/TransactionItem";
 import { prettifyNumber } from "../../helpers";
-import { FABProvider, useFAB } from "../../contexts/FABContext";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { Icon } from "../../components/ui/Icon";
 import { Value } from "../../components/ui/Value";
@@ -32,6 +31,8 @@ import { useSorting } from "../../features/data/useSorting";
 import { useCharts } from "../../features/charts/useCharts";
 import { TabsProvider } from "../../features/tabs/TabsContext";
 import { Tab } from "../../features/tabs/Tab";
+import { FAB } from "../../features/fab/FAB";
+import { Action } from "../../constants/types";
 
 interface HoldingViewProps {
 	holding: Holding;
@@ -43,7 +44,6 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 	const { __ } = useI18n();
 	const account = getAccountBy('_id', holding.account_id);
 	const transactions = getTransactions({ accountId: holding.account_id, holdingId: holding._id });
-	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { openChartSheet } = useChartSheet();
 	const { SortingTypes } = useSorting();
@@ -63,11 +63,11 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 			: select('Transaction', transaction);
 	}, [selectedObjects]);
 
-	useEffect(() => {
-		setActions([
+	const actions = useMemo(() => {
+		return [
 			{
 				label: __('Edit'),
-				icon: ({ size }) => <Icon name={'create-outline'} size={size} />,
+				icon: 'create-outline',
 				onPress: () => {
 					openBottomSheet(
 						__('Edit Holding'),
@@ -82,15 +82,13 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 			},
 			{
 				label: __('Remove'),
-				icon: ({ size }) => <Icon name={'trash-outline'} size={size} />,
+				icon: 'trash-outline',
 				onPress: () => {
 					removeObjects('Holding', [holding]).then(router.back)
-				},
-				style: styles.fabAction,
-				containerStyle: styles.fabAction
+				}
 			},
 			{
-				icon: ({ size }) => <Icon name={'receipt-outline'} size={size} />,
+				icon: 'receipt-outline',
 				label: __('Add Transaction'),
 				onPress: () => {
 					openBottomSheet(
@@ -114,7 +112,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 					);
 				}
 			},
-		])
+		] as Action[];
 	}, [holding, account]);
 
 	if (!holding?.isValid()) {
@@ -206,6 +204,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 
 	return (
 		<View style={styles.container}>
+			<FAB actions={actions}>
 			<Header
 				title={name}
 				left={<BackButton />}
@@ -235,7 +234,6 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 				</Tab>
 				<Tab label={__('Transactions')}>
 					<View style={styles.contentContainer}>
-						<FABProvider side='left' insets={insets}>
 							<ItemList
 								id={`list-holding-${holding._id}-transactions`}
 								noItemsText={__('No Transactions')}
@@ -257,10 +255,10 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 									SortingTypes.newestFirst,
 									SortingTypes.oldestFirst
 								]} />
-						</FABProvider>
 					</View>
 				</Tab>
 			</TabsProvider>
+			</FAB>
 		</View>
 	)
 }

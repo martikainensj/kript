@@ -2,7 +2,6 @@ import React from "react";
 import Realm from "realm";
 import { router, useLocalSearchParams } from "expo-router";
 
-import { FABProvider } from "../../../contexts/FABContext";
 import HoldingView from "../../../components/holdings/HoldingView";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useData } from "../../../features/data/DataContext";
@@ -26,8 +25,6 @@ export default function HoldingLayout() {
 	}
 
 	return (
-		<FABProvider insets={insets}>
-			<HoldingView holding={holding} />
-		</FABProvider>
+		<HoldingView holding={holding} />
 	);
 }

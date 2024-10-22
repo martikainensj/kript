@@ -4,14 +4,13 @@ import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Account } from "../../models/Account";
 import { Holding } from "../../models/Holding";
 import { Transaction } from "../../models/Transaction";
-import { useFAB } from "../../contexts/FABContext";
-import { Icon } from "./Icon";
 import { useTheme } from "../../features/theme/ThemeContext";
 import { useI18n } from "../../features/i18n/I18nContext";
 import { useStorage } from "../../features/storage/useStorage";
 import { SortingProps } from "../../features/data/types";
 import { Text } from "./Text";
 import { Divider } from "./Divider";
+import { FAB } from "../../features/fab/FAB";
 
 interface ItemListProps {
 	id: string;
@@ -36,7 +35,6 @@ export const ItemList: React.FC<ItemListProps> = ({
 }) => {
 	const { __ } = useI18n();
 	const { theme } = useTheme();
-	const { setActions, setIcon, setLabel } = useFAB();
 	const { set, get } = useStorage();
 	const [sorting, setSorting] = useState<SortingProps>(sortingOptions && sortingOptions[0]);
 
@@ -49,9 +47,6 @@ export const ItemList: React.FC<ItemListProps> = ({
 	}, [data, sorting]);
 
 	useEffect(() => {
-		setIcon(sorting?.icon);
-		setLabel(sorting?.name);
-
 		get('@filters/sorting').then(filtersSorting => {
 			const newFiltersSorting = {};
 
@@ -68,16 +63,6 @@ export const ItemList: React.FC<ItemListProps> = ({
 	useEffect(() => {
 		const currentSorting = sortingOptions.find(sortingOption => sorting.id === sortingOption.id);
 		setSorting(currentSorting);
-
-		setActions(sortingOptions.map(sortingOption => {
-			return {
-				icon: ({ size }) => <Icon name={sortingOption.icon} size={size} />,
-				label: sortingOption.name,
-				onPress: () => {
-					setSorting(sortingOption);
-				}
-			}
-		}));
 	}, [sortingOptions]);
 
 	useLayoutEffect(() => {
@@ -97,17 +82,31 @@ export const ItemList: React.FC<ItemListProps> = ({
 			styles.container,
 			style
 		]}>
-			<FlatList
-				data={sortedData}
-				ItemSeparatorComponent={Divider}
-				ListEmptyComponent={<PlaceholderItem value={noItemsText ?? __('No items')} />}
-				keyExtractor={({ item }) => item._id.toString()}
-				renderItem={({ item }) => item.renderItem}
-				contentContainerStyle={[
-					styles.contentContainer,
-					sortingOptions?.length && { paddingBottom: Spacing.fab },
-					contentContainerStyle
-				]} />
+				<FAB
+					actions={sortingOptions.map(sortingOption => {
+						return {
+							icon: sortingOption.icon,
+							label: sortingOption.name,
+							onPress: () => {
+								setSorting(sortingOption);
+							}
+						}
+					})}
+					side="left"
+				>
+					<FlatList
+						data={sortedData}
+						ItemSeparatorComponent={Divider}
+						ListEmptyComponent={<PlaceholderItem value={noItemsText ?? __('No items')} />}
+						keyExtractor={({ item }) => item._id.toString()}
+						renderItem={({ item }) => item.renderItem}
+						contentContainerStyle={[
+							styles.contentContainer,
+							sortingOptions?.length && { paddingBottom: Spacing.fab },
+							contentContainerStyle
+						]}
+					/>
+				</FAB>
 		</View>
 	)
 }

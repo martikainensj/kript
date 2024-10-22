@@ -9,8 +9,6 @@ import { AccountForm } from "../accounts";
 import { TransactionForm } from "../transactions/TransactionForm";
 import { prettifyNumber } from "../../helpers";
 import { useBottomSheet } from "../../contexts/BottomSheetContext";
-import { FABProvider, useFAB } from "../../contexts/FABContext";
-import { Icon } from "../ui/Icon";
 import { Value } from "../ui/Value";
 import { Header } from "../ui/Header";
 import { Grid } from "../ui/Grid";
@@ -43,7 +41,6 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 	const { saveAccount, removeObjects, addTransaction } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
-	const { setActions } = useFAB();
 	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
 	const { openChartSheet } = useChartSheet();
 	const { SortingTypes } = useSorting();
@@ -323,57 +320,53 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 					</Tab>
 					<Tab label={__('Holdings')}>
 						<View style={styles.contentContainer}>
-							<FABProvider side='left' insets={insets}>
-								<ItemList
-									id={`list-account-${account._id}-holdings`}
-									noItemsText={__('No Holdings')}
-									data={holdings.map(holding => {
-										return {
-											item: holding,
-											renderItem: <HoldingItem holding={holding} />
-										}
-									})}
-									sortingContainerStyle={{ marginBottom: insets.bottom }}
-									sortingOptions={[
-										SortingTypes.name,
-										SortingTypes.highestReturn,
-										SortingTypes.lowestReturn,
-										SortingTypes.highestValue
-									]} />
-							</FABProvider>
+							<ItemList
+								id={`list-account-${account._id}-holdings`}
+								noItemsText={__('No Holdings')}
+								data={holdings.map(holding => {
+									return {
+										item: holding,
+										renderItem: <HoldingItem holding={holding} />
+									}
+								})}
+								sortingContainerStyle={{ marginBottom: insets.bottom }}
+								sortingOptions={[
+									SortingTypes.name,
+									SortingTypes.highestReturn,
+									SortingTypes.lowestReturn,
+									SortingTypes.highestValue
+								]} />
 						</View>
 					</Tab>
 					<Tab label={__('Transactions')}>
 						<View style={styles.contentContainer}>
-							<FABProvider side='left' insets={insets}>
-								<ItemList
-									id={`list-account-${account._id}-transactions`}
-									noItemsText={__('No Transactions')}
-									data={[
-										...transactions,
-										...holdings.flatMap(holding => {
-											return [...holding.transactions]
-										})
-									].map(transaction => {
-										return {
-											item: transaction,
-											renderItem: (
-												<TransactionItem
-													transaction={transaction}
-													onPressSelect={onPressSelectTransaction}
-													onLongPress={onLongPressTransaction}
-													isSelectable={canSelect('Transaction') && isSelecting}
-													isSelected={hasObject(transaction)}
-													showHolding />
-											)
-										}
-									})}
-									sortingContainerStyle={{ marginBottom: insets.bottom }}
-									sortingOptions={[
-										SortingTypes.newestFirst,
-										SortingTypes.oldestFirst
-									]} />
-							</FABProvider>
+							<ItemList
+								id={`list-account-${account._id}-transactions`}
+								noItemsText={__('No Transactions')}
+								data={[
+									...transactions,
+									...holdings.flatMap(holding => {
+										return [...holding.transactions]
+									})
+								].map(transaction => {
+									return {
+										item: transaction,
+										renderItem: (
+											<TransactionItem
+												transaction={transaction}
+												onPressSelect={onPressSelectTransaction}
+												onLongPress={onLongPressTransaction}
+												isSelectable={canSelect('Transaction') && isSelecting}
+												isSelected={hasObject(transaction)}
+												showHolding />
+										)
+									}
+								})}
+								sortingContainerStyle={{ marginBottom: insets.bottom }}
+								sortingOptions={[
+									SortingTypes.newestFirst,
+									SortingTypes.oldestFirst
+								]} />
 						</View>
 					</Tab>
 				</TabsProvider>

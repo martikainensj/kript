@@ -9,7 +9,6 @@ import { useBottomSheet } from '../../contexts/BottomSheetContext';
 import { Header } from '../../components/ui/Header';
 import { ItemList } from '../../components/ui/ItemList';
 import { router, useFocusEffect } from 'expo-router';
-import { FABProvider } from '../../contexts/FABContext';
 import { useI18n } from '../../features/i18n/I18nContext';
 import { useUser } from '../../features/realm/useUser';
 import { useData } from '../../features/data/DataContext';
@@ -81,26 +80,24 @@ const Accounts: React.FC = () => {
 				)}
 			/>
 			<View style={styles.content}>
-				<FABProvider side='left'>
-					<ItemList
-						id='list-accounts'
-						noItemsText={__('No accounts')}
-						data={accounts.map(account => {
-							if (!account.isValid()) return;
+				<ItemList
+					id='list-accounts'
+					noItemsText={__('No accounts')}
+					data={accounts.map(account => {
+						if (!account.isValid()) return;
 
-							return {
-								item: account,
-								renderItem: <AccountItem account={account} />
-							}
-						})}
-						sortingOptions={[
-							SortingTypes.name,
-							SortingTypes.highestReturn,
-							SortingTypes.lowestReturn,
-							SortingTypes.highestValue
-						]}
-					/>
-				</FABProvider>
+						return {
+							item: account,
+							renderItem: <AccountItem account={account} />
+						}
+					})}
+					sortingOptions={[
+						SortingTypes.name,
+						SortingTypes.highestReturn,
+						SortingTypes.lowestReturn,
+						SortingTypes.highestValue
+					]}
+				/>
 			</View>
 		</Animated.View>
 	);

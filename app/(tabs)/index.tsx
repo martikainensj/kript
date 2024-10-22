@@ -16,7 +16,6 @@ import { useData } from '../../features/data/DataContext';
 import { useCharts } from '../../features/charts/useCharts';
 import { useFocusEffect } from 'expo-router';
 import { animateIn, animateOut } from '../../features/animations/animate';
-import { useToasts } from '../../features/toasts/ToastsContext';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();
@@ -26,7 +25,6 @@ const Home: React.FC = () => {
 	const { openChartSheet } = useChartSheet();
 	const { show } = useAlert();
 	const focusAnim = useRef(new Animated.Value(0)).current;
-	const { show: showToast } = useToasts();
 
 	const logOutHandler = () => {
 		show({
@@ -133,16 +131,6 @@ const Home: React.FC = () => {
 				<View style={styles.slice}>
 					<Grid columns={2} items={overviewCharts} />
 				</View>
-				<View style={styles.slice}>
-					<DefaultButton onPress={() => showToast({
-						title: 'terve',
-						text: 'Jippikajei!',
-						timeout: 4000
-					})}>
-						Test Toast
-					</DefaultButton>
-				</View>
-				
 			</View>
 		</Animated.View>
 	);

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Animated, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Animated, StyleSheet, View } from "react-native";
 import { Duration, IconSize, Spacing } from "../../constants";
 import { IconButton } from "../../components/buttons";
 import { useTheme } from "../theme/ThemeContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Icon } from "../../components/ui/Icon";
 import { Action } from "../../constants/types";
 
 interface Props extends Action {
@@ -34,7 +33,7 @@ export const FABActions: React.FC<Props> = ({
 			setIsAnimating(true);
 
 			actions.forEach((_, index) => {
-				const delay = Duration.normal / actions.length * (actions.length -1 - index);
+				const delay = Duration.normal / actions.length * (actions.length - 1 - index);
 
 				Animated.spring(animations[index], {
 					toValue: 1,
@@ -72,7 +71,7 @@ export const FABActions: React.FC<Props> = ({
 			<Animated.View
 				style={[
 					styles.background,
-					isExtended && {
+					shouldRenderActions && {
 						backgroundColor: `${theme.colors.background}ee`,
 						pointerEvents: 'auto'
 					},
@@ -107,12 +106,15 @@ export const FABActions: React.FC<Props> = ({
 										})
 									},
 								],
-							},
+							}
 						]}
 					>
 						<IconButton
 							icon={action.icon}
-							onPress={action.onPress}
+							onPress={() => {
+								action.onPress();
+								setIsExtended(false);
+							}}
 							onLongPress={action.onLongPress}
 							size={IconSize.sm}
 							label={action.label}
@@ -133,6 +135,7 @@ export const FABActions: React.FC<Props> = ({
 					icon={isExtended ? 'close' : icon}
 					onPress={() => setIsExtended(!isExtended)}
 					size={IconSize.lg}
+					label={label}
 					onLongPress={onLongPress}
 					disabled={isAnimating}
 					style={[

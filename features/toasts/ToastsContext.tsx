@@ -68,7 +68,6 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
 const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.container,
-		...GlobalStyles.content,
 		...GlobalStyles.slice,
 		position: 'absolute',
 		flexDirection: 'column-reverse'

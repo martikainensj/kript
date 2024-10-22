@@ -1,13 +1,13 @@
-import React, { createContext, useContext, useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, Animated } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Action } from './types';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import { GlobalStyles } from '../../constants';
 import { FABActions } from './FABActions';
+import { Action } from '../../constants/types';
 
 interface Props extends Action {
 	children: React.ReactNode;
 	actions?: Action[];
+	side?: 'left' | 'right';
 }
 
 export const FAB: React.FC<Props> = ({
