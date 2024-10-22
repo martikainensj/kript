@@ -82,31 +82,31 @@ export const ItemList: React.FC<ItemListProps> = ({
 			styles.container,
 			style
 		]}>
-				<FAB
-					actions={sortingOptions.map(sortingOption => {
-						return {
-							icon: sortingOption.icon,
-							label: sortingOption.name,
-							onPress: () => {
-								setSorting(sortingOption);
-							}
+			<FAB
+				actions={sortingOptions.map(sortingOption => {
+					return {
+						icon: sortingOption.icon,
+						label: sortingOption.name,
+						onPress: () => {
+							setSorting(sortingOption);
 						}
-					})}
-					side="left"
-				>
-					<FlatList
-						data={sortedData}
-						ItemSeparatorComponent={Divider}
-						ListEmptyComponent={<PlaceholderItem value={noItemsText ?? __('No items')} />}
-						keyExtractor={({ item }) => item._id.toString()}
-						renderItem={({ item }) => item.renderItem}
-						contentContainerStyle={[
-							styles.contentContainer,
-							sortingOptions?.length && { paddingBottom: Spacing.fab },
-							contentContainerStyle
-						]}
-					/>
-				</FAB>
+					}
+				})}
+				side="left"
+			>
+				<FlatList
+					data={sortedData}
+					ItemSeparatorComponent={Divider}
+					ListEmptyComponent={<PlaceholderItem value={noItemsText ?? __('No items')} />}
+					keyExtractor={({ item }) => item._id.toString()}
+					renderItem={({ item }) => item.renderItem}
+					contentContainerStyle={[
+						styles.contentContainer,
+						sortingOptions?.length && { paddingBottom: Spacing.fab },
+						contentContainerStyle
+					]}
+				/>
+			</FAB>
 		</View>
 	)
 }

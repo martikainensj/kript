@@ -5,7 +5,8 @@
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^4.6.3",
@@ -42,7 +43,9 @@
     "@realm/babel-plugin": "^0.2.0",
     "@types/react": "~18.2.0",
     "@types/react-native-get-random-values": "^1.8.2",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "eslint": "^8.57.0",
+    "eslint-config-expo": "~7.1.2"
   },
   "license": "Apache-2.0",
   "private": true
