@@ -3,7 +3,6 @@ import { LineChart as GiftedLineChart, LineChartPropsType, lineDataItem } from "
 import { Animated, LayoutChangeEvent, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { Title } from "../ui/Title";
 import { BorderRadius, FontSize, GlobalStyles, Spacing } from "../../constants";
-import { Menu } from "react-native-paper";
 import { Card } from "../ui/Card";
 import { Value } from "../ui/Value";
 import { IconButton } from "../buttons";
@@ -226,37 +225,6 @@ export const LineChart: React.FC<Props> = ({
 					<View style={styles.noticeWrapper}>
 						<Text>{__('Not enough data')}</Text>
 					</View>
-				}
-
-				{showTimeframe &&
-					<Menu
-						anchor={
-							<View style={[
-								styles.sortingContainer,
-								timeframeContainerStyle
-							]}>
-								{timeframe &&
-									<Text style={styles.sortingText}>
-										{timeframe.name}
-									</Text>
-								}
-								<IconButton
-									icon={'time-outline'}
-									onPress={() => setShowTimeframeOptions(true)} />
-							</View>
-						}
-						visible={showTimeframeOptions}
-						onDismiss={() => setShowTimeframeOptions(false)}
-						style={styles.menuContainer}>
-						{timeframeOptions.map((option, key) => {
-							return (
-								<Menu.Item
-									key={key}
-									title={option.name}
-									onPress={onPressTimeframeOption.bind(this, option)} />
-							)
-						})}
-					</Menu>
 				}
 			</Card>
 		</Animated.View>

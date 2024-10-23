@@ -78,7 +78,6 @@ export const LoginScreen = () => {
 							label={__('Email')}
 							value={email}
 							onChangeText={(value) => setEmail(value.toString())}
-							autoComplete={'email'}
 							textContentType={'emailAddress'}
 							autoCapitalize={'none'}
 							autoCorrect={false}
@@ -89,7 +88,6 @@ export const LoginScreen = () => {
 							value={password}
 							onChangeText={(value) => setPassword(value.toString())}
 							secureTextEntry
-							autoComplete={'password'}
 							textContentType={'password'}
 							placeholder={__('Password')} />
 					</View>
