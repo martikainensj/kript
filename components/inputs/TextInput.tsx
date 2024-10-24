@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Animated, StyleSheet, TextInputProps, View, TextInput as RNTextInput } from "react-native";
+import { Animated, StyleSheet, TextInputProps, View, TextInput as RNTextInput, LayoutChangeEvent } from "react-native";
 import { Text } from "../ui/Text";
 import { useTheme } from "../../features/theme/ThemeContext";
-import { BorderRadius, IconSize, Spacing } from "../../constants";
+import { BorderRadius, Spacing } from "../../constants";
 import { IconButton } from "../buttons";
 
 interface Props extends Omit<TextInputProps, 'value' | 'onChangeText'> {
@@ -35,6 +35,8 @@ export const TextInput: React.FC<Props> = ({
 	const { theme } = useTheme();
 	const [inputValue, setInputValue] = useState(value);
 	const [isFocused, setIsFocused] = useState(false);
+	const [labelWidth, setLabelWidth] = useState(0);
+	const [labelHeight, setLabelHeight] = useState(0);
 	const ref = useRef<RNTextInput>(null);
 	const inputAnim = useRef(new Animated.Value(value ? 1 : 0)).current;
 	const rightIsVisible = !disabled && editable && value;
@@ -81,6 +83,13 @@ export const TextInput: React.FC<Props> = ({
 		setInputValue(string);
 	};
 
+	// Measure label width on layout
+	const onLayoutLabel = (event: LayoutChangeEvent) => {
+		const { width, height } = event.nativeEvent.layout;
+		setLabelWidth(width);
+		setLabelHeight(height);
+	};
+
 	useEffect(() => {
 		if (keyboardType === 'numeric') {
 			const numberValue = parseFloat(inputValue?.toString());
@@ -109,21 +118,21 @@ export const TextInput: React.FC<Props> = ({
 		}).start();
 	}, [isFocused, inputValue]);
 
-	const labelYTranslate = inputAnim.interpolate({
+	const translateY = inputAnim.interpolate({
 		inputRange: [0, 1],
 		outputRange: [0, -Spacing.sm - 1],
 	});
-	const labelScale = inputAnim.interpolate({
+	const scale = inputAnim.interpolate({
 		inputRange: [0, 1],
 		outputRange: [1, 0.9],
 	});
-	const labelOpacity = inputAnim.interpolate({
+	const opacity = inputAnim.interpolate({
 		inputRange: [0, 1],
 		outputRange: [1, 0.7],
 	});
-	const labelXTranslate = inputAnim.interpolate({
+	const translateX = inputAnim.interpolate({
 		inputRange: [0, 1],
-		outputRange: [Spacing.sm, -1],
+		outputRange: [Spacing.sm, -labelWidth * 0.05],
 	});
 
 	return (
@@ -137,19 +146,21 @@ export const TextInput: React.FC<Props> = ({
 				style={[
 					styles.labelWrapper,
 					{
-						opacity: labelOpacity,
+						opacity,
 						transform: [
-							{ translateX: labelXTranslate },
-							{ translateY: labelYTranslate },
-							{ scale: labelScale }
+							{ translateX },
+							{ translateY },
+							{ scale }
 						]
 					}
 				]}
+				onLayout={onLayoutLabel}
 			>
 				<Text
 					fontSize="sm"
 					style={[
-						styles.labelContainer
+						styles.labelContainer,
+						{ top: -labelHeight * 0.5 }
 					]}
 				>
 					{label}
@@ -181,12 +192,12 @@ export const TextInput: React.FC<Props> = ({
 					]}
 				/>
 
-				{ rightIsVisible && (
+				{rightIsVisible && (
 					<IconButton
 						icon="close-circle"
 						onPress={() => {
-							onChangeText( null ),
 							ref.current.blur();
+							onChangeText(null);
 						}}
 					/>
 				)}
@@ -202,7 +213,8 @@ const styles = StyleSheet.create({
 	},
 	labelWrapper: {
 		position: 'absolute',
-		left: Spacing.sm
+		top: '50%',
+		left: Spacing.sm,
 	},
 	labelContainer: {
 	},
@@ -212,8 +224,8 @@ const styles = StyleSheet.create({
 	},
 	inputContainer: {
 		paddingHorizontal: Spacing.sm,
-		paddingTop: Spacing.md + 8,
-		paddingBottom: Spacing.md - 8,
+		paddingTop: Spacing.lg,
+		paddingBottom: Spacing.sm,
 		flexGrow: 1
 	},
 });
