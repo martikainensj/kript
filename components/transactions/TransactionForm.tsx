@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { View, StyleSheet, Keyboard, TouchableWithoutFeedback } from "react-native";
 
 import { IconButton } from "../buttons";
-import { DateInput, HoldingInput, TextInput } from "../inputs";
+import { DateInput, HoldingInput } from "../inputs";
 import { GlobalStyles, IconSize } from "../../constants";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
@@ -14,6 +14,7 @@ import { useI18n } from "../../features/i18n/I18nContext";
 import { useData } from "../../features/data/DataContext";
 import { useCategories } from "../../features/data/useCategories";
 import { CashCategory, LoanCategory, TradingCategory } from "../../features/data/types";
+import { TextInput } from "../inputs/TextInput";
 
 interface TransactionFormProps {
 	transaction: Partial<Transaction>,

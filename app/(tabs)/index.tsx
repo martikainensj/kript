@@ -16,7 +16,7 @@ import { useData } from '../../features/data/DataContext';
 import { useCharts } from '../../features/charts/useCharts';
 import { useFocusEffect } from 'expo-router';
 import { animateIn, animateOut } from '../../features/animations/animate';
-import { TextInput } from '../../components/inputs/TextInputNew';
+import { TextInput } from '../../components/inputs/TextInput';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();

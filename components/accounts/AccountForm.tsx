@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { View, StyleSheet, TouchableWithoutFeedback, Keyboard } from "react-native";
 
 import { IconButton } from "../buttons";
-import { TextInput } from "../inputs";
+import { TextInput } from "../inputs/TextInput";
 import { GlobalStyles, IconSize } from "../../constants";
 import { Account } from "../../models/Account";
 import { stripRealmListsFromObject } from "../../helpers";

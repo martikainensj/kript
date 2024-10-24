@@ -8,7 +8,7 @@ import { useTheme } from '../../features/theme/ThemeContext';
 import { useI18n } from '../../features/i18n/I18nContext';
 import { useAlert } from '../../features/alerts/AlertContext';
 import { Header } from '../../components/ui/Header';
-import { TextInput } from '../../components/inputs';
+import { TextInput } from '../../components/inputs/TextInput';
 import { DefaultButton } from '../../components/buttons';
 
 export const LoginScreen = () => {

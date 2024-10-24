@@ -3,7 +3,7 @@ import { StyleSheet, TextStyle, View, ViewStyle } from "react-native";
 import { Value } from "./Value";
 import { IconButton } from "../buttons";
 import { Spacing } from "../../constants";
-import { TextInput } from "../inputs";
+import { TextInput } from "../inputs/TextInput";
 
 interface EditableValueProps {
 	label: string;
