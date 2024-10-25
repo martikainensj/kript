@@ -184,8 +184,14 @@ export const TextInput: React.FC<Props> = ({
 					keyboardType={keyboardType}
 					editable={editable}
 					multiline={multiline}
-					onFocus={() => setIsFocused(true)}
-					onBlur={() => setIsFocused(false)}
+					onFocus={(e) => {
+						rest.onFocus?.(e);
+						setIsFocused(true)
+					}}
+					onBlur={(e) => {
+						rest.onBlur?.(e);
+						setIsFocused(false)
+					}}
 					style={[
 						styles.inputContainer,
 						{ color: theme.colors.onBackground }
