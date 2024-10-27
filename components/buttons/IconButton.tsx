@@ -50,13 +50,13 @@ export const IconButton: React.FC<IconButtonProps> = ({
 
 	const outgoingOpacity = animation.interpolate({
 		inputRange: [0, 1],
-		outputRange: [1, 0], // Fades out
+		outputRange: [1, 0],
 		extrapolate: 'clamp',
 	});
 
 	const incomingOpacity = animation.interpolate({
 		inputRange: [0, 1],
-		outputRange: [0, 1], // Fades in
+		outputRange: [0, 1],
 		extrapolate: 'clamp',
 	});
 
@@ -83,7 +83,10 @@ export const IconButton: React.FC<IconButtonProps> = ({
 				<Text
 					numberOfLines={1}
 					fontSize="md"
-					style={[styles.label, labelStyle]}
+					style={[
+						styles.label,
+						labelStyle
+					]}
 				>
 					{label}
 				</Text>
@@ -139,6 +142,6 @@ const styles = StyleSheet.create({
 		right: '100%',
 		width: 150,
 		paddingRight: Spacing.md,
-		textAlign: 'right'
+		textAlign: 'right',
 	}
 });

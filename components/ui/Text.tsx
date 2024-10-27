@@ -7,7 +7,6 @@ interface Props extends TextProps {
 	fontSize?: keyof typeof FontSize;
 	fontWeight?: FontWeightKey;
 	textAlign?: TextAlignKey;
-	style?: StyleProp<TextStyle>;
 }
 
 export const Text: React.FC<Props> = ({
@@ -15,7 +14,6 @@ export const Text: React.FC<Props> = ({
 	fontSize = 'sm',
 	fontWeight = 'regular',
 	textAlign = 'left',
-	style,
 	...rest
 }) => {
 	const { theme } = useTheme();
@@ -32,7 +30,7 @@ export const Text: React.FC<Props> = ({
 					color: theme.colors.onBackground,
 					textAlign,
 				},
-				style
+				rest.style
 			]}
 		>
 			{children}

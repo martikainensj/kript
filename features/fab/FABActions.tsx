@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Animated, StyleSheet, View } from "react-native";
-import { Duration, IconSize, Spacing } from "../../constants";
+import { Duration, FontWeight, IconSize, Spacing } from "../../constants";
 import { IconButton } from "../../components/buttons";
 import { useTheme } from "../theme/ThemeContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -21,91 +21,86 @@ export const FABActions: React.FC<Props> = ({
 }) => {
 	const { theme } = useTheme();
 	const insets = useSafeAreaInsets();
-	const animations = actions.map(() => useRef(new Animated.Value(0)).current);
-	const lastAnimation = animations[animations.length - 1];
+	const animation = useRef(new Animated.Value(0)).current;
 	const [isExtended, setIsExtended] = useState(false);
 	const [shouldRenderActions, setShouldRenderActions] = useState(false);
 	const [isAnimating, setIsAnimating] = useState(false);
 
+	const actionDelay = Duration.normal / actions.length;
+
 	useEffect(() => {
+		setIsAnimating(true);
+		
 		if (isExtended) {
 			setShouldRenderActions(true);
-			setIsAnimating(true);
-
-			actions.forEach((_, index) => {
-				const delay = Duration.normal / actions.length * (actions.length - 1 - index);
-
-				Animated.spring(animations[index], {
-					toValue: 1,
-					delay,
-					useNativeDriver: true,
-				}).start(() => {
-					if (index === actions.length - 1) {
-						setIsAnimating(false);
-					}
-				});
-			});
-		} else {
-			setIsAnimating(true);
-
-			actions.forEach((_, index) => {
-				Animated.spring(animations[index], {
-					toValue: 0,
-					useNativeDriver: true,
-				}).start(() => {
-					// Check if it's the last animation
-					if (index === actions.length - 1) {
-						const timeout = setTimeout(() => {
-							setShouldRenderActions(false); // Hide actions after animations
-							setIsAnimating(false); // Animation ends
-						}, Duration.normal);
-						return () => clearTimeout(timeout);
-					}
-				});
-			});
 		}
+
+		Animated.spring(animation, {
+			toValue: isExtended ? 1 : 0,
+			useNativeDriver: true,
+		}).start(() => {
+			setIsAnimating(false);
+
+			if (!isExtended) {
+				setShouldRenderActions(false);
+			}
+		});
 	}, [isExtended]);
 
-	return (
-		<>
-			<Animated.View
-				style={[
-					styles.background,
-					shouldRenderActions && {
-						backgroundColor: `${theme.colors.background}ee`,
-						pointerEvents: 'auto'
-					},
-					{ opacity: lastAnimation }
-				]}
-				pointerEvents="none"
-			/>
+return (
+	<>
+		<Animated.View
+			style={[
+				styles.background,
+				shouldRenderActions && {
+					backgroundColor: `${theme.colors.background}ee`,
+					pointerEvents: 'auto'
+				},
+				{ opacity: animation }
+			]}
+			pointerEvents="none"
+		/>
 
-			<View
-				style={[
-					styles.container,
-					{ marginBottom: insets.bottom },
-					side === 'left' && {
-						left: Spacing.md,
-						right: 'auto',
-						alignItems: 'flex-start'
-					}
-				]}
-			>
-				{shouldRenderActions && actions.map((action, index) => (
+		<View
+			style={[
+				styles.container,
+				{ marginBottom: Spacing.sm },
+				side === 'left' && {
+					left: Spacing.md,
+					right: 'auto',
+					alignItems: 'flex-start'
+				}
+			]}
+		>
+			{shouldRenderActions && actions.map((action, index) => {
+				const reversedIndex = actions.length - 1 - index;
+
+				const actionOpacity = animation.interpolate({
+					inputRange: [
+						(reversedIndex * actionDelay) / Duration.normal,
+						((reversedIndex + 1) * actionDelay) / Duration.normal,
+					],
+					outputRange: [0, 1],
+					extrapolate: 'clamp',
+				});
+
+				const translateY = animation.interpolate({
+					inputRange: [
+						(reversedIndex * actionDelay) / Duration.normal,
+						((reversedIndex + 1) * actionDelay) / Duration.normal,
+					],
+					outputRange: [Spacing.xl, 0],
+					extrapolate: 'clamp',
+				});
+
+				return (
 					<Animated.View
 						key={index}
 						style={[
 							styles.actionsWrapper,
 							{
-								opacity: animations[index],
-								transform: [
-									{
-										translateY: animations[index].interpolate({
-											inputRange: [0, 1],
-											outputRange: [20, 0],
-										})
-									},
-								],
+								opacity: actionOpacity,
+								transform: [{ translateY }]
 							}
 						]}
 					>
@@ -118,6 +113,7 @@ export const FABActions: React.FC<Props> = ({
 							onLongPress={action.onLongPress}
 							size={IconSize.sm}
 							label={action.label}
+							disabled={isAnimating}
 							labelStyle={[
 								side === 'left' && {
 									left: '100%',
@@ -129,31 +125,33 @@ export const FABActions: React.FC<Props> = ({
 							]}
 						/>
 					</Animated.View>
-				))}
+				);
+			})}
 
-				<IconButton
-					icon={isExtended ? 'close' : icon}
-					onPress={() => setIsExtended(!isExtended)}
-					size={IconSize.lg}
-					label={label}
-					onLongPress={onLongPress}
-					disabled={isAnimating}
-					style={[
-						styles.actionButton,
-					]}
-					labelStyle={[
-						side === 'left' && {
-							left: '100%',
-							right: 'auto',
-							paddingRight: 0,
-							paddingLeft: Spacing.md,
-							textAlign: 'left',
-						}
-					]}
-				/>
-			</View>
-		</>
-	);
+			<IconButton
+				icon={isExtended ? 'close' : icon}
+				onPress={() => setIsExtended(!isExtended)}
+				size={IconSize.lg}
+				label={label}
+				onLongPress={onLongPress}
+				disabled={isAnimating}
+				style={[
+					styles.actionButton,
+				]}
+				labelStyle={[
+					{ fontWeight: FontWeight.bold },
+					side === 'left' && {
+						left: '100%',
+						right: 'auto',
+						paddingRight: 0,
+						paddingLeft: Spacing.md,
+						textAlign: 'left',
+					}
+				]}
+			/>
+		</View>
+	</>
+);
 };
 
 const styles = StyleSheet.create({

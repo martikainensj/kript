@@ -83,7 +83,6 @@ export const TextInput: React.FC<Props> = ({
 		setInputValue(string);
 	};
 
-	// Measure label width on layout
 	const onLayoutLabel = (event: LayoutChangeEvent) => {
 		const { width, height } = event.nativeEvent.layout;
 		setLabelWidth(width);

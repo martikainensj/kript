@@ -27,7 +27,6 @@ export const LoginScreen = () => {
 		Keyboard.dismiss();
 	};
 
-	// Automatically log in after registration
 	useEffect(() => {
 		if (result.success && result.operation === AuthOperationName.Register) {
 			logInWithEmailPassword({ email, password });

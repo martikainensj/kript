@@ -5,7 +5,7 @@ export const Spacing = {
 	md: 16,
 	lg: 24,
 	xl: 32,
-	fab: 120
+	fab: 80
 };
 
 export const BorderRadius = {
