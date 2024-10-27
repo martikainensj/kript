@@ -194,7 +194,8 @@ export const TextInput: React.FC<Props> = ({
 					}}
 					style={[
 						styles.inputContainer,
-						{ color: theme.colors.onBackground }
+						{ color: theme.colors.onBackground },
+						rest.style
 					]}
 				/>
 

@@ -141,6 +141,15 @@ export const FABActions: React.FC<Props> = ({
 					style={[
 						styles.actionButton,
 					]}
+					labelStyle={[
+						side === 'left' && {
+							left: '100%',
+							right: 'auto',
+							paddingRight: 0,
+							paddingLeft: Spacing.md,
+							textAlign: 'left',
+						}
+					]}
 				/>
 			</View>
 		</>

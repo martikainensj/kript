@@ -83,6 +83,8 @@ export const ItemList: React.FC<ItemListProps> = ({
 			style
 		]}>
 			<FAB
+				icon={sorting.icon}
+				label={sorting.name}
 				actions={sortingOptions.map(sortingOption => {
 					return {
 						icon: sortingOption.icon,

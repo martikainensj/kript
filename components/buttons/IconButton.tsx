@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, TouchableOpacity, TouchableOpacityProps, Animated, View, ViewStyle, StyleProp, TextStyle } from 'react-native';
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps, Animated, View, StyleProp, TextStyle } from 'react-native';
 import { BorderRadius, Duration, IconSize, Spacing } from '../../constants';
 import { Icon } from '../ui/Icon';
 import { useTheme } from '../../features/theme/ThemeContext';
@@ -23,10 +23,8 @@ export const IconButton: React.FC<IconButtonProps> = ({
 	const { theme } = useTheme();
 	const [iconQueue, setIconQueue] = useState([icon]);
 	const [isAnimating, setIsAnimating] = useState(false);
-	const [isRotated, setIsRotated] = useState(false);
 
-	const fadeAnimOut = useRef(new Animated.Value(1)).current;
-	const fadeAnimIn = useRef(new Animated.Value(0)).current;
+	const animation = useRef(new Animated.Value(1)).current;
 
 	useEffect(() => {
 		if (iconQueue[0] === icon || isAnimating) return;
@@ -35,38 +33,37 @@ export const IconButton: React.FC<IconButtonProps> = ({
 	}, [icon]);
 
 	useEffect(() => {
-		if (
-			iconQueue.length < 2 ||
-			isAnimating
-		) {
-			return;
-		}
+		if (iconQueue.length < 2 || isAnimating) return;
 
-		fadeAnimIn.setValue(0);
+		animation.setValue(0);
 		setIsAnimating(true);
 
-		Animated.parallel([
-			Animated.timing(fadeAnimOut, {
-				toValue: 0,
-				duration: Duration.fast,
-				useNativeDriver: true,
-			}),
-			Animated.timing(fadeAnimIn, {
-				toValue: 1,
-				duration: Duration.fast,
-				useNativeDriver: true,
-			}),
-		]).start(() => {
-			setIconQueue((prevQueue) => prevQueue.slice(1)); 
-			fadeAnimOut.setValue(1);
+		Animated.timing(animation, {
+			toValue: 1,
+			duration: Duration.normal,
+			useNativeDriver: true,
+		}).start(() => {
+			setIconQueue((prevQueue) => prevQueue.slice(1));
 			setIsAnimating(false);
-			setIsRotated(!isRotated);
 		});
 	}, [iconQueue]);
-	
-	const rotate = fadeAnimIn.interpolate({
+
+	const outgoingOpacity = animation.interpolate({
 		inputRange: [0, 1],
-		outputRange: ['0deg', '180deg']
+		outputRange: [1, 0], // Fades out
+		extrapolate: 'clamp',
+	});
+
+	const incomingOpacity = animation.interpolate({
+		inputRange: [0, 1],
+		outputRange: [0, 1], // Fades in
+		extrapolate: 'clamp',
+	});
+
+	const rotation = animation.interpolate({
+		inputRange: [0, 1],
+		outputRange: ['0deg', '360deg'],
+		extrapolate: 'clamp',
 	});
 
 	return (
@@ -86,36 +83,35 @@ export const IconButton: React.FC<IconButtonProps> = ({
 				<Text
 					numberOfLines={1}
 					fontSize="md"
-					style={[
-						styles.label,
-						labelStyle
-					]}
+					style={[styles.label, labelStyle]}
 				>
 					{label}
 				</Text>
 			)}
 
-			{/* First icon in the queue (fading out) */}
-			<Animated.View
-				style={[
-					styles.iconWrapper,
-					{
-						opacity: fadeAnimOut,
-						transform: [{ rotate }]
-					}
-				]}
-			>
-				<Icon name={iconQueue[0]} size={size} color={theme.colors.primary} />
-			</Animated.View>
+			{/* Outgoing icon */}
+			{iconQueue[0] && (
+				<Animated.View
+					style={[
+						styles.iconWrapper,
+						{
+							opacity: iconQueue.length > 1 ? outgoingOpacity : 1,
+							transform: [{ rotate: rotation }],
+						}
+					]}
+				>
+					<Icon name={iconQueue[0]} size={size} color={theme.colors.primary} />
+				</Animated.View>
+			)}
 
-			{/* Second icon in the queue (fading in) */}
+			{/* Incoming icon */}
 			{iconQueue[1] && (
 				<Animated.View
 					style={[
 						styles.iconWrapper,
 						{
-							opacity: fadeAnimIn,
-							transform: [{ rotate }]
+							opacity: incomingOpacity,
+							transform: [{ rotate: rotation }],
 						}
 					]}
 				>
@@ -133,7 +129,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		borderRadius: BorderRadius.xl,
-		
 		position: 'relative',
 	},
 	iconWrapper: {
