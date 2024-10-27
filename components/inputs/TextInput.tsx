@@ -132,8 +132,8 @@ export const TextInput: React.FC<Props> = ({
 	});
 	const translateX = inputAnim.interpolate({
 		inputRange: [0, 1],
-		outputRange: [Spacing.sm, -labelWidth * 0.05],
-	});
+		outputRange: [0, -labelWidth * 0.05],
+	})
 
 	return (
 		<View
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
 	labelWrapper: {
 		position: 'absolute',
 		top: '50%',
-		left: Spacing.sm,
+		left: Spacing.md,
 	},
 	labelContainer: {
 	},
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center'
 	},
 	inputContainer: {
-		paddingHorizontal: Spacing.sm,
+		paddingHorizontal: Spacing.md,
 		paddingTop: Spacing.lg,
 		paddingBottom: Spacing.sm,
 		flexGrow: 1
