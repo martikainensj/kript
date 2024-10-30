@@ -21,32 +21,32 @@ export const IconButton: React.FC<IconButtonProps> = ({
 	...rest
 }) => {
 	const { theme } = useTheme();
-	const [iconQueue, setIconQueue] = useState([icon]);
-	const [isAnimating, setIsAnimating] = useState(false);
-
+	const [iconQueue, setIconQueue] = useState(new Set([icon]));
 	const animation = useRef(new Animated.Value(1)).current;
 
 	useEffect(() => {
-		if (iconQueue[0] === icon || isAnimating) return;
+		setIconQueue((prevQueue) => {
+			const queueArray = [...prevQueue];
+			const updatedQueue = new Set([queueArray[queueArray.length - 1], icon]);
 
-		setIconQueue((prevQueue) => [...prevQueue, icon]);
-	}, [icon]);
+			if (updatedQueue.size > 1) {
+				animation.setValue(0);
 
-	useEffect(() => {
-		if (iconQueue.length < 2 || isAnimating) return;
+				Animated.timing(animation, {
+					toValue: 1,
+					duration: Duration.normal,
+					useNativeDriver: true,
+				}).start(() => {
+					setIconQueue((queue) => {
+						const newQueueArray = [...queue].slice(1);
+						return new Set(newQueueArray);
+					});
+				});
+			}
 
-		animation.setValue(0);
-		setIsAnimating(true);
-
-		Animated.timing(animation, {
-			toValue: 1,
-			duration: Duration.normal,
-			useNativeDriver: true,
-		}).start(() => {
-			setIconQueue((prevQueue) => prevQueue.slice(1));
-			setIsAnimating(false);
+			return updatedQueue;
 		});
-	}, [iconQueue]);
+	}, [icon, animation]);
 
 	const outgoingOpacity = animation.interpolate({
 		inputRange: [0, 1],
@@ -92,23 +92,21 @@ export const IconButton: React.FC<IconButtonProps> = ({
 				</Text>
 			)}
 
-			{/* Outgoing icon */}
-			{iconQueue[0] && (
+			{Array.from(iconQueue)[0] && (
 				<Animated.View
 					style={[
 						styles.iconWrapper,
 						{
-							opacity: iconQueue.length > 1 ? outgoingOpacity : 1,
+							opacity: iconQueue.size > 1 ? outgoingOpacity : 1,
 							transform: [{ rotate: rotation }],
 						}
 					]}
 				>
-					<Icon name={iconQueue[0]} size={size} color={theme.colors.primary} />
+					<Icon name={Array.from(iconQueue)[0]} size={size} color={theme.colors.primary} />
 				</Animated.View>
 			)}
 
-			{/* Incoming icon */}
-			{iconQueue[1] && (
+			{Array.from(iconQueue)[1] && (
 				<Animated.View
 					style={[
 						styles.iconWrapper,
@@ -118,7 +116,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
 						}
 					]}
 				>
-					<Icon name={iconQueue[1]} size={size} color={theme.colors.primary} />
+					<Icon name={Array.from(iconQueue)[1]} size={size} color={theme.colors.primary} />
 				</Animated.View>
 			)}
 		</TouchableOpacity>

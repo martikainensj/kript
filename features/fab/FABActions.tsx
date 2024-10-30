@@ -3,7 +3,6 @@ import { Animated, StyleSheet, View } from "react-native";
 import { Duration, FontWeight, IconSize, Spacing } from "../../constants";
 import { IconButton } from "../../components/buttons";
 import { useTheme } from "../theme/ThemeContext";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Action } from "../../constants/types";
 
 interface Props extends Action {
@@ -20,31 +19,16 @@ export const FABActions: React.FC<Props> = ({
 	onLongPress,
 }) => {
 	const { theme } = useTheme();
-	const insets = useSafeAreaInsets();
 	const animation = useRef(new Animated.Value(0)).current;
 	const [isExtended, setIsExtended] = useState(false);
-	const [shouldRenderActions, setShouldRenderActions] = useState(false);
-	const [isAnimating, setIsAnimating] = useState(false);
 
 	const actionDelay = Duration.normal / actions.length;
 
 	useEffect(() => {
-		setIsAnimating(true);
-		
-		if (isExtended) {
-			setShouldRenderActions(true);
-		}
-
 		Animated.spring(animation, {
 			toValue: isExtended ? 1 : 0,
 			useNativeDriver: true,
-		}).start(() => {
-			setIsAnimating(false);
-
-			if (!isExtended) {
-				setShouldRenderActions(false);
-			}
-		});
+		}).start();
 	}, [isExtended]);
 
 return (
@@ -52,11 +36,13 @@ return (
 		<Animated.View
 			style={[
 				styles.background,
-				shouldRenderActions && {
-					backgroundColor: `${theme.colors.background}ee`,
+				isExtended && {
 					pointerEvents: 'auto'
 				},
-				{ opacity: animation }
+				{
+					backgroundColor: `${theme.colors.background}ee`,
+					opacity: animation
+				}
 			]}
 			pointerEvents="none"
 		/>
@@ -72,7 +58,7 @@ return (
 				}
 			]}
 		>
-			{shouldRenderActions && actions.map((action, index) => {
+			{actions.map((action, index) => {
 				const reversedIndex = actions.length - 1 - index;
 
 				const actionOpacity = animation.interpolate({
@@ -113,7 +99,6 @@ return (
 							onLongPress={action.onLongPress}
 							size={IconSize.sm}
 							label={action.label}
-							disabled={isAnimating}
 							labelStyle={[
 								side === 'left' && {
 									left: '100%',
@@ -134,7 +119,6 @@ return (
 				size={IconSize.lg}
 				label={label}
 				onLongPress={onLongPress}
-				disabled={isAnimating}
 				style={[
 					styles.actionButton,
 				]}
