@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Animated, StyleSheet, View } from "react-native";
-import { Duration, FontWeight, IconSize, Spacing } from "../../constants";
+import { BlurIntensity, Duration, FontWeight, IconSize, Spacing } from "../../constants";
 import { IconButton } from "../../components/buttons";
 import { useTheme } from "../theme/ThemeContext";
 import { Action } from "../../constants/types";
@@ -42,7 +42,7 @@ return (
 			]}
 			pointerEvents="none"
 		>
-			<BlurView intensity={40} style={StyleSheet.absoluteFill} />
+			<BlurView intensity={BlurIntensity.lg} style={StyleSheet.absoluteFill} />
 		</Animated.View>
 
 		<View

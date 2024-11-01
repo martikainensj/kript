@@ -3,7 +3,7 @@ import { AlertContextProps, AlertProps, AlertProviderProps, AlertType } from "./
 import { Animated, StyleSheet, View } from "react-native";
 import { DefaultButton } from "../../components/buttons";
 import { useI18n } from "../i18n/I18nContext";
-import { BorderRadius, Duration, GlobalStyles, Spacing } from "../../constants";
+import { BlurIntensity, BorderRadius, Duration, GlobalStyles, Spacing } from "../../constants";
 import { useTheme } from "../theme/ThemeContext";
 import { Text } from "../../components/ui/Text";
 import { BlurView } from "expo-blur";
@@ -57,7 +57,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
 
 			{current && visible && (
 				<Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-					<BlurView intensity={40} style={StyleSheet.absoluteFill} />
+					<BlurView intensity={BlurIntensity.lg} style={StyleSheet.absoluteFill} />
 					<Alert {...current} />
 				</Animated.View>
 			)}

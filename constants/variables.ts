@@ -29,3 +29,9 @@ export const Duration = {
 	normal: 250,
 	slow: 500
 }
+
+export const BlurIntensity = {
+	sm: 10,
+	md: 30,
+	lg: 50
+}
