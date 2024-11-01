@@ -641,6 +641,10 @@ const Translations: { [key: string]: LocaleTranslations } = {
 		fi_FI: 'Korkein arvo',
 		en_US: 'Highest value'
 	},
+	'timeframe': {
+		fi_FI: 'Aikaväli',
+		en_US: 'Timeframe'
+	},
 	'day': {
 		fi_FI: 'päivä',
 		en_US: 'day'

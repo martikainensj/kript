@@ -96,7 +96,7 @@ export const TabBar: React.FC<Props> = ({ descriptors, insets, navigation, state
 						>
 							<Text
 								numberOfLines={1}
-								fontSize="sm"
+								fontSize="xs"
 								style={{
 									color: theme.colors.onBackground
 								}}

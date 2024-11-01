@@ -1,93 +1,9 @@
 import React from "react";
 import { View, StyleSheet, ViewStyle, TextStyle } from "react-native";
-import { Spacing, GlobalStyles, FontSize } from "../../constants";
+import { Spacing, FontSize } from "../../constants";
 import { useTheme } from "../../features/theme/ThemeContext";
 import { Text } from "./Text";
-
-interface ValueWrapperProps {
-	value: string | number;
-	unit?: string;
-	isVertical?: boolean;
-	valueContainerStyle?: ViewStyle;
-	valueStyle?: TextStyle;
-	unitStyle?: TextStyle;
-	isPositive?: boolean;
-	isNegative?: boolean;
-}
-
-const ValueWrapper: React.FC<ValueWrapperProps> = ({
-	value,
-	unit,
-	isVertical,
-	valueContainerStyle,
-	valueStyle,
-	unitStyle,
-	isPositive,
-	isNegative
-}) => {
-	const { theme } = useTheme();
-
-	if (!value && value !== 0) {
-		return (
-			<View style={[styles.valueContainer, valueContainerStyle]}>
-				<Text style={[
-					styles.value,
-					{ color: theme.colors.onBackground },
-					valueStyle
-				]}>
-					{"-"}
-				</Text>
-
-				{unit && !isVertical &&
-					<Text style={[
-						styles.unit,
-						{ color: theme.colors.onBackground },
-						unitStyle
-					]}>{unit}</Text>
-				}
-			</View>
-		);
-	}
-
-	return (
-		<View style={[styles.valueContainer, valueContainerStyle]}>
-			<Text
-				fontWeight={isPositive || isNegative ? "semiBold" : "regular"}
-				style={[
-					styles.value,
-					valueStyle,
-					isPositive && {
-						color: theme.colors.success
-					},
-					isNegative && {
-						color: theme.colors.error,
-					},
-				]}
-			>
-				{value}
-			</Text>
-
-			{unit && !isVertical &&
-				<Text
-					fontWeight={isPositive || isNegative ? "semiBold" : "regular"}
-					style={[
-						styles.unit, { marginLeft: Spacing.xxs }, unitStyle,
-						isPositive && {
-							color: theme.colors.success,
-						},
-						isNegative && {
-							color: theme.colors.error
-						},
-					]}
-				>
-					{unit}
-				</Text>
-			}
-		</View>
-	);
-};
-
-interface ValueProps {
+interface Props {
 	label?: string;
 	value: string | number;
 	containerStyle?: ViewStyle;
@@ -102,7 +18,7 @@ interface ValueProps {
 	isNegative?: boolean;
 }
 
-export const Value: React.FC<ValueProps> = ({
+export const Value: React.FC<Props> = ({
 	label,
 	value,
 	containerStyle,
@@ -113,35 +29,84 @@ export const Value: React.FC<ValueProps> = ({
 	unitStyle,
 	isVertical = false,
 	unit = null,
-	isPositive,
-	isNegative,
+	isPositive = false,
+	isNegative = false,
 }) => {
+	const { theme } = useTheme();
+
 	return (
-		<View style={[
-			styles.container,
-			isVertical ? styles.vertical : styles.horizontal,
-			containerStyle
-		]}>
+		<View
+			style={[
+				styles.container,
+				isVertical ? styles.vertical : styles.horizontal,
+				containerStyle
+			]}
+		>
 			{(!!label || isVertical) &&
-				<View style={[styles.labelContainer, labelContainerStyle]}>
-					<Text style={[styles.label, labelStyle]}>{label}</Text>
+				<View
+					style={[
+						styles.labelContainer,
+						labelContainerStyle
+					]}
+				>
+					<Text
+						fontWeight="semiBold"
+						fontSize="xs"
+						style={[
+							styles.label,
+							labelStyle
+						]}
+					>
+						{label}
+					</Text>
 
 					{unit && isVertical && (
-						<Text style={[styles.unit, unitStyle]}>{unit}</Text>
+						<Text
+							fontSize="xs"
+							style={[
+								styles.unit,
+								unitStyle
+							]}
+						>
+							{unit}
+						</Text>
 					)}
 				</View>
 			}
 
-			<ValueWrapper
-				value={value}
-				unit={unit}
-				valueContainerStyle={valueContainerStyle}
-				valueStyle={valueStyle}
-				unitStyle={unitStyle}
-				isVertical={isVertical}
-				isPositive={isPositive}
-				isNegative={isNegative}
-			/>
+			<View
+				style={[
+					styles.valueContainer,
+					valueContainerStyle
+				]}
+			>
+				<Text
+					fontWeight={isPositive || isNegative ? "semiBold" : "regular"}
+					style={[
+						styles.value,
+						valueStyle,
+						isPositive && { color: theme.colors.success },
+						isNegative && { color: theme.colors.error },
+					]}
+				>
+					{!value && value !== 0 ? "-" : value}
+				</Text>
+
+				{unit && !isVertical &&
+					<Text
+						fontWeight={isPositive || isNegative ? "semiBold" : "regular"}
+						style={[
+							styles.unit,
+							{ marginLeft: Spacing.xxs },
+							unitStyle,
+							isPositive && { color: theme.colors.success },
+							isNegative && { color: theme.colors.error },
+						]}
+					>
+						{unit}
+					</Text>
+				}
+			</View>
 		</View>
 	);
 };

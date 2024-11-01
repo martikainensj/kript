@@ -87,10 +87,6 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 	}
 
 	const onSelectChip = ( value: ChipProps ) => {
-		setChipsValue( value.value );
-		setValue( value.value );
-		setInputValue( value.label );
-		setCanShowChips( false );
 	}
 
 	return (
@@ -118,7 +114,12 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 							}
 						} ) }
 						value={ chipsValue }
-						setValue={ onSelectChip } />
+						setValue={(value) => {
+							setChipsValue( value );
+							setValue( value );
+							setInputValue( value );
+							setCanShowChips( false );
+						}} />
 				</View>
 			}
 		</View>

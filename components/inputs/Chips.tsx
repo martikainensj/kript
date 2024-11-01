@@ -1,69 +1,85 @@
 import React, { useMemo } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { BorderRadius, Spacing } from "../../constants";
 import { ChipButton } from "../buttons/ChipButton";
+import { Text } from "../ui/Text";
 
-export interface ChipProps {
-	label: string
-	value: any
+export interface ChipProps<T = any> {
+	label: string;
+	value: T;
 }
 
-interface ChipsProps {
-	value: any,
-	setValue: React.Dispatch<React.SetStateAction<any>>
-	items: ChipProps[]
+interface ChipsProps<T> {
+	label?: string;
+	value: T;
+	setValue: React.Dispatch<React.SetStateAction<T>>;
+	items: ChipProps<T>[];
 }
 
-export const Chips: React.FC<ChipsProps> = ( {
-	value,
-	setValue,
-	items,
-} ) => {
-	const uniqueValues = useMemo( () => {
+export const Chips = <T,>({ label, value, setValue, items }: ChipsProps<T>) => {
+	const uniqueValues = useMemo(() => {
 		const seen = new Set();
 
-		return items.filter( item => {
-			const value = item.value;
-			if ( seen.has( value ) ) {
+		return items.filter(item => {
+			const itemValue = item.value;
+			if (seen.has(itemValue)) {
 				return false;
-			} 
-			
-			seen.add( value );
+			}
+
+			seen.add(itemValue);
 			return true;
-		} );
-	}, [items] );
+		});
+	}, [items]);
 
-	const onPressHandler = ( item: ChipProps ) => {
-		setValue( item );
-	}
-	
+	const onPressHandler = (item: ChipProps<T>) => {
+		setValue(item.value);
+	};
+
 	return (
-		<ScrollView
-			horizontal={ true }
-			keyboardShouldPersistTaps="handled"
-			showsHorizontalScrollIndicator={ false }
-			contentContainerStyle={ styles.contentContainer }>
-			{ uniqueValues.map( ( chip, key ) => (
-				<ChipButton
-					key={ key }
-					selected={ chip.value === value }
-					onPress={ onPressHandler.bind( this, chip ) }
-					style={ styles.chip }>
-					{ chip.label }
-				</ChipButton>
-			) ) }
-		</ScrollView>
-	);
-}
+		<View
+			style={styles.container}
+		>
+			{!!label && (
+				<Text
+					fontSize="xs"
+					fontWeight="semiBold"
+				>
+					{label}
+				</Text>
+			)}
 
-const styles = StyleSheet.create( {
+			<ScrollView
+				horizontal={true}
+				keyboardShouldPersistTaps="handled"
+				showsHorizontalScrollIndicator={false}
+				style={{marginHorizontal: -Spacing.md}}
+				contentContainerStyle={styles.contentContainer}>
+				{uniqueValues.map((chip, key) => (
+					<ChipButton
+						key={key}
+						selected={chip.value === value}
+						onPress={() => onPressHandler(chip)}
+						style={styles.chip}>
+						{chip.label}
+					</ChipButton>
+				))}
+			</ScrollView>
+		</View>
+	);
+};
+
+const styles = StyleSheet.create({
+	container: {
+		gap: Spacing.xs,
+		paddingHorizontal: Spacing.md
+	},
 	contentContainer: {
 		gap: Spacing.sm,
-		paddingHorizontal: Spacing.md
+		paddingHorizontal: Spacing.md,
 	},
 	chip: {
 		borderRadius: BorderRadius.xl
 	}
-} );
+});

@@ -66,7 +66,6 @@ export const Select: React.FC<Props> = ({
 							disabled={active}
 						>
 							<Text
-								fontWeight={ active ? 'semiBold' : 'regular' }
 								textAlign='center'
 								style={[
 									active && {

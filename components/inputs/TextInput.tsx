@@ -94,7 +94,7 @@ export const TextInput: React.FC<Props> = ({
 			const numberValue = parseFloat(inputValue?.toString());
 
 			if (isNaN(numberValue)) {
-				return onChangeText(null);
+				return onChangeText("");
 			}
 
 			return onChangeText(numberValue);
@@ -203,7 +203,7 @@ export const TextInput: React.FC<Props> = ({
 						icon="close-circle"
 						onPress={() => {
 							ref.current.blur();
-							onChangeText(null);
+							onChangeText("");
 						}}
 					/>
 				)}

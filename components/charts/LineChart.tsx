@@ -14,6 +14,8 @@ import { useStorage } from "../../features/storage/useStorage";
 import { TimeframeProps } from "../../features/charts/types";
 import { useCharts } from "../../features/charts/useCharts";
 import { Text } from "../ui/Text";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Chips } from "../inputs";
 
 interface Props {
 	id: string,
@@ -36,10 +38,10 @@ export const LineChart: React.FC<Props> = ({
 	const { theme } = useTheme();
 	const { get, set } = useStorage();
 	const { TimeframeTypes } = useCharts();
+	const insets = useSafeAreaInsets();
 	const [lineChartWidth, setLineChartWidth] = useState(0);
 
 	const [timeframe, setTimeframe] = useState<TimeframeProps>(TimeframeTypes.ytd);
-	const [showTimeframeOptions, setShowTimeframeOptions] = useState(false);
 
 	const timeframedData = useMemo(() => {
 		const filteredData = filterDataByInterval(data, timeframe?.interval ?? 'weekly', timeframe?.range);
@@ -87,7 +89,6 @@ export const LineChart: React.FC<Props> = ({
 	};
 
 	const onPressTimeframeOption = (option: TimeframeProps) => {
-		setShowTimeframeOptions(false);
 		setTimeframe(option);
 
 		get('@filters/timeframe').then(filtersTimeframe => {
@@ -181,52 +182,68 @@ export const LineChart: React.FC<Props> = ({
 	return (
 		<Animated.View
 			onLayout={onLayout}
-			style={styles.container}>
-			<Card style={{ paddingHorizontal: 0, borderRadius: 0 }}>
-				<View style={styles.headerContainer}>
-					<Title>{label}</Title>
-					<Value
-						value={prettifyNumber(lastValue, 0)}
-						unit={unit}
-						isPositive={lastValue > 0}
-						isNegative={lastValue < 0}
-						valueStyle={styles.lastValue}
-						unitStyle={styles.lastValueUnit} />
+			style={[
+				styles.container,
+				{ marginBottom: insets.bottom }
+			]}
+		>
+			<View style={styles.headerContainer}>
+				<Title>{label}</Title>
+				<Value
+					value={prettifyNumber(lastValue, 0)}
+					unit={unit}
+					isPositive={lastValue > 0}
+					isNegative={lastValue < 0}
+					valueStyle={styles.lastValue}
+					unitStyle={styles.lastValueUnit} />
+			</View>
+
+			{showChart &&
+				<View style={styles.lineChartWrapper}>
+					<GiftedLineChart
+						curved
+						curveType={1}
+						data={timeframedData}
+						{...xAxis}
+						{...yAxis}
+						{...rules}
+						width={lineChartWidth}
+						height={lineChartWidth / 2}
+						initialSpacing={0}
+						thickness={2}
+						hideDataPoints
+						adjustToWidth
+						pointerConfig={pointerConfig}
+						areaChart
+						color={chartColor}
+						startFillColor={chartColor}
+						endFillColor={'transparent'}
+						startOpacity={0.3}
+						endOpacity={0} />
 				</View>
+			}
 
-				{showChart &&
-					<View style={styles.lineChartWrapper}>
-						<GiftedLineChart
-							curved
-							curveType={1}
-							animationDuration={1500}
-							isAnimated
-							data={timeframedData}
-							{...xAxis}
-							{...yAxis}
-							{...rules}
-							width={lineChartWidth}
-							height={lineChartWidth / 2}
-							initialSpacing={0}
-							thickness={2}
-							hideDataPoints
-							adjustToWidth
-							pointerConfig={pointerConfig}
-							areaChart
-							color={chartColor}
-							startFillColor={chartColor}
-							endFillColor={'transparent'}
-							startOpacity={0.3}
-							endOpacity={0} />
-					</View>
-				}
+			{!showChart &&
+				<View style={styles.noticeWrapper}>
+					<Text>{__('Not enough data')}</Text>
+				</View>
+			}
 
-				{!showChart &&
-					<View style={styles.noticeWrapper}>
-						<Text>{__('Not enough data')}</Text>
-					</View>
-				}
-			</Card>
+			{(showChart && !!timeframeOptions.length) && (
+				<View>
+					<Chips
+						label={__("Timeframe")}
+						items={timeframeOptions.map(option => {
+							return {
+								label: option.name,
+								value: option
+							}
+						})}
+						value={timeframe}
+						setValue={onPressTimeframeOption}
+					/>
+				</View>
+			)}
 		</Animated.View>
 	)
 }
@@ -247,7 +264,7 @@ const styles = StyleSheet.create({
 	},
 	noticeWrapper: {
 		...GlobalStyles.slice,
-		marginTop: Spacing.md
+		marginBottom: Spacing.md
 	},
 	xAxisLabelText: {
 		display: 'none'
