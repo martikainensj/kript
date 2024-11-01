@@ -6,6 +6,7 @@ import { useI18n } from "../i18n/I18nContext";
 import { BorderRadius, Duration, GlobalStyles, Spacing } from "../../constants";
 import { useTheme } from "../theme/ThemeContext";
 import { Text } from "../../components/ui/Text";
+import { BlurView } from "expo-blur";
 
 const AlertContext = createContext<AlertContextProps>({
 	show: () => { },
@@ -56,6 +57,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
 
 			{current && visible && (
 				<Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+					<BlurView intensity={40} style={StyleSheet.absoluteFill} />
 					<Alert {...current} />
 				</Animated.View>
 			)}
@@ -134,7 +136,6 @@ const styles = StyleSheet.create({
 		bottom: 0,
 		alignItems: 'center',
 		justifyContent: 'center',
-		backgroundColor: "rgba(0, 0, 0, 0.6)",
 	},
 	alert: {
 		minWidth: '80%',

@@ -4,6 +4,7 @@ import { Duration, FontWeight, IconSize, Spacing } from "../../constants";
 import { IconButton } from "../../components/buttons";
 import { useTheme } from "../theme/ThemeContext";
 import { Action } from "../../constants/types";
+import { BlurView } from "expo-blur";
 
 interface Props extends Action {
 	actions?: Action[];
@@ -36,16 +37,13 @@ return (
 		<Animated.View
 			style={[
 				styles.background,
-				isExtended && {
-					pointerEvents: 'auto'
-				},
-				{
-					backgroundColor: `${theme.colors.background}ee`,
-					opacity: animation
-				}
+				isExtended && { pointerEvents: 'auto' },
+				{	opacity: animation }
 			]}
 			pointerEvents="none"
-		/>
+		>
+			<BlurView intensity={40} style={StyleSheet.absoluteFill} />
+		</Animated.View>
 
 		<View
 			style={[
