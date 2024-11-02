@@ -14,7 +14,6 @@ import { useStorage } from "../../features/storage/useStorage";
 import { TimeframeProps } from "../../features/charts/types";
 import { useCharts } from "../../features/charts/useCharts";
 import { Text } from "../ui/Text";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Chips } from "../inputs";
 
 interface Props {
@@ -38,7 +37,6 @@ export const LineChart: React.FC<Props> = ({
 	const { theme } = useTheme();
 	const { get, set } = useStorage();
 	const { TimeframeTypes } = useCharts();
-	const insets = useSafeAreaInsets();
 	const [lineChartWidth, setLineChartWidth] = useState(0);
 
 	const [timeframe, setTimeframe] = useState<TimeframeProps>(TimeframeTypes.ytd);
@@ -184,7 +182,6 @@ export const LineChart: React.FC<Props> = ({
 			onLayout={onLayout}
 			style={[
 				styles.container,
-				{ marginBottom: insets.bottom }
 			]}
 		>
 			<View style={styles.headerContainer}>
