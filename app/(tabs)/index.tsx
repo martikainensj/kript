@@ -17,6 +17,7 @@ import { useCharts } from '../../features/charts/useCharts';
 import { useFocusEffect } from 'expo-router';
 import { animateIn, animateOut } from '../../features/animations/animate';
 import { TextInput } from '../../components/inputs/TextInput';
+import { useBottomSheet } from '../../features/bottomSheet/BottomSheetContext';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();
@@ -27,6 +28,7 @@ const Home: React.FC = () => {
 	const { show } = useAlert();
 	const [testValue, setTestValue] = useState<string | number>('');
 	const focusAnim = useRef(new Animated.Value(0)).current;
+	const { addBottomSheet, openBottomSheet } = useBottomSheet();
 
 	const logOutHandler = () => {
 		show({
@@ -134,6 +136,29 @@ const Home: React.FC = () => {
 					<Grid columns={2} items={overviewCharts} />
 				</View>
 			</View>
+			<DefaultButton
+				onPress={() => {
+					const id =
+						addBottomSheet(<LineChart
+							id={"overall-net-value-chart"}
+							label={__("Overall Net Value")}
+							unit={"€"}
+							data={overallNetValue}
+							timeframeOptions={[
+								TimeframeTypes.ytd,
+								TimeframeTypes["1year"],
+								TimeframeTypes["3year"],
+								TimeframeTypes["5year"],
+								TimeframeTypes.max
+							]}
+						/>
+						);
+					openBottomSheet(id);
+				}}
+			>
+				Test
+			</DefaultButton>
+
 		</Animated.View>
 	);
 };

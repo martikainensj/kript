@@ -8,7 +8,6 @@ import { StatusBar } from 'expo-status-bar';
 import { SplashScreen, Stack } from 'expo-router';
 
 import { GlobalStyles } from '../constants';
-import { BottomSheetProvider } from '../contexts/BottomSheetContext';
 import { ChartSheetProvider } from '../contexts/ChartSheetContext';
 import { AlertProvider } from '../features/alerts/AlertContext';
 import { ThemeProvider } from '../features/theme/ThemeContext';
@@ -17,6 +16,7 @@ import { RealmProvider } from '../features/realm/RealmContext';
 import { useFonts } from 'expo-font';
 import { RootNavigation } from '../features/navigation/RootNavigation';
 import { ToastProvider } from '../features/toasts/ToastsContext';
+import { BottomSheetProvider } from '../features/bottomSheet/BottomSheetContext';
 
 export default function AppLayout() {
 	const [loaded, error] = useFonts({
