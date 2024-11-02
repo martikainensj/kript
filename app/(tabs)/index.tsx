@@ -132,12 +132,6 @@ const Home: React.FC = () => {
 			<View style={styles.content}>
 				<View style={styles.slice}>
 					<Grid columns={2} items={overviewCharts} />
-					<TextInput
-						label="Test"
-						value={testValue}
-						onChangeText={setTestValue}
-						keyboardType="numeric"
-					/>
 				</View>
 			</View>
 		</Animated.View>
