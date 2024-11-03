@@ -17,6 +17,7 @@ const AlertContext = createContext<AlertContextProps>({
 export const useAlert = () => useContext(AlertContext);
 
 export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
+	const { theme } = useTheme();
 	const [current, setCurrent] = useState<AlertProps<AlertType> | null>(null);
 	const [visible, setVisible] = useState(false);
 	const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -57,7 +58,11 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
 
 			{current && visible && (
 				<Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-					<BlurView intensity={BlurIntensity.lg} style={StyleSheet.absoluteFill} />
+					<BlurView
+						intensity={BlurIntensity.lg}
+						style={StyleSheet.absoluteFill}
+						tint={theme.dark ? "light" : "dark"}
+					/>
 					<Alert {...current} />
 				</Animated.View>
 			)}
@@ -97,7 +102,7 @@ const Alert = <T extends AlertType>({ title, message, params }: AlertProps<T>) =
 			<View style={styles.buttons}>
 				{"onCancel" in params && (
 					<DefaultButton
-						style={ styles.button }
+						style={styles.button}
 						onPress={() => handler(params.onCancel)}
 					>
 						{params.cancelText ?? __("Cancel")}
@@ -106,7 +111,7 @@ const Alert = <T extends AlertType>({ title, message, params }: AlertProps<T>) =
 
 				{"onConfirm" in params && (
 					<DefaultButton
-						style={ styles.button }
+						style={styles.button}
 						onPress={() => handler(params.onConfirm)}
 					>
 						{params.confirmText ?? __("OK")}
@@ -115,7 +120,7 @@ const Alert = <T extends AlertType>({ title, message, params }: AlertProps<T>) =
 
 				{"onDismiss" in params && (
 					<DefaultButton
-						style={ styles.button }
+						style={styles.button}
 						onPress={() => handler(params.onDismiss)}
 					>
 						{params.dismissText ?? __("OK")}

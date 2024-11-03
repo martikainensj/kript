@@ -32,108 +32,111 @@ export const FABActions: React.FC<Props> = ({
 		}).start();
 	}, [isExtended]);
 
-return (
-	<>
-		<Animated.View
-			style={[
-				styles.background,
-				isExtended && { pointerEvents: 'auto' },
-				{	opacity: animation }
-			]}
-			pointerEvents="none"
-		>
-			<BlurView intensity={BlurIntensity.lg} style={StyleSheet.absoluteFill} />
-		</Animated.View>
-
-		<View
-			style={[
-				styles.container,
-				{ marginBottom: Spacing.sm },
-				side === 'left' && {
-					left: Spacing.md,
-					right: 'auto',
-					alignItems: 'flex-start'
-				}
-			]}
-		>
-			{actions.map((action, index) => {
-				const reversedIndex = actions.length - 1 - index;
-
-				const actionOpacity = animation.interpolate({
-					inputRange: [
-						(reversedIndex * actionDelay) / Duration.normal,
-						((reversedIndex + 1) * actionDelay) / Duration.normal,
-					],
-					outputRange: [0, 1],
-					extrapolate: 'clamp',
-				});
-
-				const translateY = animation.interpolate({
-					inputRange: [
-						(reversedIndex * actionDelay) / Duration.normal,
-						((reversedIndex + 1) * actionDelay) / Duration.normal,
-					],
-					outputRange: [Spacing.xl, 0],
-					extrapolate: 'clamp',
-				});
-
-				return (
-					<Animated.View
-						key={index}
-						style={[
-							styles.actionsWrapper,
-							{
-								opacity: actionOpacity,
-								transform: [{ translateY }]
-							}
-						]}
-					>
-						<IconButton
-							icon={action.icon}
-							onPress={() => {
-								action.onPress();
-								setIsExtended(false);
-							}}
-							onLongPress={action.onLongPress}
-							size={IconSize.sm}
-							label={action.label}
-							labelStyle={[
-								side === 'left' && {
-									left: '100%',
-									right: 'auto',
-									paddingRight: 0,
-									paddingLeft: Spacing.md,
-									textAlign: 'left',
-								}
-							]}
-						/>
-					</Animated.View>
-				);
-			})}
-
-			<IconButton
-				icon={isExtended ? 'close' : icon}
-				onPress={() => setIsExtended(!isExtended)}
-				size={IconSize.lg}
-				label={label}
-				onLongPress={onLongPress}
+	return (
+		<>
+			<Animated.View
 				style={[
-					styles.actionButton,
+					styles.background,
+					isExtended && { pointerEvents: 'auto' },
+					{ opacity: animation }
 				]}
-				labelStyle={[
-					{ fontWeight: FontWeight.bold },
+				pointerEvents="none"
+			>
+				<BlurView
+					intensity={BlurIntensity.lg}
+					style={StyleSheet.absoluteFill}
+				/>
+			</Animated.View>
+
+			<View
+				style={[
+					styles.container,
+					{ marginBottom: Spacing.sm },
 					side === 'left' && {
-						left: '100%',
+						left: Spacing.md,
 						right: 'auto',
-						paddingRight: 0,
-						paddingLeft: Spacing.md,
-						textAlign: 'left',
+						alignItems: 'flex-start'
 					}
 				]}
-			/>
-		</View>
-	</>
-);
+			>
+				{actions.map((action, index) => {
+					const reversedIndex = actions.length - 1 - index;
+
+					const actionOpacity = animation.interpolate({
+						inputRange: [
+							(reversedIndex * actionDelay) / Duration.normal,
+							((reversedIndex + 1) * actionDelay) / Duration.normal,
+						],
+						outputRange: [0, 1],
+						extrapolate: 'clamp',
+					});
+
+					const translateY = animation.interpolate({
+						inputRange: [
+							(reversedIndex * actionDelay) / Duration.normal,
+							((reversedIndex + 1) * actionDelay) / Duration.normal,
+						],
+						outputRange: [Spacing.xl, 0],
+						extrapolate: 'clamp',
+					});
+
+					return (
+						<Animated.View
+							key={index}
+							style={[
+								styles.actionsWrapper,
+								{
+									opacity: actionOpacity,
+									transform: [{ translateY }]
+								}
+							]}
+						>
+							<IconButton
+								icon={action.icon}
+								onPress={() => {
+									action.onPress();
+									setIsExtended(false);
+								}}
+								onLongPress={action.onLongPress}
+								size={IconSize.sm}
+								label={action.label}
+								labelStyle={[
+									side === 'left' && {
+										left: '100%',
+										right: 'auto',
+										paddingRight: 0,
+										paddingLeft: Spacing.md,
+										textAlign: 'left',
+									}
+								]}
+							/>
+						</Animated.View>
+					);
+				})}
+
+				<IconButton
+					icon={isExtended ? 'close' : icon}
+					onPress={() => setIsExtended(!isExtended)}
+					size={IconSize.lg}
+					label={label}
+					onLongPress={onLongPress}
+					style={[
+						styles.actionButton,
+					]}
+					labelStyle={[
+						{ fontWeight: FontWeight.bold },
+						side === 'left' && {
+							left: '100%',
+							right: 'auto',
+							paddingRight: 0,
+							paddingLeft: Spacing.md,
+							textAlign: 'left',
+						}
+					]}
+				/>
+			</View>
+		</>
+	);
 };
 
 const styles = StyleSheet.create({

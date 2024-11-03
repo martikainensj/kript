@@ -18,6 +18,7 @@ import { useFocusEffect } from 'expo-router';
 import { animateIn, animateOut } from '../../features/animations/animate';
 import { TextInput } from '../../components/inputs/TextInput';
 import { useBottomSheet } from '../../features/bottomSheet/BottomSheetContext';
+import { Text } from '../../components/ui/Text';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();
@@ -132,9 +133,13 @@ const Home: React.FC = () => {
 					]}
 				/>
 			)
-		}
-
-		)
+		});
+		register({
+			id: "test",
+			component: (
+				<Text>Test</Text>
+			)
+		});
 	}, []);
 
 	return (
@@ -167,6 +172,13 @@ const Home: React.FC = () => {
 				Test
 			</DefaultButton>
 
+			<DefaultButton
+				onPress={() => {
+					open("test");
+				}}
+			>
+				Test
+			</DefaultButton>
 		</Animated.View>
 	);
 };
