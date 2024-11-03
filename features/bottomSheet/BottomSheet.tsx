@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, StyleSheet, View } from "react-native";
-import { PanGestureHandler, ScrollView, HandlerStateChangeEvent, PanGestureHandlerEventPayload, GestureEvent } from "react-native-gesture-handler";
+import { PanGestureHandler, ScrollView, HandlerStateChangeEvent, PanGestureHandlerEventPayload, GestureEvent, PanGestureHandlerGestureEvent } from "react-native-gesture-handler";
 import { BorderRadius, Duration, GlobalStyles, Spacing } from "../../constants";
 import { useTheme } from "../theme/ThemeContext";
+import { ANIMATION_DURATION, DISMISS_THRESHOLD, DRAG_RESISTANCE_FACTOR } from "./constants";
 
 interface Props {
 	children: React.ReactNode;
@@ -18,39 +19,43 @@ export const BottomSheet: React.FC<Props> = ({
 	onClose
 }) => {
 	const { theme } = useTheme();
-	const translationY = useRef(new Animated.Value(500)).current; // Start off-screen
+	const translationYAnim = useRef(new Animated.Value(500)).current; // Start off-screen
 
 	useEffect(() => {
-		// Show the BottomSheet when it becomes visible
 		if (isVisible) {
-			Animated.spring(translationY, {
+			Animated.spring(translationYAnim, {
 				toValue: 0,
 				useNativeDriver: true,
 			}).start();
 		} else {
-			Animated.timing(translationY, {
-				toValue: 500, // Move it off-screen
-				duration: Duration.fast,
+			Animated.timing(translationYAnim, {
+				toValue: 500,
+				duration: ANIMATION_DURATION,
 				useNativeDriver: true,
 			}).start();
 		}
 	}, [isVisible]);
 
-	const onGestureEvent = (event: GestureEvent<PanGestureHandlerEventPayload>) => {
-		// Update the translationY value based on the gesture
-		translationY.setValue(Math.max(event.nativeEvent.translationY, 0));
-	};
+	const onGestureEvent = (e: PanGestureHandlerGestureEvent) => {
+		const { translationY } = e.nativeEvent;
+
+		if (translationY < 0) {
+			translationYAnim.setValue(translationY / (1 - translationY * DRAG_RESISTANCE_FACTOR));
+		} else {
+			translationYAnim.setValue(translationY);
+		}
+	}
 
 	const onHandlerStateChange = (event: HandlerStateChangeEvent<PanGestureHandlerEventPayload>) => {
-		if (event.nativeEvent.state === 5) { // Gesture state: END
-			if (event.nativeEvent.translationY > 100) { // Adjust the threshold as needed
-				Animated.timing(translationY, {
-					toValue: 500, // Move it off-screen
+		if (event.nativeEvent.state === 5) {
+			if (event.nativeEvent.translationY > DISMISS_THRESHOLD) {
+				Animated.timing(translationYAnim, {
+					toValue: 500,
 					duration: Duration.fast,
 					useNativeDriver: true,
 				}).start(() => onClose());
 			} else {
-				Animated.spring(translationY, {
+				Animated.spring(translationYAnim, {
 					toValue: 0,
 					useNativeDriver: true,
 				}).start();
@@ -58,20 +63,17 @@ export const BottomSheet: React.FC<Props> = ({
 		}
 	};
 
-	// Return null if the BottomSheet is not visible
-	if (!isVisible) {
-		return null;
-	}
-
 	return (
 		<Animated.View
 			style={[
 				styles.container,
-				{ transform: [{ translateY: translationY }] },
+				{
+					transform: [{ translateY: translationYAnim }],
+				},
 			]}
 		>
 			<PanGestureHandler
-				onGestureEvent={onGestureEvent} // Use the handler function here
+				onGestureEvent={onGestureEvent}
 				onHandlerStateChange={onHandlerStateChange}
 			>
 				<View
@@ -90,6 +92,7 @@ export const BottomSheet: React.FC<Props> = ({
 			</PanGestureHandler>
 			<ScrollView
 				scrollEnabled={enableContentScroll}
+				style={{flexGrow: 1}}
 				contentContainerStyle={[
 					styles.contentContainer,
 					{ backgroundColor: theme.colors.background }
