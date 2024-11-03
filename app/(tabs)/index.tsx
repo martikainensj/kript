@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import { useAuth } from '@realm/react';
 import { Animated, StyleSheet, View } from 'react-native';
 
@@ -28,7 +28,7 @@ const Home: React.FC = () => {
 	const { show } = useAlert();
 	const [testValue, setTestValue] = useState<string | number>('');
 	const focusAnim = useRef(new Animated.Value(0)).current;
-	const { addBottomSheet, openBottomSheet } = useBottomSheet();
+	const { register, open } = useBottomSheet();
 
 	const logOutHandler = () => {
 		show({
@@ -114,6 +114,29 @@ const Home: React.FC = () => {
 		}, [])
 	);
 
+	useLayoutEffect(() => {
+		register({
+			id: "overall-net-value-sheet",
+			component: (
+				<LineChart
+					id={"overall-net-value-chart"}
+					label={__("Overall Net Value")}
+					unit={"€"}
+					data={overallNetValue}
+					timeframeOptions={[
+						TimeframeTypes.ytd,
+						TimeframeTypes["1year"],
+						TimeframeTypes["3year"],
+						TimeframeTypes["5year"],
+						TimeframeTypes.max
+					]}
+				/>
+			)
+		}
+
+		)
+	}, []);
+
 	return (
 		<Animated.View style={[
 			styles.container,
@@ -138,22 +161,7 @@ const Home: React.FC = () => {
 			</View>
 			<DefaultButton
 				onPress={() => {
-					const id =
-						addBottomSheet(<LineChart
-							id={"overall-net-value-chart"}
-							label={__("Overall Net Value")}
-							unit={"€"}
-							data={overallNetValue}
-							timeframeOptions={[
-								TimeframeTypes.ytd,
-								TimeframeTypes["1year"],
-								TimeframeTypes["3year"],
-								TimeframeTypes["5year"],
-								TimeframeTypes.max
-							]}
-						/>
-						);
-					openBottomSheet(id);
+					open("overall-net-value-sheet");
 				}}
 			>
 				Test

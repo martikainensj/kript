@@ -5,7 +5,7 @@ import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerRootComponent } from 'expo'
 import { StatusBar } from 'expo-status-bar';
-import { SplashScreen, Stack } from 'expo-router';
+import { SplashScreen } from 'expo-router';
 
 import { GlobalStyles } from '../constants';
 import { ChartSheetProvider } from '../contexts/ChartSheetContext';
