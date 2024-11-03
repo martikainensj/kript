@@ -4,7 +4,7 @@ import { BlurIntensity, Duration, FontWeight, IconSize, Spacing } from "../../co
 import { IconButton } from "../../components/buttons";
 import { useTheme } from "../theme/ThemeContext";
 import { Action } from "../../constants/types";
-import { BlurView } from "expo-blur";
+import { BlurView } from "../../components/ui/BlurView";
 
 interface Props extends Action {
 	actions?: Action[];

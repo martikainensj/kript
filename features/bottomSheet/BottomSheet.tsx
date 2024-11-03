@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Animated, Dimensions, LayoutChangeEvent, StyleSheet, View } from "react-native";
 import {
 	PanGestureHandler,
@@ -10,7 +10,7 @@ import {
 } from "react-native-gesture-handler";
 import { BorderRadius, GlobalStyles, Spacing } from "../../constants";
 import { useTheme } from "../theme/ThemeContext";
-import { DISMISS_THRESHOLD, DRAG_RESISTANCE_FACTOR } from "./constants";
+import { ANIMATION_DURATION, DISMISS_THRESHOLD, DRAG_RESISTANCE_FACTOR } from "./constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface Props {
@@ -34,14 +34,6 @@ export const BottomSheet: React.FC<Props> = ({
 	const insets = useSafeAreaInsets();
 	const [height, setHeight] = useState(0);
 
-	useEffect(() => {
-		console.log("isVisible", isVisible);
-		Animated.spring(translationYAnim, {
-			toValue: isVisible ? 0 : height,
-			useNativeDriver: true,
-		}).start();
-	}, [isVisible]);
-
 	const onGestureEvent = (e: PanGestureHandlerGestureEvent) => {
 		const { translationY } = e.nativeEvent;
 
@@ -56,8 +48,9 @@ export const BottomSheet: React.FC<Props> = ({
 	const onHandlerStateChange = (e: HandlerStateChangeEvent<PanGestureHandlerEventPayload>) => {
 		if (e.nativeEvent.state === State.END) {
 			if (e.nativeEvent.translationY > DISMISS_THRESHOLD) {
-				Animated.spring(translationYAnim, {
+				Animated.timing(translationYAnim, {
 					toValue: height,
+					duration: ANIMATION_DURATION,
 					useNativeDriver: true,
 				}).start(onClose);
 			} else {
@@ -73,19 +66,28 @@ export const BottomSheet: React.FC<Props> = ({
 
 	const onLayout = (event: LayoutChangeEvent) => {
 		const { height } = event.nativeEvent.layout;
-		console.log("onLayout", height);
+
 		setHeight(height);
 		setBottomSheetHeight(height);
 	};
+
+	useEffect(() => {
+		if (!height) {
+			return;
+		}
+
+		Animated.spring(translationYAnim, {
+			toValue: isVisible ? 0 : height,
+			useNativeDriver: true,
+		}).start();
+	}, [isVisible, height]);
 
 	return (
 		<>
 			<Animated.View
 				style={[
-					StyleSheet.absoluteFill,
+					styles.fillerContainer,
 					{
-						top: Dimensions.get("screen").height,
-						height: Dimensions.get("screen").height,
 						backgroundColor: theme.colors.surface,
 						transform: [{ translateY: translationYAnim }],
 					}
@@ -97,7 +99,7 @@ export const BottomSheet: React.FC<Props> = ({
 					{
 						transform: [{ translateY: translationYAnim }],
 						backgroundColor: theme.colors.background,
-					},
+					}
 				]}
 				onLayout={onLayout}
 			>
@@ -160,4 +162,10 @@ const styles = StyleSheet.create({
 	contentContainer: {
 		...GlobalStyles.content,
 	},
+	fillerContainer: {
+		...StyleSheet.absoluteFillObject,
+		top: "100%",
+		height: Dimensions.get("screen").height,
+		pointerEvents: "none",
+	}
 });

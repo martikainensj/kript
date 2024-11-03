@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState } from "react";
 import { View, StyleSheet, Animated, Dimensions } from "react-native";
 import { BottomSheet } from "./BottomSheet";
-import { BlurView } from "expo-blur";
 import { useTheme } from "../theme/ThemeContext";
 import { BlurIntensity } from "../../constants";
+import { BlurView } from "../../components/ui/BlurView";
 
 interface BottomSheetContextType {
 	register: ({ id, component }: { id: string; component: React.ReactNode }) => string;
@@ -105,7 +105,10 @@ export const BottomSheetProvider: React.FC<{ children: React.ReactNode }> = ({ c
 						]}
 					>
 						<BlurView
-							intensity={BlurIntensity.lg}
+							intensity={blurOpacity.interpolate({
+								inputRange: [0,1],
+								outputRange: [0, BlurIntensity.lg]
+							})}
 							style={StyleSheet.absoluteFill}
 							tint={theme.dark ? "light" : "dark"}
 						/>

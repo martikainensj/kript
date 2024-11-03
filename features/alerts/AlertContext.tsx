@@ -6,7 +6,7 @@ import { useI18n } from "../i18n/I18nContext";
 import { BlurIntensity, BorderRadius, Duration, GlobalStyles, Spacing } from "../../constants";
 import { useTheme } from "../theme/ThemeContext";
 import { Text } from "../../components/ui/Text";
-import { BlurView } from "expo-blur";
+import { BlurView } from "../../components/ui/BlurView";
 
 const AlertContext = createContext<AlertContextProps>({
 	show: () => { },
