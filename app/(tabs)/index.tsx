@@ -116,6 +116,7 @@ const Home: React.FC = () => {
 	);
 
 	useLayoutEffect(() => {
+		console.log('teststees');
 		register({
 			id: "overall-net-value-sheet",
 			component: (
@@ -132,12 +133,6 @@ const Home: React.FC = () => {
 						TimeframeTypes.max
 					]}
 				/>
-			)
-		});
-		register({
-			id: "test",
-			component: (
-				<Text>Test</Text>
 			)
 		});
 	}, []);
@@ -167,14 +162,6 @@ const Home: React.FC = () => {
 			<DefaultButton
 				onPress={() => {
 					open("overall-net-value-sheet");
-				}}
-			>
-				Test
-			</DefaultButton>
-
-			<DefaultButton
-				onPress={() => {
-					open("test");
 				}}
 			>
 				Test

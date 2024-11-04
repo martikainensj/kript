@@ -1,12 +1,15 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useRef, useState } from "react";
 import { View, StyleSheet, Animated, Dimensions } from "react-native";
 import { BottomSheet } from "./BottomSheet";
 import { useTheme } from "../theme/ThemeContext";
-import { BlurIntensity } from "../../constants";
 import { BlurView } from "../../components/ui/BlurView";
+import { BlurIntensity } from "../../constants";
 
+// TODO: Koita show, hide systeemillä
+// ELi ei rekisteröidä valmiiks mitään vaa setataan sisältö vaan 
+// show.ssa ja hidessa vaan nulliks
 interface BottomSheetContextType {
-	register: ({ id, component }: { id: string; component: React.ReactNode }) => string;
+	register: (args: { id: string; component: React.ReactNode }) => string;
 	open: (id: string) => void;
 	close: () => void;
 }
@@ -32,88 +35,98 @@ export const useBottomSheet = (): BottomSheetContextType => {
 export const BottomSheetProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const { theme } = useTheme();
 	const [bottomSheets, setBottomSheets] = useState<BottomSheetEntry[]>([]);
-// TODO: korjaa alotuksessa sheettien näkyminen 
+	const blurIntensityAnim = useRef(new Animated.Value(0)).current;
+
 	const register = ({ id, component }: { id: string; component: React.ReactNode }) => {
 		setBottomSheets((prev) => {
-			if (!prev.some((sheet) => sheet.id === id)) {
-				return [
-					...prev,
-					{
-						id,
-						component,
-						isVisible: false,
-						translationYAnim: new Animated.Value(Dimensions.get("screen").height),
-						height: 0,
-					},
-				];
+			const screenHeight = Dimensions.get("screen").height;
+	
+			// Check if the BottomSheet with the given id already exists
+			const existingIndex = prev.findIndex((sheet) => sheet.id === id);
+	
+			if (existingIndex !== -1) {
+				// If found, create a new array with the updated BottomSheet
+				const updatedSheets = [...prev];
+				updatedSheets[existingIndex] = {
+					...updatedSheets[existingIndex],
+					component,
+				};
+				return updatedSheets;
 			}
-			return prev;
+	
+			// If not found, add a new BottomSheet to the array
+			return [
+				...prev,
+				{
+					id,
+					component,
+					isVisible: false,
+					translationYAnim: new Animated.Value(screenHeight),
+					height: 0,
+				},
+			];
 		});
+	
 		return id;
 	};
 
 	const open = (id: string) => {
 		setBottomSheets((prev) =>
-			prev.map((sheet) => ({
-				...sheet,
-				isVisible: sheet.id === id,
-			}))
+			prev.map((sheet) => {
+				if (sheet.id === id) {
+					Animated.spring(sheet.translationYAnim, {
+						toValue: 0,
+						useNativeDriver: true,
+					}).start();
+
+					if (!sheet.translationYAnim.hasListeners()) {
+						sheet.translationYAnim.addListener(({ value }) => {
+							const intensity = Math.max(0, Math.min(BlurIntensity.lg, (1 - value / sheet.height) * BlurIntensity.lg));
+							blurIntensityAnim.setValue(intensity);
+						});
+					}
+
+					return { ...sheet, isVisible: true };
+				}
+				return sheet;
+			})
 		);
 	};
 
 	const close = () => {
 		setBottomSheets((prev) =>
-			prev.map((sheet) => ({
-				...sheet,
-				isVisible: false,
-			}))
+			prev.map((sheet) => {
+				if (sheet.isVisible) {
+					Animated.spring(sheet.translationYAnim, {
+						toValue: sheet.height,
+						useNativeDriver: true,
+					}).start();
+				}
+
+				return { ...sheet, isVisible: false };
+			})
 		);
 	};
 
 	const setBottomSheetHeight = (id: string, height: number) => {
-		setBottomSheets((prev) =>
-			prev.map((sheet) =>
-				sheet.id === id ? { ...sheet, height } : sheet
-			)
-		);
+		setBottomSheets((prev) => prev.map((sheet) => (sheet.id === id ? { ...sheet, height } : sheet)));
 	};
-
-	const blurOpacity = bottomSheets.reduce((acc, sheet) => {
-		if (sheet.isVisible) {
-			const opacity = sheet.translationYAnim.interpolate({
-				inputRange: [0, sheet.height],
-				outputRange: [1, 0],
-				extrapolate: "clamp",
-			});
-			return Animated.add(acc, opacity);
-		}
-		return acc;
-	}, new Animated.Value(0));
 
 	return (
 		<BottomSheetContext.Provider value={{ register, open, close }}>
 			<View style={styles.container}>
 				{children}
-				
-				{bottomSheets.some((sheet) => sheet.isVisible) && (
-					<Animated.View
-						style={[
-							StyleSheet.absoluteFill,
-							{
-								opacity: blurOpacity,
-							},
-						]}
-					>
-						<BlurView
-							intensity={blurOpacity.interpolate({
-								inputRange: [0,1],
-								outputRange: [0, BlurIntensity.lg]
-							})}
-							style={StyleSheet.absoluteFill}
-							tint={theme.dark ? "light" : "dark"}
-						/>
-					</Animated.View>
-				)}
+
+				<View
+					style={StyleSheet.absoluteFill}
+					pointerEvents={bottomSheets.some((sheet) => sheet.isVisible) ? "auto" : "none"}
+				>
+					<BlurView
+						intensity={blurIntensityAnim}
+						style={StyleSheet.absoluteFill}
+						tint={theme.dark ? "light" : "dark"}
+					/>
+				</View>
 
 				{bottomSheets.map((sheet) => (
 					<BottomSheet

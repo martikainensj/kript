@@ -15,7 +15,6 @@ export const BlurView: React.FC<Props> = ({
 	return (
 		<AnimatedBlurView
 			{...rest}
-			style={rest.style}
 			intensity={intensity}
 		/>
 	);
