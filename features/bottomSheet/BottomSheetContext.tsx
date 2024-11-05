@@ -1,125 +1,109 @@
-import React, { createContext, useContext, useRef, useState } from "react";
-import { View, StyleSheet, Animated, Dimensions } from "react-native";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import { View, StyleSheet, Animated, Dimensions, LayoutChangeEvent } from "react-native";
 import { BottomSheet } from "./BottomSheet";
 import { useTheme } from "../theme/ThemeContext";
 import { BlurView } from "../../components/ui/BlurView";
+import { BottomSheetContextProps, BottomSheetOptions, BottomSheetProviderProps } from "./types";
+import { GestureEvent, HandlerStateChangeEvent, PanGestureHandlerEventPayload, State } from "react-native-gesture-handler";
+import { DISMISS_THRESHOLD, DRAG_RESISTANCE_FACTOR } from "./constants";
 import { BlurIntensity } from "../../constants";
+import { debounce } from "../../helpers";
 
-// TODO: Koita show, hide systeemillä
-// ELi ei rekisteröidä valmiiks mitään vaa setataan sisältö vaan 
-// show.ssa ja hidessa vaan nulliks
-interface BottomSheetContextType {
-	register: (args: { id: string; component: React.ReactNode }) => string;
-	open: (id: string) => void;
-	close: () => void;
-}
+const BottomSheetContext = createContext<BottomSheetContextProps>({
+	show: () => { },
+	dismiss: () => { },
+	bottomSheets: [],
+});
 
-interface BottomSheetEntry {
-	id: string;
-	component: React.ReactNode;
-	isVisible: boolean;
-	translationYAnim: Animated.Value;
-	height: number;
-}
+export const useBottomSheet = () => useContext(BottomSheetContext);
 
-const BottomSheetContext = createContext<BottomSheetContextType | null>(null);
-
-export const useBottomSheet = (): BottomSheetContextType => {
-	const context = useContext(BottomSheetContext);
-	if (!context) {
-		throw new Error("useBottomSheet must be used within a BottomSheetProvider");
-	}
-	return context;
-};
-
-export const BottomSheetProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ children }) => {
 	const { theme } = useTheme();
-	const [bottomSheets, setBottomSheets] = useState<BottomSheetEntry[]>([]);
+	const [bottomSheets, setBottomSheets] = useState<BottomSheetOptions[]>([]);
+	const [height, setHeight] = useState(0);
 	const blurIntensityAnim = useRef(new Animated.Value(0)).current;
+	const translationYAnim = useRef(new Animated.Value(Dimensions.get("screen").height)).current;
 
-	const register = ({ id, component }: { id: string; component: React.ReactNode }) => {
+	const show = (options: BottomSheetOptions) => {
+		translationYAnim.setValue(Dimensions.get("screen").height);
+
 		setBottomSheets((prev) => {
-			const screenHeight = Dimensions.get("screen").height;
-	
-			// Check if the BottomSheet with the given id already exists
-			const existingIndex = prev.findIndex((sheet) => sheet.id === id);
-	
-			if (existingIndex !== -1) {
-				// If found, create a new array with the updated BottomSheet
-				const updatedSheets = [...prev];
-				updatedSheets[existingIndex] = {
-					...updatedSheets[existingIndex],
-					component,
-				};
-				return updatedSheets;
-			}
-	
-			// If not found, add a new BottomSheet to the array
 			return [
-				...prev,
 				{
-					id,
-					component,
-					isVisible: false,
-					translationYAnim: new Animated.Value(screenHeight),
-					height: 0,
+					...options,
 				},
+				...prev,
 			];
 		});
-	
-		return id;
 	};
 
-	const open = (id: string) => {
-		setBottomSheets((prev) =>
-			prev.map((sheet) => {
-				if (sheet.id === id) {
-					Animated.spring(sheet.translationYAnim, {
-						toValue: 0,
-						useNativeDriver: true,
-					}).start();
+	const dismiss = () => {
+		setBottomSheets((prev) => {
+			if (prev.length === 0) return prev;
 
-					if (!sheet.translationYAnim.hasListeners()) {
-						sheet.translationYAnim.addListener(({ value }) => {
-							const intensity = Math.max(0, Math.min(BlurIntensity.lg, (1 - value / sheet.height) * BlurIntensity.lg));
-							blurIntensityAnim.setValue(intensity);
-						});
-					}
+			return prev.slice(0, -1);
+		});
+	};
 
-					return { ...sheet, isVisible: true };
+	const debouncedSetHeight = useRef(
+    debounce((height: number) => {
+			setHeight(height);
+			translationYAnim.setValue(height);
+
+			Animated.spring(translationYAnim, {
+				toValue: 0,
+				useNativeDriver: true
+			}).start();
+    })
+  ).current;
+
+	const onGestureEvent = (e: GestureEvent<PanGestureHandlerEventPayload>) => {
+		const { translationY } = e.nativeEvent;
+		const resistanceValue = translationY < 0 ? translationY / (1 - translationY * DRAG_RESISTANCE_FACTOR) : translationY;
+
+		translationYAnim.setValue(resistanceValue);
+	};
+
+	const onHandlerStateChange = (e: HandlerStateChangeEvent<PanGestureHandlerEventPayload>) => {
+		if (e.nativeEvent.state === State.END) {
+			const shouldDismiss = (
+				e.nativeEvent.translationY > DISMISS_THRESHOLD &&
+				e.nativeEvent.velocityY > 0
+			);
+			
+			Animated.spring(translationYAnim, {
+				toValue: shouldDismiss ? height : 0,
+				useNativeDriver: true,
+			}).start(() => {
+				if ( shouldDismiss ) {
+					dismiss();
 				}
-				return sheet;
-			})
-		);
+			});
+		}
 	};
 
-	const close = () => {
-		setBottomSheets((prev) =>
-			prev.map((sheet) => {
-				if (sheet.isVisible) {
-					Animated.spring(sheet.translationYAnim, {
-						toValue: sheet.height,
-						useNativeDriver: true,
-					}).start();
-				}
-
-				return { ...sheet, isVisible: false };
-			})
-		);
+	const onLayout = (event: LayoutChangeEvent) => {
+		const { height } = event.nativeEvent.layout;
+		debouncedSetHeight(height);
 	};
 
-	const setBottomSheetHeight = (id: string, height: number) => {
-		setBottomSheets((prev) => prev.map((sheet) => (sheet.id === id ? { ...sheet, height } : sheet)));
-	};
+	useEffect(() => {
+		const listenerId = translationYAnim.addListener(({ value }) => {
+			const intensity = Math.max(0, Math.min(BlurIntensity.lg, (1 - value / height) * BlurIntensity.lg));
+			blurIntensityAnim.setValue(intensity);
+		});
+
+		return () => translationYAnim.removeListener(listenerId);
+	});
 
 	return (
-		<BottomSheetContext.Provider value={{ register, open, close }}>
+		<BottomSheetContext.Provider value={{ show, dismiss, bottomSheets }}>
 			<View style={styles.container}>
 				{children}
 
 				<View
 					style={StyleSheet.absoluteFill}
-					pointerEvents={bottomSheets.some((sheet) => sheet.isVisible) ? "auto" : "none"}
+					pointerEvents={!!bottomSheets.length ? "auto" : "none"}
 				>
 					<BlurView
 						intensity={blurIntensityAnim}
@@ -128,18 +112,17 @@ export const BottomSheetProvider: React.FC<{ children: React.ReactNode }> = ({ c
 					/>
 				</View>
 
-				{bottomSheets.map((sheet) => (
+				{bottomSheets[0] && (
 					<BottomSheet
-						key={sheet.id}
-						enableContentScroll
-						isVisible={sheet.isVisible}
-						onClose={close}
-						translationYAnim={sheet.translationYAnim}
-						setBottomSheetHeight={(height) => setBottomSheetHeight(sheet.id, height)}
+						enableContentScroll={bottomSheets[0].enableContentScroll}
+						onGestureEvent={onGestureEvent}
+						onHandlerStateChange={onHandlerStateChange}
+						onLayout={onLayout}
+						translationYAnim={translationYAnim}
 					>
-						{sheet.component}
+						{bottomSheets[0].children}
 					</BottomSheet>
-				))}
+				)}
 			</View>
 		</BottomSheetContext.Provider>
 	);

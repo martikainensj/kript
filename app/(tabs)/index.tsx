@@ -1,8 +1,8 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useAuth } from '@realm/react';
 import { Animated, StyleSheet, View } from 'react-native';
 
-import { GlobalStyles, Spacing } from '../../constants';
+import { GlobalStyles } from '../../constants';
 import { DefaultButton, IconButton } from '../../components/buttons';
 import { buildChartData } from '../../helpers';
 import { Header } from '../../components/ui/Header';
@@ -16,9 +16,7 @@ import { useData } from '../../features/data/DataContext';
 import { useCharts } from '../../features/charts/useCharts';
 import { useFocusEffect } from 'expo-router';
 import { animateIn, animateOut } from '../../features/animations/animate';
-import { TextInput } from '../../components/inputs/TextInput';
 import { useBottomSheet } from '../../features/bottomSheet/BottomSheetContext';
-import { Text } from '../../components/ui/Text';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();
@@ -29,7 +27,7 @@ const Home: React.FC = () => {
 	const { show } = useAlert();
 	const [testValue, setTestValue] = useState<string | number>('');
 	const focusAnim = useRef(new Animated.Value(0)).current;
-	const { register, open } = useBottomSheet();
+	const { show: showBottomSheet } = useBottomSheet();
 
 	const logOutHandler = () => {
 		show({
@@ -115,28 +113,6 @@ const Home: React.FC = () => {
 		}, [])
 	);
 
-	useLayoutEffect(() => {
-		console.log('teststees');
-		register({
-			id: "overall-net-value-sheet",
-			component: (
-				<LineChart
-					id={"overall-net-value-chart"}
-					label={__("Overall Net Value")}
-					unit={"€"}
-					data={overallNetValue}
-					timeframeOptions={[
-						TimeframeTypes.ytd,
-						TimeframeTypes["1year"],
-						TimeframeTypes["3year"],
-						TimeframeTypes["5year"],
-						TimeframeTypes.max
-					]}
-				/>
-			)
-		});
-	}, []);
-
 	return (
 		<Animated.View style={[
 			styles.container,
@@ -161,7 +137,24 @@ const Home: React.FC = () => {
 			</View>
 			<DefaultButton
 				onPress={() => {
-					open("overall-net-value-sheet");
+					showBottomSheet({
+						enableContentScroll: false,
+						children: (
+							<LineChart
+								id={"overall-net-value-chart"}
+								label={__("Overall Net Value")}
+								unit={"€"}
+								data={overallNetValue}
+								timeframeOptions={[
+									TimeframeTypes.ytd,
+									TimeframeTypes["1year"],
+									TimeframeTypes["3year"],
+									TimeframeTypes["5year"],
+									TimeframeTypes.max
+								]}
+							/>
+						)
+					});
 				}}
 			>
 				Test
