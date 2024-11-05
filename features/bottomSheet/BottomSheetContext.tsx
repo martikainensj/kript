@@ -5,7 +5,7 @@ import { useTheme } from "../theme/ThemeContext";
 import { BlurView } from "../../components/ui/BlurView";
 import { BottomSheetContextProps, BottomSheetOptions, BottomSheetProviderProps } from "./types";
 import { GestureEvent, HandlerStateChangeEvent, PanGestureHandlerEventPayload, State } from "react-native-gesture-handler";
-import { DISMISS_THRESHOLD, DRAG_RESISTANCE_FACTOR } from "./constants";
+import { ANIMATION_DURATION, DISMISS_THRESHOLD, DRAG_RESISTANCE_FACTOR } from "./constants";
 import { BlurIntensity } from "../../constants";
 import { debounce } from "../../helpers";
 
@@ -26,65 +26,49 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 
 	const show = (options: BottomSheetOptions) => {
 		translationYAnim.setValue(Dimensions.get("screen").height);
-
-		setBottomSheets((prev) => {
-			return [
-				{
-					...options,
-				},
-				...prev,
-			];
-		});
+		setBottomSheets((prev) => [options, ...prev]);
 	};
 
 	const dismiss = () => {
-		setBottomSheets((prev) => {
-			if (prev.length === 0) return prev;
-
-			return prev.slice(0, -1);
-		});
+		setBottomSheets((prev) => (prev.length > 0 ? prev.slice(0, -1) : prev));
 	};
 
 	const debouncedSetHeight = useRef(
-    debounce((height: number) => {
-			setHeight(height);
-			translationYAnim.setValue(height);
-
-			Animated.spring(translationYAnim, {
-				toValue: 0,
-				useNativeDriver: true
-			}).start();
-    })
-  ).current;
+		debounce((newHeight: number) => {
+			setHeight(newHeight);
+			translationYAnim.setValue(newHeight);
+			Animated.spring(translationYAnim, { toValue: 0, useNativeDriver: true }).start();
+		})
+	).current;
 
 	const onGestureEvent = (e: GestureEvent<PanGestureHandlerEventPayload>) => {
 		const { translationY } = e.nativeEvent;
 		const resistanceValue = translationY < 0 ? translationY / (1 - translationY * DRAG_RESISTANCE_FACTOR) : translationY;
-
 		translationYAnim.setValue(resistanceValue);
 	};
 
 	const onHandlerStateChange = (e: HandlerStateChangeEvent<PanGestureHandlerEventPayload>) => {
 		if (e.nativeEvent.state === State.END) {
-			const shouldDismiss = (
-				e.nativeEvent.translationY > DISMISS_THRESHOLD &&
-				e.nativeEvent.velocityY > 0
-			);
-			
-			Animated.spring(translationYAnim, {
-				toValue: shouldDismiss ? height : 0,
-				useNativeDriver: true,
-			}).start(() => {
-				if ( shouldDismiss ) {
-					dismiss();
-				}
-			});
+			const shouldDismiss = e.nativeEvent.translationY > DISMISS_THRESHOLD && e.nativeEvent.velocityY > 0;
+
+			if (shouldDismiss) {
+				Animated.timing(translationYAnim, {
+					toValue: height,
+					duration: ANIMATION_DURATION,
+					useNativeDriver: true,
+				}).start(() => dismiss());
+			} else {
+				Animated.spring(translationYAnim, {
+					toValue: 0,
+					useNativeDriver: true,
+				}).start();
+			}
 		}
 	};
 
 	const onLayout = (event: LayoutChangeEvent) => {
-		const { height } = event.nativeEvent.layout;
-		debouncedSetHeight(height);
+		const { height: newHeight } = event.nativeEvent.layout;
+		debouncedSetHeight(newHeight);
 	};
 
 	useEffect(() => {
@@ -101,15 +85,8 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 			<View style={styles.container}>
 				{children}
 
-				<View
-					style={StyleSheet.absoluteFill}
-					pointerEvents={!!bottomSheets.length ? "auto" : "none"}
-				>
-					<BlurView
-						intensity={blurIntensityAnim}
-						style={StyleSheet.absoluteFill}
-						tint={theme.dark ? "light" : "dark"}
-					/>
+				<View style={StyleSheet.absoluteFill} pointerEvents={bottomSheets.length ? "auto" : "none"}>
+					<BlurView intensity={blurIntensityAnim} style={StyleSheet.absoluteFill} tint={theme.dark ? "light" : "dark"} />
 				</View>
 
 				{bottomSheets[0] && (
