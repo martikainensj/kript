@@ -5,7 +5,6 @@ import Realm from 'realm';
 import { GlobalStyles } from '../../constants';
 import { AccountItem, AccountForm } from '../../components/accounts';
 import { IconButton } from '../../components/buttons';
-import { useBottomSheet } from '../../contexts/BottomSheetContext';
 import { Header } from '../../components/ui/Header';
 import { ItemList } from '../../components/ui/ItemList';
 import { router, useFocusEffect } from 'expo-router';
@@ -14,6 +13,7 @@ import { useUser } from '../../features/realm/useUser';
 import { useData } from '../../features/data/DataContext';
 import { useSorting } from '../../features/data/useSorting';
 import { animateIn, animateOut } from '../../features/animations/animate';
+import { useBottomSheet } from '../../features/bottomSheet/BottomSheetContext';
 
 const Accounts: React.FC = () => {
 	const { getAccounts, addAccount } = useData();
@@ -22,32 +22,34 @@ const Accounts: React.FC = () => {
 	const focusAnim = useRef(new Animated.Value(0)).current;
 
 	const accounts = getAccounts();
-	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
+	const { show, dismiss } = useBottomSheet();
 	const { SortingTypes } = useSorting();
 
 	const onPressAdd = () => {
-		openBottomSheet(
-			__('New Account'),
-			<AccountForm
-				account={{
-					_id: new Realm.BSON.UUID(),
-					owner_id: user.id,
-					name: '',
-				}}
-				onSubmit={(account) => {
-					addAccount(account).then(() => {
-						router.navigate({
-							pathname: 'accounts/[account]',
-							params: {
-								accountId: account._id.toString(),
-								name: account.name
-							}
-						});
+		show({
+			children: (
+				<AccountForm
+					account={{
+						_id: new Realm.BSON.UUID(),
+						owner_id: user.id,
+						name: '',
+					}}
+					onSubmit={(account) => {
+						addAccount(account).then(() => {
+							router.navigate({
+								pathname: 'accounts/[account]',
+								params: {
+									accountId: account._id.toString(),
+									name: account.name
+								}
+							});
 
-						closeBottomSheet();
-					});
-				}} />
-		);
+							dismiss();
+						});
+					}}
+				/>
+			)
+		});
 	}
 
 	useFocusEffect(

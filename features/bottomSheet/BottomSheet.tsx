@@ -11,7 +11,7 @@ import { BottomSheetProps } from "./types";
 
 export const BottomSheet: React.FC<BottomSheetProps> = ({
 	children,
-	enableContentScroll,
+	enableContentScroll = true,
 	translationYAnim,
 	onLayout,
 	onGestureEvent,

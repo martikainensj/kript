@@ -5,7 +5,6 @@ import { useFocusEffect } from 'expo-router';
 import { GlobalStyles, Spacing } from '../../constants';
 import { IconButton } from '../../components/buttons';
 import { Select } from '../../components/inputs/Select';
-import { useBottomSheet } from '../../contexts/BottomSheetContext';
 import { UserInfo } from '../../components/user/UserInfo';
 import { Toggle } from '../../components/inputs/Toggle';
 import { Header } from '../../components/ui/Header';
@@ -13,10 +12,11 @@ import { useTheme } from '../../features/theme/ThemeContext';
 import { useI18n } from '../../features/i18n/I18nContext';
 import { useUser } from '../../features/realm/useUser';
 import { animateIn, animateOut } from '../../features/animations/animate';
+import { useBottomSheet } from '../../features/bottomSheet/BottomSheetContext';
 
 const Accounts: React.FC = () => {
 	const { setDark, dark } = useTheme();
-	const { openBottomSheet } = useBottomSheet();
+	const { show } = useBottomSheet();
 	const { __, language, languages, setLanguage } = useI18n();
 	const { refresh: refreshUserData } = useUser();
 	const focusAnim = useRef(new Animated.Value(0)).current;
@@ -56,10 +56,9 @@ const Accounts: React.FC = () => {
 						<IconButton
 							icon={'person-outline'}
 							onPress={() => {
-								openBottomSheet(
-									__('User'),
-									<UserInfo />
-								)
+								show({
+									children: <UserInfo />	
+								})
 							}} />
 					</View>
 				)} />

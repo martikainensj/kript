@@ -3,6 +3,7 @@ import 'expo-router/entry';
 
 /*
 TODO
+- Ota uus bottomSheet context käyttöön
 - Leverage ja ownership ratio
 - Korjaa käyttäjätietojen muokkauksen bottomsheet
 - bottomsheetit omiks komponenteiks provider hommelin sijaan?
