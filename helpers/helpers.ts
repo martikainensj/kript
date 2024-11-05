@@ -239,3 +239,20 @@ export const buildChartData = (datasets: DataPoint[][]): DataPoint[] => {
 
 	return chartData;
 };
+
+export const debounce = (
+	callback: (...args: any[]) => void,
+	delay = 100
+) => {
+  let timer: NodeJS.Timeout | null;
+
+  return (...args: any[]) => {
+    if (timer) {
+      clearTimeout(timer);
+    }
+		
+    timer = setTimeout(() => {
+      callback(...args);
+    }, delay);
+  };
+}
