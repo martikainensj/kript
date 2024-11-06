@@ -8,7 +8,6 @@ import { BackButton, IconButton } from "../buttons";
 import { AccountForm } from "../accounts";
 import { TransactionForm } from "../transactions/TransactionForm";
 import { prettifyNumber } from "../../helpers";
-import { useBottomSheet } from "../../contexts/BottomSheetContext";
 import { Value } from "../ui/Value";
 import { Header } from "../ui/Header";
 import { Grid } from "../ui/Grid";
@@ -19,7 +18,6 @@ import { useSelector } from "../../hooks/useSelector";
 import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
 import { LineChart } from "../charts/LineChart";
-import { useChartSheet } from "../../contexts/ChartSheetContext";
 import { LineChartButton } from "../buttons/LineChartButton";
 import ConditionalView from "../ui/ConditionalView";
 import { useAccount } from "../../hooks/useAccount";
@@ -33,6 +31,7 @@ import { TabsProvider } from "../../features/tabs/TabsContext";
 import { Tab } from "../../features/tabs/Tab";
 import { FAB } from "../../features/fab/FAB";
 import { Action } from "../../constants/types";
+import { useBottomSheet } from "../../features/bottomSheet/BottomSheetContext";
 
 interface AccountViewProps {
 	account: Account;
@@ -41,8 +40,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 	const { saveAccount, removeObjects, addTransaction } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
-	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { openChartSheet } = useChartSheet();
+	const { show, dismiss } = useBottomSheet();
 	const { SortingTypes } = useSorting();
 	const { TimeframeTypes } = useCharts();
 	const insets = useSafeAreaInsets();
@@ -66,14 +64,16 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				icon: 'create-outline',
 				label: __('Edit'),
 				onPress: () => {
-					openBottomSheet(
-						__('Edit Account'),
-						<AccountForm
-							account={account}
-							onSubmit={(editedAccount) => {
-								saveAccount(editedAccount).then(closeBottomSheet);
-							}} />
-					);
+					show({
+						children: (
+							<AccountForm
+								account={account}
+								onSubmit={(editedAccount) => {
+									saveAccount(editedAccount).then(dismiss);
+								}}
+							/>
+						)
+					})
 				},
 			},
 			{
@@ -89,24 +89,27 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				icon: 'receipt-outline',
 				label: __('Add Transaction'),
 				onPress: () => {
-					openBottomSheet(
-						__('New Transaction'),
-						<TransactionForm
-							transaction={{
-								owner_id: user.id,
-								date: Date.now(),
-								price: null,
-								amount: null,
-								total: null,
-								holding_name: '',
-								account_id: account._id,
-								type: 'trading',
-								sub_type: 'buy'
-							}}
-							account={account}
-							onSubmit={(transaction) => {
-								addTransaction(transaction).then(closeBottomSheet);
-							}} />
+					show({
+						children: (
+							<TransactionForm
+								transaction={{
+									owner_id: user.id,
+									date: Date.now(),
+									price: null,
+									amount: null,
+									total: null,
+									holding_name: '',
+									account_id: account._id,
+									type: 'trading',
+									sub_type: 'buy'
+								}}
+								account={account}
+								onSubmit={(transaction) => {
+									addTransaction(transaction).then(dismiss);
+								}}
+							/>
+						)
+					}
 					);
 				}
 			}
@@ -172,22 +175,25 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				unit={"€"}
 				data={valueHistoryData}
 				onPress={() => {
-					openChartSheet(
-						'',
-						<LineChart
-							id={`${account._id.toString()}-value-chart`}
-							label={__("Net Value")}
-							unit={"€"}
-							data={valueHistoryData}
-							timeframeOptions={[
-								TimeframeTypes.ytd,
-								TimeframeTypes["1year"],
-								TimeframeTypes["3year"],
-								TimeframeTypes["5year"],
-								TimeframeTypes.max
-							]} />
-					)
-				}} />
+					show({
+						children: (
+							<LineChart
+								id={`${account._id.toString()}-value-chart`}
+								label={__("Net Value")}
+								unit={"€"}
+								data={valueHistoryData}
+								timeframeOptions={[
+									TimeframeTypes.ytd,
+									TimeframeTypes["1year"],
+									TimeframeTypes["3year"],
+									TimeframeTypes["5year"],
+									TimeframeTypes.max
+								]}
+							/>
+						)
+					});
+				}}
+			/>
 		)
 	}
 
@@ -198,22 +204,25 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				unit={"€"}
 				data={returnHistoryData}
 				onPress={() => {
-					openChartSheet(
-						'',
-						<LineChart
-							id={`${account._id.toString()}-return-chart`}
-							label={__("Return")}
-							unit={"€"}
-							data={returnHistoryData}
-							timeframeOptions={[
-								TimeframeTypes.ytd,
-								TimeframeTypes["1year"],
-								TimeframeTypes["3year"],
-								TimeframeTypes["5year"],
-								TimeframeTypes.max
-							]} />
-					)
-				}} />
+					show({
+						children: (
+							<LineChart
+								id={`${account._id.toString()}-return-chart`}
+								label={__("Return")}
+								unit={"€"}
+								data={returnHistoryData}
+								timeframeOptions={[
+									TimeframeTypes.ytd,
+									TimeframeTypes["1year"],
+									TimeframeTypes["3year"],
+									TimeframeTypes["5year"],
+									TimeframeTypes.max
+								]}
+							/>
+						)
+					});
+				}}
+			/>
 		)
 	}
 
@@ -224,22 +233,25 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				unit={"€"}
 				data={dividendHistoryData}
 				onPress={() => {
-					openChartSheet(
-						'',
-						<LineChart
-							id={`${account._id.toString()}-dividend-chart`}
-							label={__("Dividend")}
-							unit={"€"}
-							data={dividendHistoryData}
-							timeframeOptions={[
-								TimeframeTypes.ytd,
-								TimeframeTypes["1year"],
-								TimeframeTypes["3year"],
-								TimeframeTypes["5year"],
-								TimeframeTypes.max
-							]} />
-					)
-				}} />
+					show({
+						children: (
+							<LineChart
+								id={`${account._id.toString()}-dividend-chart`}
+								label={__("Dividend")}
+								unit={"€"}
+								data={dividendHistoryData}
+								timeframeOptions={[
+									TimeframeTypes.ytd,
+									TimeframeTypes["1year"],
+									TimeframeTypes["3year"],
+									TimeframeTypes["5year"],
+									TimeframeTypes.max
+								]}
+							/>
+						)
+					});
+				}}
+			/>
 		)
 	}
 
@@ -255,27 +267,30 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 					}
 				})}
 				onPress={() => {
-					openChartSheet(
-						'',
-						<LineChart
-							id={`${account._id.toString()}-loan-chart`}
-							label={__("Debt")}
-							unit={"€"}
-							data={loanHistoryData.map(data => {
-								return {
-									...data,
-									value: -data.value
-								}
-							})}
-							timeframeOptions={[
-								TimeframeTypes.ytd,
-								TimeframeTypes["1year"],
-								TimeframeTypes["3year"],
-								TimeframeTypes["5year"],
-								TimeframeTypes.max
-							]} />
-					)
-				}} />
+					show({
+						children: (
+							<LineChart
+								id={`${account._id.toString()}-loan-chart`}
+								label={__("Debt")}
+								unit={"€"}
+								data={loanHistoryData.map(data => {
+									return {
+										...data,
+										value: -data.value
+									}
+								})}
+								timeframeOptions={[
+									TimeframeTypes.ytd,
+									TimeframeTypes["1year"],
+									TimeframeTypes["3year"],
+									TimeframeTypes["5year"],
+									TimeframeTypes.max
+								]}
+							/>
+						)
+					});
+				}}
+			/>
 		)
 	}
 

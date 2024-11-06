@@ -8,7 +8,6 @@ import { StatusBar } from 'expo-status-bar';
 import { SplashScreen } from 'expo-router';
 
 import { GlobalStyles } from '../constants';
-import { ChartSheetProvider } from '../contexts/ChartSheetContext';
 import { AlertProvider } from '../features/alerts/AlertContext';
 import { ThemeProvider } from '../features/theme/ThemeContext';
 import { I18nProvider } from '../features/i18n/I18nContext';
@@ -48,10 +47,8 @@ export default function AppLayout() {
 						<AlertProvider>
 							<RealmProvider>
 								<BottomSheetProvider>
-									<ChartSheetProvider>
-										<StatusBar />
-										<RootNavigation />
-									</ChartSheetProvider>
+									<StatusBar />
+									<RootNavigation />
 								</BottomSheetProvider>
 							</RealmProvider>
 						</AlertProvider>

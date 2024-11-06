@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { StyleSheet, View } from "react-native"
 import { router } from "expo-router";
 
@@ -8,8 +8,6 @@ import { TransactionForm } from "../../components/transactions/TransactionForm";
 import { HoldingForm } from "../../components/holdings/HoldingForm";
 import TransactionItem from "../../components/transactions/TransactionItem";
 import { prettifyNumber } from "../../helpers";
-import { useBottomSheet } from "../../contexts/BottomSheetContext";
-import { Icon } from "../../components/ui/Icon";
 import { Value } from "../../components/ui/Value";
 import { Header } from "../../components/ui/Header";
 import { Grid } from "../../components/ui/Grid";
@@ -19,10 +17,8 @@ import { Holding } from "../../models/Holding";
 import { useHolding } from "../../hooks/useHolding";
 import { useSelector } from "../../hooks/useSelector";
 import { Transaction } from "../../models/Transaction";
-import Switcher from "../ui/Switcher";
 import { LineChart } from "../charts/LineChart";
 import { LineChartButton } from "../buttons/LineChartButton";
-import { useChartSheet } from "../../contexts/ChartSheetContext";
 import ConditionalView from "../ui/ConditionalView";
 import { useI18n } from "../../features/i18n/I18nContext";
 import { useData } from "../../features/data/DataContext";
@@ -33,6 +29,7 @@ import { TabsProvider } from "../../features/tabs/TabsContext";
 import { Tab } from "../../features/tabs/Tab";
 import { FAB } from "../../features/fab/FAB";
 import { Action } from "../../constants/types";
+import { useBottomSheet } from "../../features/bottomSheet/BottomSheetContext";
 
 interface HoldingViewProps {
 	holding: Holding;
@@ -44,8 +41,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 	const { __ } = useI18n();
 	const account = getAccountBy('_id', holding.account_id);
 	const transactions = getTransactions({ accountId: holding.account_id, holdingId: holding._id });
-	const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-	const { openChartSheet } = useChartSheet();
+	const { show, dismiss } = useBottomSheet();
 	const { SortingTypes } = useSorting();
 	const { TimeframeTypes } = useCharts();
 	const insets = useSafeAreaInsets();
@@ -69,15 +65,17 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 				label: __('Edit'),
 				icon: 'create-outline',
 				onPress: () => {
-					openBottomSheet(
-						__('Edit Holding'),
-						<HoldingForm
-							holding={holding}
-							onSubmit={holding => {
-								saveHolding(holding).then(closeBottomSheet)
-							}
-							} />
-					);
+					show({
+						children: (
+							<HoldingForm
+								holding={holding}
+								onSubmit={holding => {
+									saveHolding(holding).then(dismiss)
+								}
+								}
+							/>
+						)
+					})
 				}
 			},
 			{
@@ -91,25 +89,27 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 				icon: 'receipt-outline',
 				label: __('Add Transaction'),
 				onPress: () => {
-					openBottomSheet(
-						__('New Transaction'),
-						<TransactionForm
-							transaction={{
-								owner_id: user.id,
-								date: Date.now(),
-								price: null,
-								amount: null,
-								total: null,
-								holding_name: holding.name,
-								account_id: account._id,
-								type: 'trading',
-								sub_type: 'buy'
-							}}
-							account={account}
-							onSubmit={(transaction) => {
-								addTransaction(transaction).then(closeBottomSheet);
-							}} />
-					);
+					show({
+						children: (
+							<TransactionForm
+								transaction={{
+									owner_id: user.id,
+									date: Date.now(),
+									price: null,
+									amount: null,
+									total: null,
+									holding_name: holding.name,
+									account_id: account._id,
+									type: 'trading',
+									sub_type: 'buy'
+								}}
+								account={account}
+								onSubmit={(transaction) => {
+									addTransaction(transaction).then(dismiss);
+								}}
+							/>
+						)
+					})
 				}
 			},
 		] as Action[];
@@ -157,22 +157,25 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 				unit={"€"}
 				data={returnHistoryData}
 				onPress={() => {
-					openChartSheet(
-						'',
-						<LineChart
-							id={`${holding._id.toString()}-return-chart`}
-							label={__("Return")}
-							unit={"€"}
-							data={returnHistoryData}
-							timeframeOptions={[
-								TimeframeTypes.ytd,
-								TimeframeTypes["1year"],
-								TimeframeTypes["3year"],
-								TimeframeTypes["5year"],
-								TimeframeTypes.max
-							]} />
-					)
-				}} />
+					show({
+						children: (
+							<LineChart
+								id={`${holding._id.toString()}-return-chart`}
+								label={__("Return")}
+								unit={"€"}
+								data={returnHistoryData}
+								timeframeOptions={[
+									TimeframeTypes.ytd,
+									TimeframeTypes["1year"],
+									TimeframeTypes["3year"],
+									TimeframeTypes["5year"],
+									TimeframeTypes.max
+								]}
+							/>
+						)
+					});
+				}}
+			/>
 		)
 	}
 
@@ -183,57 +186,60 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 				unit={"€"}
 				data={feesHistoryData}
 				onPress={() => {
-					openChartSheet(
-						'',
-						<LineChart
-							id={`${holding._id.toString()}-fees-chart`}
-							label={__("Fees")}
-							unit={"€"}
-							data={feesHistoryData}
-							timeframeOptions={[
-								TimeframeTypes.ytd,
-								TimeframeTypes["1year"],
-								TimeframeTypes["3year"],
-								TimeframeTypes["5year"],
-								TimeframeTypes.max
-							]} />
-					)
-				}} />
+					show({
+						children: (
+							<LineChart
+								id={`${holding._id.toString()}-fees-chart`}
+								label={__("Fees")}
+								unit={"€"}
+								data={feesHistoryData}
+								timeframeOptions={[
+									TimeframeTypes.ytd,
+									TimeframeTypes["1year"],
+									TimeframeTypes["3year"],
+									TimeframeTypes["5year"],
+									TimeframeTypes.max
+								]}
+							/>
+						)
+					});
+				}}
+			/>
 		)
 	}
 
 	return (
 		<View style={styles.container}>
 			<FAB actions={actions}>
-			<Header
-				title={name}
-				left={<BackButton />}
-				right={
-					<ConditionalView
-						condition={isSelecting}
-						initialValues={{
-							scaleX: 0.5,
-							scaleY: 0.5
-						}}>
-						<IconButton
-							icon={'trash'}
-							onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />
-					</ConditionalView>
-				}
-				showDivider={false}>
-				<Grid
-					columns={4}
-					items={values} />
-			</Header>
+				<Header
+					title={name}
+					left={<BackButton />}
+					right={
+						<ConditionalView
+							condition={isSelecting}
+							initialValues={{
+								scaleX: 0.5,
+								scaleY: 0.5
+							}}>
+							<IconButton
+								icon={'trash'}
+								onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />
+						</ConditionalView>
+					}
+					showDivider={false}>
+					<Grid
+						columns={4}
+						items={values} />
+				</Header>
 
-			<TabsProvider>
-				<Tab label={__('Overview')}>
-					<View style={styles.contentContainer}>
-						<Grid columns={2} items={charts} style={styles.gridContainer} />
-					</View>
-				</Tab>
-				<Tab label={__('Transactions')}>
-					<View style={styles.contentContainer}>
+				<TabsProvider>
+					<Tab label={__('Overview')}>
+						<View style={styles.contentContainer}>
+							<Grid columns={2} items={charts} style={styles.gridContainer} />
+						</View>
+					</Tab>
+					<Tab label={__('Transactions')}>
+						<View style={styles.contentContainer}>
 							<ItemList
 								id={`list-holding-${holding._id}-transactions`}
 								noItemsText={__('No Transactions')}
@@ -255,9 +261,9 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 									SortingTypes.newestFirst,
 									SortingTypes.oldestFirst
 								]} />
-					</View>
-				</Tab>
-			</TabsProvider>
+						</View>
+					</Tab>
+				</TabsProvider>
 			</FAB>
 		</View>
 	)

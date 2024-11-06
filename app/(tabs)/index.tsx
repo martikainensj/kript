@@ -8,7 +8,6 @@ import { buildChartData } from '../../helpers';
 import { Header } from '../../components/ui/Header';
 import { LineChart } from '../../components/charts/LineChart';
 import { LineChartButton } from '../../components/buttons/LineChartButton';
-import { useChartSheet } from '../../contexts/ChartSheetContext';
 import { Grid } from '../../components/ui/Grid';
 import { useAlert } from '../../features/alerts/AlertContext';
 import { useI18n } from '../../features/i18n/I18nContext';
@@ -24,7 +23,6 @@ const Home: React.FC = () => {
 	const { __ } = useI18n();
 	const { getAccounts } = useData();
 	const { TimeframeTypes } = useCharts();
-	const { openChartSheet } = useChartSheet();
 	const { show } = useAlert();
 	const focusAnim = useRef(new Animated.Value(0)).current;
 	const { show: showBottomSheet } = useBottomSheet();
@@ -54,21 +52,24 @@ const Home: React.FC = () => {
 				unit={"€"}
 				data={overallNetValue}
 				onPress={() => {
-					openChartSheet(
-						'',
-						<LineChart
-							id={"overall-net-value-chart"}
-							label={__("Overall Net Value")}
-							unit={"€"}
-							data={overallNetValue}
-							timeframeOptions={[
-								TimeframeTypes.ytd,
-								TimeframeTypes["1year"],
-								TimeframeTypes["3year"],
-								TimeframeTypes["5year"],
-								TimeframeTypes.max
-							]} />
-					)
+					showBottomSheet({
+						enableContentScroll: false,
+						children: (
+							<LineChart
+								id={"overall-net-value-chart"}
+								label={__("Overall Net Value")}
+								unit={"€"}
+								data={overallNetValue}
+								timeframeOptions={[
+									TimeframeTypes.ytd,
+									TimeframeTypes["1year"],
+									TimeframeTypes["3year"],
+									TimeframeTypes["5year"],
+									TimeframeTypes.max
+								]}
+							/>
+						)
+					});
 				}}
 			/>
 		)
@@ -81,21 +82,24 @@ const Home: React.FC = () => {
 				unit={"€"}
 				data={overallReturnValue}
 				onPress={() => {
-					openChartSheet(
-						'',
-						<LineChart
-							id={"overall-return-chart"}
-							label={__("Overall Return")}
-							unit={"€"}
-							data={overallReturnValue}
-							timeframeOptions={[
-								TimeframeTypes.ytd,
-								TimeframeTypes["1year"],
-								TimeframeTypes["3year"],
-								TimeframeTypes["5year"],
-								TimeframeTypes.max
-							]} />
-					)
+					showBottomSheet({
+						enableContentScroll: false,
+						children: (
+							<LineChart
+								id={"overall-return-chart"}
+								label={__("Overall Return")}
+								unit={"€"}
+								data={overallReturnValue}
+								timeframeOptions={[
+									TimeframeTypes.ytd,
+									TimeframeTypes["1year"],
+									TimeframeTypes["3year"],
+									TimeframeTypes["5year"],
+									TimeframeTypes.max
+								]}
+							/>
+						)
+					});
 				}}
 			/>
 		)
@@ -135,42 +139,6 @@ const Home: React.FC = () => {
 					<Grid columns={2} items={overviewCharts} />
 				</View>
 			</View>
-			<DefaultButton
-				onPress={() => {
-					showBottomSheet({
-						enableContentScroll: false,
-						children: (
-							<LineChart
-								id={"overall-net-value-chart"}
-								label={__("Overall Net Value")}
-								unit={"€"}
-								data={overallNetValue}
-								timeframeOptions={[
-									TimeframeTypes.ytd,
-									TimeframeTypes["1year"],
-									TimeframeTypes["3year"],
-									TimeframeTypes["5year"],
-									TimeframeTypes.max
-								]}
-							/>
-						)
-					});
-				}}
-			>
-				Test
-			</DefaultButton>
-			<DefaultButton
-				onPress={() => {
-					showBottomSheet({
-						enableContentScroll: false,
-						children: (
-							<Text>TETES</Text>
-						)
-					});
-				}}
-			>
-				Test
-			</DefaultButton>
 		</Animated.View>
 	);
 };

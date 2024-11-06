@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
 	},
 	contentContainer: {
 		...GlobalStyles.content,
+		...GlobalStyles.slice
 	},
 	fillerContainer: {
 		...StyleSheet.absoluteFillObject,
