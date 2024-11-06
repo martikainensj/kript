@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
 	},
 	fillerContainer: {
 		...StyleSheet.absoluteFillObject,
-		top: "100%",
+		top: "99%",
 		height: Dimensions.get("screen").height,
 		pointerEvents: "none",
 	},

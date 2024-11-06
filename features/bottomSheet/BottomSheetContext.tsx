@@ -33,14 +33,6 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 		setBottomSheets((prev) => (prev.length > 0 ? prev.slice(0, -1) : prev));
 	};
 
-	const debouncedSetHeight = useRef(
-		debounce((newHeight: number) => {
-			setHeight(newHeight);
-			translationYAnim.setValue(newHeight);
-			Animated.spring(translationYAnim, { toValue: 0, useNativeDriver: true }).start();
-		})
-	).current;
-
 	const onGestureEvent = (e: GestureEvent<PanGestureHandlerEventPayload>) => {
 		const { translationY } = e.nativeEvent;
 		const resistanceValue = translationY < 0 ? translationY / (1 - translationY * DRAG_RESISTANCE_FACTOR) : translationY;
@@ -67,8 +59,14 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 	};
 
 	const onLayout = (event: LayoutChangeEvent) => {
-		const { height: newHeight } = event.nativeEvent.layout;
-		debouncedSetHeight(newHeight);
+		const { height } = event.nativeEvent.layout;
+		
+		Animated.spring(translationYAnim, {
+			toValue: 0,
+			delay: 10,
+			useNativeDriver: true
+		}).start();
+		setHeight(height);
 	};
 
 	useEffect(() => {

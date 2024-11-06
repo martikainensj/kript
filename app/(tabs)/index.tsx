@@ -17,6 +17,7 @@ import { useCharts } from '../../features/charts/useCharts';
 import { useFocusEffect } from 'expo-router';
 import { animateIn, animateOut } from '../../features/animations/animate';
 import { useBottomSheet } from '../../features/bottomSheet/BottomSheetContext';
+import { Text } from '../../components/ui/Text';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();
@@ -25,7 +26,6 @@ const Home: React.FC = () => {
 	const { TimeframeTypes } = useCharts();
 	const { openChartSheet } = useChartSheet();
 	const { show } = useAlert();
-	const [testValue, setTestValue] = useState<string | number>('');
 	const focusAnim = useRef(new Animated.Value(0)).current;
 	const { show: showBottomSheet } = useBottomSheet();
 
@@ -153,6 +153,18 @@ const Home: React.FC = () => {
 									TimeframeTypes.max
 								]}
 							/>
+						)
+					});
+				}}
+			>
+				Test
+			</DefaultButton>
+			<DefaultButton
+				onPress={() => {
+					showBottomSheet({
+						enableContentScroll: false,
+						children: (
+							<Text>TETES</Text>
 						)
 					});
 				}}
