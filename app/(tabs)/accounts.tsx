@@ -69,7 +69,17 @@ const Accounts: React.FC = () => {
 		<Animated.View style={[
 			styles.container,
 			{
-				opacity: focusAnim
+				opacity: focusAnim,
+				transform: [
+					{translateY: focusAnim.interpolate({
+						inputRange: [0, 1],
+						outputRange: [4, 0]
+					})},
+					{scale: focusAnim.interpolate({
+						inputRange: [0, 1],
+						outputRange: [0.99, 1]
+					})}
+				]
 			}
 		]}>
 			<Header
