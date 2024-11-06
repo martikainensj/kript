@@ -73,7 +73,7 @@ export const Selector: React.FC<Props> = ({ tabs, index, setIndex }) => {
 			const targetPosition = tabPositions[index] - scrollViewWidth / 2 + underlineWidth / 2;
 			ref.current.scrollTo({ x: Math.max(0, targetPosition), animated: true });
 		}
-	});
+	}, [index, tabPositions, labelColors]);
 
 	return (
 		<ScrollView
@@ -95,11 +95,11 @@ export const Selector: React.FC<Props> = ({ tabs, index, setIndex }) => {
 					<TouchableOpacity
 						key={_index}
 						onPress={() => setIndex(_index)}
-						disabled={isActive}
+						disabled={isActive || isAnimating}
 						style={styles.selectorItemContainer}
 						onLayout={(event) => onLayoutTab(event, _index)}
 					>
-						<Text style={{color}}>
+						<Text style={{ color }}>
 							{tab.label}
 						</Text>
 					</TouchableOpacity>
