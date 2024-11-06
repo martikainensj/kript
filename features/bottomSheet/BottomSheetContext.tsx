@@ -77,7 +77,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 		});
 
 		return () => translationYAnim.removeListener(listenerId);
-	});
+	}, [bottomSheets.length, height, translationYAnim, blurIntensityAnim]);
 
 	return (
 		<BottomSheetContext.Provider value={{ show, dismiss, bottomSheets }}>
@@ -116,9 +116,3 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 		</BottomSheetContext.Provider>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		...GlobalStyles.container
-	},
-});

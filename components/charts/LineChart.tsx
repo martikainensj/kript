@@ -175,7 +175,6 @@ export const LineChart: React.FC<Props> = ({
 	} as Partial<LineChartPropsType>
 
 	const showChart = timeframedData?.length > 1;
-	const showTimeframe = !!timeframeOptions?.length;
 
 	return (
 		<Animated.View

@@ -1,6 +1,6 @@
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { FlatList, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { GlobalStyles, Spacing } from "../../constants";
-import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Account } from "../../models/Account";
 import { Holding } from "../../models/Holding";
 import { Transaction } from "../../models/Transaction";
@@ -11,6 +11,7 @@ import { SortingProps } from "../../features/data/types";
 import { Text } from "./Text";
 import { Divider } from "./Divider";
 import { FAB } from "../../features/fab/FAB";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface ItemListProps {
 	id: string;
@@ -42,20 +43,16 @@ export const ItemList: React.FC<ItemListProps> = ({
 		if (sorting?.function) {
 			return data.sort((a, b) => sorting.function(a.item, b.item));
 		}
-
 		return data;
 	}, [data, sorting]);
 
 	useEffect(() => {
 		get('@filters/sorting').then(filtersSorting => {
 			const newFiltersSorting = {};
-
 			if (!!filtersSorting) {
 				Object.assign(newFiltersSorting, filtersSorting);
 			}
-
 			newFiltersSorting[id] = { id: sorting.id };
-
 			set('@filters/sorting', newFiltersSorting)
 		});
 	}, [sorting]);
@@ -68,7 +65,6 @@ export const ItemList: React.FC<ItemListProps> = ({
 	useLayoutEffect(() => {
 		get('@filters/sorting').then(filtersSorting => {
 			const sortingId = filtersSorting?.[id]?.id || null;
-
 			if (sortingId) {
 				setSorting(sortingOptions.find(option => option.id === sortingId));
 			} else if (sortingOptions?.length) {
@@ -108,6 +104,17 @@ export const ItemList: React.FC<ItemListProps> = ({
 						contentContainerStyle
 					]}
 				/>
+
+				{sortingOptions?.length > 0 && (
+					<LinearGradient
+						colors={[
+							`${theme.colors.background}00`,
+							`${theme.colors.background}CC`,
+							theme.colors.background
+						]}
+						style={styles.gradient}
+					/>
+				)}
 			</FAB>
 		</View>
 	)
@@ -134,36 +141,19 @@ const styles = StyleSheet.create({
 		...GlobalStyles.container,
 		marginHorizontal: -Spacing.md
 	},
-	titleContainer: {
-		gap: Spacing.sm,
-	},
-	menuContainer: {
-		left: 0,
-		padding: Spacing.md
-	},
-	sortingContainer: {
-		position: 'relative',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: Spacing.sm,
-		padding: Spacing.md
-	},
-
-	sortingText: {
-	},
-
 	contentContainer: {
 	},
-
+	gradient: {
+		position: 'absolute',
+		bottom: 0,
+		left: 0,
+		right: 0,
+		height: Spacing.fab,
+		pointerEvents: "none",
+	},
 	placeholderContainer: {
 		...GlobalStyles.slice,
 		paddingVertical: Spacing.md
 	},
-
-	placeholderText: {
-	},
-
-	placeholderDescription: {
-
-	}
+	placeholderText: {},
 });

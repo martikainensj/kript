@@ -1,5 +1,5 @@
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
-import { Spacing } from '../../constants';
+import { GlobalStyles, Spacing } from '../../constants';
 import React from 'react';
 import { useTheme } from '../../features/theme/ThemeContext';
 
@@ -21,6 +21,7 @@ export const Divider: React.FC<Props> = ({ style }) => {
 
 const styles = StyleSheet.create({
 	container: {
+		marginHorizontal: Spacing.md,
 		height: StyleSheet.hairlineWidth
 	},
 })
