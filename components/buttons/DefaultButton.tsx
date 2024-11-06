@@ -26,6 +26,7 @@ export const DefaultButton: React.FC<Props> = ({
 					mode === 'inverted' && { backgroundColor: theme.colors.background },
 					mode === 'outlined' && { borderColor: theme.colors.onBackground },
 					mode === 'text' && { padding: 0 },
+					rest.disabled && GlobalStyles.disabled,
 					rest.style
 				]}
 			>

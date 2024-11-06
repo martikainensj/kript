@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, TouchableOpacity, TouchableOpacityProps, Animated, View, StyleProp, TextStyle } from 'react-native';
-import { BorderRadius, Duration, IconSize, Spacing } from '../../constants';
+import { BorderRadius, Duration, GlobalStyles, IconSize, Spacing } from '../../constants';
 import { Icon } from '../ui/Icon';
 import { useTheme } from '../../features/theme/ThemeContext';
 import { Text } from '../ui/Text';
@@ -76,6 +76,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
 					height: size + 24,
 					aspectRatio: 1,
 				},
+				rest.disabled && GlobalStyles.disabled,
 				rest.style,
 			]}
 		>

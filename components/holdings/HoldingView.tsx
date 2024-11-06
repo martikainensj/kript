@@ -39,7 +39,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 	const { getAccountBy, saveHolding, removeObjects, addTransaction, getTransactions } = useData();
 	const { user } = useUser();
 	const { __ } = useI18n();
-	const account = getAccountBy('_id', holding.account_id);
+	const account = getAccountBy("_id", holding.account_id);
 	const transactions = getTransactions({ accountId: holding.account_id, holdingId: holding._id });
 	const { show, dismiss } = useBottomSheet();
 	const { SortingTypes } = useSorting();
@@ -50,48 +50,49 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 	useHolding({ holding });
 
 	const onLongPressTransaction = useCallback((transaction: Transaction) => {
-		!isSelecting && select('Transaction', transaction);
+		!isSelecting && select("Transaction", transaction);
 	}, []);
 
 	const onPressSelectTransaction = useCallback((transaction: Transaction) => {
 		hasObject(transaction)
 			? deselect(transaction)
-			: select('Transaction', transaction);
+			: select("Transaction", transaction);
 	}, [selectedObjects]);
 
 	const actions = useMemo(() => {
 		return [
 			{
-				label: __('Edit'),
-				icon: 'create-outline',
+				label: __("Edit"),
+				icon: "create-outline",
 				onPress: () => {
 					show({
 						children: (
 							<HoldingForm
+								label={__("Edit holding")}
 								holding={holding}
 								onSubmit={holding => {
 									saveHolding(holding).then(dismiss)
-								}
-								}
+								}}
 							/>
 						)
 					})
 				}
 			},
 			{
-				label: __('Remove'),
-				icon: 'trash-outline',
+				label: __("Remove"),
+				icon: "trash-outline",
 				onPress: () => {
-					removeObjects('Holding', [holding]).then(router.back)
+					removeObjects("Holding", [holding]).then(router.back)
 				}
 			},
 			{
-				icon: 'receipt-outline',
-				label: __('Add Transaction'),
+				icon: "receipt-outline",
+				label: __("Add Transaction"),
 				onPress: () => {
 					show({
 						children: (
 							<TransactionForm
+								label={__("New transaction")}
 								transaction={{
 									owner_id: user.id,
 									date: Date.now(),
@@ -100,8 +101,8 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 									total: null,
 									holding_name: holding.name,
 									account_id: account._id,
-									type: 'trading',
-									sub_type: 'buy'
+									type: "trading",
+									sub_type: "buy"
 								}}
 								account={account}
 								onSubmit={(transaction) => {
@@ -124,25 +125,25 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 
 	const values = [
 		<Value
-			label={__('Amount')}
+			label={__("Amount")}
 			value={prettifyNumber(amount)}
 			isVertical={true} />,
 		<Value
-			label={__('Value')}
+			label={__("Value")}
 			value={prettifyNumber(value)}
-			unit={'€'}
+			unit={"€"}
 			isVertical={true} />,
 		<Value
-			label={__('Return')}
+			label={__("Return")}
 			value={prettifyNumber(returnValue)}
-			unit={'€'}
+			unit={"€"}
 			isVertical={true}
 			isPositive={returnValue > 0}
 			isNegative={returnValue < 0} />,
 		<Value
-			label={__('Return')}
+			label={__("Return")}
 			value={prettifyNumber(returnPercentage)}
-			unit={'%'}
+			unit={"%"}
 			isVertical={true}
 			isPositive={returnPercentage > 0}
 			isNegative={returnPercentage < 0} />,
@@ -224,7 +225,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 								scaleY: 0.5
 							}}>
 							<IconButton
-								icon={'trash'}
+								icon={"trash"}
 								onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />
 						</ConditionalView>
 					}
@@ -235,16 +236,16 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 				</Header>
 
 				<TabsProvider>
-					<Tab label={__('Overview')}>
+					<Tab label={__("Overview")}>
 						<View style={styles.contentContainer}>
 							<Grid columns={2} items={charts} style={styles.gridContainer} />
 						</View>
 					</Tab>
-					<Tab label={__('Transactions')}>
+					<Tab label={__("Transactions")}>
 						<View style={styles.contentContainer}>
 							<ItemList
 								id={`list-holding-${holding._id}-transactions`}
-								noItemsText={__('No Transactions')}
+								noItemsText={__("No Transactions")}
 								data={transactions.map(transaction => {
 									return {
 										item: transaction,
@@ -253,7 +254,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 												transaction={transaction}
 												onPressSelect={onPressSelectTransaction}
 												onLongPress={onLongPressTransaction}
-												isSelectable={canSelect('Transaction') && isSelecting}
+												isSelectable={canSelect("Transaction") && isSelecting}
 												isSelected={hasObject(transaction)} />
 										)
 									}

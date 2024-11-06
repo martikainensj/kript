@@ -128,7 +128,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 	// Setters
 
 	const addAccount = useCallback(( account: Account ): Promise<Account> => {
-		const title = __( 'Add Account' );
+		const title = __( 'Add a new Account' );
 		const message = `${ __( 'Adding a new account' ) }: ${ account.name }`
 			+ "\n" + __( 'Are you sure?' );
 

@@ -8,35 +8,37 @@ import { Transaction } from "../../models/Transaction";
 import { Account } from "../../models/Account";
 import { allSet, stripRealmListsFromObject } from "../../helpers";
 import { OptionProps, Select } from "../inputs/Select";
-import { Divider } from "../ui/Divider";
 import { Icon } from "../ui/Icon";
 import { useI18n } from "../../features/i18n/I18nContext";
 import { useData } from "../../features/data/DataContext";
 import { useCategories } from "../../features/data/useCategories";
 import { CashCategory, LoanCategory, TradingCategory } from "../../features/data/types";
 import { TextInput } from "../inputs/TextInput";
+import { Text } from "../ui/Text";
 
 interface TransactionFormProps {
+	label?: string;
 	transaction: Partial<Transaction>,
 	account?: Account,
-	onSubmit: ( transaction: Transaction ) => void;
+	onSubmit: (transaction: Transaction) => void;
 }
 
-export const TransactionForm = ( {
+export const TransactionForm = ({
+	label,
 	transaction,
 	account,
 	onSubmit
-}: TransactionFormProps ) => {
+}: TransactionFormProps) => {
 	const { __ } = useI18n();
 	const { TransactionCategories, TradingCategories, CashCategories, LoanCategories } = useCategories();
 	const { getHoldingBy } = useData();
-	const [ trading, cash, adjustment ] = TransactionCategories;
-	const [ buy, sell ] = TradingCategories;
-	const [ deposit, withdrawal, dividend ] = CashCategories;
-	const [ repayment, disbursement ] = LoanCategories;
+	const [trading, cash, adjustment] = TransactionCategories;
+	const [buy, sell] = TradingCategories;
+	const [deposit, withdrawal, dividend] = CashCategories;
+	const [repayment, disbursement] = LoanCategories;
 
-	const [ editedTransaction, setEditedTransaction ]
-		= useState( { ...transaction } );
+	const [editedTransaction, setEditedTransaction]
+		= useState({ ...transaction });
 
 	const initialTransaction = {
 		...editedTransaction,
@@ -49,348 +51,344 @@ export const TransactionForm = ( {
 
 	const { date, price, amount, total, holding_name, notes, type, sub_type } = {
 		...editedTransaction,
-		amount: editedTransaction.amount && Math.abs( editedTransaction.amount ),
-		total: editedTransaction.total && Math.abs( editedTransaction.total ),
+		amount: editedTransaction.amount && Math.abs(editedTransaction.amount),
+		total: editedTransaction.total && Math.abs(editedTransaction.total),
 	};
 
-	const subTypes = useMemo( () => {
-		switch ( type ) {
+	const subTypes = useMemo(() => {
+		switch (type) {
 			case 'trading':
 				return TradingCategories;
-				
+
 			case 'cash':
 				return CashCategories;
 
 			case 'loan':
 				return LoanCategories;
-			
-			default:
-				return null; 
-		}
-	}, [ type ] );
 
-	const handleDismissKeyboard = ( ) => {
-    Keyboard.dismiss();
-  };
+			default:
+				return null;
+		}
+	}, [type]);
+
+	const handleDismissKeyboard = () => {
+		Keyboard.dismiss();
+	};
 
 	const onSubmitHandler = () => {
 		handleDismissKeyboard();
-		onSubmit( stripRealmListsFromObject( {
+		onSubmit(stripRealmListsFromObject({
 			...editedTransaction,
 			amount: amount && (
 				sub_type === sell.id || sub_type === withdrawal.id
-				? -amount
-				: Math.abs( amount )
+					? -amount
+					: Math.abs(amount)
 			),
 			total: total && (
 				sub_type === sell.id
 					? -total
-					: Math.abs( total )
+					: Math.abs(total)
 			)
-		} ) as Transaction )
+		}) as Transaction)
 	}
-		
-	useEffect( () => {
-		setEditedTransaction( { ...transaction } );
-	}, [ transaction ] );
 
-	useEffect( () => {
-		if ( !! transaction._id ) {
+	useEffect(() => {
+		setEditedTransaction({ ...transaction });
+	}, [transaction]);
+
+	useEffect(() => {
+		if (!!transaction._id) {
 			return;
 		}
 
 		const initializedTransaction = { ...initialTransaction };
 
-		if ( subTypes?.length ) {
-			Object.assign( initializedTransaction, { sub_type: subTypes[0].id } )
+		if (subTypes?.length) {
+			Object.assign(initializedTransaction, { sub_type: subTypes[0].id })
 		}
-		
-		setEditedTransaction( initializedTransaction );
-	}, [ subTypes ] );
+
+		setEditedTransaction(initializedTransaction);
+	}, [subTypes]);
 
 	useEffect(() => {
-		if ( type === 'adjustment' ) {
-			const holding = getHoldingBy( 'name', holding_name, { accountId: account._id });
-			
+		if (type === 'adjustment') {
+			const holding = getHoldingBy('name', holding_name, { accountId: account._id });
+
 			setEditedTransaction({
 				...editedTransaction,
 				price: holding?.lastPrice,
 				amount: holding?.amount
 			});
 		}
-	}, [ holding_name ]);
+	}, [holding_name]);
 
 	return (
-    <TouchableWithoutFeedback onPress={ handleDismissKeyboard }>
-			<View style={ styles.container }>
+		<TouchableWithoutFeedback onPress={handleDismissKeyboard}>
+			<View style={styles.container}>
+				{ label && (
+					<Text
+						fontSize="md"
+					>
+						{label}
+					</Text>
+				)}
 				<DateInput
-					label={ __( 'Date' ) }
-					value={ date }
-					setValue={ date => setEditedTransaction(
-						Object.assign( { ...editedTransaction }, { date } )
-					) } />
+					label={__('Date')}
+					value={date}
+					setValue={date => setEditedTransaction(
+						Object.assign({ ...editedTransaction }, { date })
+					)} />
 
 				<Select
-					value={ type }
-					setValue={ type => setEditedTransaction(
-						Object.assign( { ...editedTransaction }, { type } )
-					) }
-					options={ TransactionCategories.map( transactionType => {
+					value={type}
+					setValue={type => setEditedTransaction(
+						Object.assign({ ...editedTransaction }, { type })
+					)}
+					options={TransactionCategories.map(transactionType => {
 						return {
-							icon: ( { size, color } ) => {
+							icon: ({ size, color }) => {
 								return (
 									<Icon
-										name={ transactionType.icon }
-										size={ size }
-										color={ color } />
+										name={transactionType.icon}
+										size={size}
+										color={color} />
 								)
 							},
 							label: transactionType.name,
 							value: transactionType.id,
 							selectedColor: transactionType.color,
 						}
-					} ) }
-					disabled={ !! transaction._id } />
-				
-				{ subTypes && <Select
-					value={ sub_type }
-					setValue={ sub_type => setEditedTransaction(
-						Object.assign( { ...editedTransaction }, { sub_type } )
-					) }
-					options={ subTypes.map( ( subType: TradingCategory | CashCategory | LoanCategory ) => {
+					})}
+					disabled={!!transaction._id} />
+
+				{subTypes && <Select
+					value={sub_type}
+					setValue={sub_type => setEditedTransaction(
+						Object.assign({ ...editedTransaction }, { sub_type })
+					)}
+					options={subTypes.map((subType: TradingCategory | CashCategory | LoanCategory) => {
 						return {
-							icon: ( { size, color } ) => {
+							icon: ({ size, color }) => {
 								return (
 									<Icon
-										name={ subType.icon }
-										size={ size }
-										color={ color } />
+										name={subType.icon}
+										size={size}
+										color={color} />
 								)
 							},
 							label: subType.name,
 							value: subType.id,
 							selectedColor: subType.color,
-							disabled: !! transaction._id && subType.id === 'dividend'
+							disabled: !!transaction._id && subType.id === 'dividend'
 						} as OptionProps
-					} ) }
-					disabled={ transaction.sub_type === 'dividend' } /> }
+					})}
+					disabled={transaction.sub_type === 'dividend'} />}
 
-				<Divider />
-				
-				{ type === 'trading' && <>
-					{ account && (
+				{type === 'trading' && <>
+					{account && (
 						<HoldingInput
-							label={ __( 'Holding' ) }
-							value={ holding_name }
-							account={ account }
-							placeholder={ `${ __( 'Example' ) }: Apple Inc` }
-							setValue={ holding_name => setEditedTransaction(
-								Object.assign( { ...editedTransaction }, { holding_name } )
-							) }
-							disabled={ !! transaction._id } />
-					) }
-					
+							label={__('Holding')}
+							value={holding_name}
+							account={account}
+							placeholder={`${__('Example')}: Apple Inc`}
+							setValue={holding_name => setEditedTransaction(
+								Object.assign({ ...editedTransaction }, { holding_name })
+							)}
+							disabled={!!transaction._id} />
+					)}
+
 					<TextInput
-						label={ __( 'Price' ) }
-						value={ price }
-						placeholder={ '0' }
-						keyboardType={ 'numeric' }
-						inputMode={ 'decimal' }
-						onChangeText={ price => setEditedTransaction(
-							Object.assign( { ...editedTransaction }, { price } )
-						) } />
-		
+						label={__('Price')}
+						value={price}
+						placeholder={'0'}
+						keyboardType={'numeric'}
+						inputMode={'decimal'}
+						onChangeText={price => setEditedTransaction(
+							Object.assign({ ...editedTransaction }, { price })
+						)} />
+
 					<TextInput
-						label={ __( 'Amount' ) }
-						value={ amount }
-						placeholder={ '0' }
-						keyboardType={ 'numeric' }
-						inputMode={ 'decimal' }
+						label={__('Amount')}
+						value={amount}
+						placeholder={'0'}
+						keyboardType={'numeric'}
+						inputMode={'decimal'}
 						max={(() => {
-							const holding = getHoldingBy( 'name', holding_name, { accountId: account._id })
-							
+							const holding = getHoldingBy('name', holding_name, { accountId: account._id })
+
 							return holding?.amount > 0 && sub_type === 'sell'
 								? holding.amount
 								: 0
 						})()}
-						onChangeText={ amount => setEditedTransaction(
+						onChangeText={amount => setEditedTransaction(
 							Object.assign({ ...editedTransaction }, { amount })
 						)} />
-		
+
 					<TextInput
-						label={ __( 'Total' ) }
-						value={ total }
-						placeholder={ '0' }
-						keyboardType={ 'numeric' }
-						inputMode={ 'decimal' }
-						onChangeText={ total => setEditedTransaction(
-							Object.assign( { ...editedTransaction }, { total } )
-						) } />
-		
-					<TextInput
+						label={__('Total')}
+						value={total}
+						placeholder={'0'}
+						keyboardType={'numeric'}
+						inputMode={'decimal'}
+						onChangeText={total => setEditedTransaction(
+							Object.assign({ ...editedTransaction }, { total })
+						)} />
+
+					{/*<TextInput
 						label={ __( 'Notes' ) }
 						value={ notes }
 						placeholder={ `${ __( 'Enter notes here' ) }...` }
 						onChangeText={ notes => setEditedTransaction(
 							Object.assign( { ...editedTransaction }, { notes } )
 						) }
-						multiline={ true } />
-		
-					<Divider />
-		
-					<IconButton
-						icon={ 'save' }
-						size={ IconSize.xl }
-						style={ styles.submitButton }
-						disabled={ ! allSet( holding_name, price, amount, total ) }
-						onPress={ onSubmitHandler } />
-				</> }
+						multiline={ true } />*/}
 
-				{ type === 'cash' && <>
-					{ ( sub_type === dividend.id && account ) &&
+					<IconButton
+						icon={'save'}
+						size={IconSize.lg}
+						style={styles.submitButton}
+						disabled={!allSet(holding_name, price, amount, total)}
+						onPress={onSubmitHandler} />
+				</>}
+
+				{type === 'cash' && <>
+					{(sub_type === dividend.id && account) &&
 						<HoldingInput
-							label={ __( 'Holding' ) }
-							value={ holding_name }
-							account={ account }
-							placeholder={ `${ __( 'Example' ) }: Apple Inc` }
-							setValue={ holding_name => setEditedTransaction(
-								Object.assign( { ...editedTransaction }, { holding_name } )
-							) }
-							disabled={ !! transaction.holding_name } />
+							label={__('Holding')}
+							value={holding_name}
+							account={account}
+							placeholder={`${__('Example')}: Apple Inc`}
+							setValue={holding_name => setEditedTransaction(
+								Object.assign({ ...editedTransaction }, { holding_name })
+							)}
+							disabled={!!transaction.holding_name} />
 					}
 
 					<TextInput
-						label={ __( 'Amount' ) }
-						value={ amount }
-						placeholder={ '0' }
-						keyboardType={ 'numeric' }
-						inputMode={ 'decimal' }
+						label={__('Amount')}
+						value={amount}
+						placeholder={'0'}
+						keyboardType={'numeric'}
+						inputMode={'decimal'}
 						max={(() => {
 							return account.balance > 0 && sub_type === 'withdrawal'
 								? account.balance
 								: 0
 						})()}
-						onChangeText={ amount => setEditedTransaction(
+						onChangeText={amount => setEditedTransaction(
 							Object.assign({ ...editedTransaction }, { amount })
 						)} />
 
 					<TextInput
-						label={ __( 'Notes' ) }
-						value={ notes }
-						placeholder={ `${ __( 'Enter notes here' ) }...` }
-						onChangeText={ notes => setEditedTransaction(
-							Object.assign( { ...editedTransaction }, { notes } )
-						) }
-						multiline={ true } />
-
-					<Divider />
+						label={__('Notes')}
+						value={notes}
+						placeholder={`${__('Enter notes here')}...`}
+						onChangeText={notes => setEditedTransaction(
+							Object.assign({ ...editedTransaction }, { notes })
+						)}
+						multiline={true} />
 
 					<IconButton
-						icon={ 'save' }
-						size={ IconSize.xl }
-						style={ styles.submitButton }
-						disabled={ ! allSet( amount, ( sub_type !== dividend.id || !! holding_name ) ) }
-						onPress={ onSubmitHandler } />
-				</> }
+						icon={'save'}
+						size={IconSize.lg}
+						style={styles.submitButton}
+						disabled={!allSet(amount, (sub_type !== dividend.id || !!holding_name))}
+						onPress={onSubmitHandler} />
+				</>}
 
-				{ type === 'adjustment' && <>
-					{ account && (
+				{type === 'adjustment' && <>
+					{account && (
 						<HoldingInput
-							label={ __( 'Holding' ) }
-							value={ holding_name }
-							account={ account }
-							placeholder={ `${ __( 'Example' ) }: Apple Inc` }
-							setValue={ holding_name => setEditedTransaction(
-								Object.assign( { ...editedTransaction }, { holding_name } )
-							) }
-							disabled={ !! transaction._id } />
-					) }
-					
-					<TextInput
-						label={ __( 'Adjusted Price' ) }
-						value={ price }
-						placeholder={ '0' }
-						keyboardType={ 'numeric' }
-						inputMode={ 'decimal' }
-						onChangeText={ price => setEditedTransaction(
-							Object.assign( { ...editedTransaction }, { price } )
-						) } />
-		
-					<TextInput
-						label={ __( 'Adjusted Amount' ) }
-						value={ amount }
-						placeholder={ '0' }
-						keyboardType={ 'numeric' }
-						inputMode={ 'decimal' }
-						onChangeText={ amount => setEditedTransaction(
-							Object.assign( { ...editedTransaction }, { amount } )
-						) } />
-
-					<TextInput
-						label={ __( 'Notes' ) }
-						value={ notes }
-						placeholder={ `${ __( 'Enter notes here' ) }...` }
-						onChangeText={ notes => setEditedTransaction(
-							Object.assign( { ...editedTransaction }, { notes } )
-						) }
-						multiline={ true } />
-
-					<Divider />
-
-					<IconButton
-						icon={ 'save' }
-						size={ IconSize.xl }
-						style={ styles.submitButton }
-						disabled={ ! allSet( amount || price ) }
-						onPress={ onSubmitHandler } />
-				</> }
-
-				{ type === 'loan' && <>
-					<TextInput
-						label={ sub_type === 'repayment' 
-							? __( 'Repayment amount' )
-							: __( 'Loan amount' )
-						}
-						value={ amount }
-						placeholder={ '0' }
-						keyboardType={ 'numeric' }
-						inputMode={ 'decimal' }
-						onChangeText={ amount => setEditedTransaction(
-							Object.assign( { ...editedTransaction }, { amount } )
-						) } />
-		
-					{ sub_type === 'repayment' && (
-						<TextInput
-							label={ __( 'Total' ) }
-							value={ total }
-							placeholder={ '0' }
-							keyboardType={ 'numeric' }
-							inputMode={ 'decimal' }
-							onChangeText={ total => setEditedTransaction(
-								Object.assign( { ...editedTransaction }, { total } )
-							) } />
+							label={__('Holding')}
+							value={holding_name}
+							account={account}
+							placeholder={`${__('Example')}: Apple Inc`}
+							setValue={holding_name => setEditedTransaction(
+								Object.assign({ ...editedTransaction }, { holding_name })
+							)}
+							disabled={!!transaction._id} />
 					)}
 
-					<Divider />
+					<TextInput
+						label={__('Adjusted Price')}
+						value={price}
+						placeholder={'0'}
+						keyboardType={'numeric'}
+						inputMode={'decimal'}
+						onChangeText={price => setEditedTransaction(
+							Object.assign({ ...editedTransaction }, { price })
+						)} />
+
+					<TextInput
+						label={__('Adjusted Amount')}
+						value={amount}
+						placeholder={'0'}
+						keyboardType={'numeric'}
+						inputMode={'decimal'}
+						onChangeText={amount => setEditedTransaction(
+							Object.assign({ ...editedTransaction }, { amount })
+						)} />
+
+					<TextInput
+						label={__('Notes')}
+						value={notes}
+						placeholder={`${__('Enter notes here')}...`}
+						onChangeText={notes => setEditedTransaction(
+							Object.assign({ ...editedTransaction }, { notes })
+						)}
+						multiline={true} />
 
 					<IconButton
-						icon={ 'save' }
-						size={ IconSize.xl }
-						style={ styles.submitButton }
-						disabled={ ! allSet( amount || ( sub_type !== disbursement.id || !! total ) ) }
-						onPress={ onSubmitHandler } />
-				</> }
+						icon={'save'}
+						size={IconSize.lg}
+						style={styles.submitButton}
+						disabled={!allSet(amount || price)}
+						onPress={onSubmitHandler} />
+				</>}
+
+				{type === 'loan' && <>
+					<TextInput
+						label={sub_type === 'repayment'
+							? __('Repayment amount')
+							: __('Loan amount')
+						}
+						value={amount}
+						placeholder={'0'}
+						keyboardType={'numeric'}
+						inputMode={'decimal'}
+						onChangeText={amount => setEditedTransaction(
+							Object.assign({ ...editedTransaction }, { amount })
+						)} />
+
+					{sub_type === 'repayment' && (
+						<TextInput
+							label={__('Total')}
+							value={total}
+							placeholder={'0'}
+							keyboardType={'numeric'}
+							inputMode={'decimal'}
+							onChangeText={total => setEditedTransaction(
+								Object.assign({ ...editedTransaction }, { total })
+							)} />
+					)}
+
+					<IconButton
+						icon={'save'}
+						size={IconSize.lg}
+						style={styles.submitButton}
+						disabled={!allSet(amount || (sub_type !== disbursement.id || !!total))}
+						onPress={onSubmitHandler} />
+				</>}
 			</View>
 		</TouchableWithoutFeedback>
 	)
 }
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.form,
-		
 	},
 	submitButton: {
 		alignSelf: 'flex-end'
 	}
-} );
+});

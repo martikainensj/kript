@@ -7,13 +7,16 @@ import { GlobalStyles, IconSize } from "../../constants";
 import { Account } from "../../models/Account";
 import { stripRealmListsFromObject } from "../../helpers";
 import { useI18n } from "../../features/i18n/I18nContext";
+import { Text } from "../ui/Text";
 
 interface AccountFormProps {
+	label?: string;
 	account?: Account,
 	onSubmit: (account: Account) => void;
 }
 
 export const AccountForm = ({
+	label,
 	account,
 	onSubmit
 }: AccountFormProps) => {
@@ -36,30 +39,40 @@ export const AccountForm = ({
 	return (
 		<TouchableWithoutFeedback onPress={handleDismissKeyboard}>
 			<View style={styles.container}>
+				{label && (
+					<Text
+						fontSize="md"
+					>
+						{label}
+					</Text>
+				)}
 				<TextInput
 					label={__('Name')}
 					value={editedAccount?.name}
 					placeholder={`${__('Example')}: ${__('Investment Account')}`}
 					onChangeText={name => setEditedAccount(
 						Object.assign({ ...editedAccount }, { name })
-					)} />
+					)}
+				/>
 
-				<TextInput
+				{/*<TextInput
 					label={__('Notes')}
 					value={editedAccount?.notes}
 					placeholder={`${__('Enter notes here')}...`}
+					multiline={true}
 					onChangeText={notes => setEditedAccount(
 						Object.assign({ ...editedAccount }, { notes })
 					)}
-					multiline={true} />
+				/>*/}
 
 				<IconButton
 					icon={'save'}
-					size={IconSize.xl}
+					size={IconSize.lg}
 					style={styles.submitButton}
 					disabled={!editedAccount?.name}
 					onPressIn={handleDismissKeyboard}
-					onPressOut={onSubmitHandler} />
+					onPressOut={onSubmitHandler}
+				/>
 			</View>
 		</TouchableWithoutFeedback>
 	)

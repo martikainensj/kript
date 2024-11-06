@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Animated, Dimensions, LayoutChangeEvent, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import { View, StyleSheet, Animated, Dimensions, LayoutChangeEvent, TouchableOpacity, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard, Platform } from "react-native";
 import { BottomSheet } from "./BottomSheet";
 import { useTheme } from "../theme/ThemeContext";
 import { BlurView } from "../../components/ui/BlurView";
 import { BottomSheetContextProps, BottomSheetOptions, BottomSheetProviderProps } from "./types";
 import { GestureEvent, HandlerStateChangeEvent, PanGestureHandlerEventPayload, State } from "react-native-gesture-handler";
 import { ANIMATION_DURATION, DISMISS_THRESHOLD, DRAG_RESISTANCE_FACTOR } from "./constants";
-import { BlurIntensity } from "../../constants";
+import { BlurIntensity, GlobalStyles } from "../../constants";
 
 const BottomSheetContext = createContext<BottomSheetContextProps>({
 	show: () => { },
@@ -81,24 +81,27 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 
 	return (
 		<BottomSheetContext.Provider value={{ show, dismiss, bottomSheets }}>
-			<View style={styles.container}>
-				{children}
+			{children}
 
-				<BlurView
-					intensity={blurIntensityAnim}
-					style={[
-						StyleSheet.absoluteFill,
-						{ pointerEvents: bottomSheets.length ? "auto" : "none" }
-					]}
-					tint={theme.dark ? "light" : "dark"}
+			<BlurView
+				intensity={blurIntensityAnim}
+				style={[
+					StyleSheet.absoluteFill,
+					{ pointerEvents: bottomSheets.length ? "auto" : "none" }
+				]}
+				tint={theme.dark ? "light" : "dark"}
+			>
+				<TouchableOpacity
+					onPress={dismiss}
+					style={StyleSheet.absoluteFill}
+				/>
+			</BlurView>
+
+			{bottomSheets[0] && (
+				<KeyboardAvoidingView
+					behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+					keyboardVerticalOffset={0} // Adjust this offset as needed
 				>
-					<TouchableOpacity
-						onPress={dismiss}
-						style={StyleSheet.absoluteFill}
-					/>
-				</BlurView>
-
-				{bottomSheets[0] && (
 					<BottomSheet
 						enableContentScroll={bottomSheets[0].enableContentScroll}
 						onGestureEvent={onGestureEvent}
@@ -108,14 +111,14 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 					>
 						{bottomSheets[0].children}
 					</BottomSheet>
-				)}
-			</View>
+				</KeyboardAvoidingView>
+			)}
 		</BottomSheetContext.Provider>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+		...GlobalStyles.container
 	},
 });

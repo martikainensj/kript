@@ -18,7 +18,7 @@ export const ChipButton: React.FC<Props> = ({
 
 	return (
 		<TouchableOpacity
-			{ ...rest }
+			{...rest}
 			style={[
 				styles.container,
 				{ backgroundColor: theme.colors.surfaceVariant },

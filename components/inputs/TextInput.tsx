@@ -202,7 +202,6 @@ export const TextInput: React.FC<Props> = ({
 					<IconButton
 						icon="close-circle"
 						onPress={() => {
-							ref.current.blur();
 							onChangeText("");
 						}}
 					/>
@@ -216,6 +215,7 @@ const styles = StyleSheet.create({
 	container: {
 		justifyContent: 'center',
 		borderRadius: BorderRadius.md,
+		flexGrow: 1
 	},
 	labelWrapper: {
 		position: 'absolute',

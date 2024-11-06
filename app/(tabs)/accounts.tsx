@@ -29,6 +29,7 @@ const Accounts: React.FC = () => {
 		show({
 			children: (
 				<AccountForm
+					label={__("New account")}
 					account={{
 						_id: new Realm.BSON.UUID(),
 						owner_id: user.id,

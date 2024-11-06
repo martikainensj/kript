@@ -57,8 +57,9 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({ transaction, s
 		show({
 			children: (
 				<TransactionForm
+					label={__("Edit transaction")}
 					transaction={transaction}
-					account={getAccountBy('_id', transaction.account_id)}
+					account={getAccountBy("_id", transaction.account_id)}
 					onSubmit={transaction => saveTransaction(transaction).then(dismiss)}
 				/>
 			)
@@ -96,13 +97,13 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({ transaction, s
 
 	const type = useMemo(() => {
 		switch (transaction?.type) {
-			case 'trading':
+			case "trading":
 				return TradingCategories.find(type => type.id === transaction.sub_type)
-			case 'cash':
+			case "cash":
 				return CashCategories.find(type => type.id === transaction.sub_type)
-			case 'adjustment':
+			case "adjustment":
 				return AdjustmentCategories.find(type => type.id === transaction.sub_type)
-			case 'loan':
+			case "loan":
 				return LoanCategories.find(type => type.id === transaction.sub_type)
 		}
 	}, [transaction])
@@ -121,7 +122,7 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({ transaction, s
 				}}>
 				<Checkbox value={isSelected} />
 			</ConditionalView>
-			<Text style={[styles.date, { color: theme.colors.primary }]}>{new Date(date).toLocaleDateString('fi')}</Text>
+			<Text style={[styles.date, { color: theme.colors.primary }]}>{new Date(date).toLocaleDateString("fi")}</Text>
 			{(showHolding && holding_name)
 				&& <Text numberOfLines={1} style={styles.holding}>{holding_name}</Text>
 			}
@@ -132,22 +133,22 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({ transaction, s
 	const values = [];
 
 	if (price) {
-		values.push(<Value label={__('Price')} value={price} isVertical={true} unit={'€'} />);
+		values.push(<Value label={__("Price")} value={price} isVertical={true} unit={"€"} />);
 	}
 
-	const isAmountCurrencyType = transaction?.type === 'cash' || transaction?.type === 'loan';
+	const isAmountCurrencyType = transaction?.type === "cash" || transaction?.type === "loan";
 
 	if (isAmountCurrencyType || amount > 1) {
 		values.push(
 			<Value
-				label={__('Amount')}
+				label={__("Amount")}
 				value={amount} isVertical={true}
-				unit={isAmountCurrencyType && '€'} />
+				unit={isAmountCurrencyType && "€"} />
 		);
 	}
 
 	if (total) {
-		values.push(<Value label={__('Total')} value={total} isVertical={true} unit={'€'} />);
+		values.push(<Value label={__("Total")} value={total} isVertical={true} unit={"€"} />);
 	}
 
 
@@ -189,25 +190,25 @@ export default TransactionItem;
 const styles = StyleSheet.create({
 	container: {
 		...GlobalStyles.slice,
-		position: 'relative',
+		position: "relative",
 		paddingVertical: Spacing.md,
 		gap: Spacing.sm
 	},
 	header: {
-		flexDirection: 'row',
-		alignItems: 'center',
+		flexDirection: "row",
+		alignItems: "center",
 		flex: 1,
 	},
 	date: {
 		marginRight: Spacing.sm
 	},
 	type: {
-		textAlign: 'right'
+		textAlign: "right"
 	},
 	holding: {
 	},
 	progressBarWrapper: {
-		position: 'absolute',
+		position: "absolute",
 		left: 0,
 		right: 0,
 		bottom: 0,

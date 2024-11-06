@@ -49,24 +49,25 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 	useAccount({ account });
 
 	const onLongPressTransaction = useCallback((transaction: Transaction) => {
-		!isSelecting && select('Transaction', transaction);
+		!isSelecting && select("Transaction", transaction);
 	}, []);
 
 	const onPressSelectTransaction = useCallback((transaction: Transaction) => {
 		hasObject(transaction)
 			? deselect(transaction)
-			: select('Transaction', transaction);
+			: select("Transaction", transaction);
 	}, [selectedObjects]);
 
 	const actions = useMemo(() => {
 		return [
 			{
-				icon: 'create-outline',
-				label: __('Edit'),
+				icon: "create-outline",
+				label: __("Edit"),
 				onPress: () => {
 					show({
 						children: (
 							<AccountForm
+								label={__("Edit account")}
 								account={account}
 								onSubmit={(editedAccount) => {
 									saveAccount(editedAccount).then(dismiss);
@@ -77,31 +78,32 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				},
 			},
 			{
-				icon: 'trash-outline',
-				label: __('Remove'),
+				icon: "trash-outline",
+				label: __("Remove"),
 				onPress: () => {
-					removeObjects('Account', [account]).then(
-						() => router.navigate('/accounts')
+					removeObjects("Account", [account]).then(
+						() => router.navigate("/accounts")
 					);
 				}
 			},
 			{
-				icon: 'receipt-outline',
-				label: __('Add Transaction'),
+				icon: "receipt-outline",
+				label: __("Add Transaction"),
 				onPress: () => {
 					show({
 						children: (
 							<TransactionForm
+								label={__("New transaction")}
 								transaction={{
 									owner_id: user.id,
 									date: Date.now(),
 									price: null,
 									amount: null,
 									total: null,
-									holding_name: '',
+									holding_name: "",
 									account_id: account._id,
-									type: 'trading',
-									sub_type: 'buy'
+									type: "trading",
+									sub_type: "buy"
 								}}
 								account={account}
 								onSubmit={(transaction) => {
@@ -139,29 +141,29 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 
 	const values = [
 		<Value
-			label={__('Value')}
+			label={__("Value")}
 			value={prettifyNumber(value, 0)}
-			unit={'€'}
+			unit={"€"}
 			isVertical={true}
 			isNegative={value < 0} />,
 		<Value
-			label={__('Return')}
+			label={__("Return")}
 			value={prettifyNumber(returnValue, 0)}
-			unit={'€'}
+			unit={"€"}
 			isVertical={true}
 			isPositive={returnValue > 0}
 			isNegative={returnValue < 0} />,
 		<Value
-			label={__('Return')}
+			label={__("Return")}
 			value={prettifyNumber(returnPercentage, 0)}
-			unit={'%'}
+			unit={"%"}
 			isVertical={true}
 			isPositive={returnPercentage > 0}
 			isNegative={returnPercentage < 0} />,
 		<Value
-			label={__('Balance')}
+			label={__("Balance")}
 			value={prettifyNumber(balance, 0)}
-			unit={'€'}
+			unit={"€"}
 			isVertical={true}
 			isNegative={balance < 0} />,
 	];
@@ -312,7 +314,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 								scaleY: 0.5
 							}}>
 							<IconButton
-								icon={'trash'}
+								icon={"trash"}
 								onPress={() => { removeObjects(selectedType, selectedObjects).then(validate) }} />
 						</ConditionalView>
 					}
@@ -323,13 +325,13 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				</Header>
 
 				<TabsProvider>
-					<Tab label={__('Overview')}>
+					<Tab label={__("Overview")}>
 						<View style={[
 							styles.contentContainer,
 							styles.overviewContainer
 						]}>
 							<Value
-								label={__('Balance')}
+								label={__("Balance")}
 								value={prettifyNumber(balance, 0)}
 								unit="€"
 								isVertical
@@ -337,11 +339,11 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 							<Grid columns={2} items={overviewCharts} />
 						</View>
 					</Tab>
-					<Tab label={__('Holdings')}>
+					<Tab label={__("Holdings")}>
 						<View style={styles.contentContainer}>
 							<ItemList
 								id={`list-account-${account._id}-holdings`}
-								noItemsText={__('No Holdings')}
+								noItemsText={__("No Holdings")}
 								data={holdings.map(holding => {
 									return {
 										item: holding,
@@ -357,11 +359,11 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 								]} />
 						</View>
 					</Tab>
-					<Tab label={__('Transactions')}>
+					<Tab label={__("Transactions")}>
 						<View style={styles.contentContainer}>
 							<ItemList
 								id={`list-account-${account._id}-transactions`}
-								noItemsText={__('No Transactions')}
+								noItemsText={__("No Transactions")}
 								data={[
 									...transactions,
 									...holdings.flatMap(holding => {
@@ -375,7 +377,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 												transaction={transaction}
 												onPressSelect={onPressSelectTransaction}
 												onLongPress={onLongPressTransaction}
-												isSelectable={canSelect('Transaction') && isSelecting}
+												isSelectable={canSelect("Transaction") && isSelecting}
 												isSelected={hasObject(transaction)}
 												showHolding />
 										)

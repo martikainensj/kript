@@ -102,23 +102,23 @@ const Translations: { [key: string]: LocaleTranslations } = {
 	},
 	'new account': {
 		fi_FI: 'Uusi tili',
-		en_US: 'New Account'
+		en_US: 'New account'
 	},
 	'edit account': {
 		fi_FI: 'Muokkaa tiliä',
-		en_US: 'Edit Account'
+		en_US: 'Edit account'
 	},
-	'add account': {
-		fi_FI: 'Lisää tili',
-		en_US: 'Add Account'
+	'add a new account': {
+		fi_FI: 'Lisää uusi tili',
+		en_US: 'Add a new account'
 	},
 	'update account': {
 		fi_FI: 'Päivitä tili',
-		en_US: 'Update Account'
+		en_US: 'Update account'
 	},
 	'remove account': {
 		fi_FI: 'Poista tili',
-		en_US: 'Remove Account'
+		en_US: 'Remove account'
 	},
 	'removing existing account': {
 		fi_FI: 'Poistetaan olemassa oleva tili',
@@ -134,7 +134,7 @@ const Translations: { [key: string]: LocaleTranslations } = {
 	},
 	'no accounts': {
 		fi_FI: 'Ei tilejä',
-		en_US: 'No Accounts'
+		en_US: 'No accounts'
 	},
 	'create a new account by clicking the "+" button in the top right corner.': {
 		fi_FI: 'Luo uusi tili painamalla "+" painiketta oikeassa yläkulmassa',
@@ -591,7 +591,7 @@ const Translations: { [key: string]: LocaleTranslations } = {
 	},
 	'investment account': {
 		fi_FI: 'Arvo-osuustili',
-		en_US: 'Investment Account'
+		en_US: 'Investment account'
 	},
 	'trading': {
 		fi_FI: 'Kauppa',

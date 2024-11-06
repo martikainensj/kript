@@ -39,6 +39,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
 				<ScrollView
 					scrollEnabled={enableContentScroll}
 					contentContainerStyle={[styles.contentContainer, { paddingBottom: insets.bottom }]}
+					keyboardShouldPersistTaps={"always"}
 				>
 					{children}
 				</ScrollView>
