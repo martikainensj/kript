@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Animated, Dimensions, LayoutChangeEvent } from "react-native";
+import { View, StyleSheet, Animated, Dimensions, LayoutChangeEvent, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { BottomSheet } from "./BottomSheet";
 import { useTheme } from "../theme/ThemeContext";
 import { BlurView } from "../../components/ui/BlurView";
@@ -7,7 +7,6 @@ import { BottomSheetContextProps, BottomSheetOptions, BottomSheetProviderProps }
 import { GestureEvent, HandlerStateChangeEvent, PanGestureHandlerEventPayload, State } from "react-native-gesture-handler";
 import { ANIMATION_DURATION, DISMISS_THRESHOLD, DRAG_RESISTANCE_FACTOR } from "./constants";
 import { BlurIntensity } from "../../constants";
-import { debounce } from "../../helpers";
 
 const BottomSheetContext = createContext<BottomSheetContextProps>({
 	show: () => { },
@@ -30,7 +29,13 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 	};
 
 	const dismiss = () => {
-		setBottomSheets((prev) => (prev.length > 0 ? prev.slice(0, -1) : prev));
+		Animated.timing(translationYAnim, {
+			toValue: height,
+			duration: ANIMATION_DURATION,
+			useNativeDriver: true,
+		}).start(() => {
+			setBottomSheets((prev) => (prev.length > 0 ? prev.slice(0, -1) : prev))
+		});
 	};
 
 	const onGestureEvent = (e: GestureEvent<PanGestureHandlerEventPayload>) => {
@@ -44,11 +49,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 			const shouldDismiss = e.nativeEvent.translationY > DISMISS_THRESHOLD && e.nativeEvent.velocityY > 0;
 
 			if (shouldDismiss) {
-				Animated.timing(translationYAnim, {
-					toValue: height,
-					duration: ANIMATION_DURATION,
-					useNativeDriver: true,
-				}).start(() => dismiss());
+				dismiss();
 			} else {
 				Animated.spring(translationYAnim, {
 					toValue: 0,
@@ -60,13 +61,13 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 
 	const onLayout = (event: LayoutChangeEvent) => {
 		const { height } = event.nativeEvent.layout;
-		
+		setHeight(height);
+
 		Animated.spring(translationYAnim, {
 			toValue: 0,
 			delay: 10,
 			useNativeDriver: true
 		}).start();
-		setHeight(height);
 	};
 
 	useEffect(() => {
@@ -83,9 +84,19 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({ childr
 			<View style={styles.container}>
 				{children}
 
-				<View style={StyleSheet.absoluteFill} pointerEvents={bottomSheets.length ? "auto" : "none"}>
-					<BlurView intensity={blurIntensityAnim} style={StyleSheet.absoluteFill} tint={theme.dark ? "light" : "dark"} />
-				</View>
+				<BlurView
+					intensity={blurIntensityAnim}
+					style={[
+						StyleSheet.absoluteFill,
+						{ pointerEvents: bottomSheets.length ? "auto" : "none" }
+					]}
+					tint={theme.dark ? "light" : "dark"}
+				>
+					<TouchableOpacity
+						onPress={dismiss}
+						style={StyleSheet.absoluteFill}
+					/>
+				</BlurView>
 
 				{bottomSheets[0] && (
 					<BottomSheet
