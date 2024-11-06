@@ -171,6 +171,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 									TimeframeTypes["5year"],
 									TimeframeTypes.max
 								]}
+								style={{ marginHorizontal: -Spacing.md }}
 							/>
 						)
 					});
@@ -200,6 +201,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 									TimeframeTypes["5year"],
 									TimeframeTypes.max
 								]}
+								style={{ marginHorizontal: -Spacing.md }}
 							/>
 						)
 					});

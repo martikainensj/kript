@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useAuth } from '@realm/react';
 import { Animated, StyleSheet, View } from 'react-native';
 
-import { GlobalStyles } from '../../constants';
+import { GlobalStyles, Spacing } from '../../constants';
 import { DefaultButton, IconButton } from '../../components/buttons';
 import { buildChartData } from '../../helpers';
 import { Header } from '../../components/ui/Header';
@@ -67,6 +67,7 @@ const Home: React.FC = () => {
 									TimeframeTypes["5year"],
 									TimeframeTypes.max
 								]}
+								style={{ marginHorizontal: -Spacing.md }}
 							/>
 						)
 					});
@@ -97,6 +98,7 @@ const Home: React.FC = () => {
 									TimeframeTypes["5year"],
 									TimeframeTypes.max
 								]}
+								style={{ marginHorizontal: -Spacing.md }}
 							/>
 						)
 					});

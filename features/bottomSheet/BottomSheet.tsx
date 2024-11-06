@@ -1,5 +1,5 @@
 import React from "react";
-import { Animated, Dimensions, StyleSheet, View } from "react-native";
+import { Animated, Dimensions, KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import {
 	PanGestureHandler,
 	ScrollView,
@@ -20,29 +20,31 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
 	const { theme } = useTheme();
 	const insets = useSafeAreaInsets();
 
-	return (<>
-		<Animated.View style={[styles.fillerContainer, { backgroundColor: theme.colors.surface, transform: [{ translateY: translationYAnim }] }]} />
-		<Animated.View
-			style={[
-				styles.container,
-				{ transform: [{ translateY: translationYAnim }], backgroundColor: theme.colors.background },
-			]}
-			onLayout={onLayout}
-		>
-			<PanGestureHandler onGestureEvent={onGestureEvent} onHandlerStateChange={onHandlerStateChange}>
-				<View style={[styles.handleContainer, { backgroundColor: theme.colors.surface }]}>
-					<View style={[styles.handleIndicator, { backgroundColor: theme.colors.surfaceVariant }]} />
-				</View>
-			</PanGestureHandler>
-
-			<ScrollView
-				scrollEnabled={enableContentScroll}
-				contentContainerStyle={[styles.contentContainer, { paddingBottom: insets.bottom }]}
+	return (
+		<KeyboardAvoidingView behavior="position">
+			<Animated.View style={[styles.fillerContainer, { backgroundColor: theme.colors.surface, transform: [{ translateY: translationYAnim }] }]} />
+			<Animated.View
+				style={[
+					styles.container,
+					{ transform: [{ translateY: translationYAnim }], backgroundColor: theme.colors.background },
+				]}
+				onLayout={onLayout}
 			>
-				{children}
-			</ScrollView>
-		</Animated.View>
-	</>);
+				<PanGestureHandler onGestureEvent={onGestureEvent} onHandlerStateChange={onHandlerStateChange}>
+					<View style={[styles.handleContainer, { backgroundColor: theme.colors.surface }]}>
+						<View style={[styles.handleIndicator, { backgroundColor: theme.colors.surfaceVariant }]} />
+					</View>
+				</PanGestureHandler>
+
+				<ScrollView
+					scrollEnabled={enableContentScroll}
+					contentContainerStyle={[styles.contentContainer, { paddingBottom: insets.bottom }]}
+				>
+					{children}
+				</ScrollView>
+			</Animated.View>
+		</KeyboardAvoidingView>
+	);
 };
 
 const styles = StyleSheet.create({

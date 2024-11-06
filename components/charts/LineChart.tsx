@@ -21,7 +21,7 @@ interface Props {
 	data: DataPoint[]
 	label?: string,
 	unit?: string,
-	timeframeContainerStyle?: StyleProp<ViewStyle>;
+	style?: StyleProp<ViewStyle>;
 	timeframeOptions?: TimeframeProps[];
 }
 
@@ -30,7 +30,7 @@ export const LineChart: React.FC<Props> = ({
 	data,
 	label,
 	unit,
-	timeframeContainerStyle,
+	style,
 	timeframeOptions,
 }) => {
 	const { __ } = useI18n();
@@ -182,6 +182,7 @@ export const LineChart: React.FC<Props> = ({
 			onLayout={onLayout}
 			style={[
 				styles.container,
+				style,
 			]}
 		>
 			<View style={styles.headerContainer}>
@@ -250,10 +251,9 @@ const styles = StyleSheet.create({
 		gap: Spacing.sm,
 	},
 	headerContainer: {
+		...GlobalStyles.slice,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		gap: Spacing.md,
-		paddingHorizontal: Spacing.md
 	},
 	lineChartWrapper: {
 		alignItems: 'flex-end',
@@ -287,19 +287,5 @@ const styles = StyleSheet.create({
 	},
 	lastValueUnit: {
 		fontSize: FontSize.lg
-	},
-	menuContainer: {
-		left: 'auto',
-		right: 0,
-		padding: Spacing.md
-	},
-	sortingContainer: {
-		alignSelf: 'flex-end',
-		flexDirection: 'row',
-		alignItems: 'center',
-		gap: Spacing.sm,
-		padding: Spacing.md
-	},
-	sortingText: {
 	},
 });

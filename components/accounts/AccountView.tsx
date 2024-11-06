@@ -189,6 +189,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 									TimeframeTypes["5year"],
 									TimeframeTypes.max
 								]}
+								style={{ marginHorizontal: -Spacing.md }}
 							/>
 						)
 					});
@@ -218,6 +219,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 									TimeframeTypes["5year"],
 									TimeframeTypes.max
 								]}
+								style={{ marginHorizontal: -Spacing.md }}
 							/>
 						)
 					});
@@ -247,6 +249,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 									TimeframeTypes["5year"],
 									TimeframeTypes.max
 								]}
+								style={{ marginHorizontal: -Spacing.md }}
 							/>
 						)
 					});
@@ -286,6 +289,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 									TimeframeTypes["5year"],
 									TimeframeTypes.max
 								]}
+								style={{ marginHorizontal: -Spacing.md }}
 							/>
 						)
 					});
