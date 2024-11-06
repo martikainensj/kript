@@ -26,7 +26,6 @@ import { useData } from "../../features/data/DataContext";
 import { useUser } from "../../features/realm/useUser";
 import { useSorting } from "../../features/data/useSorting";
 import { useCharts } from "../../features/charts/useCharts";
-import { TabsScreenProps } from "../../features/tabs/types";
 import { TabsProvider } from "../../features/tabs/TabsContext";
 import { Tab } from "../../features/tabs/Tab";
 import { FAB } from "../../features/fab/FAB";

@@ -1,8 +1,8 @@
-import { Text as RNText, StyleProp, StyleSheet, TextProps, TextStyle, View, ViewStyle } from "react-native";
+import { Animated, StyleSheet, TextProps } from "react-native";
 import { useTheme } from "../../features/theme/ThemeContext";
 import { FontFamily, FontSize, FontWeight, FontWeightKey, TextAlignKey } from "../../constants";
 
-interface Props extends TextProps {
+interface Props extends Animated.AnimatedProps<TextProps> {
 	children: string | number;
 	fontSize?: keyof typeof FontSize;
 	fontWeight?: FontWeightKey;
@@ -19,7 +19,7 @@ export const Text: React.FC<Props> = ({
 	const { theme } = useTheme();
 
 	return (
-		<RNText
+		<Animated.Text
 			{ ...rest }
 			style={[
 				styles.container,
@@ -34,7 +34,7 @@ export const Text: React.FC<Props> = ({
 			]}
 		>
 			{children}
-		</RNText>
+		</Animated.Text>
 	)
 }
 

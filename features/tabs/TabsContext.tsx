@@ -1,49 +1,47 @@
-import React, { createContext, useContext, useState } from "react";
-import { TabsContextProps, TabsProviderProps, TabsScreenProps } from "./types";
-import { TabSelector } from "./TabSelector";
-import { TabContent } from "./TabContent";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { TabProps, TabsContextProps, TabsProviderProps } from "./types";
+import { Selector } from "./Selector";
+import { Tabs } from "./Tabs";
 
 const TabsContext = createContext<TabsContextProps>({
-	currentIndex: 0,
+	index: 0,
 	setIndex: () => { },
-	screens: [],
-	add: () => { return {} },
+	tabs: [],
 });
 
 export const useTabs = () => useContext(TabsContext);
 
 export const TabsProvider: React.FC<TabsProviderProps> = ({ children }) => {
-	const [currentIndex, setIndex] = useState(0);
-	const [screens, setScreens] = useState<TabsScreenProps[]>([]);
-	const [scrollData, setScrollData] = useState({ position: 0, offset: 0 });
+	const [index, setIndex] = useState(0);
+	const [tabs, setTabs] = useState<TabProps[]>([]);
 
-	const add = (props: TabsScreenProps) => {
-		setScreens([
-			props,
-			...screens
-		])
-	};
+	useEffect(() => {
+		const tabs = React.Children.map(children, child => {
+			if (React.isValidElement(child)) {
+				const {label} = child.props;
+				return {label};
+			}
+		}).filter(Boolean);
+
+		setTabs(tabs);
+	}, [children]);
 
 	return (
 		<TabsContext.Provider value={{
-			currentIndex,
+			index,
 			setIndex,
-			screens,
-			add
+			tabs,
 		}}>
-			<TabSelector
-				screens={screens}
-				currentIndex={currentIndex}
+			<Selector
+				tabs={tabs}
+				index={index}
 				setIndex={setIndex}
-				scrollData={scrollData}
 			/>
-			<TabContent
-				currentIndex={currentIndex}
+			<Tabs
+				index={index}
 				setIndex={setIndex}
-				setScrollData={setScrollData}
-			>
-				{children}
-			</TabContent>
+				children={children}
+			/>
 		</TabsContext.Provider>
 	);
 }

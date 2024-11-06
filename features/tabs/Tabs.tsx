@@ -1,43 +1,39 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import PagerView from 'react-native-pager-view';
 import { StyleSheet } from 'react-native';
+import { GlobalStyles } from '../../constants';
 
-interface TabContentProps {
+interface Props {
 	children: React.ReactNode;
-	currentIndex: number;
+	index: number;
 	setIndex: (index: number) => void;
-	setScrollData: (data: { position: number; offset: number }) => void;
 }
 
-export const TabContent: React.FC<TabContentProps> = ({ children, currentIndex, setIndex, setScrollData }) => {
+export const Tabs: React.FC<Props> = ({ children, index, setIndex }) => {
 	const pagerViewRef = useRef<PagerView | null>(null);
 
 	useEffect(() => {
-		pagerViewRef.current?.setPage(currentIndex);
-	}, [currentIndex, pagerViewRef]);
+		pagerViewRef.current?.setPage(index);
+	}, [index, pagerViewRef]);
 
-	return useMemo(() => (
+	return (
 		<PagerView
 			ref={pagerViewRef}
 			initialPage={0}
 			orientation="horizontal"
-			style={styles.tabsContainer}
+			style={styles.container}
 			onPageSelected={(e) => {
 				const pageIndex = e.nativeEvent.position;
 				setIndex(pageIndex);
 			}}
-			onPageScroll={(e) => {
-				const { position, offset } = e.nativeEvent;
-				setScrollData({ position, offset });
-			}}
 		>
 			{children}
 		</PagerView>
-	), [children, pagerViewRef]);
+	);
 };
 
 const styles = StyleSheet.create({
-	tabsContainer: {
-		flex: 1,
+	container: {
+		...GlobalStyles.container
 	},
 });

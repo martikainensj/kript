@@ -1,19 +1,15 @@
 import React from "react";
-import { Tab } from "./Tab";
 
-export interface TabsScreenProps {
-	label: string,
-	disabled?: boolean
+export interface TabProps {
+	label: string;
 }
 
 export interface TabsContextProps {
-	currentIndex: number;
-	setIndex: React.Dispatch<React.SetStateAction<TabsContextProps['currentIndex']>>;
-	screens: TabsScreenProps[];
-	add: (props: TabsScreenProps) => void;
+	index: number;
+	setIndex: React.Dispatch<React.SetStateAction<TabsContextProps["index"]>>;
+	tabs: TabProps[];
 }
 
 export interface TabsProviderProps {
-	children: React.ReactElement<typeof Tab> | React.ReactElement<typeof Tab>[];
-	defaultIndex?: number;
+	children: React.ReactElement<TabProps> | React.ReactElement<TabProps>[];
 }
