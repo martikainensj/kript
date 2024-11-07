@@ -37,10 +37,11 @@ export const FABActions: React.FC<Props> = ({
 			<Animated.View
 				style={[
 					styles.background,
-					isExtended && { pointerEvents: 'auto' },
-					{ opacity: animation }
+					{
+						opacity: animation,
+						pointerEvents: isExtended ? "auto" : "none"
+					}
 				]}
-				pointerEvents="none"
 			>
 				<BlurView
 					intensity={BlurIntensity.lg}
@@ -87,7 +88,8 @@ export const FABActions: React.FC<Props> = ({
 								styles.actionsWrapper,
 								{
 									opacity: actionOpacity,
-									transform: [{ translateY }]
+									transform: [{ translateY }],
+									pointerEvents: isExtended ? "auto" : "none"
 								}
 							]}
 						>
@@ -142,7 +144,6 @@ export const FABActions: React.FC<Props> = ({
 const styles = StyleSheet.create({
 	background: {
 		...StyleSheet.absoluteFillObject,
-		pointerEvents: 'none',
 	},
 	container: {
 		position: 'absolute',
