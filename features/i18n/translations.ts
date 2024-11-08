@@ -120,6 +120,10 @@ const Translations: { [key: string]: LocaleTranslations } = {
 		fi_FI: 'Poista tili',
 		en_US: 'Remove account'
 	},
+	'remove accounts': {
+		fi_FI: 'Poista tilit',
+		en_US: 'Remove accounts'
+	},
 	'removing existing account': {
 		fi_FI: 'Poistetaan olemassa oleva tili',
 		en_US: 'Removing existing account'
@@ -226,6 +230,10 @@ const Translations: { [key: string]: LocaleTranslations } = {
 		fi_FI: 'Poista omistus',
 		en_US: 'Remove holding'
 	},
+	'remove holdings': {
+		fi_FI: 'Poista omistukset',
+		en_US: 'Remove holdings'
+	},
 	'removing existing holding': {
 		fi_FI: 'Poistetaan olemassa oleva omistus',
 		en_US: 'Removing existing holding'
@@ -276,6 +284,10 @@ const Translations: { [key: string]: LocaleTranslations } = {
 	'remove transaction': {
 		fi_FI: 'Poista tapahtuma',
 		en_US: 'Remove Transaction'
+	},
+	'remove transactions': {
+		fi_FI: 'Poista tapahtumat',
+		en_US: 'Remove Transactions'
 	},
 	'removing existing transaction': {
 		fi_FI: 'Poistetaan olemassa oleva tapahtuma',

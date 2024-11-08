@@ -407,7 +407,7 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 	}, []);
 
 	const removeObjects = <T extends DataIdentifier>( type: T, objects: DataObject[T][] ): Promise<boolean> => {
-		const title = __( `Remove selected ${ type }s` );
+		const title = __( `Remove ${ type }${objects.length > 1 ? "s" : ""}` );
 		const message = __( 'Are you sure?' );
 
 		return new Promise(( resolve, reject ) => {
