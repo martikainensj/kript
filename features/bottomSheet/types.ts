@@ -5,9 +5,7 @@ export interface BottomSheetProps {
 	children: React.ReactNode;
   enableContentScroll?: boolean;
 	translationYAnim: Animated.AnimatedValue;
-	onLayout: (event: LayoutChangeEvent) => void;
-	onGestureEvent: (event: GestureEvent<PanGestureHandlerEventPayload>) => void
-	onHandlerStateChange: (event: HandlerStateChangeEvent<PanGestureHandlerEventPayload>) => void
+	onDismiss: () => void;
 }
 
 export type BottomSheetOptions = {
