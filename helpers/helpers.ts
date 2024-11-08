@@ -244,15 +244,33 @@ export const debounce = (
 	callback: (...args: any[]) => void,
 	delay = 100
 ) => {
-  let timer: NodeJS.Timeout | null;
+	let timer: NodeJS.Timeout | null;
 
-  return (...args: any[]) => {
-    if (timer) {
-      clearTimeout(timer);
-    }
-		
-    timer = setTimeout(() => {
-      callback(...args);
-    }, delay);
-  };
+	return (...args: any[]) => {
+		if (timer) {
+			clearTimeout(timer);
+		}
+
+		timer = setTimeout(() => {
+			callback(...args);
+		}, delay);
+	};
+}
+
+export const interpolate = (
+	value: number,
+	min: number,
+	max: number
+) => {
+  if (min > max) [min, max] = [max, min];
+  
+	const normalized = (value - min) / (max - min);
+  
+  return Math.max(
+		0,
+		Math.min(
+			max,
+			(1 - normalized) * max
+		)
+	);
 }
