@@ -24,7 +24,7 @@ export const HoldingForm = ({
 	const [editedHolding, setEditedHolding]
 		= useState({ ...holding });
 
-	const { name, notes } = editedHolding;
+	const { name, notes, ownershipRatio } = editedHolding;
 
 	const handleDismissKeyboard = () => {
 		Keyboard.dismiss();
@@ -43,19 +43,32 @@ export const HoldingForm = ({
 		<TouchableWithoutFeedback onPress={handleDismissKeyboard}>
 			<View style={styles.container}>
 				{label && (
-					<Text
-						fontSize="md"
-					>
+					<Text fontSize="md">
 						{label}
 					</Text>
 				)}
+
 				<TextInput
 					label={__('Name')}
 					value={name}
 					placeholder={`${__('Example')}: Apple Inc.`}
 					onChangeText={name => setEditedHolding(
 						Object.assign({ ...editedHolding }, { name })
-					)} />
+					)}
+				/>
+
+				<TextInput
+					label={__('Ownership ratio')}
+					value={ownershipRatio}
+					placeholder={`${__('Example')}: 100`}
+					keyboardType="numeric"
+					min={0}
+					max={100}
+					suffix="%"
+					onChangeText={ownershipRatio => setEditedHolding(
+						Object.assign({ ...editedHolding }, { ownershipRatio })
+					)}
+				/>
 
 				{/*<TextInput
 					label={ __( 'Notes' ) }

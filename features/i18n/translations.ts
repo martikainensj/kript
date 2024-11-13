@@ -705,6 +705,14 @@ const Translations: { [key: string]: LocaleTranslations } = {
 		fi_FI: 'Nollaa',
 		en_US: 'Reset'
 	},
+	'ownership ratio': {
+		fi_FI: 'Omistussuhde',
+		en_US: 'Ownership ratio'
+	},
+	'leverage ratio': {
+		fi_FI: 'Vipuvaikutusaste',
+		en_US: 'Leverage ratio'
+	},
 
 	// Värit
 
