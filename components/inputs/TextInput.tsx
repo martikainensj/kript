@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Animated, StyleSheet, TextInputProps, View, TextInput as RNTextInput, LayoutChangeEvent } from "react-native";
 import { Text } from "../ui/Text";
 import { useTheme } from "../../features/theme/ThemeContext";
-import { BorderRadius, Spacing } from "../../constants";
+import { BorderRadius, Duration, Spacing } from "../../constants";
 import { IconButton } from "../buttons";
 
 interface Props extends Omit<TextInputProps, 'value' | 'onChangeText'> {
@@ -17,6 +17,7 @@ interface Props extends Omit<TextInputProps, 'value' | 'onChangeText'> {
 	| 'numeric'
 	| 'email-address'
 	| 'phone-pad'
+	suffix?: string;
 }
 
 export const TextInput: React.FC<Props> = ({
@@ -30,6 +31,7 @@ export const TextInput: React.FC<Props> = ({
 	disabled,
 	max,
 	min,
+	suffix,
 	...rest
 }) => {
 	const { theme } = useTheme();
@@ -47,11 +49,11 @@ export const TextInput: React.FC<Props> = ({
 			const maxPartLength = 12;
 
 			if (max && parseFloat(string) > max) {
-				return setInputValue(max.toFixed(maxPartLength));
+				return setInputValue(max);
 			}
 
 			if (min && parseFloat(string) < min) {
-				return setInputValue(min.toFixed(maxPartLength));
+				return setInputValue(min);
 			}
 
 			const parts = string.split('.');
@@ -80,7 +82,7 @@ export const TextInput: React.FC<Props> = ({
 			}
 		}
 
-		setInputValue(string);
+		setInputValue(string ?? 0);
 	};
 
 	const onLayoutLabel = (event: LayoutChangeEvent) => {
@@ -90,16 +92,6 @@ export const TextInput: React.FC<Props> = ({
 	};
 
 	useEffect(() => {
-		if (keyboardType === 'numeric') {
-			const numberValue = parseFloat(inputValue?.toString());
-
-			if (isNaN(numberValue)) {
-				return onChangeText("");
-			}
-
-			return onChangeText(numberValue);
-		}
-
 		onChangeText(inputValue);
 	}, [inputValue]);
 
@@ -111,8 +103,8 @@ export const TextInput: React.FC<Props> = ({
 
 	useEffect(() => {
 		Animated.timing(inputAnim, {
-			toValue: isFocused || !!inputValue ? 1 : 0,
-			duration: 200,
+			toValue: (isFocused || !!inputValue) ? 1 : 0,
+			duration: Duration.fast,
 			useNativeDriver: true,
 		}).start();
 	}, [isFocused, inputValue]);
@@ -198,6 +190,14 @@ export const TextInput: React.FC<Props> = ({
 					]}
 				/>
 
+				{!!suffix && (
+					<Text style={[
+						!rightIsVisible && { marginRight: Spacing.md}
+					]}>
+						{suffix}
+					</Text>
+				)}
+
 				{rightIsVisible && (
 					<IconButton
 						icon="close-circle"
@@ -234,4 +234,7 @@ const styles = StyleSheet.create({
 		paddingBottom: Spacing.sm,
 		flexGrow: 1
 	},
+	suffixContainer: {
+		marginRight: Spacing.md
+	}
 });
