@@ -277,8 +277,8 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 	}, []);
 
 	const saveTransaction = useCallback(( editedTransaction: Transaction ): Promise<Transaction> => {
-		const title = __( 'Save Transaction' );
-		const message = __( 'Saving existing transaction' )
+		const title = __( 'Update Transaction' );
+		const message = __( 'Updating existing transaction' )
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise(( resolve, _ ) => {

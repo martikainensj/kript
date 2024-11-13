@@ -24,7 +24,7 @@ export const HoldingForm = ({
 	const [editedHolding, setEditedHolding]
 		= useState({ ...holding });
 
-	const { name, notes, ownershipRatio } = editedHolding;
+	const { name, notes, leverageRatio } = editedHolding;
 
 	const handleDismissKeyboard = () => {
 		Keyboard.dismiss();
@@ -58,16 +58,16 @@ export const HoldingForm = ({
 				/>
 
 				<TextInput
-					label={__('Ownership ratio')}
-					value={ownershipRatio}
-					placeholder={`${__('Example')}: 100`}
+					label={__('Leverage ratio')}
+					value={leverageRatio}
+					placeholder={`${__('Example')}: 1`}
 					keyboardType={"numeric"}
 					inputMode={'decimal'}
-					min={0}
+					min={1}
 					max={100}
-					suffix="%"
-					onChangeText={ownershipRatio => setEditedHolding(
-						Object.assign({ ...editedHolding }, { ownershipRatio })
+					suffix="X"
+					onChangeText={leverageRatio => setEditedHolding(
+						Object.assign({ ...editedHolding }, { leverageRatio })
 					)}
 				/>
 

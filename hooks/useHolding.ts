@@ -1,5 +1,4 @@
-import { useLayoutEffect, useState } from "react";
-
+import { useLayoutEffect } from "react";
 import { Holding } from "../models/Holding";
 import { generateChecksum, getTransactionEndOfDayTimestamp } from "../helpers";
 import { useData } from "../features/data/DataContext";
@@ -16,12 +15,14 @@ export const useHolding = ({ holding }: useHoldingProps) => {
 	if (!holding?.isValid()) return;
 
 	const { transactions } = holding;
+	const leverageRatio = holding.leverageRatio ?? 1;
 	const account = getAccountBy('_id', holding.account_id);
 	const dividends = account.transactions.filtered(`holding_name == $0`, holding.name);
 
 	const checksum = generateChecksum({
 		transactions,
-		dividends
+		dividends,
+		leverageRatio
 	});
 
 	const calculateVariables = () => {
@@ -72,8 +73,8 @@ export const useHolding = ({ holding }: useHoldingProps) => {
 
 			acc.lastPrice = transaction.price ?? acc.lastPrice;
 			if (transaction.type === 'trading') {
-				acc.transactionSum += acc.lastPrice * transaction.amount;
-				acc.total += transaction.total;
+				acc.transactionSum += acc.lastPrice * transaction.amount * leverageRatio;
+				acc.total += transaction.total * leverageRatio;
 			}
 
 			if (transaction.type === 'adjustment') {
@@ -81,9 +82,9 @@ export const useHolding = ({ holding }: useHoldingProps) => {
 			} else {
 				acc.amount += transaction.amount;
 			}
-			acc.feesSum += transaction.total - (transaction.amount * transaction.price);
+			acc.feesSum += transaction.total * leverageRatio - (transaction.amount * transaction.price) * leverageRatio;
 
-			const value = acc.amount * acc.lastPrice;
+			const value = acc.amount * acc.lastPrice * leverageRatio;
 			const returnValue = value - acc.total;
 
 			if (existingDateIndex !== -1) {
@@ -128,7 +129,7 @@ export const useHolding = ({ holding }: useHoldingProps) => {
 		const fees = total - transactionSum;
 		const averagePrice = amount ? transactionSum / amount : 0;
 		const averageValue = averagePrice * amount;
-		const value = lastPrice * amount;
+		const value = lastPrice * amount * leverageRatio;
 		const returnValue = value - total;
 		const returnPercentage = value ? ((value - total) / Math.abs(total)) * 100 : 0;
 
