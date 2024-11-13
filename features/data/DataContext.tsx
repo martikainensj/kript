@@ -247,8 +247,8 @@ export const DataProvider: React.FC<DataProviderProps> = ( { children } ) => {
 	}, []);
 
 	const saveHolding = useCallback(( editedHolding: Holding ): Promise<Holding> => {
-		const title = __( 'Save Holding' );
-		const message = `${ __( 'Saving existing holding' ) }: ${ editedHolding.name }`
+		const title = __( 'Update Holding' );
+		const message = `${ __( 'Updating existing holding' ) }: ${ editedHolding.name }`
 			+ "\n" + __( 'Are you sure?' );
 
 		return new Promise(( resolve, _ ) => {
