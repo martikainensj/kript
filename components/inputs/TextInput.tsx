@@ -41,45 +41,31 @@ export const TextInput: React.FC<Props> = ({
 	const [labelHeight, setLabelHeight] = useState(0);
 	const ref = useRef<RNTextInput>(null);
 	const inputAnim = useRef(new Animated.Value(value ? 1 : 0)).current;
-	const rightIsVisible = !disabled && editable && value;
+	const rightIsVisible =
+		!disabled &&
+		editable &&
+		value?.toString() &&
+		inputValue.toString();
 
 	const onChangeTextHandler = (string: string) => {
 		if (keyboardType === 'numeric') {
+			string = string.replace(/,/g, '.');
 			string = string.replace(/[^0-9.]/g, '');
-			const maxPartLength = 12;
+			const [wholePart, decimalPart] = string.split('.');
 
-			if (max && parseFloat(string) > max) {
-				return setInputValue(max);
-			}
+			if (
+				wholePart?.length > 12 ||
+				decimalPart?.length > 12 ||
+				string.split('.').length > 2
+			) return;
 
-			if (min && parseFloat(string) < min) {
-				return setInputValue(min);
-			}
+			const numericValue = parseFloat(string);
+			if (max && numericValue > max) return setInputValue(max);
+			if (min && numericValue < min) return setInputValue(min);
 
-			const parts = string.split('.');
-
-			// Prevent multiple dots in the string
-			if (parts.length > 2) {
-				return;
-			}
-
-			let wholePart = parts[0];
-			let decimalPart = parts[1];
-
-			// Limit the whole part length
-			if (wholePart?.length > maxPartLength) {
-				return;
-			}
-
-			// Limit the decimal part length
-			if (decimalPart?.length > maxPartLength) {
-				return;
-			}
-
-			// Prefix string with '0' if it starts with a dot
 			if (string.startsWith('.')) {
-				return setInputValue(`0${string}`);
-			}
+				string = `0${string}`;
+			};
 		}
 
 		setInputValue(string ?? 0);
@@ -87,18 +73,33 @@ export const TextInput: React.FC<Props> = ({
 
 	const onLayoutLabel = (event: LayoutChangeEvent) => {
 		const { width, height } = event.nativeEvent.layout;
+
 		setLabelWidth(width);
 		setLabelHeight(height);
 	};
 
 	useEffect(() => {
-		onChangeText(inputValue);
+		if (value?.toString() === inputValue?.toString()) {
+			return;
+		}
+
+		if (keyboardType === "numeric") {
+			const numberValue = !!inputValue
+				? parseFloat(inputValue.toString())
+				: "";
+				
+			onChangeText(numberValue);
+		} else {
+			onChangeText(inputValue);
+		}
 	}, [inputValue]);
 
 	useEffect(() => {
-		if (value?.toString() !== inputValue?.toString()) {
-			setInputValue(value ?? '');
+		if (value?.toString() === inputValue?.toString()) {
+			return;
 		}
+		
+		setInputValue(value ?? '');
 	}, [value]);
 
 	useEffect(() => {
@@ -192,13 +193,13 @@ export const TextInput: React.FC<Props> = ({
 
 				{!!suffix && (
 					<Text style={[
-						!rightIsVisible && { marginRight: Spacing.md}
+						!rightIsVisible && { marginRight: Spacing.md }
 					]}>
 						{suffix}
 					</Text>
 				)}
 
-				{rightIsVisible && (
+				{!!rightIsVisible && (
 					<IconButton
 						icon="close-circle"
 						onPress={() => {
