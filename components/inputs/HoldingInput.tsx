@@ -7,10 +7,10 @@ import {
 } from "react-native";
 import { ChipProps, Chips } from "./Chips";
 import { Spacing } from "../../constants";
-import Realm from "realm";
 import { TextInput } from "./TextInput";
 import { Account } from "../../models/Account";
 import { useUser } from "../../features/realm/useUser";
+import { Holding } from "../../models/Holding";
 
 interface HoldingInputProps {
 	value: string
@@ -33,100 +33,102 @@ export const HoldingInput: React.FC<HoldingInputProps> = ({
 }) => {
 	const { user } = useUser();
 
-	const [ inputValue, setInputValue ] = useState( value );
-	const [ chipsValue, setChipsValue ] = useState( value );
-	const [ canShowChips, setCanShowChips ] = useState( false );
-	const [ filteredHoldings, setFilteredHoldings ] = useState( [ ...account.holdings ] );
+	const [inputValue, setInputValue] = useState(value);
+	const [chipsValue, setChipsValue] = useState(value);
+	const [canShowChips, setCanShowChips] = useState(false);
+	const [filteredHoldings, setFilteredHoldings] = useState<Partial<Holding>[]>([...account.holdings]);
 
 	const chipsVisible =
-		!! filteredHoldings.length && ( ! value || canShowChips );
+		!!filteredHoldings.length && (!value || canShowChips);
 
 	const onFocusHandler = () => {
-		setCanShowChips( true );
+		setCanShowChips(true);
 	}
 
 	const onClear = () => {
-		setInputValue( '' );
-		setValue( null );
-		setChipsValue( null );
-		setCanShowChips( true );
-		setFilteredHoldings( [ ...account.holdings ] );
+		setInputValue('');
+		setValue(null);
+		setChipsValue(null);
+		setCanShowChips(true);
+		setFilteredHoldings([...account.holdings]);
 	}
-	
-	const onChangeText = ( value: string ) => {
-		setInputValue( value );
 
-		const filteredHoldings = !! value
-			? [ ...account.holdings ].filter( holding => {
-					const label = holding.name?.toLowerCase();
-					return label.includes( value.toString().toLowerCase() );
-				} )
-			: [ ...account.holdings ];
+	const onChangeText = (value: string) => {
+		setInputValue(value);
 
-		filteredHoldings.push( {
+		const filteredHoldings: Partial<Holding>[] = !!value
+			? [...account.holdings].filter(holding => {
+				const label = holding.name?.toLowerCase();
+				return label.includes(value.toString().toLowerCase());
+			})
+			: [...account.holdings];
+
+		filteredHoldings.push({
 			name: value,
 			owner_id: user.id,
 			account_id: account._id,
-		} );
+		});
 
-		setFilteredHoldings( filteredHoldings );
+		setFilteredHoldings(filteredHoldings);
 
-		if ( ! value ) {
+		if (!value) {
 			return onClear();
 		}
 
-		setChipsValue( 
-			!! filteredHoldings.length && filteredHoldings[0].name
+		setChipsValue(
+			!!filteredHoldings.length && filteredHoldings[0].name
 		);
 	}
 
 	const onSubmitHandler = () => {
-		setValue( chipsValue );
-		setInputValue( chipsValue );
-		setCanShowChips( false );
+		setValue(chipsValue);
+		setInputValue(chipsValue);
+		setCanShowChips(false);
 	}
 
-	const onSelectChip = ( value: ChipProps ) => {
+	const onSelectChip = (value: ChipProps) => {
 	}
 
 	return (
-		<View style={ [
+		<View style={[
 			styles.container,
 			style
-		] }>
+		]}>
 			<TextInput
-				value={ inputValue }
-				label={ label }
-				placeholder={ placeholder }
-				onChangeText={ onChangeText }
-				onSubmitEditing={ onSubmitHandler }
-				onBlur={ onSubmitHandler }
-				onFocus={ onFocusHandler }
-				disabled={ disabled } />
+				value={inputValue}
+				label={label}
+				placeholder={placeholder}
+				onChangeText={onChangeText}
+				onSubmitEditing={onSubmitHandler}
+				onBlur={onSubmitHandler}
+				onFocus={onFocusHandler}
+				disabled={disabled}
+			/>
 
-			{ chipsVisible && 
-				<View style={ styles.chipsWrapper }>
+			{chipsVisible &&
+				<View style={styles.chipsWrapper}>
 					<Chips
-						items={ filteredHoldings.map( holding => {
+						items={filteredHoldings.map(holding => {
 							return {
 								label: holding.name,
 								value: holding.name
 							}
-						} ) }
-						value={ chipsValue }
+						})}
+						value={chipsValue}
 						setValue={(value) => {
-							setChipsValue( value );
-							setValue( value );
-							setInputValue( value );
-							setCanShowChips( false );
-						}} />
+							setChipsValue(value);
+							setValue(value);
+							setInputValue(value);
+							setCanShowChips(false);
+						}}
+					/>
 				</View>
 			}
 		</View>
 	);
 }
 
-const styles = StyleSheet.create( {
+const styles = StyleSheet.create({
 	container: {
 		gap: Spacing.sm
 	},
@@ -136,4 +138,4 @@ const styles = StyleSheet.create( {
 	contentContainer: {
 		paddingHorizontal: Spacing.md
 	}
-} )
+})

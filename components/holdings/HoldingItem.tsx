@@ -103,7 +103,7 @@ export const HoldingItem: React.FC<HoldingItemProps> = ({ holding }) => {
 			<View style={styles.container}>
 				<View style={styles.contentContainer}>
 					<Grid
-						columns={2}
+						columns={1}
 						items={meta} />
 
 					<Grid

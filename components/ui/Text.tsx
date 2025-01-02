@@ -40,5 +40,6 @@ export const Text: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
 	container: {
+		
 	}
 })

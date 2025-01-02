@@ -6,14 +6,14 @@ import { useTheme } from '../../features/theme/ThemeContext';
 
 interface CheckboxProps {
 	value: boolean;
-	setValue?: React.Dispatch<React.SetStateAction<CheckboxProps['value']>>;
+	onChange?: React.Dispatch<React.SetStateAction<CheckboxProps['value']>>;
 	activeColor?: string;
 	inactiveColor?: string;
 }
 
 export const Checkbox: React.FC<CheckboxProps> = ({
 	value,
-	setValue,
+	onChange,
 	activeColor,
 	inactiveColor,
 }) => {
@@ -21,7 +21,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
 	const opacity = useRef(new Animated.Value(0)).current;
 
 	const onPressHandler = () => {
-		setValue && setValue(!value);
+		onChange && onChange(!value);
 	}
 
 	useEffect(() => {
@@ -45,7 +45,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
 		<TouchableOpacity
 			onPress={onPressHandler}
 			style={[
-				{ pointerEvents: setValue ? 'auto' : 'none' }
+				{ pointerEvents: onChange ? 'auto' : 'none' }
 			]}
 		>
 			<Animated.View style={[

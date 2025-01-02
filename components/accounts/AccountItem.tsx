@@ -107,7 +107,7 @@ export const AccountItem: React.FC<AccountItemProps> = ({ account }) => {
 			<View style={styles.container}>
 				<View style={styles.contentContainer}>
 					<Grid
-						columns={2}
+						columns={1}
 						items={meta} />
 
 					<Grid

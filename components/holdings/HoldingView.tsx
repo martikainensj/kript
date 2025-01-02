@@ -62,30 +62,6 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 	const actions = useMemo(() => {
 		return [
 			{
-				label: __("Edit"),
-				icon: "create-outline",
-				onPress: () => {
-					show({
-						children: (
-							<HoldingForm
-								label={__("Edit holding")}
-								holding={holding}
-								onSubmit={holding => {
-									saveHolding(holding).then(dismiss)
-								}}
-							/>
-						)
-					})
-				}
-			},
-			{
-				label: __("Remove"),
-				icon: "trash-outline",
-				onPress: () => {
-					removeObjects("Holding", [holding]).then(router.back)
-				}
-			},
-			{
 				icon: "receipt-outline",
 				label: __("Add Transaction"),
 				onPress: () => {
@@ -111,6 +87,30 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 							/>
 						)
 					})
+				}
+			},
+			{
+				label: __("Edit"),
+				icon: "create-outline",
+				onPress: () => {
+					show({
+						children: (
+							<HoldingForm
+								label={__("Edit holding")}
+								holding={holding}
+								onSubmit={holding => {
+									saveHolding(holding).then(dismiss)
+								}}
+							/>
+						)
+					})
+				}
+			},
+			{
+				label: __("Remove"),
+				icon: "trash-outline",
+				onPress: () => {
+					removeObjects("Holding", [holding]).then(router.back)
 				}
 			},
 		] as Action[];

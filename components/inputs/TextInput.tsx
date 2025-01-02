@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Animated, StyleSheet, TextInputProps, View, TextInput as RNTextInput, LayoutChangeEvent } from "react-native";
 import { Text } from "../ui/Text";
 import { useTheme } from "../../features/theme/ThemeContext";
-import { BorderRadius, Duration, Spacing } from "../../constants";
+import { BorderRadius, Duration, GlobalStyles, Spacing } from "../../constants";
 import { IconButton } from "../buttons";
 
 interface Props extends Omit<TextInputProps, 'value' | 'onChangeText'> {
@@ -45,7 +45,7 @@ export const TextInput: React.FC<Props> = ({
 		!disabled &&
 		editable &&
 		value?.toString() &&
-		inputValue.toString();
+		inputValue?.toString();
 
 	const onChangeTextHandler = (string: string) => {
 		if (keyboardType === 'numeric') {
@@ -87,7 +87,7 @@ export const TextInput: React.FC<Props> = ({
 			const numberValue = !!inputValue
 				? parseFloat(inputValue.toString())
 				: "";
-				
+
 			onChangeText(numberValue);
 		} else {
 			onChangeText(inputValue);
@@ -98,7 +98,7 @@ export const TextInput: React.FC<Props> = ({
 		if (value?.toString() === inputValue?.toString()) {
 			return;
 		}
-		
+
 		setInputValue(value ?? '');
 	}, [value]);
 
@@ -131,7 +131,8 @@ export const TextInput: React.FC<Props> = ({
 		<View
 			style={[
 				styles.container,
-				{ backgroundColor: theme.colors.surfaceVariant }
+				{ backgroundColor: theme.colors.surfaceVariant },
+				disabled && styles.disabled 
 			]}
 		>
 			<Animated.View
@@ -187,7 +188,7 @@ export const TextInput: React.FC<Props> = ({
 					style={[
 						styles.inputContainer,
 						{ color: theme.colors.onBackground },
-						rest.style
+						rest.style,
 					]}
 				/>
 
@@ -233,9 +234,10 @@ const styles = StyleSheet.create({
 		paddingHorizontal: Spacing.md,
 		paddingTop: Spacing.lg,
 		paddingBottom: Spacing.sm,
-		flexGrow: 1
+		flexGrow: 1,
+		flexShrink: 1
 	},
-	suffixContainer: {
-		marginRight: Spacing.md
+	disabled: {
+		...GlobalStyles.disabled
 	}
 });

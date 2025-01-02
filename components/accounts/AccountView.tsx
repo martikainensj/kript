@@ -60,32 +60,6 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 	const actions = useMemo(() => {
 		return [
 			{
-				icon: "create-outline",
-				label: __("Edit"),
-				onPress: () => {
-					show({
-						children: (
-							<AccountForm
-								label={__("Edit account")}
-								account={account}
-								onSubmit={(editedAccount) => {
-									saveAccount(editedAccount).then(dismiss);
-								}}
-							/>
-						)
-					})
-				},
-			},
-			{
-				icon: "trash-outline",
-				label: __("Remove"),
-				onPress: () => {
-					removeObjects("Account", [account]).then(
-						() => router.navigate("/accounts")
-					);
-				}
-			},
-			{
 				icon: "receipt-outline",
 				label: __("Add Transaction"),
 				onPress: () => {
@@ -113,7 +87,33 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 					}
 					);
 				}
-			}
+			},
+			{
+				icon: "create-outline",
+				label: __("Edit"),
+				onPress: () => {
+					show({
+						children: (
+							<AccountForm
+								label={__("Edit account")}
+								account={account}
+								onSubmit={(editedAccount) => {
+									saveAccount(editedAccount).then(dismiss);
+								}}
+							/>
+						)
+					})
+				},
+			},
+			{
+				icon: "trash-outline",
+				label: __("Remove"),
+				onPress: () => {
+					removeObjects("Account", [account]).then(
+						() => router.navigate("/accounts")
+					);
+				}
+			},
 		] as Action[];
 	}, [account]);
 
