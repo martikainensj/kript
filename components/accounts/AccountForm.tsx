@@ -8,6 +8,7 @@ import { Account } from "../../models/Account";
 import { stripRealmListsFromObject } from "../../helpers";
 import { useI18n } from "../../features/i18n/I18nContext";
 import { Text } from "../ui/Text";
+import { Icon } from "../ui/Icon";
 
 interface AccountFormProps {
 	label?: string;
@@ -52,6 +53,20 @@ export const AccountForm = ({
 					placeholder={`${__('Example')}: ${__('Investment Account')}`}
 					onChangeText={name => setEditedAccount(
 						Object.assign({ ...editedAccount }, { name })
+					)}
+				/>
+
+				<TextInput
+					label={__('Ownership ratio')}
+					value={editedAccount?.ownershipRatio}
+					placeholder={`${__('Example')}: 100`}
+					keyboardType={"numeric"}
+					inputMode={'decimal'}
+					min={0}
+					max={100}
+					suffixComponent={<Icon name="key" />}
+					onChangeText={ownershipRatio => setEditedAccount(
+						Object.assign({ ...editedAccount }, { ownershipRatio })
 					)}
 				/>
 

@@ -1,15 +1,16 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, TouchableOpacity, TouchableOpacityProps, Animated, View, StyleProp, TextStyle } from 'react-native';
-import { BorderRadius, Duration, GlobalStyles, IconSize, Spacing } from '../../constants';
-import { Icon } from '../ui/Icon';
-import { useTheme } from '../../features/theme/ThemeContext';
-import { Text } from '../ui/Text';
+import React, { useRef, useEffect, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps, Animated, View, StyleProp, TextStyle } from "react-native";
+import { BorderRadius, Duration, GlobalStyles, IconSize, Spacing } from "../../constants";
+import { Icon } from "../ui/Icon";
+import { useTheme } from "../../features/theme/ThemeContext";
+import { Text } from "../ui/Text";
 
 interface IconButtonProps extends TouchableOpacityProps {
-	icon: React.ComponentProps<typeof Ionicons>['name'];
+	icon: React.ComponentProps<typeof Ionicons>["name"];
 	size?: number;
 	label?: string;
+	labelSide?: "before" | "after";
 	labelStyle?: StyleProp<TextStyle>;
 }
 
@@ -17,6 +18,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
 	icon,
 	size = IconSize.md,
 	label,
+	labelSide = "before",
 	labelStyle,
 	...rest
 }) => {
@@ -51,19 +53,19 @@ export const IconButton: React.FC<IconButtonProps> = ({
 	const outgoingOpacity = animation.interpolate({
 		inputRange: [0, 1],
 		outputRange: [1, 0],
-		extrapolate: 'clamp',
+		extrapolate: "clamp",
 	});
 
 	const incomingOpacity = animation.interpolate({
 		inputRange: [0, 1],
 		outputRange: [0, 1],
-		extrapolate: 'clamp',
+		extrapolate: "clamp",
 	});
 
 	const rotation = animation.interpolate({
 		inputRange: [0, 1],
-		outputRange: ['0deg', '360deg'],
-		extrapolate: 'clamp',
+		outputRange: ["0deg", "360deg"],
+		extrapolate: "clamp",
 	});
 
 	return (
@@ -73,7 +75,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
 				styles.container,
 				{
 					backgroundColor: theme.colors.surfaceVariant,
-					height: size + 24,
+					padding: 12,
 					aspectRatio: 1,
 				},
 				rest.disabled && GlobalStyles.disabled,
@@ -86,7 +88,18 @@ export const IconButton: React.FC<IconButtonProps> = ({
 					fontSize="md"
 					style={[
 						styles.label,
-						labelStyle
+						labelSide === "before" && {
+							left: 0,
+							textAlign: "right",
+							transform: [{ translateX: -200 }]
+						},
+						labelSide === "after" && {
+							right: 0,
+							textAlign: "left",
+							transform: [{ translateX: 200 }]
+
+						},
+						labelStyle,
 					]}
 				>
 					{label}
@@ -98,6 +111,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
 					style={[
 						styles.iconWrapper,
 						{
+							position: "relative",
 							opacity: iconQueue.size > 1 ? outgoingOpacity : 1,
 							transform: [{ rotate: rotation }],
 						}
@@ -128,19 +142,17 @@ export default IconButton;
 
 const styles = StyleSheet.create({
 	container: {
-		alignItems: 'center',
-		justifyContent: 'center',
+		position: "relative",
+		alignItems: "center",
+		justifyContent: "center",
 		borderRadius: BorderRadius.xl,
-		position: 'relative',
 	},
 	iconWrapper: {
-		position: 'absolute',
+		position: "absolute",
 	},
 	label: {
-		position: 'absolute',
-		right: '100%',
-		width: 150,
-		paddingRight: Spacing.md,
-		textAlign: 'right',
+		position: "absolute",
+		width: 200,
+		paddingHorizontal: Spacing.md,
 	}
 });

@@ -17,7 +17,7 @@ interface Props extends Omit<TextInputProps, 'value' | 'onChangeText'> {
 	| 'numeric'
 	| 'email-address'
 	| 'phone-pad'
-	suffix?: string;
+	suffixComponent?: React.ReactNode;
 }
 
 export const TextInput: React.FC<Props> = ({
@@ -31,7 +31,7 @@ export const TextInput: React.FC<Props> = ({
 	disabled,
 	max,
 	min,
-	suffix,
+	suffixComponent,
 	...rest
 }) => {
 	const { theme } = useTheme();
@@ -132,7 +132,7 @@ export const TextInput: React.FC<Props> = ({
 			style={[
 				styles.container,
 				{ backgroundColor: theme.colors.surfaceVariant },
-				disabled && styles.disabled 
+				disabled && styles.disabled
 			]}
 		>
 			<Animated.View
@@ -192,12 +192,14 @@ export const TextInput: React.FC<Props> = ({
 					]}
 				/>
 
-				{!!suffix && (
-					<Text style={[
-						!rightIsVisible && { marginRight: Spacing.md }
-					]}>
-						{suffix}
-					</Text>
+				{!!suffixComponent && (
+					<View
+						style={[
+							!rightIsVisible && { marginRight: 12 }
+						]}
+					>
+						{suffixComponent}
+					</View>
 				)}
 
 				{!!rightIsVisible && (

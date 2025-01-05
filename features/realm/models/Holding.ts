@@ -25,7 +25,7 @@ export type Holding = {
 	returnHistoryData?: DataPoint[];
 	dividendHistoryData?: DataPoint[];
 	feesHistoryData?: DataPoint[];
-	ownershipRatio?: number;
+	ownershipRatio?: number; // TODO: moved to account
 	leverageRatio?: number;
 	checksum?: string;
 };

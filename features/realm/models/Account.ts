@@ -25,6 +25,7 @@ export type Account = {
 	loanHistoryData?: DataPoint[];
 	dividendHistoryData?: DataPoint[];
 	feesHistoryData?: DataPoint[];
+	ownershipRatio?: number;
 	checksum?: string;
 };
 
@@ -54,6 +55,7 @@ export const AccountSchema = {
 		loanHistoryData: 'DataPoint[]',
 		dividendHistoryData: 'DataPoint[]',
 		feesHistoryData: 'DataPoint[]',
+		ownershipRatio: 'double?',
 		checksum: 'string?',
 	},
 	primaryKey: '_id',

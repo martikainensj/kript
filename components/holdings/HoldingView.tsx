@@ -127,26 +127,30 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 		<Value
 			label={__("Amount")}
 			value={prettifyNumber(amount)}
-			isVertical={true} />,
+			isVertical={true}
+		/>,
 		<Value
 			label={__("Value")}
 			value={prettifyNumber(value)}
 			unit={"€"}
-			isVertical={true} />,
+			isVertical={true}
+		/>,
 		<Value
 			label={__("Return")}
 			value={prettifyNumber(returnValue)}
 			unit={"€"}
 			isVertical={true}
 			isPositive={returnValue > 0}
-			isNegative={returnValue < 0} />,
+			isNegative={returnValue < 0}
+		/>,
 		<Value
 			label={__("Return")}
 			value={prettifyNumber(returnPercentage)}
 			unit={"%"}
 			isVertical={true}
 			isPositive={returnPercentage > 0}
-			isNegative={returnPercentage < 0} />,
+			isNegative={returnPercentage < 0}
+		/>,
 	];
 
 	const charts = [];
@@ -159,6 +163,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 				data={returnHistoryData}
 				onPress={() => {
 					show({
+						enableContentScroll: false,
 						children: (
 							<LineChart
 								id={`${holding._id.toString()}-return-chart`}
@@ -189,6 +194,7 @@ const HoldingView: React.FC<HoldingViewProps> = ({ holding }) => {
 				data={feesHistoryData}
 				onPress={() => {
 					show({
+						enableContentScroll: false,
 						children: (
 							<LineChart
 								id={`${holding._id.toString()}-fees-chart`}

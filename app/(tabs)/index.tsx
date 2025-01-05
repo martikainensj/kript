@@ -1,9 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { useAuth } from '@realm/react';
 import { Animated, StyleSheet, View } from 'react-native';
 
 import { GlobalStyles, Spacing } from '../../constants';
-import { DefaultButton, IconButton } from '../../components/buttons';
+import { IconButton } from '../../components/buttons';
 import { buildChartData } from '../../helpers';
 import { Header } from '../../components/ui/Header';
 import { LineChart } from '../../components/charts/LineChart';
@@ -16,7 +16,6 @@ import { useCharts } from '../../features/charts/useCharts';
 import { useFocusEffect } from 'expo-router';
 import { animateIn, animateOut } from '../../features/animations/animate';
 import { useBottomSheet } from '../../features/bottomSheet/BottomSheetContext';
-import { Text } from '../../components/ui/Text';
 
 const Home: React.FC = () => {
 	const { logOut } = useAuth();

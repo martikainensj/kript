@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native"
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { FontSize, FontWeight, GlobalStyles, Spacing } from "../../constants";
+import { BorderRadius, FontSize, FontWeight, GlobalStyles, Spacing } from "../../constants";
 import { BackButton, IconButton } from "../buttons";
 import { AccountForm } from "../accounts";
 import { TransactionForm } from "../transactions/TransactionForm";
@@ -31,6 +31,8 @@ import { Tab } from "../../features/tabs/Tab";
 import { FAB } from "../../features/fab/FAB";
 import { Action } from "../../constants/types";
 import { useBottomSheet } from "../../features/bottomSheet/BottomSheetContext";
+import { useTheme } from "../../features/theme/ThemeContext";
+import { Card } from "../ui/Card";
 
 interface AccountViewProps {
 	account: Account;
@@ -44,6 +46,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 	const { TimeframeTypes } = useCharts();
 	const insets = useSafeAreaInsets();
 	const { isSelecting, selectedType, selectedObjects, select, deselect, canSelect, hasObject, validate } = useSelector();
+	const { theme } = useTheme();
 
 	useAccount({ account });
 
@@ -131,6 +134,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 		value,
 		returnValue,
 		loanAmount,
+		ownershipRatio,
 		loanHistoryData,
 		returnPercentage,
 		valueHistoryData,
@@ -167,6 +171,28 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 			isNegative={balance < 0} />,
 	];
 
+	const overviewData = [
+		<Value
+			label={__("Balance")}
+			value={prettifyNumber(balance, 0)}
+			unit="€"
+			isVertical
+			valueStyle={styles.value}
+		/>
+	];
+
+	if (!!ownershipRatio && ownershipRatio !== 1) {
+		overviewData.push(
+			<Value
+				label={__("Ownership Ratio")}
+				value={prettifyNumber(ownershipRatio, 0)}
+				unit="%"
+				isVertical
+				valueStyle={styles.value}
+			/>
+		)
+	};
+
 	const overviewCharts = [];
 
 	if (valueHistoryData) {
@@ -177,6 +203,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				data={valueHistoryData}
 				onPress={() => {
 					show({
+						enableContentScroll: false,
 						children: (
 							<LineChart
 								id={`${account._id.toString()}-value-chart`}
@@ -207,6 +234,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				data={returnHistoryData}
 				onPress={() => {
 					show({
+						enableContentScroll: false,
 						children: (
 							<LineChart
 								id={`${account._id.toString()}-return-chart`}
@@ -237,6 +265,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				data={dividendHistoryData}
 				onPress={() => {
 					show({
+						enableContentScroll: false,
 						children: (
 							<LineChart
 								id={`${account._id.toString()}-dividend-chart`}
@@ -272,6 +301,7 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 				})}
 				onPress={() => {
 					show({
+						enableContentScroll: false,
 						children: (
 							<LineChart
 								id={`${account._id.toString()}-loan-chart`}
@@ -329,12 +359,10 @@ const AccountView: React.FC<AccountViewProps> = ({ account }) => {
 							styles.contentContainer,
 							styles.overviewContainer
 						]}>
-							<Value
-								label={__("Balance")}
-								value={prettifyNumber(balance, 0)}
-								unit="€"
-								isVertical
-								valueStyle={styles.value} />
+							<Grid
+								columns={2}
+								items={overviewData}
+							/>
 							<Grid columns={2} items={overviewCharts} />
 						</View>
 					</Tab>

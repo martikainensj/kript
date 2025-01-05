@@ -102,15 +102,7 @@ export const FABActions: React.FC<Props> = ({
 								onLongPress={action.onLongPress}
 								size={IconSize.sm}
 								label={action.label}
-								labelStyle={[
-									side === 'left' && {
-										left: '100%',
-										right: 'auto',
-										paddingRight: 0,
-										paddingLeft: Spacing.md,
-										textAlign: 'left',
-									}
-								]}
+								labelSide={ side === "right" ? "before" : "after"}
 							/>
 						</Animated.View>
 					);
@@ -127,14 +119,8 @@ export const FABActions: React.FC<Props> = ({
 					]}
 					labelStyle={[
 						{ fontWeight: FontWeight.bold },
-						side === 'left' && {
-							left: '100%',
-							right: 'auto',
-							paddingRight: 0,
-							paddingLeft: Spacing.md,
-							textAlign: 'left',
-						}
 					]}
+					labelSide={ side === "right" ? "before" : "after"}
 				/>
 			</View>
 		</>
@@ -150,6 +136,7 @@ const styles = StyleSheet.create({
 		right: Spacing.md,
 		bottom: Spacing.md,
 		alignItems: 'flex-end',
+		zIndex: 1000
 	},
 	actionsWrapper: {
 		marginBottom: 15,

@@ -17,9 +17,11 @@ export const useAccount = ( { account }: useAccountProps ) => {
 	if ( ! account?.isValid() ) return;
 
 	const { transactions, holdings } = account;
+	const ownershipRatio = (account.ownershipRatio ?? 100) / 100;
 	const checksum = generateChecksum({
 		transactions,
-		holdings
+		holdings,
+		ownershipRatio
 	});
 
 	useLayoutEffect(() => {
@@ -59,7 +61,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 
 				const dataPoint = {
 					date,
-					value: acc.loanAmount,
+					value: acc.loanAmount * ownershipRatio,
 				}
 
 				if ( existingDateIndex !== -1 ) {
@@ -80,7 +82,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 
 				const dataPoint = {
 					date,
-					value: acc.dividendAmount,
+					value: acc.dividendAmount * ownershipRatio,
 				}
 
 				if ( existingDateIndex !== -1 ) {
@@ -96,7 +98,7 @@ export const useAccount = ( { account }: useAccountProps ) => {
 
 			const dataPoint = {
 				date,
-				value: acc.cashAmount - acc.loanAmount,
+				value: (acc.cashAmount - acc.loanAmount) * ownershipRatio,
 			}
 
 			if ( existingDateIndex !== -1 ) {

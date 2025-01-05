@@ -8,6 +8,7 @@ import { allSet, stripRealmListsFromObject } from "../../helpers";
 import { Holding } from "../../models/Holding";
 import { useI18n } from "../../features/i18n/I18nContext";
 import { Text } from "../ui/Text";
+import { Icon } from "../ui/Icon";
 
 interface HoldingFormProps {
 	label?: string;
@@ -24,7 +25,7 @@ export const HoldingForm = ({
 	const [editedHolding, setEditedHolding]
 		= useState({ ...holding });
 
-	const { name, notes, leverageRatio } = editedHolding;
+	const { name, notes, leverageRatio, ownershipRatio } = editedHolding;
 
 	const handleDismissKeyboard = () => {
 		Keyboard.dismiss();
@@ -65,7 +66,7 @@ export const HoldingForm = ({
 					inputMode={'decimal'}
 					min={1}
 					max={100}
-					suffix="X"
+					suffixComponent={<Icon name="speedometer" />}
 					onChangeText={leverageRatio => setEditedHolding(
 						Object.assign({ ...editedHolding }, { leverageRatio })
 					)}

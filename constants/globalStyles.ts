@@ -1,10 +1,10 @@
-import { StyleSheet, Platform, StatusBar } from "react-native";
+import { StyleSheet } from "react-native";
 import { Spacing } from "./variables";
-import { FontFamily, FontSize, FontWeight } from "./font";
 
 export const GlobalStyles = StyleSheet.create({
 	container: {
-		flex: 1,
+		flexGrow: 1,
+		flexShrink: 1
 	},
 	content: {
 		paddingVertical: Spacing.md,

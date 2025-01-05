@@ -22,7 +22,7 @@ export const useHolding = ({ holding }: useHoldingProps) => {
 	const checksum = generateChecksum({
 		transactions,
 		dividends,
-		leverageRatio
+		leverageRatio,
 	});
 
 	const calculateVariables = () => {
@@ -82,7 +82,7 @@ export const useHolding = ({ holding }: useHoldingProps) => {
 			} else {
 				acc.amount += transaction.amount;
 			}
-			acc.feesSum += transaction.total * leverageRatio - (transaction.amount * transaction.price) * leverageRatio;
+			acc.feesSum += (transaction.total - (transaction.amount * transaction.price)) * leverageRatio;
 
 			const value = acc.amount * acc.lastPrice * leverageRatio;
 			const returnValue = value - acc.total;
